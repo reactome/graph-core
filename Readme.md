@@ -76,6 +76,32 @@ http://localhost:8080/load
 
 #### API
 
+Loading Data:
+
+If creating a new index it is advised to delete all data from the Database:
+```
+http://localhost:8080/cleanDb
+```
+Load entire ReactomeDataSet
+```
+http://localhost:8080/loadAll
+```
+Constraints can be created using:
+```
+http://localhost:8080/createConstraints
+```
+Load a singe Instance for testing 
+```
+http://localhost:8080/load/stId
+http://localhost:8080/load/dbId
+```
+
+Intact
+```
+http://localhost:8080/loadIntact
+```
+
+
 TODO
 
 #### Project Structure
