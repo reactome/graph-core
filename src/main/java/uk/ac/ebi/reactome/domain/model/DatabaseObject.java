@@ -24,6 +24,8 @@ public abstract class DatabaseObject {
     private String stId;
     private String name;
 
+    public DatabaseObject () {}
+
     public DatabaseObject(Long dbId, String stId, String name) {
         this.dbId = dbId;
         this.stId = stId;

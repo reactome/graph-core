@@ -27,6 +27,8 @@ public class Interactor {
     @Relationship(type = "INTERACTS_WITH", direction = Relationship.UNDIRECTED)
     private Set<Interaction> interactions;
 
+    public Interactor() {}
+
     public Interactor(String intactId, String name) {
         this.intactId = intactId;
         this.name = name;

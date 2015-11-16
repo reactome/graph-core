@@ -135,7 +135,7 @@ Nodes (and Relationships) are modeled as simple POJOs with a few annotations;
 <ul>
 <li>Nodes are declared using the ```@org.neo4j.ogm.annotation.NodeEntity``` annotation.</li>
 <li>Relationships are declared using the ```@org.neo4j.ogm.annotation.RelationshipEntity``` annotation.</li>
-<li>Entities must have an empty public constructor to allow spring to construct the objects (works without)</li>
+<li>Entities must have an empty public constructor to allow spring to construct the objects</li>
 <li>Fields of an entity are by default mapped to properties of the node.</li>
 <li>Fields referencing another node or relationship entity are linked with relationships.</li>
 <li>All parent classes will be added as labels, retrieving nodes via parent type is possible. (in a case class A extends class B extends, labels of class A will only be A and C. To workaround that problem just add @NodeEntity to all classes in hierarchy)</li>
@@ -304,6 +304,10 @@ MATCH n RETURN n
 Match all nodes (limited amount)
 ```
 MATCH (n) RETURN n LIMIT 25
+```
+Match all top lvl nodes
+```
+MATCH (n:Pathway) WHERE NOT (n)<-[*]-() RETURN n
 ```
 Count all nodes
 ```

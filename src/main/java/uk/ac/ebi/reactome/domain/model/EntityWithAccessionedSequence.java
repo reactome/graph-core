@@ -17,6 +17,8 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
     @Relationship(type = "HAS_REFERENCE_ENTITY", direction = Relationship.OUTGOING)
     private ReferenceSequence referenceSequence;
 
+    public EntityWithAccessionedSequence() {}
+
     public EntityWithAccessionedSequence(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

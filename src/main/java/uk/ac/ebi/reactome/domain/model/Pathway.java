@@ -19,6 +19,8 @@ public class Pathway extends Event {
     @Relationship(type = "HAS_EVENT", direction = Relationship.OUTGOING)
     private Set<Event>events;
 
+    public Pathway() {}
+
     public Pathway(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

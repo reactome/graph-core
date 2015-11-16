@@ -11,6 +11,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class ReferenceIsoform extends ReferenceGeneProduct {
 
+    public ReferenceIsoform() {}
+
     public ReferenceIsoform(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

@@ -20,6 +20,8 @@ public class CandidateSet extends EntitySet {
     @Relationship(type = "HAS_CANDIDATE", direction = Relationship.OUTGOING)
     private Set<PhysicalEntity> candidates;
 
+    public CandidateSet() {}
+
     public CandidateSet(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

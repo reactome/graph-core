@@ -11,6 +11,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class ReferenceGroup extends ReferenceEntity{
 
+    public ReferenceGroup() {}
+
     public ReferenceGroup(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

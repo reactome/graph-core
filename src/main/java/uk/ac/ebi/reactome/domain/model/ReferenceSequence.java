@@ -11,6 +11,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public abstract class ReferenceSequence extends ReferenceEntity {
 
+    public ReferenceSequence() {}
+
     public ReferenceSequence(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

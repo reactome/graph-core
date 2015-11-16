@@ -16,6 +16,8 @@ public abstract class ReferenceEntity extends DatabaseObject {
 //    @Relationship(type = "INTERACTS_WITH", direction = Relationship.OUTGOING)
 //    private Set<Interaction> interactions;
 
+    public ReferenceEntity() {}
+
     public ReferenceEntity(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

@@ -11,6 +11,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class ReferenceGeneProduct extends ReferenceSequence{
 
+    public ReferenceGeneProduct() {}
+
     public ReferenceGeneProduct(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

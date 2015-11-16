@@ -19,6 +19,8 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "IS_REGULATED", direction = Relationship.INCOMING)
     private Set<Regulation> regulation;
 
+    public Event() {}
+
     public Event(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

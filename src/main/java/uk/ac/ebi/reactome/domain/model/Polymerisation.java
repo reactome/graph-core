@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class Polymerisation extends ReactionLikeEvent{
 
+    public Polymerisation() {}
+
     public Polymerisation(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public abstract class PhysicalEntity extends DatabaseObject{
 
+    public PhysicalEntity() {}
+
     public PhysicalEntity(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

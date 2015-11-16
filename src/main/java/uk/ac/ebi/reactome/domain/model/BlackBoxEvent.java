@@ -20,6 +20,8 @@ public class BlackBoxEvent extends ReactionLikeEvent{
     @Relationship(type = "HAS_EVENT", direction = Relationship.OUTGOING)
     private Set<Event> events;
 
+    public BlackBoxEvent() {}
+
     public BlackBoxEvent(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

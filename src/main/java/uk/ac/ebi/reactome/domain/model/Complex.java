@@ -21,6 +21,8 @@ public class Complex extends PhysicalEntity {
     @Relationship(type = "HAS_COMPONENT", direction = Relationship.OUTGOING)
     private Set<HasComponent>components;
 
+    public Complex() {}
+
     public Complex(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

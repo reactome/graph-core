@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class GenomeEncodedEntity extends PhysicalEntity {
 
+    public GenomeEncodedEntity() {}
+
     public GenomeEncodedEntity(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

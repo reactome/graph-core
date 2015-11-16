@@ -24,6 +24,8 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "OUTPUT", direction = Relationship.OUTGOING)
     private Set<Output>output;
 
+    public ReactionLikeEvent() {}
+
     public ReactionLikeEvent(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

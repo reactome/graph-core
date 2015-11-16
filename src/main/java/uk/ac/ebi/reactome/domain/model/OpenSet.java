@@ -17,6 +17,8 @@ public class OpenSet extends EntitySet {
     @Relationship(type = "HAS_REFERENCE_ENTITY", direction = Relationship.OUTGOING)
     private ReferenceGroup referenceGroup;
 
+    public OpenSet() {}
+
     public OpenSet(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

@@ -119,11 +119,13 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     @Override
     public void createConstraintOnDatabaseObjectDbId(){
         databaseObjectRepository.createConstraintOnDatabaseObjectDbId();
+        logger.info("Added Constraint: DatabaseObject.dbId is UNIQUE");
     }
 
     @Override
     public void createConstraintOnDatabaseObjectStId(){
         databaseObjectRepository.createConstraintOnDatabaseObjectStId();
+        logger.info("Added Constraint: DatabaseObject.stId is UNIQUE");
     }
 
 

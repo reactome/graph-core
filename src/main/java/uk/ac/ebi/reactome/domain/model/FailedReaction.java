@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class FailedReaction extends ReactionLikeEvent{
 
+    public FailedReaction() {}
+
     public FailedReaction(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

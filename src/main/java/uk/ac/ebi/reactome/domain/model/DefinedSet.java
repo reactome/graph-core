@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class DefinedSet extends EntitySet {
 
+    public DefinedSet() {}
+
     public DefinedSet(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

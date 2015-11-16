@@ -19,6 +19,8 @@ public abstract class EntitySet extends PhysicalEntity {
     @Relationship(type = "HAS_MEMBER", direction = Relationship.OUTGOING)
     private Set<PhysicalEntity> members;
 
+    public EntitySet() {}
+
     public EntitySet(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

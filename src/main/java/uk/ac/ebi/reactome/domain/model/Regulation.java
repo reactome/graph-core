@@ -27,6 +27,8 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "IN_PATHWAY", direction = Relationship.INCOMING)
     private Set<Pathway> pathway;
 
+    public Regulation() {}
+
     public Regulation(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

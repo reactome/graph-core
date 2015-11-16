@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class Requirement extends PositiveRegulation {
 
+    public Requirement() {}
+
     public Requirement(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

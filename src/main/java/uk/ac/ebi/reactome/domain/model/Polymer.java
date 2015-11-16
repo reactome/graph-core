@@ -18,6 +18,8 @@ public class Polymer extends PhysicalEntity {
     @Relationship(type = "HAS_REPEATED_UNIT", direction = Relationship.OUTGOING)
     private RepeatedUnit repeatedUnit;
 
+    public Polymer() {}
+
     public Polymer(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

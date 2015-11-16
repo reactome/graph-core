@@ -31,7 +31,8 @@ public class ReactomeParser {
 
     private static MySQLAdaptor dba;
 
-    private static final Logger logger = LoggerFactory.getLogger(ReactomeParser.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ReactomeParser.class);
+    private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(ReactomeParser.class);
 
     @Autowired
     private DatabaseObjectService databaseObjectService;

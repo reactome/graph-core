@@ -13,6 +13,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class NegativeRegulation extends Regulation {
 
+    public NegativeRegulation() {}
+
     public NegativeRegulation(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }

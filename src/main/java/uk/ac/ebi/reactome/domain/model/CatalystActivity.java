@@ -26,6 +26,8 @@ public class CatalystActivity extends DatabaseObject {
     @Relationship(type = "IS_REGULATED", direction = Relationship.INCOMING)
     private Regulation regulation;
 
+    public CatalystActivity() {}
+
     public CatalystActivity(Long dbId, String stId, String name) {
         super(dbId, stId, name);
     }
