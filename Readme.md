@@ -1,4 +1,4 @@
-![Logo](http://www.reactome.org/wordpress/wp-content/themes/HS_OICR_2013/images/ReactomeLogo.png)
+![Logo](https://cdn.evbuc.com/images/3621635/40070539972/1/logo.png)
 
 
 # Reactome Interactors
