@@ -1,6 +1,6 @@
 ![Logo](http://www.reactome.org/wordpress/wp-content/themes/HS_OICR_2013/images/ReactomeLogo.png)
-</br>
-</br>
+
+
 # Reactome Interactors
 
 
