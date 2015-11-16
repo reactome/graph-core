@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.reactome.base:reactome-base:1.2.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/reactome/base/reactome-base/1.2.1/reactome-base-1.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/reactome/base/reactome-base/1.2.1/reactome-base-1.2.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/reactome/base/reactome-base/1.2.1/reactome-base-1.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

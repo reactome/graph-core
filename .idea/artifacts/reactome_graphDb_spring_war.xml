@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="reactome-graphDb-spring:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="graphDb-spring.war">
+      <element id="artifact" artifact-name="reactome-graphDb-spring:war exploded" />
+    </root>
+  </artifact>
+</component>
