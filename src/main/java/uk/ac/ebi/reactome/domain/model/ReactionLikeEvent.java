@@ -2,8 +2,8 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import uk.ac.ebi.reactome.domain.relationship.Input;
-import uk.ac.ebi.reactome.domain.relationship.Output;
+import uk.ac.ebi.reactome.domain.relationship.HasInput;
+import uk.ac.ebi.reactome.domain.relationship.HasOutput;
 
 import java.util.Set;
 
@@ -18,11 +18,17 @@ import java.util.Set;
 @NodeEntity
 public abstract class ReactionLikeEvent extends Event {
 
-    @Relationship(type = "INPUT", direction = Relationship.INCOMING)
-    private Set<Input> input;
+    @Relationship(type = "HAS_INPUT", direction = Relationship.OUTGOING)
+    private Set<HasInput> input;
 
-    @Relationship(type = "OUTPUT", direction = Relationship.OUTGOING)
-    private Set<Output>output;
+    @Relationship(type = "HAS_OUTPUT", direction = Relationship.OUTGOING)
+    private Set<HasOutput>output;
+
+//    @Relationship(type = "INPUT", direction = Relationship.INCOMING)
+//    private Set<PhysicalEntity> input;
+//
+//    @Relationship(type = "OUTPUT", direction = Relationship.OUTGOING)
+//    private Set<PhysicalEntity> output;
 
     public ReactionLikeEvent() {}
 
@@ -30,21 +36,38 @@ public abstract class ReactionLikeEvent extends Event {
         super(dbId, stId, name);
     }
 
-    public Set<Output> getOutput() {
+    public Set<HasOutput> getOutput() {
         return output;
     }
 
     @SuppressWarnings("unused")
-    public void setOutput(Set<Output> output) {
+    public void setOutput(Set<HasOutput> output) {
         this.output = output;
     }
 
-    public Set<Input> getInput() {
+    public Set<HasInput> getInput() {
         return input;
     }
 
     @SuppressWarnings("unused")
-    public void setInput(Set<Input> input) {
+    public void setInput(Set<HasInput> input) {
         this.input = input;
     }
+
+//
+//    public Set<PhysicalEntity> getInput() {
+//        return input;
+//    }
+//
+//    public void setInput(Set<PhysicalEntity> input) {
+//        this.input = input;
+//    }
+//
+//    public Set<PhysicalEntity> getOutput() {
+//        return output;
+//    }
+//
+//    public void setOutput(Set<PhysicalEntity> output) {
+//        this.output = output;
+//    }
 }

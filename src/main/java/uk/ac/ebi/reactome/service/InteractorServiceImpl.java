@@ -1,7 +1,5 @@
 package uk.ac.ebi.reactome.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.reactome.domain.model.Interactor;
@@ -16,7 +14,8 @@ import uk.ac.ebi.reactome.repository.InteractorRepository;
 @Service
 public class InteractorServiceImpl implements InteractorService {
 
-    private static final Logger logger = LoggerFactory.getLogger(InteractorServiceImpl.class);
+//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
 
     @Autowired
     private InteractorRepository interactorRepository;

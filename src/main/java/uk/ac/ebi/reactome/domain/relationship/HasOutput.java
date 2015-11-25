@@ -4,8 +4,8 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import uk.ac.ebi.reactome.domain.model.Event;
 import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
+import uk.ac.ebi.reactome.domain.model.ReactionLikeEvent;
 
 /**
  * Created by:
@@ -13,11 +13,11 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 10.11.15.
  *
- * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
+ * HasOutput is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
  * outputs.
  */
-@RelationshipEntity(type = "OUTPUT")
-public class Output {
+@RelationshipEntity(type = "HAS_OUTPUT")
+public class HasOutput {
 
     @SuppressWarnings("unused")
     @GraphId
@@ -26,11 +26,11 @@ public class Output {
     private Integer cardinality;
 
     @StartNode
-    private Event event;
+    private ReactionLikeEvent reactionLikeEvent;
     @EndNode
     private PhysicalEntity physicalEntity;
 
-    public Output() {}
+    public HasOutput() {}
 
     public Integer getCardinality() {
         return cardinality;
@@ -41,13 +41,12 @@ public class Output {
         this.cardinality = cardinality;
     }
 
-    public Event getEvent() {
-        return event;
+    public ReactionLikeEvent getReactionLikeEvent() {
+        return reactionLikeEvent;
     }
 
-    @SuppressWarnings("unused")
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
+        this.reactionLikeEvent = reactionLikeEvent;
     }
 
     public PhysicalEntity getPhysicalEntity() {

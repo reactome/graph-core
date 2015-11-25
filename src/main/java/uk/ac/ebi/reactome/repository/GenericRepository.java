@@ -1,8 +1,6 @@
 package uk.ac.ebi.reactome.repository;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
-import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 
 /**
  * Created by:
@@ -13,11 +11,11 @@ import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 @Repository
 public interface GenericRepository {
 
+    <T> T loadByProperty(Class<T> clazz, String property, Object value);
+    <T> T loadById(Class<T> clazz, Long id, Integer depth);
+    <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
+    <T> T findByStId(Class<T> clazz, String stId, Integer depth);
+
+    Long countEntries(Class<?> clazz);
     void cleanDatabase();
-
-    DatabaseObject findByDbId(Long dbId);
-    DatabaseObject findByDbId(Long dbId, Integer depth);
-
-    DatabaseObject findByStId(String stId);
-    DatabaseObject findByStId(String stId, Integer depth);
 }

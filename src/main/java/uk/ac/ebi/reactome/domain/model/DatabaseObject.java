@@ -32,6 +32,14 @@ public abstract class DatabaseObject {
         this.name = name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getDbId() {
         return dbId;
     }

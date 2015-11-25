@@ -17,17 +17,21 @@ This project is micro-service based web-application built using following compon
 The application will attempt to use a Neo4j standalone server running on standard port:7474.
 
 #### Installing Neo4j
-Neo4j can be installed in the command line.
+Neo4j can be installed in the command line
+
 ```
 wget -O - https://debian.neo4j.org/neotechnology.gpg.key| apt-key add -
 echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list
 aptitude update
 aptitude install neo4j
 ```
+
 Neo4j will be installed to folders
+```
 /etc/neo4j  (properties)
 /usr/share/neo4j (library)
 /var/lib/neo4j (data)
+```
 
 !!! CAUTION  !!!
 http://neo4j.com/docs/stable/server-installation.html
@@ -37,7 +41,9 @@ http://refspecs.linuxfoundation.org/LSB_3.1.0/LSB-Core-generic/LSB-Core-generic/
 http://www.linux.com/learn/tutorials/442412-managing-linux-daemons-with-init-scripts
 
 #### Neo4j Shell commands
+
 Neo4j can be controlled in the command line.
+
 ```
 sudo service neo4j-service start
 sudo service neo4j-service stop
@@ -103,6 +109,16 @@ http://localhost:8080/loadIntact
 
 
 TODO
+
+
+
+#### Logging
+AOP is 
+
+To see more spring behaviour (e.g. neo4jRequestHandler, connectionPooling ...) set Spring root logging level to DEBUG 
+```
+logging.level.=DEBUG
+```
 
 #### Project Structure
 The application follows a basic spring multitier architecture:

@@ -1,10 +1,9 @@
 package uk.ac.ebi.reactome.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.repository.GenericRepository;
 
 /**
@@ -14,34 +13,42 @@ import uk.ac.ebi.reactome.repository.GenericRepository;
  * @since 15.11.15.
  */
 @Service
+@Transactional(readOnly = true)
 public class GenericServiceImpl implements GenericService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+    //    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
 
     @Autowired
     private GenericRepository genericRepository;
 
     @Override
-    public DatabaseObject findByDbIdWithSession(Long dbId) {
-        return genericRepository.findByDbId(dbId);
+    public <T>T loadByProperty(Class<T> clazz, String property, Object value){
+        return genericRepository.loadByProperty(clazz,property,value);
     }
 
     @Override
-    public DatabaseObject findByDbIdWithSession(Long dbId, Integer depth) {
-        return genericRepository.findByDbId(dbId, depth);
+    public <T> T loadById(Class<T> clazz, Long id, Integer depth){
+        return genericRepository.loadById(clazz, id, depth);
     }
 
     @Override
-    public DatabaseObject findStIdWithSession(String stId) {
-        return genericRepository.findByStId(stId);
+    public <T>T findByDbId(Class<T> clazz, Long dbId, Integer depth) {
+        return genericRepository.findByDbId(clazz, dbId, depth);
     }
 
     @Override
-    public DatabaseObject findStIdWithSession(String stId, Integer depth) {
-        return genericRepository.findByStId(stId, depth);
+    public <T>T  findByStId(Class<T> clazz, String stId, Integer depth) {
+        return genericRepository.findByStId(clazz, stId, depth);
     }
 
     @Override
+    public Long countEntries(Class<?> clazz){
+        return genericRepository.countEntries(clazz);
+    }
+
+    @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public void cleanDatabase() {
         genericRepository.cleanDatabase();;
         logger.info("GraphDatabase has been cleaned");

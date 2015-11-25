@@ -4,8 +4,8 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import uk.ac.ebi.reactome.domain.model.Event;
 import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
+import uk.ac.ebi.reactome.domain.model.ReactionLikeEvent;
 
 /**
  * Created by:
@@ -13,11 +13,11 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 10.11.15.
  *
- * Input is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
+ * HasInput is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
  * inputs.
  */
-@RelationshipEntity(type = "INPUT")
-public class Input {
+@RelationshipEntity(type = "HAS_INPUT")
+public class HasInput {
 
     @SuppressWarnings("unused")
     @GraphId
@@ -26,11 +26,12 @@ public class Input {
     private Integer cardinality;
 
     @StartNode
-    private PhysicalEntity physicalEntity;
-    @EndNode
-    private Event event;
+    private ReactionLikeEvent reactionLikeEvent;
 
-    public Input() {}
+    @EndNode
+    private PhysicalEntity physicalEntity;
+
+    public HasInput() {}
 
     public Integer getCardinality() {
         return cardinality;
@@ -41,21 +42,19 @@ public class Input {
         this.cardinality = cardinality;
     }
 
+    public ReactionLikeEvent getReactionLikeEvent() {
+        return reactionLikeEvent;
+    }
+
+    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
+        this.reactionLikeEvent = reactionLikeEvent;
+    }
+
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
     }
 
-    @SuppressWarnings("unused")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    @SuppressWarnings("unused")
-    public void setEvent(Event event) {
-        this.event = event;
     }
 }

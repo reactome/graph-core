@@ -1,7 +1,5 @@
 package uk.ac.ebi.reactome.service;
 
-import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-
 /**
  * Created by:
  *
@@ -10,10 +8,15 @@ import uk.ac.ebi.reactome.domain.model.DatabaseObject;
  */
 public interface GenericService {
 
-    DatabaseObject findByDbIdWithSession(Long dbId);
-    DatabaseObject findByDbIdWithSession(Long dbId, Integer depth);
-    DatabaseObject findStIdWithSession(String stId);
-    DatabaseObject findStIdWithSession(String stId, Integer depth);
+    <T> T loadByProperty(Class<T> clazz, String property, Object value);
+
+    <T> T loadById(Class<T> clazz, Long id, Integer depth);
+
+    <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
+
+    <T> T findByStId(Class<T> clazz, String stId, Integer depth);
+
+    Long countEntries(Class<?> clazz);
 
     void cleanDatabase();
 }

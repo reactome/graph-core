@@ -1,6 +1,5 @@
 package uk.ac.ebi.reactome.service.placeholder;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.reactome.domain.model.Event;
@@ -13,9 +12,10 @@ import uk.ac.ebi.reactome.repository.placeholder.EventRepository;
  * @since 10.11.15.
  */
 @Service
-public final class EventService {
+public  class EventService {
 
-    private static Logger logger = Logger.getLogger(Event.class.getName());
+//    private final org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
 
     @Autowired
     private EventRepository eventRepository;

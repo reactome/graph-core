@@ -3,15 +3,17 @@ package uk.ac.ebi.reactome.data;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.Reaction;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.exception.ReactomeParserException;
-import uk.ac.ebi.reactome.service.DatabaseObjectService;
+import uk.ac.ebi.reactome.service.GenericService;
+import uk.ac.ebi.reactome.service.ImportService;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,10 +33,18 @@ public class ReactomeParser {
 
     private static MySQLAdaptor dba;
 
-    private static final Logger logger = LoggerFactory.getLogger(ReactomeParser.class);
+//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
 
     @Autowired
-    private DatabaseObjectService databaseObjectService;
+    private ImportService importService;
+
+
+
+    @Autowired
+    private GenericService genericService;
+    @Autowired
+    private Session session;
 
     public ReactomeParser() throws ReactomeParserException {
         try {
@@ -46,6 +56,49 @@ public class ReactomeParser {
     }
 
     public void loadAll() {
+
+
+        importService.getOrCreate(new Pathway(1L, "React_1.1", "Pathway1"));
+        importService.getOrCreate(new Pathway(2L, "React_2.1", "Pathway2"));
+        importService.getOrCreate(new Pathway(3L, "React_3.1", "Pathway3"));
+        importService.getOrCreate(new Pathway(4L, "React_4.1", "Pathway4"));
+        importService.getOrCreate(new Pathway(5L, "React_5.1", "Pathway5"));
+        importService.getOrCreate(new Pathway(6L, "React_6.1", "Pathway6"));
+        importService.getOrCreate(new Pathway(7L, "React_7.1", "Pathway7"));
+
+
+        importService.getOrCreate(new Pathway(8L, "React_8.1", "Pathway8"));
+        importService.getOrCreate(new Pathway(9L, "React_9.1", "Pathway9"));
+
+        importService.getOrCreate(new Reaction(10L, "React_10.1", "Reaction10"));
+
+
+
+        importService.createEventRelationship(1L, 8L);
+        importService.createEventRelationship(1L, 9L);
+        importService.createEventRelationship(1L, 10L);
+
+
+        importService.createEventRelationship(1L, 2L);
+        importService.createEventRelationship(2L, 3L);
+        importService.createEventRelationship(3L, 4L);
+        importService.createEventRelationship(4L, 5L);
+        importService.createEventRelationship(5L, 6L);
+        importService.createEventRelationship(6L, 7L);
+
+        Integer a = 2;
+//        DatabaseObject db = genericService.findByDbIdWithSession(1L, a);
+        Pathway pw = session.load(Pathway.class,26663L,2);
+
+
+//        DatabaseObject dbObject6 = importService.findByStId("React_1.1");
+//        DatabaseObject dbObject7 = importService.find(dbObject6.getId(), 1);
+//        DatabaseObject dbObject8 = importService.findOne(dbObject6.getId(), 1);
+
+//        Pathway p = neo4jOperations.loadByProperty(Pathway.class,"dbId",1L,2);
+//        neo4jOperations.loadByProperty()
+        System.out.println("bla");
+
         try {
             Collection<?> frontPage = dba.fetchInstancesByClass(ReactomeJavaConstants.FrontPage);
             GKInstance instance1 = (GKInstance) frontPage.iterator().next();
@@ -77,8 +130,8 @@ public class ReactomeParser {
     }
 
     public void createConstraints() {
-        databaseObjectService.createConstraintOnDatabaseObjectDbId();
-        databaseObjectService.createConstraintOnDatabaseObjectStId();
+        importService.createConstraintOnDatabaseObjectDbId();
+        importService.createConstraintOnDatabaseObjectStId();
     }
 
     @Transactional
@@ -141,27 +194,27 @@ public class ReactomeParser {
             try {
                 attributes = instance.getAttributeValuesList(fieldName);
                 for (GKInstance attribute : attributes) {
-                    if (databaseObjectService.findByDbId(attribute.getDBID())== null) {
+                    if (importService.findByDbId(attribute.getDBID())== null) {
                         recursion(attribute);
                     }
                     Long dbId = instance.getDBID();
                     Long refDbId = attribute.getDBID();
                     if (fieldName.equals(ReactomeJavaConstants.hasEvent)) {
-                        databaseObjectService.createEventRelationship(dbId, refDbId);
+                        importService.createEventRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.input)) {
-                        databaseObjectService.createInputRelationship(dbId, refDbId);
+                        importService.createInputRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.output)) {
-                        databaseObjectService.createOutputRelationship(dbId, refDbId);
+                        importService.createOutputRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.hasComponent)) {
-                        databaseObjectService.createComponentRelationship(dbId, refDbId);
+                        importService.createComponentRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.hasMember)) {
-                        databaseObjectService.createMemberRelationship(dbId, refDbId);
+                        importService.createMemberRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.hasCandidate)) {
-                        databaseObjectService.createCandidateRelationship(dbId, refDbId);
+                        importService.createCandidateRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.repeatedUnit)) {
-                        databaseObjectService.createRepeatedUnitRelationship(dbId, refDbId);
+                        importService.createRepeatedUnitRelationship(dbId, refDbId);
                     } else if(fieldName.equals(ReactomeJavaConstants.referenceEntity)) {
-                        databaseObjectService.createReferenceEntityRelationship(dbId, refDbId);
+                        importService.createReferenceEntityRelationship(dbId, refDbId);
                     }
                 }
             } catch (Exception e) {
@@ -194,7 +247,7 @@ public class ReactomeParser {
 //                }
 //            }
 
-            return databaseObjectService.getOrCreate(databaseObject);
+            return importService.getOrCreate(databaseObject);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

@@ -1,7 +1,5 @@
 package uk.ac.ebi.reactome.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
@@ -16,9 +14,11 @@ import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
  * @since 10.11.15.
  */
 @Service
+@Transactional(readOnly = true)
 public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> implements DatabaseObjectService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
+//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
@@ -26,6 +26,11 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     @Override
     public GraphRepository<DatabaseObject> getRepository() {
         return databaseObjectRepository;
+    }
+
+    @Override
+    public DatabaseObject findOne(Long id, int depth) {
+        return databaseObjectRepository.findOne(id,depth);
     }
 
     @Override
@@ -37,96 +42,4 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     public DatabaseObject findByStId(String stId) {
         return databaseObjectRepository.findByStId(stId);
     }
-
-    @Transactional
-    public DatabaseObject getOrCreate(DatabaseObject databaseObject) {
-        DatabaseObject oldDatabaseObject = databaseObjectRepository.findByDbId(databaseObject.getDbId());
-        if (oldDatabaseObject == null) {
-            return databaseObjectRepository.save(databaseObject, 0);
-        }
-        return databaseObject;
-    }
-
-    /*
-    Methods for adding relationships to two entities by their dbIds.
-     */
-    @Override
-    public void createInputRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createInputRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding InputRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createOutputRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createOutputRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding OutputRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createCatalystRelationship(Long dbIdA, Long dbIdB) {
-        if (!databaseObjectRepository.createCatalystRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding CatalystRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createCandidateRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createCandidateRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding CandidateRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createComponentRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createComponentRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding ComponentRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createMemberRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createMemberRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding MemberRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createEventRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createEventRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding EventRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createRepeatedUnitRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createRepeatedUnitRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding RepeatedUnitRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    @Override
-    public void createReferenceEntityRelationship(Long dbIdA, Long dbIdB){
-        if (!databaseObjectRepository.createReferenceEntityRelationship(dbIdA, dbIdB)) {
-            logger.error("Adding ReferenceEntityRelationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
-
-    /*
-    Constraints & Indexing
-     */
-    @Override
-    public void createConstraintOnDatabaseObjectDbId(){
-        databaseObjectRepository.createConstraintOnDatabaseObjectDbId();
-        logger.info("Added Constraint: DatabaseObject.dbId is UNIQUE");
-    }
-
-    @Override
-    public void createConstraintOnDatabaseObjectStId(){
-        databaseObjectRepository.createConstraintOnDatabaseObjectStId();
-        logger.info("Added Constraint: DatabaseObject.stId is UNIQUE");
-    }
-
-
 }

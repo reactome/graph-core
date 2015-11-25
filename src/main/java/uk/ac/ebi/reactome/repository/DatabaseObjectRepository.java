@@ -23,14 +23,14 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
      Methods for adding Relationships. This Methods are in this Repository to reduce the total amount of Repositories.
     */
     @Query("MATCH(a:ReactionLikeEvent {dbId:{0}}),(b:PhysicalEntity {dbId:{1}}) " +
-            "MERGE (a)<-[r:INPUT]-(b) " +
+            "MERGE (a)-[r:HAS_INPUT]->(b) " +
             "ON CREATE SET r =  {cardinality:1} " +
             "ON MATCH  SET r += {cardinality:(r.cardinality+1)} " +
             "RETURN COUNT(r)=1")
     boolean createInputRelationship(Long dbIdA, Long dbIdB);
 
     @Query ("MATCH(a:ReactionLikeEvent {dbId:{0}}),(b:PhysicalEntity {dbId:{1}}) " +
-            "MERGE (a)-[r:OUTPUT]->(b) " +
+            "MERGE (a)-[r:HAS_OUTPUT]->(b) " +
             "ON CREATE SET r =  {cardinality:1} " +
             "ON MATCH  SET r += {cardinality:(r.cardinality+1)} " +
             "RETURN COUNT(r)=1")
