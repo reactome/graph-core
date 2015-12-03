@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import java.util.Set;
  *
  * Pathway represent any grouping of Events
  */
+@Configurable
 @NodeEntity
 public class Pathway extends Event {
 

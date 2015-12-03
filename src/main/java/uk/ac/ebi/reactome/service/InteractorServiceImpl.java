@@ -24,6 +24,10 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
     public Interactor merge(Interactor interactor) {
         return interactorRepository.merge(interactor.getIntactId(), interactor.getName());
     }
+    @Override
+    public Interactor create(Interactor interactor) {
+        return interactorRepository.save(interactor);
+    }
 
     @Override
     public void createInteraction(String idA, String idB, Double score){

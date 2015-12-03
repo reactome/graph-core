@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Created by:
@@ -12,6 +13,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
  * DatabaseObject is a wrapper class. All Objects in the model extend this class and therefor contain id, dbId, stId
  * and a name.
  */
+@Configurable
 @NodeEntity
 public abstract class DatabaseObject {
 

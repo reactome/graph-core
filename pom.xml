@@ -87,7 +87,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <!--<dependency>-->
+        <!--<groupId>org.aspectj</groupId>-->
+        <!--<artifactId>aspectjrt</artifactId>-->
+        <!--<version>1.6.5</version>-->
+        <!--</dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.neo4j</groupId>-->
@@ -106,15 +110,18 @@
         <!--&lt;!&ndash;<type>test-jar</type>&ndash;&gt;-->
         <!--&lt;!&ndash;<scope>test</scope>&ndash;&gt;-->
         <!--</dependency>-->
+
+
+
     </dependencies>
 
     <build>
         <finalName>graphDb-spring</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -147,32 +154,32 @@
 
 
         <!--<repository>-->
-            <!--<id>neo4j-snapshot-repository</id>-->
-            <!--<name>Neo4j Maven 2 snapshot repository</name>-->
-            <!--<url>http://m2.neo4j.org/content/repositories/snapshots</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-            <!--</snapshots>-->
-            <!--<releases>-->
-                <!--<enabled>false</enabled>-->
-            <!--</releases>-->
+        <!--<id>neo4j-snapshot-repository</id>-->
+        <!--<name>Neo4j Maven 2 snapshot repository</name>-->
+        <!--<url>http://m2.neo4j.org/content/repositories/snapshots</url>-->
+        <!--<snapshots>-->
+        <!--<enabled>true</enabled>-->
+        <!--</snapshots>-->
+        <!--<releases>-->
+        <!--<enabled>false</enabled>-->
+        <!--</releases>-->
         <!--</repository>-->
         <repository>
-        <id>spring-milestones</id>
-        <url>http://repo.spring.io/libs-snapshot</url>
-        <snapshots>
-        <enabled>true</enabled>
-        </snapshots>
-        </repository>
-
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>http://repo.spring.io/snapshot</url>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/libs-snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+
+        <!--<repository>-->
+            <!--<id>spring-snapshots</id>-->
+            <!--<name>Spring Snapshots</name>-->
+            <!--<url>http://repo.spring.io/snapshot</url>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
+        <!--</repository>-->
 
         <repository>
             <id>nexus-ebi-repo</id>
@@ -188,22 +195,22 @@
     </repositories>
 
     <pluginRepositories>
-    <pluginRepository>
-    <id>spring-milestones</id>
-    <url>http://repo.spring.io/libs-snapshot</url>
-    <snapshots>
-    <enabled>true</enabled>
-    </snapshots>
-    </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>http://repo.spring.io/libs-snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
 
-    <pluginRepository>
-        <id>spring-snapshots</id>
-        <url>http://repo.spring.io/snapshot</url>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
-    </pluginRepository>
+        <!--<pluginRepository>-->
+            <!--<id>spring-snapshots</id>-->
+            <!--<url>http://repo.spring.io/snapshot</url>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
+        <!--</pluginRepository>-->
 
 
-</pluginRepositories>
-        </project>
+    </pluginRepositories>
+</project>

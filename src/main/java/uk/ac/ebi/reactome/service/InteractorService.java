@@ -11,6 +11,7 @@ import uk.ac.ebi.reactome.domain.model.Interactor;
 public interface InteractorService {
 
     Interactor merge(Interactor interactor);
+    Interactor create(Interactor interactor);
     void createInteraction(String idA, String idB, Double score);
 
 }

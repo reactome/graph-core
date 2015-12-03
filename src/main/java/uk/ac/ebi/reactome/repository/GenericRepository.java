@@ -18,4 +18,7 @@ public interface GenericRepository {
 
     Long countEntries(Class<?> clazz);
     void cleanDatabase();
+
+
+    boolean addRelationship();
 }

@@ -7,6 +7,8 @@ import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by:
@@ -63,6 +65,23 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
 
+
+
+
+    public boolean addRelationship() {
+        Map<String,Long> params = new HashMap<>();
+        params.put("a", 123L);
+        params.put("b", 124L);
+        params.put("lab", 111L);
+        String relation= "output";
+        String query =  "MATCH(a:DatabaseObject {dbId:{a}}),(b:DatabaseObject {dbId:{b}}) " +
+                        "MERGE (a)-[r:" + relation +"]->(b) " +
+                        "ON CREATE SET r =  {cardinality:1} " +
+                        "ON MATCH  SET r += {cardinality:(r.cardinality+1)} " +
+                        "RETURN COUNT(r)=1";
+
+        return template.queryForObject(Boolean.class,query,params);
+    }
 //    @Override
 //    public DatabaseObject findByDbId(Long dbId, Integer depth) {
 //        Collection<DatabaseObject> collection =  session.loadAll(DatabaseObject.class, new Filter("dbId", dbId), depth);

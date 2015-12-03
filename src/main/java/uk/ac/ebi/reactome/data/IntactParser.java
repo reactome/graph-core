@@ -2,14 +2,11 @@ package uk.ac.ebi.reactome.data;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
-import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.DynamicRelationshipType;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.unsafe.batchinsert.BatchInserter;
-import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.Interactor;
 import uk.ac.ebi.reactome.service.InteractorService;
 
@@ -29,8 +26,11 @@ public class IntactParser {
     @Autowired
     private InteractorService interactorService;
 
+//    @Autowired
+//    private GenericService genericService;
 
-    // do try with resources here
+
+    @Transactional
     public void parseIntactfile() {
 
 //        The intended use is for initial import of data but you can use it on an existing database if the existing database is shutdown first.
@@ -41,110 +41,179 @@ public class IntactParser {
 //        Warning
 //        Since the batch insertion doesn’t enforce constraint during data loading, if the inserted data violate any constraint the batch inserter will fail on shutdown and the database will be inconsistent.
 
-        BatchInserter inserter = null;
-        try
-        {
+//        genericService.cleanDatabase();
 
-            inserter = BatchInserters.inserter(new File("/var/lib/neo4j/data/graph.db").getAbsolutePath());
-
-            Label personLabel = DynamicLabel.label("Interactor");
-            inserter.createDeferredConstraint( personLabel ).assertPropertyIsUnique("identifier");
-            inserter.createDeferredSchemaIndex( personLabel ).on("identifier" ).create();
+        try {
 
             File file = new File("intact-micluster.txt");
 
-            try {
-                LineIterator it = FileUtils.lineIterator(file , "UTF-8");
-                it.nextLine();
-                Map<String, Long> idmap = new HashMap<>();
+
+            LineIterator it = FileUtils.lineIterator(file, "UTF-8");
+            it.nextLine();
+            Map<String, Long> idmap = new HashMap<>();
 
 //                MAtch (n:ReferenceEntity) RETURN n.identifier
 //                map for finding connections to reactome ... just 1 query to graph db needed
 
-                int i = 0;
-                while (it.hasNext()) {
-                    i++;
-                    String line = it.nextLine();
+            int i = 0;
+            while (it.hasNext()) {
+                i++;
+                String line = it.nextLine();
 //                    System.out.println(line);// do something with line
-                    String[] array = line.split("\\t");
-                    long a;
-                    if(idmap.containsKey(array[0])){
-                        a=idmap.get(array[0]);
-                    } else {
-                        Map<String, Object> properties = new HashMap<>();
-                        properties.put( "identifier", array[0] );
-                        a = inserter.createNode(properties, personLabel);
-                        properties.put( "identifier", array[1] );
-                        idmap.put(array[0],a);
-                    }
-                    long b;
-                    if(idmap.containsKey(array[1])){
-                        b=idmap.get(array[1]);
-                    } else {
-                        Map<String, Object> properties = new HashMap<>();
-                        properties.put( "identifier", array[0] );
-                        b = inserter.createNode(properties, personLabel);
-                        properties.put( "identifier", array[1] );
-                        idmap.put(array[1],b);
-                    }
-                    RelationshipType knows = DynamicRelationshipType.withName("INTERACT");
-
-                    inserter.createRelationship( a,  b, knows, null );
-
+                String[] array = line.split("\\t");
+                Long a;
+                if (idmap.containsKey(array[0])) {
+                    a = idmap.get(array[0]);
+                } else {
+                    Interactor ai = new Interactor();
+                    ai.setIntactId(array[0]);
+                    a = interactorService.create(ai).getId();
+                    idmap.put(array[0], a);
                 }
-                System.out.println(i);
-                LineIterator.closeQuietly(it);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-//            inserter.
-//
-//            Map<String, Object> properties = new HashMap<>();
-//
-//            properties.put( "name", "Mattias" );
-//            long mattiasNode = inserter.createNode( properties, personLabel );
-//
-//            properties.put( "name", "Chris" );
-//            long chrisNode = inserter.createNode( properties, personLabel );
-//
-//            RelationshipType knows = DynamicRelationshipType.withName("KNOWS");
-//            inserter.createRelationship( mattiasNode, chrisNode, knows, null );
-        }
-        finally
-        {
-            if ( inserter != null )
-            {
-                inserter.shutdown();
-            }
-        }
-//        File file = new File("intact-micluster.txt");
-//
-//        try {
-//            LineIterator it = FileUtils.lineIterator(file , "UTF-8");
-//            it.nextLine();
-//            while (it.hasNext()) {
-//                String line = it.nextLine();
-//                System.out.println(line);// do something with line
-//                String[] array = line.split("\\t");
-//                addLineToDatabase(array);
-//            }
-//            LineIterator.closeQuietly(it);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+                Long b;
+                if (idmap.containsKey(array[1])) {
+                    b = idmap.get(array[1]);
+                } else {
+                    Interactor bi = new Interactor();
+                    bi.setIntactId(array[1]);
+                    b = interactorService.create(bi).getId();
+                    idmap.put(array[1], b);
+                }
+                RelationshipType knows = DynamicRelationshipType.withName("INTERACT");
+                interactorService.createInteraction(array[0], array[1], 0.0);
+//                    inserter.createRelationship( a,  b, knows, null );
 
-//        try {
-//            BufferedReader in = new BufferedReader(new InputStreamReader(new URL(INTACT_FILE_URL).openStream()));
-//            String line = in.readLine();
-//            while ((line = in.readLine()) != null) {
-//                String[] array = line.split("\\t");
-//                addLineToDatabase(array);
-//            }
-//            in.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+            }
+            System.out.println(i);
+            LineIterator.closeQuietly(it);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
+
+
+
+
+//    // do try with resources here
+//    public void parseIntactfile() {
+//
+////        The intended use is for initial import of data but you can use it on an existing database if the existing database is shutdown first.
+////        Batch insertion is not thread safe.
+////        Batch insertion is non-transactional.
+////        Warning
+////        Always perform batch insertion in a single thread (or use synchronization to make only one thread at a time access the batch inserter) and invoke shutdown when finished.
+////        Warning
+////        Since the batch insertion doesn’t enforce constraint during data loading, if the inserted data violate any constraint the batch inserter will fail on shutdown and the database will be inconsistent.
+//
+//        BatchInserter inserter = null;
+//        try
+//        {
+//
+//            inserter = BatchInserters.inserter(new File("/var/lib/neo4j/data/graph.db").getAbsolutePath());
+
+
+
+//            Label personLabel = DynamicLabel.label("Interactor");
+//            inserter.createDeferredConstraint( personLabel ).assertPropertyIsUnique("identifier");
+//            inserter.createDeferredSchemaIndex( personLabel ).on("identifier" ).create();
+//
+//            File file = new File("intact-micluster.txt");
+//
+//            try {
+//                LineIterator it = FileUtils.lineIterator(file , "UTF-8");
+//                it.nextLine();
+//                Map<String, Long> idmap = new HashMap<>();
+//
+////                MAtch (n:ReferenceEntity) RETURN n.identifier
+////                map for finding connections to reactome ... just 1 query to graph db needed
+//
+//                int i = 0;
+//                while (it.hasNext()) {
+//                    i++;
+//                    String line = it.nextLine();
+////                    System.out.println(line);// do something with line
+//                    String[] array = line.split("\\t");
+//                    long a;
+//                    if(idmap.containsKey(array[0])){
+//                        a=idmap.get(array[0]);
+//                    } else {
+//                        Map<String, Object> properties = new HashMap<>();
+//                        properties.put( "identifier", array[0] );
+//                        a = inserter.createNode(properties, personLabel);
+//                        properties.put( "identifier", array[1] );
+//                        idmap.put(array[0],a);
+//                    }
+//                    long b;
+//                    if(idmap.containsKey(array[1])){
+//                        b=idmap.get(array[1]);
+//                    } else {
+//                        Map<String, Object> properties = new HashMap<>();
+//                        properties.put( "identifier", array[0] );
+//                        b = inserter.createNode(properties, personLabel);
+//                        properties.put( "identifier", array[1] );
+//                        idmap.put(array[1],b);
+//                    }
+//                    RelationshipType knows = DynamicRelationshipType.withName("INTERACT");
+//
+//                    inserter.createRelationship( a,  b, knows, null );
+//
+//                }
+//                System.out.println(i);
+//                LineIterator.closeQuietly(it);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+////            inserter.
+////
+////            Map<String, Object> properties = new HashMap<>();
+////
+////            properties.put( "name", "Mattias" );
+////            long mattiasNode = inserter.createNode( properties, personLabel );
+////
+////            properties.put( "name", "Chris" );
+////            long chrisNode = inserter.createNode( properties, personLabel );
+////
+////            RelationshipType knows = DynamicRelationshipType.withName("KNOWS");
+////            inserter.createRelationship( mattiasNode, chrisNode, knows, null );
+//        }
+//        finally
+//        {
+//            if ( inserter != null )
+//            {
+//                inserter.shutdown();
+//            }
+//        }
+////        File file = new File("intact-micluster.txt");
+////
+////        try {
+////            LineIterator it = FileUtils.lineIterator(file , "UTF-8");
+////            it.nextLine();
+////            while (it.hasNext()) {
+////                String line = it.nextLine();
+////                System.out.println(line);// do something with line
+////                String[] array = line.split("\\t");
+////                addLineToDatabase(array);
+////            }
+////            LineIterator.closeQuietly(it);
+////        } catch (IOException e) {
+////            e.printStackTrace();
+////        }
+//
+////        try {
+////            BufferedReader in = new BufferedReader(new InputStreamReader(new URL(INTACT_FILE_URL).openStream()));
+////            String line = in.readLine();
+////            while ((line = in.readLine()) != null) {
+////                String[] array = line.split("\\t");
+////                addLineToDatabase(array);
+////            }
+////            in.close();
+////        } catch (IOException e) {
+////            e.printStackTrace();
+////        }
+//    }
 
     private  void addLineToDatabase (String[] array) {
 

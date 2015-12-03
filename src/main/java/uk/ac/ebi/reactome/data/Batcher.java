@@ -3,38 +3,54 @@ package uk.ac.ebi.reactome.data;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
+import org.neo4j.graphdb.DynamicLabel;
+import org.neo4j.graphdb.DynamicRelationshipType;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.ogm.session.Session;
+import org.neo4j.unsafe.batchinsert.BatchInserter;
+import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-import uk.ac.ebi.reactome.domain.model.Pathway;
-import uk.ac.ebi.reactome.domain.model.Reaction;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.exception.ReactomeParserException;
 import uk.ac.ebi.reactome.service.GenericService;
 import uk.ac.ebi.reactome.service.ImportService;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.*;
 
 /**
- * Created by flo on 29.10.15.
+ * Created by:
  *
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- * At the moment derived queries do not allow you to specify a depth different from the default (1).
- *
+ * @author Florian Korninger (florian.korninger@ebi.ac.uk)
+ * @since 26.11.15.
  */
 @Component
-public class ReactomeParser {
+public class Batcher {
+
+
+
+    /**
+     * Created by flo on 29.10.15.
+     *
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * At the moment derived queries do not allow you to specify a depth different from the default (1).
+     *
+     */
+
+
 
     private static MySQLAdaptor dba;
 
-//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
+    //    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
 
     @Autowired
     private ImportService importService;
@@ -46,7 +62,7 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
     @Autowired
     private Session session;
 
-    public ReactomeParser() throws ReactomeParserException {
+    public Batcher() throws ReactomeParserException {
         try {
             dba = new MySQLAdaptor("localhost", "Reactome", "root", "reactome", 3306);
         } catch (SQLException e) {
@@ -56,48 +72,6 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
     }
 
     public void loadAll() {
-
-
-        importService.getOrCreate(new Pathway(1L, "React_1.1", "Pathway1"));
-        importService.getOrCreate(new Pathway(2L, "React_2.1", "Pathway2"));
-        importService.getOrCreate(new Pathway(3L, "React_3.1", "Pathway3"));
-        importService.getOrCreate(new Pathway(4L, "React_4.1", "Pathway4"));
-        importService.getOrCreate(new Pathway(5L, "React_5.1", "Pathway5"));
-        importService.getOrCreate(new Pathway(6L, "React_6.1", "Pathway6"));
-        importService.getOrCreate(new Pathway(7L, "React_7.1", "Pathway7"));
-
-
-        importService.getOrCreate(new Pathway(8L, "React_8.1", "Pathway8"));
-        importService.getOrCreate(new Pathway(9L, "React_9.1", "Pathway9"));
-
-        importService.getOrCreate(new Reaction(10L, "React_10.1", "Reaction10"));
-
-
-
-        importService.createEventRelationship(1L, 8L);
-        importService.createEventRelationship(1L, 9L);
-        importService.createEventRelationship(1L, 10L);
-
-
-        importService.createEventRelationship(1L, 2L);
-        importService.createEventRelationship(2L, 3L);
-        importService.createEventRelationship(3L, 4L);
-        importService.createEventRelationship(4L, 5L);
-        importService.createEventRelationship(5L, 6L);
-        importService.createEventRelationship(6L, 7L);
-
-        Integer a = 2;
-//        DatabaseObject db = genericService.findByDbIdWithSession(1L, a);
-        Pathway pw = session.load(Pathway.class,26663L,2);
-
-
-//        DatabaseObject dbObject6 = importService.findByStId("React_1.1");
-//        DatabaseObject dbObject7 = importService.find(dbObject6.getId(), 1);
-//        DatabaseObject dbObject8 = importService.findOne(dbObject6.getId(), 1);
-
-//        Pathway p = neo4jOperations.loadByProperty(Pathway.class,"dbId",1L,2);
-//        neo4jOperations.loadByProperty()
-        System.out.println("bla");
 
         try {
             Collection<?> frontPage = dba.fetchInstancesByClass(ReactomeJavaConstants.FrontPage);
@@ -111,28 +85,6 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
         }
     }
 
-    public void load(Long dbId){
-        try {
-            GKInstance instance = dba.fetchInstance(dbId);
-            parseInstance(instance);
-        } catch (Exception e) {
-            logger.error("An error occured while parsing instance with dbId" + dbId, e);
-        }
-    }
-
-    public void load(String stId){
-        try {
-            GKInstance instance = getInstance(stId);
-            parseInstance(instance);
-        } catch (Exception e) {
-            logger.error("An error occured while parsing instance with stId" + stId, e);
-        }
-    }
-
-    public void createConstraints() {
-        importService.createConstraintOnDatabaseObjectDbId();
-        importService.createConstraintOnDatabaseObjectStId();
-    }
 
     @Transactional
     private void parseInstance(GKInstance instance) {
@@ -230,8 +182,6 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
             Class<? super DatabaseObject> clazz = (Class<DatabaseObject>) Class.forName(clazzName);
             Constructor<DatabaseObject> constructor = (Constructor<DatabaseObject>) clazz.getDeclaredConstructor(Long.class, String.class, String.class);
 
-
-
             Long dbId = instance.getDBID();
             String stId = getStableIdentifier(instance);
             String name = instance.getDisplayName();
@@ -242,6 +192,86 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
             if (instance.getSchemClass().isa(ReactomeJavaConstants.ReferenceEntity)){
                 ((ReferenceEntity)databaseObject).setIdentifier(instance.getAttributeValue(ReactomeJavaConstants.identifier).toString());
             }
+
+
+
+           BatchInserter inserter = null;
+            try {
+
+                inserter = BatchInserters.inserter(new File("/target/graph.db").getAbsolutePath());
+
+                List<Label> labels = new ArrayList<>();
+                while(clazz != null && clazz != java.lang.Object.class) {
+                    labels.add(DynamicLabel.label(clazz.getName()));
+                    clazz = clazz.getSuperclass();
+                }
+
+                Map<String, Object> properties = new HashMap<>();
+
+                inserter.createNode(properties,labels.toArray(new Label[labels.size()]));
+
+                inserter.createNode(properties, (Label[]) labels.toArray());
+                Label label = DynamicLabel.label(clazzName);
+                Label personLabel = DynamicLabel.label("Interactor");
+                Label personLabe = DynamicLabel.label("Interactor");
+                Label personLab = DynamicLabel.label("Interactor");
+                // wont work anyways
+//                inserter.createDeferredConstraint( personLabel ).assertPropertyIsUnique("identifier");
+                inserter.createDeferredSchemaIndex( personLabel ).on("identifier" ).create();
+
+
+
+//                    properties.put( "identifier", array[0] );
+//                    b = inserter.createNode(properties, personLabel,personLabe,personLab);
+//
+//                inserter.
+
+//                long a;
+//                if(idmap.containsKey(array[0])){
+//                    a=idmap.get(array[0]);
+//                } else {
+//                    Map<String, Object> properties = new HashMap<>();
+//                    properties.put( "identifier", array[0] );
+//                    a = inserter.createNode(properties, personLabel);
+//                    properties.put( "identifier", array[1] );
+//                    idmap.put(array[0],a);
+//                }
+//                long b;
+//                if(idmap.containsKey(array[1])){
+//                    b=idmap.get(array[1]);
+//                } else {
+//                    Map<String, Object> properties = new HashMap<>();
+//                    properties.put( "identifier", array[0] );
+//                    b = inserter.createNode(properties, personLabel);
+//                    properties.put( "identifier", array[1] );
+//                    idmap.put(array[1],b);
+//                }
+                RelationshipType knows = DynamicRelationshipType.withName("INTERACT");
+
+//                inserter.createRelationship( a,  b, knows, null );
+
+            } finally{
+                if ( inserter != null ) {
+                    inserter.shutdown();
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //            will get also relationship fields
 //            for (Field field : fields) { //fields are allways empty WHY
 //                if (instance.getSchemClass().isValidAttribute(field.getName())){
@@ -328,4 +358,6 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
         return (GKInstance) dba.fetchInstanceByAttribute(ReactomeJavaConstants.DatabaseObject, ReactomeJavaConstants.stableIdentifier, "=", stId).iterator().next();
     }
 }
+
+
 

@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import java.util.Set;
  *
  * Event is a container class. Events generally describe the conversion of input to output entities
  */
+@Configurable
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 

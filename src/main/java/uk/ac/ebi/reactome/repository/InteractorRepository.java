@@ -20,7 +20,7 @@ public interface InteractorRepository extends GraphRepository<Interactor>{
             "RETURN n")
     Interactor merge(String id, String name);
 
-    @Query ("MATCH(a:INTERACTOR {id:{0}}),(b:INTERACTOR {id:{1}}) " +
+    @Query ("MATCH(a:Interactor {intactId:{0}}),(b:Interactor {intactId:{1}}) " +
             "MERGE (a)-[r:INTERACTS_WITH{score:{2}}]-(b) " +
             "RETURN COUNT(r)=1")
     boolean createInteraction(String idA, String idB, Double score);
