@@ -13,7 +13,7 @@ import uk.ac.ebi.reactome.domain.model.Polymer;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 11.11.15.
  *
- * HasOutput is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
+ * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
  * outputs.
  */
 @RelationshipEntity(type = "HAS_REPEATED_UNIT")
@@ -23,7 +23,7 @@ public class RepeatedUnit {
     @GraphId
     private Long id;
 
-    private Integer cardinality;
+    private Integer cardinality = 1;
 
     @StartNode
     private Polymer polymer;

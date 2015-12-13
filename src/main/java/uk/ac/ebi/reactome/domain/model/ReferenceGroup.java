@@ -2,18 +2,29 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 13.11.15.
- */
 @NodeEntity
-public class ReferenceGroup extends ReferenceEntity{
+public class ReferenceGroup extends ReferenceEntity {
 
-    public ReferenceGroup() {}
+    private String atomicConnectivity;
+    private String formula;
 
-    public ReferenceGroup(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    public ReferenceGroup() {
     }
+
+    public String getAtomicConnectivity() {
+        return atomicConnectivity;
+    }
+
+    public void setAtomicConnectivity(String atomicConnectivity) {
+        this.atomicConnectivity = atomicConnectivity;
+    }
+
+    public String getFormula() {
+        return formula;
+    }
+
+    public void setFormula(String formula) {
+        this.formula = formula;
+    }
+
 }

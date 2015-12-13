@@ -1,68 +1,138 @@
 package uk.ac.ebi.reactome.domain.model;
 
+import org.gk.model.GKInstance;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.service.DatabaseObjectService;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
- * DatabaseObject is a wrapper class. All Objects in the model extend this class and therefor contain id, dbId, stId
- * and a name.
- */
-@Configurable
+import javax.xml.bind.annotation.XmlElement;
+import java.util.Date;
+import java.util.List;
+
+//@Component
 @NodeEntity
-public abstract class DatabaseObject {
+public abstract class DatabaseObject implements java.io.Serializable {
 
-    //id is a necessary unique identifier for Neo4j. It will be generated automatically.
-    @SuppressWarnings("unused")
+    public boolean isLoaded = false;
+
     @GraphId
     private Long id;
 
     private Long dbId;
-    private String stId;
-    private String name;
 
-    public DatabaseObject () {}
+    private String stableIdentifier;
 
-    public DatabaseObject(Long dbId, String stId, String name) {
-        this.dbId = dbId;
-        this.stId = stId;
-        this.name = name;
+    private String displayName;
+
+    private Date timestamp;
+
+    @Relationship
+    private InstanceEdit created;
+
+    @Relationship
+    private List<InstanceEdit> modified;
+
+    public DatabaseObject() {
     }
 
-    public Long getId() {
-        return id;
+    public List<InstanceEdit> getModified() {
+        return modified;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setModified(List<InstanceEdit> modified) {
+        this.modified = modified;
     }
 
     public Long getDbId() {
-        return dbId;
+        return this.dbId;
     }
 
     public void setDbId(Long dbId) {
         this.dbId = dbId;
     }
 
+    @XmlElement
+    public String getSchemaClass() {
+        return getClass().getSimpleName();
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public Date getTimestamp() {
+        return this.timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public InstanceEdit getCreated() {
+        return this.created;
+    }
+
+    public void setCreated(InstanceEdit created) {
+        this.created = created;
+    }
+
+    public String getStableIdentifier() {
+        return this.stableIdentifier;
+    }
+
     public String getStId() {
-        return stId;
+        return this.stableIdentifier;
     }
 
-    public void setStId(String stId) {
-        this.stId = stId;
+    public void setStableIdentifier(StableIdentifier stableIdentifier) {
+        stableIdentifier.load();
+        this.stableIdentifier = stableIdentifier.getIdentifier();
     }
 
-    public String getName() {
-        return name;
+//    public void setStableIdentifier(String stableIdentifier) {
+//        this.stableIdentifier = stableIdentifier;
+//    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                (stableIdentifier == null ? "dbId=" + dbId : "") +
+                (stableIdentifier != null ? ", stableIdentifier='" + stableIdentifier + '\'' : "") +
+                ", displayName='" + displayName + '\'' +
+                '}';
     }
 
-    public void setName(String name) {
-        this.name = name;
+//    @Autowired DatabaseObjectFactory databaseObjectFactory;
+
+    /**
+     * Loads the content from the Reactome relational database (MySQL)
+     *
+     * @return
+     */
+    public <T extends DatabaseObject> T load() {
+        if (!isLoaded) {
+            try {
+                GKInstance instance = DatabaseObjectFactory.getInstance(dbId + "");
+                DatabaseObjectFactory.fill(this, instance);
+                isLoaded = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return (T) this;
+    }
+
+//     @Autowired DatabaseObjectService databaseObjectService;
+//
+//    /**
+//     * Saves the content to the Reactome graph database (Neo4J)
+//     */
+    public void save(DatabaseObjectService databaseObjectService) {
+        databaseObjectService.save(this);
     }
 }

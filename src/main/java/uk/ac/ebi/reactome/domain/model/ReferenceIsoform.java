@@ -1,19 +1,34 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 13.11.15.
- */
+import java.util.List;
+
 @NodeEntity
 public class ReferenceIsoform extends ReferenceGeneProduct {
 
-    public ReferenceIsoform() {}
+    private String variantIdentifier;
+    @Relationship
+    private List<ReferenceGeneProduct> isoformParent;
 
-    public ReferenceIsoform(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    public ReferenceIsoform() {
     }
+
+    public String getVariantIdentifier() {
+        return this.variantIdentifier;
+    }
+
+    public void setVariantIdentifier(String variantIdentifier) {
+        this.variantIdentifier = variantIdentifier;
+    }
+
+    public List<ReferenceGeneProduct> getIsoformParent() {
+        return isoformParent;
+    }
+
+    public void setIsoformParent(List<ReferenceGeneProduct> isoformParent) {
+        this.isoformParent = isoformParent;
+    }
+
 }

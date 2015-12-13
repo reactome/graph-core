@@ -2,37 +2,65 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.Set;
+import java.util.List;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
- * Pathway represent any grouping of Events
- */
-@Configurable
 @NodeEntity
 public class Pathway extends Event {
 
-    @Relationship(type = "HAS_EVENT", direction = Relationship.OUTGOING)
-    private Set<Event>events;
+    private String doi;
+    private String isCanonical;
+//    minimum is type ... i think with direction=Relationship.OUTGOING its better
+//    lists are ok
+    @Relationship(type="hasEvent")
+    private List<Event> hasEvent;
 
-    public Pathway() {}
+    private Boolean hasDiagram;
+    @Relationship
+    private Pathway normalPathway;
 
-    public Pathway(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    public Pathway() {
     }
 
-    public Set<Event> getEvents() {
-        return events;
+    public Pathway getNormalPathway() {
+        return normalPathway;
     }
 
-    @SuppressWarnings("unused")
-    public void setEvents(Set<Event> events) {
-        this.events = events;
+    public void setNormalPathway(Pathway normalPathway) {
+        this.normalPathway = normalPathway;
     }
+
+    public List<Event> getHasEvent() {
+        return hasEvent;
+    }
+
+    public void setHasEvent(List<Event> hasEvent) {
+        this.hasEvent = hasEvent;
+    }
+
+    public Boolean getHasDiagram() {
+        return this.hasDiagram;
+    }
+
+    public void setHasDiagram(Boolean hasDiagram) {
+        this.hasDiagram = hasDiagram;
+    }
+
+
+    public String getDoi() {
+        return this.doi;
+    }
+
+    public void setDoi(String doi) {
+        this.doi = doi;
+    }
+
+    public String getIsCanonical() {
+        return this.isCanonical;
+    }
+
+    public void setIsCanonical(String isCanonical) {
+        this.isCanonical = isCanonical;
+    }
+
 }

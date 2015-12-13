@@ -1,19 +1,26 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 13.11.15.
- */
+import java.util.List;
+
 @NodeEntity
 public class ReferenceRNASequence extends ReferenceSequence {
 
-    public ReferenceRNASequence() {}
-
-    public ReferenceRNASequence(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    @Relationship
+    private List<ReferenceDNASequence> referenceGene;
+    
+    public ReferenceRNASequence() {
+        
     }
+
+    public List<ReferenceDNASequence> getReferenceGene() {
+        return referenceGene;
+    }
+
+    public void setReferenceGene(List<ReferenceDNASequence> referenceGene) {
+        this.referenceGene = referenceGene;
+    }
+    
 }

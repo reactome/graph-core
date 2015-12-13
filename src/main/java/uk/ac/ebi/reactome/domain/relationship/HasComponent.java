@@ -23,13 +23,12 @@ public class HasComponent {
     @GraphId
     private Long id;
 
-    private Integer cardinality;
+    private Integer cardinality = 1;
 
     @StartNode
     private Complex complex;
     @EndNode
     private PhysicalEntity physicalEntity;
-
 
     public HasComponent() {}
 
@@ -60,4 +59,22 @@ public class HasComponent {
         this.physicalEntity = physicalEntity;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HasComponent component = (HasComponent) o;
+
+        if (complex != null ? !complex.equals(component.complex) : component.complex != null) return false;
+        return !(physicalEntity != null ? !physicalEntity.equals(component.physicalEntity) : component.physicalEntity != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = complex != null ? complex.hashCode() : 0;
+        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
+        return result;
+    }
 }

@@ -20,5 +20,6 @@ public interface GenericRepository {
     void cleanDatabase();
 
 
-    boolean addRelationship();
+
+    public boolean addRelationship(Long dbIdA, Long dbIdB, String relationshipName);
 }

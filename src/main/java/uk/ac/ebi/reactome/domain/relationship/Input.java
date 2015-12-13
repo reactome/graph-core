@@ -4,8 +4,8 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
+import uk.ac.ebi.reactome.domain.model.Event;
 import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
-import uk.ac.ebi.reactome.domain.model.ReactionLikeEvent;
 
 /**
  * Created by:
@@ -13,24 +13,24 @@ import uk.ac.ebi.reactome.domain.model.ReactionLikeEvent;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 10.11.15.
  *
- * HasOutput is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
- * outputs.
+ * Input is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
+ * inputs.
  */
-@RelationshipEntity(type = "HAS_OUTPUT")
-public class HasOutput {
+@RelationshipEntity(type = "input")
+public class Input {
 
     @SuppressWarnings("unused")
     @GraphId
     private Long id;
 
-    private Integer cardinality;
+    private Integer cardinality = 1;
 
     @StartNode
-    private ReactionLikeEvent reactionLikeEvent;
+    private Event event;
     @EndNode
     private PhysicalEntity physicalEntity;
 
-    public HasOutput() {}
+    public Input() {}
 
     public Integer getCardinality() {
         return cardinality;
@@ -41,14 +41,6 @@ public class HasOutput {
         this.cardinality = cardinality;
     }
 
-    public ReactionLikeEvent getReactionLikeEvent() {
-        return reactionLikeEvent;
-    }
-
-    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
-        this.reactionLikeEvent = reactionLikeEvent;
-    }
-
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
     }
@@ -56,5 +48,14 @@ public class HasOutput {
     @SuppressWarnings("unused")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    @SuppressWarnings("unused")
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

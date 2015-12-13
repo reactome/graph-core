@@ -3,34 +3,74 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.Set;
+import java.util.List;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
- * EntitySet is a container class. Sets describe PhysicalEntities with interchangeable function
- */
 @NodeEntity
-public abstract class EntitySet extends PhysicalEntity {
+public class EntitySet extends PhysicalEntity {
 
-    @Relationship(type = "HAS_MEMBER", direction = Relationship.OUTGOING)
-    private Set<PhysicalEntity> members;
+    private String totalProt;
 
-    public EntitySet() {}
+    private String inferredProt;
 
-    public EntitySet(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    private String maxHomologues;
+
+    @Relationship
+    private List<PhysicalEntity> hasMember;
+
+    @Relationship
+    private List<Species> species;
+
+    private Boolean isOrdered;
+
+    public EntitySet() {
+    }
+    
+    public Boolean getIsOrdered() {
+        return isOrdered;
     }
 
-    public Set<PhysicalEntity> getMembers() {
-        return members;
+    public void setIsOrdered(Boolean isOrdered) {
+        this.isOrdered = isOrdered;
     }
 
-    @SuppressWarnings("unused")
-    public void setMembers(Set<PhysicalEntity> members) {
-        this.members = members;
+    public String getTotalProt() {
+        return this.totalProt;
     }
+
+    public void setTotalProt(String totalProt) {
+        this.totalProt = totalProt;
+    }
+
+    public String getInferredProt() {
+        return this.inferredProt;
+    }
+
+    public List<PhysicalEntity> getHasMember() {
+        return hasMember;
+    }
+
+    public void setHasMember(List<PhysicalEntity> hasMember) {
+        this.hasMember = hasMember;
+    }
+
+    public List<Species> getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(List<Species> species) {
+        this.species = species;
+    }
+
+    public void setInferredProt(String inferredProt) {
+        this.inferredProt = inferredProt;
+    }
+
+    public String getMaxHomologues() {
+        return this.maxHomologues;
+    }
+
+    public void setMaxHomologues(String maxHomologues) {
+        this.maxHomologues = maxHomologues;
+    }
+
 }

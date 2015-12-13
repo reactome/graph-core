@@ -3,31 +3,54 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
- * EWAS contains proteins and nucleic acids with known sequences
- */
+import java.util.List;
+
 @NodeEntity
 public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
-    @Relationship(type = "HAS_REFERENCE_ENTITY", direction = Relationship.OUTGOING)
-    private ReferenceSequence referenceSequence;
+    private Integer endCoordinate;
 
-    public EntityWithAccessionedSequence() {}
+    @Relationship
+    private ReferenceSequence referenceEntity;
 
-    public EntityWithAccessionedSequence(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    private Integer startCoordinate;
+
+    @Relationship
+    private List<AbstractModifiedResidue> hasModifiedResidue;
+    
+    public EntityWithAccessionedSequence() {
     }
 
-    public ReferenceSequence getReferenceSequence() {
-        return referenceSequence;
+    public List<AbstractModifiedResidue> getHasModifiedResidue() {
+        return hasModifiedResidue;
     }
 
-    public void setReferenceSequence(ReferenceSequence referenceSequence) {
-        this.referenceSequence = referenceSequence;
+    public void setHasModifiedResidue(List<AbstractModifiedResidue> hasModifiedResidue) {
+        this.hasModifiedResidue = hasModifiedResidue;
     }
+
+    public Integer getEndCoordinate() {
+        return this.endCoordinate;
+    }
+
+    public void setEndCoordinate(Integer endCoordinate) {
+        this.endCoordinate = endCoordinate;
+    }
+
+    public ReferenceSequence getReferenceEntity() {
+        return this.referenceEntity;
+    }
+
+    public void setReferenceEntity(ReferenceSequence referenceEntity) {
+        this.referenceEntity = referenceEntity;
+    }
+
+    public Integer getStartCoordinate() {
+        return this.startCoordinate;
+    }
+
+    public void setStartCoordinate(Integer startCoordinate) {
+        this.startCoordinate = startCoordinate;
+    }
+
 }

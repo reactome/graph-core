@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.Application;
-import uk.ac.ebi.reactome.domain.model.*;
 import uk.ac.ebi.reactome.service.GenericService;
 import uk.ac.ebi.reactome.service.ImportService;
 
@@ -34,11 +33,11 @@ public class ImportServiceTest {
 
     @Before
     private void setUp() {
-        importService.getOrCreate(new Pathway (1L, "React_1.1", "Pathway"));
-        importService.getOrCreate(new Reaction(2L, "React_2.1", "Reaction"));
-        importService.getOrCreate(new EntityWithAccessionedSequence(3L, "React_3.1", "EWAS"));
-        importService.getOrCreate(new Complex(4L, "React_4.1", "Complex"));
-        importService.getOrCreate(new OpenSet(5L, "React_5.1", "Set"));
+//        importService.getOrCreate(new Pathway (1L, "React_1.1", "Pathway"));
+//        importService.getOrCreate(new Reaction(2L, "React_2.1", "Reaction"));
+//        importService.getOrCreate(new EntityWithAccessionedSequence(3L, "React_3.1", "EWAS"));
+//        importService.getOrCreate(new Complex(4L, "React_4.1", "Complex"));
+//        importService.getOrCreate(new OpenSet(5L, "React_5.1", "Set"));
     }
 
     @After
@@ -48,7 +47,7 @@ public class ImportServiceTest {
 
     @Test
     public void getOrCreate() {
-        Long count = genericService.countEntries(DatabaseObject.class);
+//        Long count = genericService.countEntries(DatabaseObject.class);
 //        importService.getOrCreate();
 
 

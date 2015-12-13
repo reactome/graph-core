@@ -3,59 +3,57 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.Set;
+import java.util.List;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the
  * exact active component of a complex or set.
  */
 @NodeEntity
-public class CatalystActivity extends DatabaseObject {
+public class CatalystActivity extends DatabaseObject implements Regulator {
 
-    @Relationship(type = "HAS_CATALYST", direction = Relationship.OUTGOING)
+    private String physicalEntityClass;
+
+    @Relationship(type = "activity")
+    private GO_MolecularFunction activity;
+
+    @Relationship(type = "physicalEntity")
     private PhysicalEntity physicalEntity;
 
-    @Relationship(type = "HAS_ACTIVE_UNITS", direction = Relationship.OUTGOING)
-    private Set<PhysicalEntity> activeUnits;
-
-    @Relationship(type = "IS_REGULATED", direction = Relationship.INCOMING)
-    private Regulation regulation;
+    @Relationship(type = "activeUnit")
+    private List<PhysicalEntity> activeUnit;
 
     public CatalystActivity() {}
 
-    public CatalystActivity(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    public String getPhysicalEntityClass() {
+        return physicalEntityClass;
+    }
+
+    public void setPhysicalEntityClass(String physicalEntityClass) {
+        this.physicalEntityClass = physicalEntityClass;
+    }
+
+    public GO_MolecularFunction getActivity() {
+        return activity;
+    }
+
+    public void setActivity(GO_MolecularFunction activity) {
+        this.activity = activity;
     }
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
     }
 
-    @SuppressWarnings("unused")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
 
-    public Set<PhysicalEntity> getActiveUnits() {
-        return activeUnits;
+    public List<PhysicalEntity> getActiveUnit() {
+        return activeUnit;
     }
 
-    @SuppressWarnings("unused")
-    public void setActiveUnits(Set<PhysicalEntity> activeUnits) {
-        this.activeUnits = activeUnits;
-    }
-
-    public Regulation getRegulation() {
-        return regulation;
-    }
-
-    @SuppressWarnings("unused")
-    public void setRegulation(Regulation regulation) {
-        this.regulation = regulation;
+    public void setActiveUnit(List<PhysicalEntity> activeUnit) {
+        this.activeUnit = activeUnit;
     }
 }

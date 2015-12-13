@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.Application;
-import uk.ac.ebi.reactome.domain.model.EntityWithAccessionedSequence;
-import uk.ac.ebi.reactome.domain.model.Reaction;
 import uk.ac.ebi.reactome.repository.GenericRepository;
 
 /**
@@ -40,12 +38,12 @@ public class EventServiceTest {
 
     @Test
     public void testFindAll() {
-        importService.getOrCreate(new Reaction(123L, "R_123", "bla"));
-        importService.getOrCreate(new EntityWithAccessionedSequence(124L,"R_124", "bla"));
-
-        genericRepository.addRelationship();
-
-        System.out.println("");
+//        importService.getOrCreate(new Reaction(123L, "R_123", "bla"));
+//        importService.getOrCreate(new EntityWithAccessionedSequence(124L,"R_124", "bla"));
+//
+//        genericRepository.addRelationship();
+//
+//        System.out.println("");
     }
 
 //    @Test

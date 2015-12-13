@@ -19,4 +19,6 @@ public interface GenericService {
     Long countEntries(Class<?> clazz);
 
     void cleanDatabase();
+
+    void addRelationship(Long dbIdA, Long dbIdB, String relationshipName);
 }

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.Application;
-import uk.ac.ebi.reactome.domain.model.*;
 import uk.ac.ebi.reactome.service.placeholder.EventService;
 import uk.ac.ebi.reactome.service.placeholder.PhysicalEntityService;
 
@@ -36,13 +35,13 @@ public class ReactionLikeEventServiceTest {
 
     @Before
     public void setUp() {
-        session.purgeDatabase();
-        eventService.getOrCreate(new Reaction(1L, "React_1.1", "Reaction1"));
-        eventService.getOrCreate(new BlackBoxEvent(2L, "React_2.1", "BlackBoxEvent"));
-        physicalEntityService.getOrCreate(new EntityWithAccessionedSequence(3L,"React_3.1","EWAS1"));
-        physicalEntityService.getOrCreate(new GenomeEncodedEntity(4L,"React_4.1","GEE"));
-        physicalEntityService.getOrCreate(new Complex(5L,"React_5.1","Complex"));
-        physicalEntityService.getOrCreate(new EntityWithAccessionedSequence(6L,"React_6.1","EWAS2"));
+//        session.purgeDatabase();
+//        eventService.getOrCreate(new Reaction(1L, "React_1.1", "Reaction1"));
+//        eventService.getOrCreate(new BlackBoxEvent(2L, "React_2.1", "BlackBoxEvent"));
+//        physicalEntityService.getOrCreate(new EntityWithAccessionedSequence(3L,"React_3.1","EWAS1"));
+//        physicalEntityService.getOrCreate(new GenomeEncodedEntity(4L,"React_4.1","GEE"));
+//        physicalEntityService.getOrCreate(new Complex(5L,"React_5.1","Complex"));
+//        physicalEntityService.getOrCreate(new EntityWithAccessionedSequence(6L,"React_6.1","EWAS2"));
     }
 
     @Test

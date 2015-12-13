@@ -3,31 +3,32 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
- * SimpleEntity contains fully characterized molecules
- */
 @NodeEntity
 public class SimpleEntity extends PhysicalEntity {
+    // Because a bug in the data model, this attribute is multiple valued.
+    // However, it should be single valued. Here is the correct version.
+    @Relationship
+    private ReferenceMolecule referenceEntity;
+    @Relationship
+    private Species species;
 
-    @Relationship(type = "HAS_REFERENCE_ENTITY", direction = Relationship.OUTGOING)
-    private ReferenceMolecule referenceMolecule;
-
-    public SimpleEntity() {}
-
-    public SimpleEntity(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    public SimpleEntity() {
     }
 
-    public ReferenceMolecule getReferenceMolecule() {
-        return referenceMolecule;
+    public ReferenceMolecule getReferenceEntity() {
+        return referenceEntity;
     }
 
-    public void setReferenceMolecule(ReferenceMolecule referenceMolecule) {
-        this.referenceMolecule = referenceMolecule;
+    public void setReferenceEntity(ReferenceMolecule referenceEntity) {
+        this.referenceEntity = referenceEntity;
     }
+
+    public Species getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(Species species) {
+        this.species = species;
+    }
+
 }

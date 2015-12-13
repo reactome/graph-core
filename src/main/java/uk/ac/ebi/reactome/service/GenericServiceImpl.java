@@ -54,4 +54,11 @@ public class GenericServiceImpl implements GenericService {
         logger.info("GraphDatabase has been cleaned");
     }
 
+    @Override
+    public void addRelationship(Long dbIdA, Long dbIdB, String relationshipName){
+        if (!genericRepository.addRelationship(dbIdA, dbIdB, relationshipName)) {
+            logger.error("Adding " + relationshipName + " Relationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
+        }
+    }
+
 }

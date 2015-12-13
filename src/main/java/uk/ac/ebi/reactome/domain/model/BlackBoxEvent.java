@@ -3,35 +3,37 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.Set;
+import java.util.List;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 09.11.15.
- *
  * BlackBoxEvent contains "unbalanced" reactions like synthesis or degradation and "shortcut" reactions representing
  * more complex processes
  */
 @NodeEntity
-public class BlackBoxEvent extends ReactionLikeEvent{
+public class BlackBoxEvent extends ReactionLikeEvent {
 
-    @Relationship(type = "HAS_EVENT", direction = Relationship.OUTGOING)
-    private Set<Event> events;
+    @Relationship(type = "templateEvent")
+    private Event templateEvent;
+
+    @Relationship(type = "hasEvent")
+    private List<Event> hasEvent;
 
     public BlackBoxEvent() {}
 
-    public BlackBoxEvent(Long dbId, String stId, String name) {
-        super(dbId, stId, name);
+    public Event getTemplateEvent() {
+        return this.templateEvent;
     }
 
-    public Set<Event> getEvents() {
-        return events;
+    public void setTemplateEvent(Event templateEvent) {
+        this.templateEvent = templateEvent;
     }
 
-    @SuppressWarnings("unused")
-    public void setEvents(Set<Event> events) {
-        this.events = events;
+    public List<Event> getHasEvent() {
+        return hasEvent;
     }
+
+    public void setHasEvent(List<Event> hasEvent) {
+        this.hasEvent = hasEvent;
+    }
+
 }
