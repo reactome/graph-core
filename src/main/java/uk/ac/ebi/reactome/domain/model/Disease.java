@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class Disease extends ExternalOntology {
 
-    public Disease() {
-    }
+    public Disease() {}
     
 }

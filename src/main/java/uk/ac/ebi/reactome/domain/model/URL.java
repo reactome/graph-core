@@ -7,8 +7,7 @@ public class URL extends Publication {
 
     private String uniformResourceLocator;
 
-    public URL() {
-    }
+    public URL() {}
 
     public String getUniformResourceLocator() {
         return this.uniformResourceLocator;

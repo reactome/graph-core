@@ -9,8 +9,7 @@ public class ReferenceMolecule extends ReferenceEntity {
     private String formula;
     private String url;
 
-    public ReferenceMolecule() {
-    }
+    public ReferenceMolecule() {}
 
     public String getAtomicConnectivity() {
         return atomicConnectivity;

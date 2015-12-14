@@ -8,14 +8,13 @@ import java.util.List;
 @NodeEntity
 public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
 
-    @Relationship
+    @Relationship(type = "equivalentTo")
     private List<InterChainCrosslinkedResidue> equivalentTo;
-    @Relationship
+
+    @Relationship(type = "secondReferenceSequence")
     private List<ReferenceSequence> secondReferenceSequence;
     
-    public InterChainCrosslinkedResidue() {
-        
-    }
+    public InterChainCrosslinkedResidue() {}
 
     public List<InterChainCrosslinkedResidue> getEquivalentTo() {
         return equivalentTo;

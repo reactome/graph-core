@@ -7,17 +7,19 @@ import java.util.List;
 
 @NodeEntity
 public class ExternalOntology extends DatabaseObject {
+
     private String definition;
     private String identifier;
-    @Relationship
-    private List<ExternalOntology> instanceOf;
     private List<String> name;
-    @Relationship
-    private ReferenceDatabase referenceDatabase;
     private List<String> synonym;
-    
-    public ExternalOntology() {
-    }
+
+    @Relationship(type = "instanceOf")
+    private List<ExternalOntology> instanceOf;
+
+    @Relationship(type = "referenceDatabase")
+    private ReferenceDatabase referenceDatabase;
+
+    public ExternalOntology() {}
 
     public String getDefinition() {
         return definition;
@@ -35,28 +37,12 @@ public class ExternalOntology extends DatabaseObject {
         this.identifier = identifier;
     }
 
-    public List<ExternalOntology> getInstanceOf() {
-        return instanceOf;
-    }
-
-    public void setInstanceOf(List<ExternalOntology> instanceOf) {
-        this.instanceOf = instanceOf;
-    }
-
     public List<String> getName() {
         return name;
     }
 
     public void setName(List<String> name) {
         this.name = name;
-    }
-
-    public ReferenceDatabase getReferenceDatabase() {
-        return referenceDatabase;
-    }
-
-    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
-        this.referenceDatabase = referenceDatabase;
     }
 
     public List<String> getSynonym() {
@@ -66,5 +52,20 @@ public class ExternalOntology extends DatabaseObject {
     public void setSynonym(List<String> synonym) {
         this.synonym = synonym;
     }
-    
+
+    public List<ExternalOntology> getInstanceOf() {
+        return instanceOf;
+    }
+
+    public void setInstanceOf(List<ExternalOntology> instanceOf) {
+        this.instanceOf = instanceOf;
+    }
+
+    public ReferenceDatabase getReferenceDatabase() {
+        return referenceDatabase;
+    }
+
+    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
+        this.referenceDatabase = referenceDatabase;
+    }
 }

@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class EntityCompartment extends Compartment {
 
-    public EntityCompartment() {
-    }
+    public EntityCompartment() {}
 
 }

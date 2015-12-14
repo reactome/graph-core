@@ -8,9 +8,11 @@ import java.util.List;
 @NodeEntity
 public class FrontPage extends DatabaseObject {
 
-    @Relationship
+    @Relationship(type = "frontPageItem")
     private List<Event> frontPageItem;
-    @Relationship
+
+    public FrontPage() {}
+
     public List<Event> getFrontPageItem() {
         return frontPageItem;
     }
@@ -18,8 +20,4 @@ public class FrontPage extends DatabaseObject {
     public void setFrontPageItem(List<Event> frontPageItem) {
         this.frontPageItem = frontPageItem;
     }
-
-    public FrontPage() {
-    }
-
 }

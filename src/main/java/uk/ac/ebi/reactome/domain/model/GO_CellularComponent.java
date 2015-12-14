@@ -13,8 +13,7 @@ public class GO_CellularComponent extends DatabaseObject {
 
     private String referenceDatabaseClass;
 
-    public GO_CellularComponent() {
-    }
+    public GO_CellularComponent() {}
 
     public String getAccession() {
         return this.accession;

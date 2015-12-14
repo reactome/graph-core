@@ -6,11 +6,10 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class OpenSet extends EntitySet {
 
-    @Relationship
+    @Relationship(type = "referenceEntity")
     private ReferenceEntity referenceEntity;
 
-    public OpenSet() {
-    }
+    public OpenSet() {}
 
     public ReferenceEntity getReferenceEntity() {
         return referenceEntity;

@@ -11,11 +11,11 @@ public class InstanceEdit extends DatabaseObject {
     private String applyToAllEditedInstances;
     private String dateTime;
     private String note;
-    @Relationship
+
+    @Relationship(type = "author")
     private List<Person> author;
 
-    public InstanceEdit() {
-    }
+    public InstanceEdit() {}
 
     public String getApplyToAllEditedInstances() {
         return this.applyToAllEditedInstances;

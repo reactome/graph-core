@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class NegativeRegulation extends Regulation {
 
-    public NegativeRegulation() {
-    }
+    public NegativeRegulation() {}
 
 }

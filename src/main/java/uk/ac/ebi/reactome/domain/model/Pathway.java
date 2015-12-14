@@ -10,24 +10,38 @@ public class Pathway extends Event {
 
     private String doi;
     private String isCanonical;
-//    minimum is type ... i think with direction=Relationship.OUTGOING its better
-//    lists are ok
+    private Boolean hasDiagram;
+
     @Relationship(type="hasEvent")
     private List<Event> hasEvent;
 
-    private Boolean hasDiagram;
-    @Relationship
+    @Relationship(type = "normalPathway")
     private Pathway normalPathway;
 
-    public Pathway() {
+    public Pathway() {}
+
+    public String getDoi() {
+        return doi;
     }
 
-    public Pathway getNormalPathway() {
-        return normalPathway;
+    public void setDoi(String doi) {
+        this.doi = doi;
     }
 
-    public void setNormalPathway(Pathway normalPathway) {
-        this.normalPathway = normalPathway;
+    public String getIsCanonical() {
+        return isCanonical;
+    }
+
+    public void setIsCanonical(String isCanonical) {
+        this.isCanonical = isCanonical;
+    }
+
+    public Boolean getHasDiagram() {
+        return hasDiagram;
+    }
+
+    public void setHasDiagram(Boolean hasDiagram) {
+        this.hasDiagram = hasDiagram;
     }
 
     public List<Event> getHasEvent() {
@@ -38,29 +52,11 @@ public class Pathway extends Event {
         this.hasEvent = hasEvent;
     }
 
-    public Boolean getHasDiagram() {
-        return this.hasDiagram;
+    public Pathway getNormalPathway() {
+        return normalPathway;
     }
 
-    public void setHasDiagram(Boolean hasDiagram) {
-        this.hasDiagram = hasDiagram;
+    public void setNormalPathway(Pathway normalPathway) {
+        this.normalPathway = normalPathway;
     }
-
-
-    public String getDoi() {
-        return this.doi;
-    }
-
-    public void setDoi(String doi) {
-        this.doi = doi;
-    }
-
-    public String getIsCanonical() {
-        return this.isCanonical;
-    }
-
-    public void setIsCanonical(String isCanonical) {
-        this.isCanonical = isCanonical;
-    }
-
 }

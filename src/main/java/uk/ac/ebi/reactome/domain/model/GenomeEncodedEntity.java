@@ -9,11 +9,10 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class GenomeEncodedEntity extends PhysicalEntity {
 
-    @Relationship
+    @Relationship(type = "species")
     private Taxon species;
 
-    public GenomeEncodedEntity() {
-    }
+    public GenomeEncodedEntity() {}
 
     public Taxon getSpecies() {
         return species;
@@ -22,6 +21,4 @@ public class GenomeEncodedEntity extends PhysicalEntity {
     public void setSpecies(Taxon species) {
         this.species = species;
     }
-
-
 }

@@ -8,11 +8,10 @@ import java.util.List;
 @NodeEntity
 public class Species extends Taxon {
 
-    @Relationship
+    @Relationship(type = "figure")
     private List<Figure> figure;
 
-    public Species() {
-    }
+    public Species() {}
 
     public List<Figure> getFigure() {
         return figure;

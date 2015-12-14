@@ -13,22 +13,14 @@ public class Person extends DatabaseObject {
     private String initial;
     private String project;
     private String surname;
-    @Relationship
+
+    @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
-    public Person() {
-    }
-    
-    public List<DatabaseIdentifier> getCrossReference() {
-        return crossReference;
-    }
-
-    public void setCrossReference(List<DatabaseIdentifier> crossReference) {
-        this.crossReference = crossReference;
-    }
+    public Person() {}
 
     public String getEmailAddress() {
-        return this.emailAddress;
+        return emailAddress;
     }
 
     public void setEmailAddress(String emailAddress) {
@@ -36,7 +28,7 @@ public class Person extends DatabaseObject {
     }
 
     public String getFirstname() {
-        return this.firstname;
+        return firstname;
     }
 
     public void setFirstname(String firstname) {
@@ -44,7 +36,7 @@ public class Person extends DatabaseObject {
     }
 
     public String getInitial() {
-        return this.initial;
+        return initial;
     }
 
     public void setInitial(String initial) {
@@ -52,7 +44,7 @@ public class Person extends DatabaseObject {
     }
 
     public String getProject() {
-        return this.project;
+        return project;
     }
 
     public void setProject(String project) {
@@ -60,11 +52,18 @@ public class Person extends DatabaseObject {
     }
 
     public String getSurname() {
-        return this.surname;
+        return surname;
     }
 
     public void setSurname(String surname) {
         this.surname = surname;
     }
 
+    public List<DatabaseIdentifier> getCrossReference() {
+        return crossReference;
+    }
+
+    public void setCrossReference(List<DatabaseIdentifier> crossReference) {
+        this.crossReference = crossReference;
+    }
 }

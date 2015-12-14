@@ -7,12 +7,11 @@ import org.neo4j.ogm.annotation.Relationship;
 public class TranslationalModification extends AbstractModifiedResidue {
 
     private Integer coordinate;
-    @Relationship
+
+    @Relationship(type = "psiMod")
     private PsiMod psiMod;
     
-    public TranslationalModification() {
-        
-    }
+    public TranslationalModification() {}
 
     public Integer getCoordinate() {
         return coordinate;

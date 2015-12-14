@@ -8,25 +8,17 @@ import java.util.List;
 @NodeEntity
 public class ReferenceEntity extends DatabaseObject {
 
-    @Relationship
-    private List<DatabaseIdentifier> crossReference;
     private String identifier;
     private List<String> name;
     private List<String> otherIdentifier;
-    @Relationship
+
+    @Relationship(type = "crossReference")
+    private List<DatabaseIdentifier> crossReference;
+
+    @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
-    public ReferenceEntity() {
-
-    }
-
-    public List<DatabaseIdentifier> getCrossReference() {
-        return crossReference;
-    }
-
-    public void setCrossReference(List<DatabaseIdentifier> crossReference) {
-        this.crossReference = crossReference;
-    }
+    public ReferenceEntity() {}
 
     public String getIdentifier() {
         return identifier;
@@ -52,6 +44,14 @@ public class ReferenceEntity extends DatabaseObject {
         this.otherIdentifier = otherIdentifier;
     }
 
+    public List<DatabaseIdentifier> getCrossReference() {
+        return crossReference;
+    }
+
+    public void setCrossReference(List<DatabaseIdentifier> crossReference) {
+        this.crossReference = crossReference;
+    }
+
     public ReferenceDatabase getReferenceDatabase() {
         return referenceDatabase;
     }
@@ -59,6 +59,4 @@ public class ReferenceEntity extends DatabaseObject {
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }
-
-
 }

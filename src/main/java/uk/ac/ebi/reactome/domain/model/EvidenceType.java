@@ -7,8 +7,7 @@ public class EvidenceType extends DatabaseObject {
 
     private String definition;
 
-    public EvidenceType() {
-    }
+    public EvidenceType() {}
 
     public String getDefinition() {
         return this.definition;

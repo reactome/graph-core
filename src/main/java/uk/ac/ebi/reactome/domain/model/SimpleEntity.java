@@ -5,15 +5,18 @@ import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
 public class SimpleEntity extends PhysicalEntity {
-    // Because a bug in the data model, this attribute is multiple valued.
-    // However, it should be single valued. Here is the correct version.
-    @Relationship
+
+    /**
+     * Because a bug in the data model, this attribute is multiple valued.
+     * However, it should be single valued.
+     */
+    @Relationship(type = "referetnceEntity")
     private ReferenceMolecule referenceEntity;
-    @Relationship
+
+    @Relationship(type = "species")
     private Species species;
 
-    public SimpleEntity() {
-    }
+    public SimpleEntity() {}
 
     public ReferenceMolecule getReferenceEntity() {
         return referenceEntity;

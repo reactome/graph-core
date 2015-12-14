@@ -9,11 +9,11 @@ import java.util.List;
 public class Summation extends DatabaseObject {
 
     private String text;
-    @Relationship
+
+    @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    public Summation() {
-    }
+    public Summation() {}
 
     public String getText() {
         return this.text;

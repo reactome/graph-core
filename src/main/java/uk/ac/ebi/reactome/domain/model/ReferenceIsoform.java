@@ -9,11 +9,11 @@ import java.util.List;
 public class ReferenceIsoform extends ReferenceGeneProduct {
 
     private String variantIdentifier;
-    @Relationship
+
+    @Relationship(type = "isoformParent")
     private List<ReferenceGeneProduct> isoformParent;
 
-    public ReferenceIsoform() {
-    }
+    public ReferenceIsoform() {}
 
     public String getVariantIdentifier() {
         return this.variantIdentifier;

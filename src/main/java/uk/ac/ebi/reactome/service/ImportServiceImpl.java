@@ -42,7 +42,7 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
     public DatabaseObject getOrCreate(DatabaseObject databaseObject) {
         DatabaseObject oldDatabaseObject = databaseObjectRepository.findByDbId(databaseObject.getDbId());
         if (oldDatabaseObject == null) {
-            return databaseObjectRepository.save(databaseObject, 0);
+            return databaseObjectRepository.save(databaseObject, -1);
         }
         return databaseObject;
     }

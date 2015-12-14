@@ -6,12 +6,11 @@ import java.util.List;
 
 @NodeEntity
 public class FunctionalStatusType extends DatabaseObject {
+
     private String definition;
     private List<String> name;
 
-    public FunctionalStatusType() {
-
-    }
+    public FunctionalStatusType() {}
 
     public String getDefinition() {
         return definition;

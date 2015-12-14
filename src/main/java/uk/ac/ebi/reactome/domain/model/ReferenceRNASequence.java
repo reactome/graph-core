@@ -8,12 +8,10 @@ import java.util.List;
 @NodeEntity
 public class ReferenceRNASequence extends ReferenceSequence {
 
-    @Relationship
+    @Relationship(type = "referenceGene")
     private List<ReferenceDNASequence> referenceGene;
     
-    public ReferenceRNASequence() {
-        
-    }
+    public ReferenceRNASequence() {}
 
     public List<ReferenceDNASequence> getReferenceGene() {
         return referenceGene;

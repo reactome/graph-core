@@ -9,12 +9,11 @@ import java.util.List;
 public class ReplacedResidue extends GeneticallyModifiedResidue {
     
     private Integer coordinate;
-    @Relationship
+
+    @Relationship(type = "psiMod")
     private List<PsiMod> psiMod;
     
-    public ReplacedResidue() {
-        
-    }
+    public ReplacedResidue() {}
 
     public Integer getCoordinate() {
         return coordinate;

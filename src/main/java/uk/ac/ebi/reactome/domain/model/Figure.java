@@ -7,8 +7,7 @@ public class Figure extends DatabaseObject {
 
     private String url;
 
-    public Figure() {
-    }
+    public Figure() {}
 
     public String getUrl() {
         return this.url;

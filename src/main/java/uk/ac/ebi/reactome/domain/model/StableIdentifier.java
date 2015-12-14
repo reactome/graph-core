@@ -10,8 +10,7 @@ public class StableIdentifier extends DatabaseObject {
     private Integer referenceDatabase;
     private String referenceDatabaseClass;
 
-    public StableIdentifier() {
-    }
+    public StableIdentifier() {}
 
     public String getIdentifier() {
         return this.identifier;

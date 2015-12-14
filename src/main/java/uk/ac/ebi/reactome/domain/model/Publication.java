@@ -9,8 +9,19 @@ import java.util.List;
 public class Publication extends DatabaseObject {
 
     private String title;
-    @Relationship
+
+    @Relationship(type = "author")
     private List<Person> author;
+
+    public Publication() {}
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public List<Person> getAuthor() {
         return author;
@@ -19,16 +30,4 @@ public class Publication extends DatabaseObject {
     public void setAuthor(List<Person> author) {
         this.author = author;
     }
-
-    public Publication() {
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
 }

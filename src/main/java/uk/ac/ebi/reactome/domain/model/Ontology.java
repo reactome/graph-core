@@ -7,8 +7,7 @@ public class Ontology extends DatabaseObject {
 
     private byte[] ontology;
 
-    public Ontology() {
-    }
+    public Ontology() {}
 
     public Ontology(byte[] ontology) {
         this.ontology = ontology;

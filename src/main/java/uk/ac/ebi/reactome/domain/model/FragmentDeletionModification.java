@@ -5,8 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class FragmentDeletionModification extends FragmentModification {
     
-    public FragmentDeletionModification() {
-        
-    }
+    public FragmentDeletionModification() {}
     
 }

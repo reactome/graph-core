@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 @NodeEntity
 public class Requirement extends PositiveRegulation {
 
-    public Requirement() {
-    }
+    public Requirement() {}
 
 }

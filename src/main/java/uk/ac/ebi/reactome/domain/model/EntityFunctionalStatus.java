@@ -8,14 +8,13 @@ import java.util.List;
 @NodeEntity
 public class EntityFunctionalStatus extends DatabaseObject {
 
-    @Relationship
+    @Relationship(type = "functionalStatus")
     private List<FunctionalStatus> functionalStatus;
 
-    @Relationship
+    @Relationship(type = "physicalEntity")
     private PhysicalEntity physicalEntity;
     
-    public EntityFunctionalStatus() {
-    }
+    public EntityFunctionalStatus() {}
 
     public List<FunctionalStatus> getFunctionalStatus() {
         return functionalStatus;

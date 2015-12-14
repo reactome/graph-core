@@ -12,8 +12,7 @@ public class Book extends Publication {
     private String publisherClass;
     private Integer year;
 
-    public Book() {
-    }
+    public Book() {}
 
     public String getIsbn() {
         return this.isbn;

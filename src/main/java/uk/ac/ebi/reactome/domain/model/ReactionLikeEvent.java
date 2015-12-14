@@ -7,7 +7,6 @@ import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 @NodeEntity
@@ -16,24 +15,39 @@ public class ReactionLikeEvent extends Event {
     private Boolean isChimeric;
     private String systematicName;
 
-
     @Relationship(type = "input")
-    private Set<Input> input;
+    private List<Input> input;
+
     @Relationship(type = "output")
-    private Set<Output> output;
-    @Relationship
+    private List<Output> output;
+
+    @Relationship(type = "entityOnOtherCell")
     private List<PhysicalEntity> entityOnOtherCell;
-    @Relationship
+
+    @Relationship(type = "requiredInputComponent")
     private List<DatabaseObject> requiredInputComponent;
-    @Relationship
+
+    @Relationship(type = "hasMember")
     private ReactionLikeEvent hasMember;
-    @Relationship
+
+    @Relationship(type = "catalystActivity")
     private List<CatalystActivity> catalystActivity;
-    @Relationship
+
+    @Relationship(type = "normalReaction")
     private List<ReactionLikeEvent> normalReaction;
-    @Relationship
+
+    @Relationship(type = "entityFunctionalStatus")
     private List<EntityFunctionalStatus> entityFunctionalStatus;
 
+    public ReactionLikeEvent() {}
+
+    public Boolean getIsChimeric() {
+        return isChimeric;
+    }
+
+    public void setIsChimeric(Boolean isChimeric) {
+        this.isChimeric = isChimeric;
+    }
 
     public String getSystematicName() {
         return systematicName;
@@ -43,7 +57,71 @@ public class ReactionLikeEvent extends Event {
         this.systematicName = systematicName;
     }
 
-//    public Set<Input> getInput() {
+    public List<Input> getInput() {
+        return input;
+    }
+
+    public void setInput(List<Input> input) {
+        this.input = input;
+    }
+
+    public List<Output> getOutput() {
+        return output;
+    }
+
+    public void setOutput(List<Output> output) {
+        this.output = output;
+    }
+
+    public List<PhysicalEntity> getEntityOnOtherCell() {
+        return entityOnOtherCell;
+    }
+
+    public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
+        this.entityOnOtherCell = entityOnOtherCell;
+    }
+
+    public List<DatabaseObject> getRequiredInputComponent() {
+        return requiredInputComponent;
+    }
+
+    public void setRequiredInputComponent(List<DatabaseObject> requiredInputComponent) {
+        this.requiredInputComponent = requiredInputComponent;
+    }
+
+    public ReactionLikeEvent getHasMember() {
+        return hasMember;
+    }
+
+    public void setHasMember(ReactionLikeEvent hasMember) {
+        this.hasMember = hasMember;
+    }
+
+    public List<CatalystActivity> getCatalystActivity() {
+        return catalystActivity;
+    }
+
+    public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
+        this.catalystActivity = catalystActivity;
+    }
+
+    public List<ReactionLikeEvent> getNormalReaction() {
+        return normalReaction;
+    }
+
+    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
+        this.normalReaction = normalReaction;
+    }
+
+    public List<EntityFunctionalStatus> getEntityFunctionalStatus() {
+        return entityFunctionalStatus;
+    }
+
+    public void setEntityFunctionalStatus(List<EntityFunctionalStatus> entityFunctionalStatus) {
+        this.entityFunctionalStatus = entityFunctionalStatus;
+    }
+
+    //    public Set<Input> getInput() {
 //        return input;
 //    }
 //
@@ -118,63 +196,4 @@ public class ReactionLikeEvent extends Event {
 //    public void setOutput(Set<Output> output) {
 //        this.output = output;
 //    }
-
-    public List<PhysicalEntity> getEntityOnOtherCell() {
-        return entityOnOtherCell;
-    }
-
-    public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
-        this.entityOnOtherCell = entityOnOtherCell;
-    }
-
-    public List<DatabaseObject> getRequiredInputComponent() {
-        return requiredInputComponent;
-    }
-
-    public void setRequiredInputComponent(List<DatabaseObject> requiredInputComponent) {
-        this.requiredInputComponent = requiredInputComponent;
-    }
-
-    public ReactionLikeEvent getHasMember() {
-        return hasMember;
-    }
-
-    public void setHasMember(ReactionLikeEvent hasMember) {
-        this.hasMember = hasMember;
-    }
-
-    public List<CatalystActivity> getCatalystActivity() {
-        return catalystActivity;
-    }
-
-    public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
-        this.catalystActivity = catalystActivity;
-    }
-
-    public ReactionLikeEvent() {
-    }
-
-    public Boolean getIsChimeric() {
-        return this.isChimeric;
-    }
-
-    public void setIsChimeric(Boolean isChimeric) {
-        this.isChimeric = isChimeric;
-    }
-
-    public List<ReactionLikeEvent> getNormalReaction() {
-        return this.normalReaction;
-    }
-
-    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
-        this.normalReaction = normalReaction;
-    }
-
-    public List<EntityFunctionalStatus> getEntityFunctionalStatus() {
-        return entityFunctionalStatus;
-    }
-
-    public void setEntityFunctionalStatus(List<EntityFunctionalStatus> entityFunctionalStatus) {
-        this.entityFunctionalStatus = entityFunctionalStatus;
-    }
 }

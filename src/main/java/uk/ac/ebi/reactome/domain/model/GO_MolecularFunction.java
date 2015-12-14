@@ -8,25 +8,40 @@ public class GO_MolecularFunction extends DatabaseObject {
 
     private String accession;
     private String definition;
-    @Relationship
-    private ReferenceDatabase referenceDatabase;
-    @Relationship
-    private GO_MolecularFunction componentOf;
     private String ecNumber;
     private String name;
-    @Relationship
+
+    @Relationship(type = "referenceDatabase")
+    private ReferenceDatabase referenceDatabase;
+
+    @Relationship(type = "componentOf")
+    private GO_MolecularFunction componentOf;
+
+    @Relationship(type = "negativelyRegulate")
     private GO_MolecularFunction negativelyRegulate;
-    @Relationship
+
+    @Relationship(type = "positivelyRegulate")
     private GO_MolecularFunction positivelyRegulate;
-    @Relationship
+
+    @Relationship(type = "regulate")
     private GO_MolecularFunction regulate;
 
-    public GO_MolecularFunction getComponentOf() {
-        return componentOf;
+    public GO_MolecularFunction() {}
+
+    public String getAccession() {
+        return accession;
     }
 
-    public void setComponentOf(GO_MolecularFunction componentOf) {
-        this.componentOf = componentOf;
+    public void setAccession(String accession) {
+        this.accession = accession;
+    }
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 
     public String getEcNumber() {
@@ -43,6 +58,22 @@ public class GO_MolecularFunction extends DatabaseObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ReferenceDatabase getReferenceDatabase() {
+        return referenceDatabase;
+    }
+
+    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
+        this.referenceDatabase = referenceDatabase;
+    }
+
+    public GO_MolecularFunction getComponentOf() {
+        return componentOf;
+    }
+
+    public void setComponentOf(GO_MolecularFunction componentOf) {
+        this.componentOf = componentOf;
     }
 
     public GO_MolecularFunction getNegativelyRegulate() {
@@ -68,32 +99,4 @@ public class GO_MolecularFunction extends DatabaseObject {
     public void setRegulate(GO_MolecularFunction regulate) {
         this.regulate = regulate;
     }
-
-    public GO_MolecularFunction() {
-    }
-
-    public String getAccession() {
-        return this.accession;
-    }
-
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
-
-    public String getDefinition() {
-        return this.definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
-    }
-
-    public ReferenceDatabase getReferenceDatabase() {
-        return this.referenceDatabase;
-    }
-
-    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
-        this.referenceDatabase = referenceDatabase;
-    }
-
 }

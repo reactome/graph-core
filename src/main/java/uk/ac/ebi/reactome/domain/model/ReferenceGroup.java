@@ -3,13 +3,12 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 
 @NodeEntity
-public class ReferenceGroup extends ReferenceEntity {
+public class ReferenceGroup extends ReferenceEntity implements Modification{
 
     private String atomicConnectivity;
     private String formula;
 
-    public ReferenceGroup() {
-    }
+    public ReferenceGroup() {}
 
     public String getAtomicConnectivity() {
         return atomicConnectivity;

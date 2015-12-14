@@ -9,16 +9,38 @@ import java.util.List;
 public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
     private Integer endCoordinate;
-
-    @Relationship
-    private ReferenceSequence referenceEntity;
-
     private Integer startCoordinate;
 
-    @Relationship
+    @Relationship(type = "referenceEntity")
+    private ReferenceSequence referenceEntity;
+
+    @Relationship(type = "hasModifiedResidue")
     private List<AbstractModifiedResidue> hasModifiedResidue;
     
-    public EntityWithAccessionedSequence() {
+    public EntityWithAccessionedSequence() {}
+
+    public Integer getEndCoordinate() {
+        return endCoordinate;
+    }
+
+    public void setEndCoordinate(Integer endCoordinate) {
+        this.endCoordinate = endCoordinate;
+    }
+
+    public Integer getStartCoordinate() {
+        return startCoordinate;
+    }
+
+    public void setStartCoordinate(Integer startCoordinate) {
+        this.startCoordinate = startCoordinate;
+    }
+
+    public ReferenceSequence getReferenceEntity() {
+        return referenceEntity;
+    }
+
+    public void setReferenceEntity(ReferenceSequence referenceEntity) {
+        this.referenceEntity = referenceEntity;
     }
 
     public List<AbstractModifiedResidue> getHasModifiedResidue() {
@@ -28,29 +50,4 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
     public void setHasModifiedResidue(List<AbstractModifiedResidue> hasModifiedResidue) {
         this.hasModifiedResidue = hasModifiedResidue;
     }
-
-    public Integer getEndCoordinate() {
-        return this.endCoordinate;
-    }
-
-    public void setEndCoordinate(Integer endCoordinate) {
-        this.endCoordinate = endCoordinate;
-    }
-
-    public ReferenceSequence getReferenceEntity() {
-        return this.referenceEntity;
-    }
-
-    public void setReferenceEntity(ReferenceSequence referenceEntity) {
-        this.referenceEntity = referenceEntity;
-    }
-
-    public Integer getStartCoordinate() {
-        return this.startCoordinate;
-    }
-
-    public void setStartCoordinate(Integer startCoordinate) {
-        this.startCoordinate = startCoordinate;
-    }
-
 }

@@ -11,8 +11,7 @@ public class LiteratureReference extends Publication {
     private Integer volume;
     private Integer year;
 
-    public LiteratureReference() {
-    }
+    public LiteratureReference() {}
 
     public String getJournal() {
         return this.journal;

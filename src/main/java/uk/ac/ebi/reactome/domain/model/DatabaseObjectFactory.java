@@ -33,7 +33,7 @@ public class DatabaseObjectFactory {
     static {
         try {
             System.out.println("setup connection to DB");
-            dba = new MySQLAdaptor("localhost", "reactome", "root","reactome", 3306);
+            dba = new MySQLAdaptor("localhost", "Reactome", "root","reactome", 3306);
         } catch (SQLException e) {
             logger.error("An error occured while connection to the Reactome database", e);
 //            throw new ReactomeParserException("An error occured while connection to the Reactome database", e);

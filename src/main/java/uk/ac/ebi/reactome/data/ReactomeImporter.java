@@ -1,13 +1,15 @@
 package uk.ac.ebi.reactome.data;
 
+import org.apache.log4j.Logger;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-import uk.ac.ebi.reactome.repository.GenericRepository;
 import uk.ac.ebi.reactome.service.DatabaseObjectService;
+import uk.ac.ebi.reactome.service.GenericService;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -19,52 +21,86 @@ import java.util.*;
 @Component
 public class ReactomeImporter {
 
+    private static final Logger logger = Logger.getLogger(ReactomeImporter.class);
 
     private static MySQLAdaptor dba;
-    private Set<Long> dbIds;
+    private Map<Long,DatabaseObject> dbIds;
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
 
     @Autowired
-    private GenericRepository genericRepository;
+    private GenericService genericService;
 
     static {
         try {
             System.out.println("setup connection to DB");
             dba = new MySQLAdaptor("localhost", "Reactome", "root","reactome", 3306);
+
         } catch (SQLException e) {
 //            logger.error("An error occured while connection to the Reactome database", e);
 //            throw new ReactomeParserException("An error occured while connection to the Reactome database", e);
         }
     }
 
-    public void loadObject(String identifier) throws Exception {
-        dbIds = new HashSet<>();
+    public DatabaseObject loadObject(String identifier) throws Exception {
+        dbIds = new HashMap<>();
         GKInstance instance = getInstance(identifier);
-        createObject(instance,1L,"");
+        return createObject(instance,1L,"");
 
     }
 
-    private void createObject(GKInstance instance, Long id, String x) throws Exception {
-        System.out.println(dbIds.contains(instance.getDBID()));
+
+    public void loadAll() {
+        try {
+            dbIds = new HashMap<>();
+            Collection<?> frontPage = dba.fetchInstancesByClass(ReactomeJavaConstants.FrontPage);
+            GKInstance instance1 = (GKInstance) frontPage.iterator().next();
+            Collection<GKInstance> instances = instance1.getAttributeValuesList(ReactomeJavaConstants.frontPageItem);
+            for (GKInstance instance : instances) {
+                DatabaseObject obj = createObject(instance,1L,"");
+
+            }
+        } catch (Exception e) {
+            logger.error("An error occured while parsing FrontPage items", e);
+        }
+    }
+    @Transactional
+    private void parseInstance(GKInstance instance) throws Exception {
+        long startTime = System.currentTimeMillis();
+        createObject(instance, 1L, "");
+        long stopTime = System.currentTimeMillis();
+        long ms = stopTime - startTime;
+        int seconds = (int) (ms / 1000) % 60;
+        int minutes = (int) ((ms / (1000 * 60)) % 60);
+        logger.info(instance.getDisplayName() + " indexed in: " + minutes + "minutes " + seconds + "seconds" );
+    }
+
+    private DatabaseObject createObject(GKInstance instance, Long id, String x) throws Exception {
+//        System.out.println(dbIds.contains(instance.getDBID()));
         Long dbId = instance.getDBID();
-        if (!dbIds.contains(dbId)) {
-            dbIds.add(dbId);
+        if (!dbIds.containsKey(dbId)) {
+            DatabaseObject obj = null;
             String clazzName = "uk.ac.ebi.reactome.domain.model." + instance.getSchemClass().getName();
 
             Class<DatabaseObject> clazz = (Class<DatabaseObject>) Class.forName(clazzName);
             if (!clazz.isEnum()) {
-                DatabaseObject obj = clazz.newInstance();
+                obj = clazz.newInstance();
                 obj.setDbId(instance.getDBID());
                 obj.setDisplayName(instance.getDisplayName());
-                obj = databaseObjectService.save(obj);
+
+//                obj = databaseObjectService.save(obj);
+                dbIds.put(dbId,obj);
                 fill(obj, instance);
-                obj = databaseObjectService.save(obj);
 
             }
+
+
+            return obj;
+
         }
-        genericRepository.addRelationship(instance.getDBID(), id,x);
+        return dbIds.get(dbId);
+//        genericRepository.addRelationship(instance.getDBID(), id,x);
 
     }
 
@@ -113,7 +149,7 @@ public class ReactomeImporter {
                     List<Object> caValues = new ArrayList<Object>();
                     for (Object value : attValues) {
                         if (value instanceof GKInstance) {
-                            createObject((GKInstance) value,instance.getDBID(),rAttName);
+                            value = createObject((GKInstance) value,instance.getDBID(),rAttName);
 
 //                            createObject((GKInstance) value);
 //                            genericRepository.addRelationship(instance.getDBID(), ((GKInstance) value).getDBID(),rAttName);
@@ -121,9 +157,9 @@ public class ReactomeImporter {
 //                            instance.getDBID, ((GKInstance) value).getDBID();
                             //return value form createObject ?
                         }
-                        else if (!caValues.contains(value)) {
+//                        if (!caValues.contains(value)) {
                             caValues.add(value);
-                        }
+//                        }
                     }
                     // Convert Set to List.
                     setMethod.invoke(obj, caValues);
@@ -133,13 +169,14 @@ public class ReactomeImporter {
                     Object value = attValues.get(0);
                     // Need to convert to caBIO type
                     if (value instanceof GKInstance) {
-                        createObject((GKInstance) value,instance.getDBID(),rAttName);
+                        value = createObject((GKInstance) value,instance.getDBID(),rAttName);
 //                        createObject((GKInstance) value);
 //                        genericRepository.addRelationship(instance.getDBID(), ((GKInstance) value).getDBID(),rAttName);
 //                        recursion here aswell
-                    } else {
-                        setMethod.invoke(obj, value);
                     }
+//                    else {
+                        setMethod.invoke(obj, value);
+//                    }
                     // All other types can be converted safely
 
 //                    try {

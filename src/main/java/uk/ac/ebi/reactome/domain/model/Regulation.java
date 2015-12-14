@@ -8,42 +8,58 @@ import java.util.List;
 @NodeEntity
 public class Regulation extends DatabaseObject {
 
-    @Relationship
-    private InstanceEdit authored;
-    @Relationship
-    private List<InstanceEdit> edited;
-    @Relationship
-    private List<Figure> figure;
-    @Relationship
-    private List<Publication> literatureReference;
-    private List<String> name;
-    @Relationship
-    private DatabaseObject regulatedEntity;
-    @Relationship
-    private RegulationType regulationType;
-    @Relationship
-    private DatabaseObject regulator;
-
     private String releaseDate;
-    @Relationship
+    private List<String> name;
+
+    @Relationship(type = "authored")
+    private InstanceEdit authored;
+
+    @Relationship(type = "edited")
+    private List<InstanceEdit> edited;
+
+    @Relationship(type = "figure")
+    private List<Figure> figure;
+
+    @Relationship(type = "literatureReference")
+    private List<Publication> literatureReference;
+
+    @Relationship(type = "regulatedEntity")
+    private DatabaseObject regulatedEntity;
+
+    @Relationship(type = "regulationType")
+    private RegulationType regulationType;
+
+    @Relationship(type = "regulator")
+    private Regulator regulator;
+
+    @Relationship(type = "reviewed")
     private List<InstanceEdit> reviewed;
-    @Relationship
+
+    @Relationship(type = "revised")
     private List<InstanceEdit> revised;
-    @Relationship
+
+    @Relationship(type = "summation")
     private List<Summation> summation;
-    // New attribute in December, 2013
-    @Relationship
+
+    @Relationship(type = "containedInPathway")
     private List<Pathway> containedInPathway;
     
-    public Regulation() {
-    }
-    
-    public List<Pathway> getContainedInPathway() {
-        return containedInPathway;
+    public Regulation() {}
+
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setContainedInPathway(List<Pathway> containedInPathway) {
-        this.containedInPathway = containedInPathway;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public List<String> getName() {
+        return name;
+    }
+
+    public void setName(List<String> name) {
+        this.name = name;
     }
 
     public InstanceEdit getAuthored() {
@@ -78,24 +94,12 @@ public class Regulation extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public List<String> getName() {
-        return name;
-    }
-
-    public void setName(List<String> name) {
-        this.name = name;
-    }
-
     public DatabaseObject getRegulatedEntity() {
         return regulatedEntity;
     }
 
     public void setRegulatedEntity(DatabaseObject regulatedEntity) {
-        if(regulatedEntity instanceof PhysicalEntity || regulatedEntity instanceof Event || regulatedEntity instanceof CatalystActivity) {
-            this.regulatedEntity = regulatedEntity;
-        } else {
-            throw new RuntimeException(regulatedEntity + " is not a PhysicalEntity, Event or CatalystActivity");
-        }
+        this.regulatedEntity = regulatedEntity;
     }
 
     public RegulationType getRegulationType() {
@@ -106,20 +110,12 @@ public class Regulation extends DatabaseObject {
         this.regulationType = regulationType;
     }
 
-    public DatabaseObject getRegulator() {
+    public Regulator getRegulator() {
         return regulator;
     }
 
-    public void setRegulator(DatabaseObject regulator) {
+    public void setRegulator(Regulator regulator) {
         this.regulator = regulator;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
     }
 
     public List<InstanceEdit> getReviewed() {
@@ -146,4 +142,11 @@ public class Regulation extends DatabaseObject {
         this.summation = summation;
     }
 
+    public List<Pathway> getContainedInPathway() {
+        return containedInPathway;
+    }
+
+    public void setContainedInPathway(List<Pathway> containedInPathway) {
+        this.containedInPathway = containedInPathway;
+    }
 }

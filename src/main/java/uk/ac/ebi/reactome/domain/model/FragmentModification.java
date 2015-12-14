@@ -6,11 +6,9 @@ import org.neo4j.ogm.annotation.NodeEntity;
 public class FragmentModification extends GeneticallyModifiedResidue {
 
     private Integer endPositionInReferenceSequence;
-
     private Integer startPositionInReferenceSequence;
     
-    public FragmentModification() {
-    }
+    public FragmentModification() {}
 
     public Integer getEndPositionInReferenceSequence() {
         return endPositionInReferenceSequence;

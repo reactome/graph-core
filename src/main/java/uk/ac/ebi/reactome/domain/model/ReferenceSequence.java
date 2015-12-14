@@ -17,10 +17,8 @@ public class ReferenceSequence extends ReferenceEntity {
     private List<String> keyword;
     private List<String> secondaryIdentifier;
     private String url; // Valid URL based on referenceDatabase
-    
 
-    public ReferenceSequence() {
-    }
+    public ReferenceSequence() {}
 
     public Integer getSequenceLength() {
         return this.sequenceLength;
@@ -95,10 +93,10 @@ public class ReferenceSequence extends ReferenceEntity {
     }
 
     public String getUrl() {
-		return url;
-	}
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

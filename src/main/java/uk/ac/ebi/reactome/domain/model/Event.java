@@ -2,82 +2,141 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @NodeEntity
 public abstract class Event extends DatabaseObject implements Regulator {
 
     private Boolean _doRelease;
-    @Relationship
-    private List<InstanceEdit> authored;
-    @Relationship
-    private List<InstanceEdit> edited;
-    @Relationship
-    private List<InstanceEdit> revised;
-    @Relationship
-    private List<InstanceEdit> reviewed;
-    @Relationship
-    private List<Species> species;
-    private String speciesName;
-    @Relationship
-    private List<Species> relatedSpecies;
-    private String definition;
-    @Relationship
-    private EvidenceType evidenceType;
-    @Relationship
-    private GO_BiologicalProcess goBiologicalProcess;
     private String releaseDate;
     private String keywords;
-    @Relationship
-    private List<Summation> summation;
-    @Relationship
-    private String releaseStatus;
-    @Relationship
-    private List<Figure> figure;
-    @Relationship
-    private List<Event> precedingEvent;
-    @Relationship
-    private List<Event> followingEvent;
-    @Relationship
-    private List<Publication> literatureReference;
-    // Regulation related attributes
-    @Relationship
-    private List<DatabaseObject> negativeRegulators;
-    // Regulators in PositiveRegulations but not Requirements.
-    // Note: Requirement is a subclass to PositiveRegulation.
-    @Relationship
-    private List<DatabaseObject> positiveRegulators;
-    @Relationship
-    private List<DatabaseObject> requirements;
-    @Relationship
-    private List<DatabaseIdentifier> crossReference;
-    @Relationship
-    private List<Disease> disease;
-    // A simple label to indicate if this Event object is a disease
+    private String speciesName;
+    private String definition;
+    /**
+     * A simple label to indicate if this Event object is a disease
+     */
     private Boolean isInDisease;
-    @Relationship
-    private List<Event> inferredFrom;
-    // A simple flag to indicate if this Event is inferred from another
+    /**
+     * A simple flag to indicate if this Event is inferred from another
+     */
     private Boolean isInferred;
-    @Relationship
+    
+    @Relationship(type = "authored")
+    private List<InstanceEdit> authored;
+    
+    @Relationship(type = "edited")
+    private List<InstanceEdit> edited;
+    
+    @Relationship(type = "revised")
+    private List<InstanceEdit> revised;
+    
+    @Relationship(type = "reviewed")
+    private List<InstanceEdit> reviewed;
+    
+    @Relationship(type = "species")
+    private List<Species> species;
+    
+    @Relationship(type = "relatedSpecies")
+    private List<Species> relatedSpecies;
+    
+    @Relationship(type = "evidenceType")
+    private EvidenceType evidenceType;
+    
+    @Relationship(type = "goBiologicalProcess")
+    private GO_BiologicalProcess goBiologicalProcess;
+
+    @Relationship(type = "summation")
+    private List<Summation> summation;
+    
+    @Relationship(type = "releaseStatus")
+    private String releaseStatus;
+    
+    @Relationship(type = "figure")
+    private List<Figure> figure;
+    
+    @Relationship(type = "precedingEvent")
+    private List<Event> precedingEvent;
+    
+    @Relationship(type = "followingEvent")
+    private List<Event> followingEvent;
+    
+    @Relationship(type = "literatureReference")
+    private List<Publication> literatureReference;
+
+    /**
+     * Regulation related attributes
+     */
+    @Relationship(type = "negativeRegulators")
+    private List<DatabaseObject> negativeRegulators;
+
+    /**
+     * Regulators in PositiveRegulations but not Requirements. Requirement is a subclass to PositiveRegulation.
+     */
+    @Relationship(type = "positiveRegulators")
+    private List<DatabaseObject> positiveRegulators;
+    
+    @Relationship(type = "requirements")
+    private List<DatabaseObject> requirements;
+    
+    @Relationship(type = "crossReference")
+    private List<DatabaseIdentifier> crossReference;
+    
+    @Relationship(type = "disease")
+    private List<Disease> disease;
+    
+    @Relationship(type = "inferredFrom")
+    private List<Event> inferredFrom;
+
+    @Relationship(type = "name")
     private List<String> name;
-    @Relationship
+    
+    @Relationship(type = "orthologousEvent")
     private List<Event> orthologousEvent;
-    @Relationship
+    
+    @Relationship(type = "compartment")
     private List<Compartment> compartment;
 
-    public Event() {
+    public Event() {}
+
+    public Boolean get_doRelease() {
+        return _doRelease;
     }
 
-    public Boolean getIsInferred() {
-        return isInferred;
+    public void set_doRelease(Boolean _doRelease) {
+        this._doRelease = _doRelease;
     }
 
-    public void setIsInferred(Boolean isInferred) {
-        this.isInferred = isInferred;
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
+    public String getSpeciesName() {
+        return speciesName;
+    }
+
+    public void setSpeciesName(String speciesName) {
+        this.speciesName = speciesName;
+    }
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
     }
 
     public Boolean getIsInDisease() {
@@ -88,12 +147,12 @@ public abstract class Event extends DatabaseObject implements Regulator {
         this.isInDisease = isInDisease;
     }
 
-    public Boolean get_doRelease() {
-        return _doRelease;
+    public Boolean getIsInferred() {
+        return isInferred;
     }
 
-    public void set_doRelease(Boolean _doRelease) {
-        this._doRelease = _doRelease;
+    public void setIsInferred(Boolean isInferred) {
+        this.isInferred = isInferred;
     }
 
     public List<InstanceEdit> getAuthored() {
@@ -136,28 +195,12 @@ public abstract class Event extends DatabaseObject implements Regulator {
         this.species = species;
     }
 
-    public String getSpeciesName() {
-        return speciesName;
-    }
-
-    public void setSpeciesName(String species) {
-        this.speciesName = species;
-    }
-
     public List<Species> getRelatedSpecies() {
         return relatedSpecies;
     }
 
     public void setRelatedSpecies(List<Species> relatedSpecies) {
         this.relatedSpecies = relatedSpecies;
-    }
-
-    public String getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
     }
 
     public EvidenceType getEvidenceType() {
@@ -174,22 +217,6 @@ public abstract class Event extends DatabaseObject implements Regulator {
 
     public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
         this.goBiologicalProcess = goBiologicalProcess;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
     }
 
     public List<Summation> getSummation() {
@@ -311,5 +338,4 @@ public abstract class Event extends DatabaseObject implements Regulator {
     public void setCompartment(List<Compartment> compartment) {
         this.compartment = compartment;
     }
-
 }

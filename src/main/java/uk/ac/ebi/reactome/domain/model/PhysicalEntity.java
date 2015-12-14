@@ -3,64 +3,100 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
 public class PhysicalEntity extends DatabaseObject implements Regulator {
 
-    @Relationship
-    private InstanceEdit authored;
     private String definition;
-    @Relationship
-
-    private GO_CellularComponent goCellularComponent;
     private String shortName;
-    @Relationship
-    private List<PhysicalEntity> inferredFrom;
-    @Relationship
-    private List<PhysicalEntity> inferredTo;
-    @Relationship
-    private List<Figure> figure;
-    @Relationship
-    private List<Summation> summation;
-    @Relationship
-    private List<InstanceEdit> edited;
-    @Relationship
-    private List<InstanceEdit> reviewed;
-    @Relationship
-    private List<InstanceEdit> revised;
-    @Relationship
-    private List<String> name;
-    @Relationship
-    private List<EntityCompartment> compartment;
-    @Relationship
-    private List<DatabaseIdentifier> crossReference;
-    @Relationship
-    private List<Disease> disease;
-    @Relationship
-    private List<Publication> literatureReference;
-    // The following properties are used for detailed view
-    @Relationship
-    private List<Event> catalyzedEvent; // List of Events catalysed by this PE
-    @Relationship
-    private List<GO_MolecularFunction> goActivity; // List of GO MF related to this PE via CatalystActivity
-    @Relationship
-    private List<Event> inhibitedEvent;
-    @Relationship
-    private List<Event> activatedEvent;
-    @Relationship
-    private List<Event> requiredEvent;
-    @Relationship
-    private List<Event> producedByEvent;
-    @Relationship
-    private List<Event> consumedByEvent;
     private String systematicName;
-//  @Relationship
-//  private List<Domain> hasDomain;
+
+    @Relationship(type = "authored")
+    private InstanceEdit authored;
+
+    @Relationship(type = "goCellularComponent")
+    private GO_CellularComponent goCellularComponent;
+
+    @Relationship(type = "inferredFrom")
+    private List<PhysicalEntity> inferredFrom;
+
+    @Relationship(type = "inferredTo")
+    private List<PhysicalEntity> inferredTo;
+
+    @Relationship(type = "figure")
+    private List<Figure> figure;
+
+    @Relationship(type = "summation")
+    private List<Summation> summation;
+
+    @Relationship(type = "edited")
+    private List<InstanceEdit> edited;
+
+    @Relationship(type = "reviewed")
+    private List<InstanceEdit> reviewed;
+
+    @Relationship(type = "revised")
+    private List<InstanceEdit> revised;
+
+    @Relationship(type = "name")
+    private List<String> name;
+
+    @Relationship(type = "compartment")
+    private List<EntityCompartment> compartment;
+
+    @Relationship(type = "crossReference")
+    private List<DatabaseIdentifier> crossReference;
+
+    @Relationship(type = "disease")
+    private List<Disease> disease;
+
+    @Relationship(type = "literatureReference")
+    private List<Publication> literatureReference;
+
+    /**
+     * List of Events catalysed by this PE
+     */
+    @Relationship(type = "catalyzedEvent")
+    private List<Event> catalyzedEvent;
+
+    /**
+     * List of GO MF related to this PE via CatalystActivity
+     */
+    @Relationship(type = "goActivity")
+    private List<GO_MolecularFunction> goActivity;
+
+    @Relationship(type = "inhibitedEvent")
+    private List<Event> inhibitedEvent;
+
+    @Relationship(type = "activatedEvent")
+    private List<Event> activatedEvent;
+
+    @Relationship(type = "requiredEvent")
+    private List<Event> requiredEvent;
+
+    @Relationship(type = "producedByEvent")
+    private List<Event> producedByEvent;
+
+    @Relationship(type = "consumedByEvent")
+    private List<Event> consumedByEvent;
     
-    public PhysicalEntity() {
-        
+    public PhysicalEntity() {}
+
+    public String getDefinition() {
+        return definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public String getSystematicName() {
@@ -79,28 +115,12 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
         this.authored = authored;
     }
 
-    public String getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
-    }
-
     public GO_CellularComponent getGoCellularComponent() {
         return goCellularComponent;
     }
 
     public void setGoCellularComponent(GO_CellularComponent goCellularComponent) {
         this.goCellularComponent = goCellularComponent;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
     }
 
     public List<PhysicalEntity> getInferredFrom() {
@@ -198,17 +218,6 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
-    
-    public void addCrossReference(DatabaseIdentifier dbi) {
-        if (crossReference == null)
-            crossReference = new ArrayList<>();
-        // Avoid duplication
-        for (DatabaseIdentifier tmp : crossReference) {
-            if (tmp.getDbId().equals(dbi.getDbId()))
-                return;
-        }
-        crossReference.add(dbi);
-    }
 
     public List<Event> getCatalyzedEvent() {
         return catalyzedEvent;
@@ -266,12 +275,16 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
         this.consumedByEvent = consumedByEvent;
     }
 
-//	public List<Domain> getHasDomain() {
-//		return hasDomain;
-//	}
 //
-//	public void setHasDomain(List<Domain> hasDomain) {
-//		this.hasDomain = hasDomain;
-//	}
-    
+//    public void addCrossReference(DatabaseIdentifier dbi) {
+//        if (crossReference == null)
+//            crossReference = new ArrayList<>();
+//        // Avoid duplication
+//        for (DatabaseIdentifier tmp : crossReference) {
+//            if (tmp.getDbId().equals(dbi.getDbId()))
+//                return;
+//        }
+//        crossReference.add(dbi);
+//    }
+
 }

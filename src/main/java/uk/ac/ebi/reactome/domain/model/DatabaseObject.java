@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import java.util.Date;
 import java.util.List;
 
-//@Component
 @NodeEntity
 public abstract class DatabaseObject implements java.io.Serializable {
 
@@ -20,21 +19,17 @@ public abstract class DatabaseObject implements java.io.Serializable {
     private Long id;
 
     private Long dbId;
-
     private String stableIdentifier;
-
     private String displayName;
-
     private Date timestamp;
 
-    @Relationship
+    @Relationship(type = "created")
     private InstanceEdit created;
 
-    @Relationship
+    @Relationship(type = "modified")
     private List<InstanceEdit> modified;
 
-    public DatabaseObject() {
-    }
+    public DatabaseObject() {}
 
     public List<InstanceEdit> getModified() {
         return modified;

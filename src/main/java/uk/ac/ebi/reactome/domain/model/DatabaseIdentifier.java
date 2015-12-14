@@ -9,24 +9,33 @@ import java.util.List;
 public class DatabaseIdentifier extends DatabaseObject {
 
     private String identifier;
+    /**
+     * Valid URL based on referenceDatabase
+     */
+    private String url;
 
-    @Relationship
+    @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship
+    @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
-    private String url; // Valid URL based on referenceDatabase
-
-    public DatabaseIdentifier() {
-    }
+    public DatabaseIdentifier() {}
 
     public String getIdentifier() {
-        return this.identifier;
+        return identifier;
     }
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public List<DatabaseIdentifier> getCrossReference() {
@@ -44,13 +53,4 @@ public class DatabaseIdentifier extends DatabaseObject {
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
 }

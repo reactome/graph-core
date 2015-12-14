@@ -11,9 +11,7 @@ public class ReferenceDatabase extends DatabaseObject {
     private List<String> name;
     private String url;
     
-    public ReferenceDatabase() {
-        
-    }
+    public ReferenceDatabase() {}
 
     public String getAccessUrl() {
         return accessUrl;

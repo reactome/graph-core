@@ -7,13 +7,14 @@ import java.util.List;
 
 @NodeEntity
 public class ReferenceGeneProduct extends ReferenceSequence {
-    @Relationship
+
+    @Relationship(type = "referenceGene")
     private List<ReferenceDNASequence> referenceGene;
-    @Relationship
+
+    @Relationship(type = "referenceTranscript")
     private List<ReferenceRNASequence> referenceTranscript;
 
-    public ReferenceGeneProduct() {
-    }
+    public ReferenceGeneProduct() {}
 
     public List<ReferenceDNASequence> getReferenceGene() {
         return referenceGene;

@@ -7,9 +7,7 @@ public class FragmentInsertionModification extends FragmentModification {
 
     private Integer coordinate;
     
-    public FragmentInsertionModification() {
-        
-    }
+    public FragmentInsertionModification() {}
 
     public Integer getCoordinate() {
         return coordinate;

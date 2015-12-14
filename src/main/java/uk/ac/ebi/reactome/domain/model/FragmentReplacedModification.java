@@ -7,8 +7,7 @@ public class FragmentReplacedModification extends FragmentModification {
 
     private String alteredAminoAcidFragment;
     
-    public FragmentReplacedModification() {
-    }
+    public FragmentReplacedModification() {}
 
     public String getAlteredAminoAcidFragment() {
         return alteredAminoAcidFragment;
