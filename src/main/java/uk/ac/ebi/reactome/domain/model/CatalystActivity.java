@@ -10,7 +10,7 @@ import java.util.List;
  * exact active component of a complex or set.
  */
 @NodeEntity
-public class CatalystActivity extends DatabaseObject implements Regulator {
+public class CatalystActivity extends DatabaseObject  { // implements Regulator
 
     private String physicalEntityClass;
 

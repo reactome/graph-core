@@ -1,10 +1,8 @@
 package uk.ac.ebi.reactome.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-@NodeEntity
-public class GO_BiologicalProcess extends DatabaseObject {
+public class GO_BiologicalProcess extends DatabaseObject{// implements ComponentOf
 
     private String accession;
     private String definition;

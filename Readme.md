@@ -372,6 +372,10 @@ Find Outgoing Subgraph
 MATCH (n{dbId:264870})-[r*]->() RETURN r
 ```
 
+
+FRONT PAGE ITEMS 
+MATCH (n:Pathway) WHERE NOT (n)<-[]-() RETURN n
+
 ###### Writing
 
 Create node with multiple labels and properties
@@ -436,3 +440,17 @@ Drop constraint
 ```
 DROP CONSTRAINT ON (n:LABEL) ASSERT n.dbId IS UNIQUE
 ```
+
+
+
+
+
+
+Match (n{dbId:109581})-[r]-() WHERE NOT (n)-[r:getModified]->() return n,r
+
+match (n:Event)-[r]-(y:Species{dbId:48887}) return n 
+
+
+MATCH (n:Pathway{dbId:75153})-[:hasEvent*]->(m:Pathway)  RETURN n,m 
+
+MATCH (n:Event{dbId:373753})-[r:hasEvent|input|output|catalystActivity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m) WHERE m:ReferenceEntity RETURN DISTINCT m

@@ -30,7 +30,7 @@ public class Regulation extends DatabaseObject {
     private RegulationType regulationType;
 
     @Relationship(type = "regulator")
-    private Regulator regulator;
+    private DatabaseObject regulator; // regulator
 
     @Relationship(type = "reviewed")
     private List<InstanceEdit> reviewed;
@@ -110,11 +110,20 @@ public class Regulation extends DatabaseObject {
         this.regulationType = regulationType;
     }
 
-    public Regulator getRegulator() {
+//    public Regulator getRegulator() {
+//        return regulator;
+//    }
+//
+//    public void setRegulator(Regulator regulator) {
+//        this.regulator = regulator;
+//    }
+
+
+    public DatabaseObject getRegulator() {
         return regulator;
     }
 
-    public void setRegulator(Regulator regulator) {
+    public void setRegulator(DatabaseObject regulator) {
         this.regulator = regulator;
     }
 

@@ -10,31 +10,11 @@ import uk.ac.ebi.reactome.domain.model.DatabaseObject;
  */
 public interface ImportService {
 
-    DatabaseObject findByDbId(Long dbId);
-
+//    DatabaseObject findByDbId(Long dbId);
     DatabaseObject getOrCreate(DatabaseObject databaseObject);
+    void addRelationship(Long dbIdA, Long dbIdB, String relationshipName);
 
-    /* ------------------------------ Methods for adding relationships ------------------------------ */
-
-    void createInputRelationship(Long dbIdA, Long dbIdB);
-
-    void createOutputRelationship(Long dbIdA, Long dbIdB);
-
-    void createCatalystRelationship(Long dbIdA, Long dbIdB);
-
-    void createCandidateRelationship(Long dbIdA, Long dbIdB);
-
-    void createComponentRelationship(Long dbIdA, Long dbIdB);
-
-    void createMemberRelationship(Long dbIdA, Long dbIdB);
-
-    void createEventRelationship(Long dbIdA, Long dbIdB);
-
-    void createRepeatedUnitRelationship(Long dbIdA, Long dbIdB);
-
-    void createReferenceEntityRelationship(Long dbIdA, Long dbIdB);
-
-
+    void cleanDatabase();
     /* ------------------------------ Constraints & Indexing ------------------------------ */
 
     void createConstraintOnDatabaseObjectDbId();

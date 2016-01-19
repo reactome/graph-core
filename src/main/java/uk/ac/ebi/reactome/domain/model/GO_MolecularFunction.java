@@ -4,7 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
-public class GO_MolecularFunction extends DatabaseObject {
+public class GO_MolecularFunction extends DatabaseObject {//implements ComponentOf
 
     private String accession;
     private String definition;
@@ -14,8 +14,8 @@ public class GO_MolecularFunction extends DatabaseObject {
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
-    @Relationship(type = "componentOf")
-    private GO_MolecularFunction componentOf;
+//    @Relationship(type = "componentOf")
+//    private ComponentOf componentOf;
 
     @Relationship(type = "negativelyRegulate")
     private GO_MolecularFunction negativelyRegulate;
@@ -68,13 +68,13 @@ public class GO_MolecularFunction extends DatabaseObject {
         this.referenceDatabase = referenceDatabase;
     }
 
-    public GO_MolecularFunction getComponentOf() {
-        return componentOf;
-    }
-
-    public void setComponentOf(GO_MolecularFunction componentOf) {
-        this.componentOf = componentOf;
-    }
+//    public ComponentOf getComponentOf() {
+//        return componentOf;
+//    }
+//
+//    public void setComponentOf(ComponentOf componentOf) {
+//        this.componentOf = componentOf;
+//    }
 
     public GO_MolecularFunction getNegativelyRegulate() {
         return negativelyRegulate;

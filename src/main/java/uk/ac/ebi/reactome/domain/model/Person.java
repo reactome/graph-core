@@ -14,6 +14,9 @@ public class Person extends DatabaseObject {
     private String project;
     private String surname;
 
+    @Relationship(type = "affiliation")
+    private List<Affiliation> affiliation;
+
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
@@ -57,6 +60,14 @@ public class Person extends DatabaseObject {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public List<Affiliation> getAffiliation() {
+        return affiliation;
+    }
+
+    public void setAffiliation(List<Affiliation> affiliation) {
+        this.affiliation = affiliation;
     }
 
     public List<DatabaseIdentifier> getCrossReference() {

@@ -16,7 +16,7 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  * HasComponent is the relationship entity of Complexes. It is needed to specify the cardinality (stoichiometry) of
  * components.
  */
-@RelationshipEntity(type = "HAS_COMPONENT")
+@RelationshipEntity(type = "hasComponent")
 public class HasComponent {
 
     @SuppressWarnings("unused")
@@ -59,22 +59,22 @@ public class HasComponent {
         this.physicalEntity = physicalEntity;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        HasComponent component = (HasComponent) o;
-
-        if (complex != null ? !complex.equals(component.complex) : component.complex != null) return false;
-        return !(physicalEntity != null ? !physicalEntity.equals(component.physicalEntity) : component.physicalEntity != null);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = complex != null ? complex.hashCode() : 0;
-        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
-        return result;
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        HasComponent component = (HasComponent) o;
+//
+//        if (complex != null ? !complex.equals(component.complex) : component.complex != null) return false;
+//        return !(physicalEntity != null ? !physicalEntity.equals(component.physicalEntity) : component.physicalEntity != null);
+//
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        int result = complex != null ? complex.hashCode() : 0;
+//        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
+//        return result;
+//    }
 }

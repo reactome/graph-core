@@ -24,7 +24,7 @@ public class MailUtil {
 
     public MailUtil(String host, Integer port){
         properties = new Properties();
-        properties.setProperty("mail.smpt.host", host);
+        properties.setProperty("mail.smtp.host", host);
         properties.setProperty("mail.smtp.port", String.valueOf(port));
     }
 
@@ -36,22 +36,16 @@ public class MailUtil {
         try {
             // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
-
             // Set From: header field of the header.
             message.setFrom(new InternetAddress(from));
-
             // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
             // Set Subject: header field
             message.setSubject(subject);
-
             // Now set the actual message
             message.setText(text);
-
             // Send message
             Transport.send(message);
-
         } catch (MessagingException e) {
             logger.error("Error sending notification message");
         }

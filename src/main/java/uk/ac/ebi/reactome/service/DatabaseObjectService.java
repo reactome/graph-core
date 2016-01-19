@@ -11,8 +11,8 @@ import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 public interface DatabaseObjectService extends Service<DatabaseObject> {
 
     DatabaseObject findOne(Long id, int depth);
-
     DatabaseObject findByDbId(Long dbId);
-
-    DatabaseObject findByStId(String stId);
+    DatabaseObject findByDbId2(Long dbId);
+    DatabaseObject findByDbId3(Long dbId);
+    DatabaseObject findByStableIdentifier(String stableIdentifier);
 }

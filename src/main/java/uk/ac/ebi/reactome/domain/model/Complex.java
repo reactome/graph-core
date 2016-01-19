@@ -4,8 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.domain.relationship.HasComponent;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NodeEntity
 public class Complex extends PhysicalEntity {
@@ -61,13 +60,13 @@ public class Complex extends PhysicalEntity {
         this.inferredProt = inferredProt;
     }
 
-    public Set<HasComponent> getHasComponent() {
-        return hasComponent;
-    }
-
-    public void setHasComponent(Set<HasComponent> hasComponent) {
-        this.hasComponent = hasComponent;
-    }
+//    public Set<HasComponent> getHasComponent() {
+//        return hasComponent;
+//    }
+//
+//    public void setHasComponent(Set<HasComponent> hasComponent) {
+//        this.hasComponent = hasComponent;
+//    }
 
     public List<PhysicalEntity> getEntityOnOthercell() {
         return entityOnOthercell;
@@ -93,29 +92,40 @@ public class Complex extends PhysicalEntity {
         this.species = species;
     }
 
-//    public void setHasComponent(List<PhysicalEntity> hasComponent) {
-//        Map<Long, HasComponent> components = new HashMap<>();
-//        for (PhysicalEntity physicalEntity : hasComponent) {
-//            HasComponent component = components.get(physicalEntity.getDbId());
-//            if (component != null) {
-//                component.setCardinality(component.getCardinality() + 1);
-//            } else {
-//                component = new HasComponent();
-//                component.setComplex(this);
-//                component.setPhysicalEntity(physicalEntity);
-//                components.put(physicalEntity.getDbId(), component);
-//            }
-//        }
-//        this.hasComponent = new HashSet<>(components.values());
+//    public Set<HasComponent> getHasComponent() {
+//        return hasComponent;
 //    }
 //
-//    public List<PhysicalEntity> getComponents(){
-//        List<PhysicalEntity> rtn = new ArrayList<>();
-//        for (HasComponent component : this.hasComponent) {
-//            for (int i = 0; i < component.getCardinality(); i++) {
-//                rtn.add(component.getPhysicalEntity());
-//            }
-//        }
-//        return rtn;
+//    public void setHasComponent(Set<HasComponent> hasComponent) {
+//        this.hasComponent = hasComponent;
 //    }
+
+        public List<PhysicalEntity> getHasComponent(){
+        List<PhysicalEntity> rtn = new ArrayList<>();
+        for (HasComponent component : this.hasComponent) {
+            for (int i = 0; i < component.getCardinality(); i++) {
+                rtn.add(component.getPhysicalEntity());
+            }
+        }
+        return rtn;
+    }
+
+    public void setHasComponent(List<PhysicalEntity> hasComponent) {
+        if (hasComponent == null) return;
+        Map<Long, HasComponent> components = new HashMap<>();
+        for (PhysicalEntity physicalEntity : hasComponent) {
+            HasComponent component = components.get(physicalEntity.getDbId());
+            if (component != null) {
+                component.setCardinality(component.getCardinality() + 1);
+            } else {
+                component = new HasComponent();
+                component.setComplex(this);
+                component.setPhysicalEntity(physicalEntity);
+                components.put(physicalEntity.getDbId(), component);
+            }
+        }
+        this.hasComponent = new HashSet<>(components.values());
+    }
+
+
 }

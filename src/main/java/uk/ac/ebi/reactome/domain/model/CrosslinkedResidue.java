@@ -20,6 +20,9 @@ public class CrosslinkedResidue extends TranslationalModification {
     }
 
     public void setModification(DatabaseObject modification) {
+        if(modification == null) return;
+
+
         if ((modification instanceof Polymer) || (modification instanceof ReferenceGroup) || (modification instanceof EntitySet)) {
             this.modification = modification;
         } else {

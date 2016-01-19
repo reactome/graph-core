@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
 @Transactional(readOnly = true)
 public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> implements DatabaseObjectService {
 
-//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
+private  final Logger logger = Logger.getLogger(DatabaseObjectServiceImpl.class);
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
@@ -36,10 +36,22 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
     @Override
     public DatabaseObject findByDbId(Long dbId) {
         return databaseObjectRepository.findByDbId(dbId);
+
+    }
+    @Override
+    public DatabaseObject findByDbId2(Long dbId) {
+        return databaseObjectRepository.find(dbId);
+
     }
 
     @Override
-    public DatabaseObject findByStId(String stId) {
-        return databaseObjectRepository.findByStId(stId);
+    public DatabaseObject findByDbId3(Long dbId) {
+        return databaseObjectRepository.find2(dbId);
+
+    }
+
+    @Override
+    public DatabaseObject findByStableIdentifier(String stableIdentifier) {
+        return databaseObjectRepository.findByStableIdentifier(stableIdentifier);
     }
 }

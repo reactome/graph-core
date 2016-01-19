@@ -6,7 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.List;
 
 @NodeEntity
-public class EntitySet extends PhysicalEntity implements Modification{
+public class EntitySet extends PhysicalEntity{ //implements Modification
 
     private String totalProt;
     private String inferredProt;

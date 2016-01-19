@@ -4,10 +4,13 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.domain.relationship.RepeatedUnit;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @NodeEntity
-public class Polymer extends PhysicalEntity implements Modification{
+public class Polymer extends PhysicalEntity {//implements Modification
 
     private Integer maxUnitCount;
     private Integer minUnitCount;
@@ -63,13 +66,16 @@ public class Polymer extends PhysicalEntity implements Modification{
         this.inferredProt = inferredProt;
     }
 
-    public RepeatedUnit getRepeatedUnit() {
-        return repeatedUnit;
-    }
 
-    public void setRepeatedUnit(RepeatedUnit repeatedUnit) {
-        this.repeatedUnit = repeatedUnit;
-    }
+
+
+//    public RepeatedUnit getRepeatedUnit() {
+//        return repeatedUnit;
+//    }
+//
+//    public void setRepeatedUnit(RepeatedUnit repeatedUnit) {
+//        this.repeatedUnit = repeatedUnit;
+//    }
 
     public Set<Species> getSpecies() {
         return species;
@@ -79,23 +85,32 @@ public class Polymer extends PhysicalEntity implements Modification{
         this.species = species;
     }
 
-    //    public List<PhysicalEntity> getRepeatedUnit() {
-//        List<PhysicalEntity> rtn = new ArrayList<>();
-//        if(repeatedUnit!=null){
-//            for (int i = 0; i < repeatedUnit.getCardinality(); i++) {
-//                rtn.add(repeatedUnit.getPhysicalEntity());
-//            }
-//        }
-//        return rtn;
-//    }
-//
-//    public void setRepeatedUnit(List<PhysicalEntity> repeatedUnit) {
-//        if (repeatedUnit != null && repeatedUnit.isEmpty()) {
-//            this.repeatedUnit = new RepeatedUnit();
-//            this.repeatedUnit.setPolymer(this);
-//            this.repeatedUnit.setPhysicalEntity(repeatedUnit.get(0));
-//            this.repeatedUnit.setCardinality(repeatedUnit.size());
-//        }
-//    }
+    public void setSpecies(Species species) {
+        Set<Species> speciesSet = new HashSet<>();
+        speciesSet.add(species);
+        this.species = speciesSet;
+    }
+
+
+
+
+    public List<PhysicalEntity> getRepeatedUnit() {
+        List<PhysicalEntity> rtn = new ArrayList<>();
+        if(repeatedUnit!=null){
+            for (int i = 0; i < repeatedUnit.getCardinality(); i++) {
+                rtn.add(repeatedUnit.getPhysicalEntity());
+            }
+        }
+        return rtn;
+    }
+
+    public void setRepeatedUnit(List<PhysicalEntity> repeatedUnit) {
+        if (repeatedUnit != null && repeatedUnit.isEmpty()) {
+            this.repeatedUnit = new RepeatedUnit();
+            this.repeatedUnit.setPolymer(this);
+            this.repeatedUnit.setPhysicalEntity(repeatedUnit.get(0));
+            this.repeatedUnit.setCardinality(repeatedUnit.size());
+        }
+    }
 
 }

@@ -6,13 +6,14 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.List;
 
 @NodeEntity
-public abstract class Event extends DatabaseObject implements Regulator {
+public abstract class Event extends DatabaseObject {//implements Regulator
 
     private Boolean _doRelease;
     private String releaseDate;
     private String keywords;
     private String speciesName;
     private String definition;
+    private List<String> name;
     /**
      * A simple label to indicate if this Event object is a disease
      */
@@ -22,16 +23,16 @@ public abstract class Event extends DatabaseObject implements Regulator {
      */
     private Boolean isInferred;
     
-    @Relationship(type = "authored")
+    @Relationship(type = "authored", direction = "OUTGOING")
     private List<InstanceEdit> authored;
-    
-    @Relationship(type = "edited")
+
+    @Relationship(type = "edited", direction = "OUTGOING")
     private List<InstanceEdit> edited;
-    
-    @Relationship(type = "revised")
+
+    @Relationship(type = "revised", direction = "OUTGOING")
     private List<InstanceEdit> revised;
-    
-    @Relationship(type = "reviewed")
+
+    @Relationship(type = "reviewed", direction = "OUTGOING")
     private List<InstanceEdit> reviewed;
     
     @Relationship(type = "species")
@@ -43,7 +44,7 @@ public abstract class Event extends DatabaseObject implements Regulator {
     @Relationship(type = "evidenceType")
     private EvidenceType evidenceType;
     
-    @Relationship(type = "goBiologicalProcess")
+//    @Relationship(type = "goBiologicalProcess", direction = "OUTGOING")
     private GO_BiologicalProcess goBiologicalProcess;
 
     @Relationship(type = "summation")
@@ -88,9 +89,6 @@ public abstract class Event extends DatabaseObject implements Regulator {
     @Relationship(type = "inferredFrom")
     private List<Event> inferredFrom;
 
-    @Relationship(type = "name")
-    private List<String> name;
-    
     @Relationship(type = "orthologousEvent")
     private List<Event> orthologousEvent;
     

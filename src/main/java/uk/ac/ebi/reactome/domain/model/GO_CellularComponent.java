@@ -1,22 +1,22 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
 @NodeEntity
 public class GO_CellularComponent extends DatabaseObject {
 
     private String accession;
-
     private String definition;
-
-    private ReferenceDatabase referenceDatabase;
-
     private String referenceDatabaseClass;
+
+    @Relationship(type = "referenceDatabase")
+    private ReferenceDatabase referenceDatabase;
 
     public GO_CellularComponent() {}
 
     public String getAccession() {
-        return this.accession;
+        return accession;
     }
 
     public void setAccession(String accession) {
@@ -24,26 +24,26 @@ public class GO_CellularComponent extends DatabaseObject {
     }
 
     public String getDefinition() {
-        return this.definition;
+        return definition;
     }
 
     public void setDefinition(String definition) {
         this.definition = definition;
     }
 
-    public ReferenceDatabase getReferenceDatabase() {
-        return this.referenceDatabase;
-    }
-
-    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
-        this.referenceDatabase = referenceDatabase;
-    }
-
     public String getReferenceDatabaseClass() {
-        return this.referenceDatabaseClass;
+        return referenceDatabaseClass;
     }
 
     public void setReferenceDatabaseClass(String referenceDatabaseClass) {
         this.referenceDatabaseClass = referenceDatabaseClass;
+    }
+
+    public ReferenceDatabase getReferenceDatabase() {
+        return referenceDatabase;
+    }
+
+    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
+        this.referenceDatabase = referenceDatabase;
     }
 }

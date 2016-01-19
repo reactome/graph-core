@@ -16,7 +16,7 @@ import uk.ac.ebi.reactome.domain.model.Polymer;
  * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
  * outputs.
  */
-@RelationshipEntity(type = "HAS_REPEATED_UNIT")
+@RelationshipEntity(type = "repeatedUnit")
 public class RepeatedUnit {
 
     @SuppressWarnings("unused")

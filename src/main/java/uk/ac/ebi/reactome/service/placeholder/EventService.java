@@ -28,9 +28,9 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
         return eventRepository.findByDbId(dbId);
     }
 
-    public Event findByStId(String stId) {
-        return eventRepository.findByStId(stId);
-    }
+//    public Event findByStId(String stId) {
+//        return eventRepository.findByStId(stId);
+//    }
 
     public Event getOrCreate(Event event) {
         Event oldEvent = eventRepository.findByDbId(event.getDbId());

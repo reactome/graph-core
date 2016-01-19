@@ -1,18 +1,24 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @NodeEntity
 public class ReactionLikeEvent extends Event {
 
+    @Property
     private Boolean isChimeric;
+    @Property
     private String systematicName;
 
     @Relationship(type = "input")
@@ -57,21 +63,21 @@ public class ReactionLikeEvent extends Event {
         this.systematicName = systematicName;
     }
 
-    public List<Input> getInput() {
-        return input;
-    }
-
-    public void setInput(List<Input> input) {
-        this.input = input;
-    }
-
-    public List<Output> getOutput() {
-        return output;
-    }
-
-    public void setOutput(List<Output> output) {
-        this.output = output;
-    }
+//    public List<Input> getInput() {
+//        return input;
+//    }
+//
+//    public void setInput(List<Input> input) {
+//        this.input = input;
+//    }
+//
+//    public List<Output> getOutput() {
+//        return output;
+//    }
+//
+//    public void setOutput(List<Output> output) {
+//        this.output = output;
+//    }
 
     public List<PhysicalEntity> getEntityOnOtherCell() {
         return entityOnOtherCell;
@@ -137,63 +143,80 @@ public class ReactionLikeEvent extends Event {
 //        this.output = output;
 //    }
 
-//        public List<PhysicalEntity> getInput() {
-//        List<PhysicalEntity> rtn = new ArrayList<>();
-//        for (Input aux : input) {
-//            for (int i = 0; i < aux.getCardinality(); i++) {
-//                rtn.add(aux.getPhysicalEntity());
-//            }
-//        }
-//        return rtn;
+//    public List<Input> getInput() {
+//        return input;
 //    }
 //
-//    public void setInput(List<PhysicalEntity> inputs) {
-//        Map<Long, Input> map = new HashMap<>();
-//        for (PhysicalEntity physicalEntity : inputs) {
-//            Input input = map.get(physicalEntity.getDbId());
-//            if (input == null) {
-//                input = new Input();
-//                input.setEvent(this);
-//                input.setPhysicalEntity(physicalEntity);
-//                map.put(physicalEntity.getDbId(), input);
-//            } else {
-//                input.setCardinality(input.getCardinality() + 1);
-//            }
-//        }
-//        this.input = new HashSet<>(map.values());
+//    public void setInput(Set<Input> input) {
+//        this.input = input;
 //    }
-//
-////    public void setInput(Set<Input> input) {
-////        this.input = input;
-////    }
-//
-//    public List<PhysicalEntity> getOutput() {
-//        List<PhysicalEntity> rtn = new ArrayList<>();
-//        for (Output aux : output) {
-//            for (int i = 0; i < aux.getCardinality(); i++) {
-//                rtn.add(aux.getPhysicalEntity());
-//            }
-//        }
-//        return rtn;
+
+
+        public List<PhysicalEntity> getInput() {
+        List<PhysicalEntity> rtn = new ArrayList<>();
+            if(input!=null) {
+                for (Input aux : input) {
+                    for (int i = 0; i < aux.getCardinality(); i++) {
+                        rtn.add(aux.getPhysicalEntity());
+                    }
+                }
+                return rtn;
+            }
+            return null;
+    }
+
+    public void setInput(List<PhysicalEntity> inputs) {
+        if(inputs == null) return;
+        Map<Long, Input> map = new HashMap<>();
+        for (PhysicalEntity physicalEntity : inputs) {
+            Input input = map.get(physicalEntity.getDbId());
+            if (input == null) {
+                input = new Input();
+                input.setEvent(this);
+                input.setPhysicalEntity(physicalEntity);
+                map.put(physicalEntity.getDbId(), input);
+            } else {
+                input.setCardinality(input.getCardinality() + 1);
+            }
+        }
+        this.input = new ArrayList<>(map.values());
+    }
+
+//    public void setInput(Set<Input> input) {
+//        this.input = input;
 //    }
-//
-//    public void setOutput(List<PhysicalEntity> outputs) {
-//        Map<Long, Output> map = new HashMap<>();
-//        for (PhysicalEntity physicalEntity : outputs) {
-//            Output output = map.get(physicalEntity.getDbId());
-//            if (output == null) {
-//                output = new Output();
-//                output.setEvent(this);
-//                output.setPhysicalEntity(physicalEntity);
-//                map.put(physicalEntity.getDbId(), output);
-//            } else {
-//                output.setCardinality(output.getCardinality() + 1);
-//            }
-//        }
-//        this.output = new HashSet<>(map.values());
-//    }
-//
-//    public void setOutput(Set<Output> output) {
+
+    public List<PhysicalEntity> getOutput() {
+        List<PhysicalEntity> rtn = new ArrayList<>();
+        if (output != null) {
+            for (Output aux : output) {
+                for (int i = 0; i < aux.getCardinality(); i++) {
+                    rtn.add(aux.getPhysicalEntity());
+                }
+            }
+            return rtn;
+        }
+        return null;
+    }
+
+    public void setOutput(List<PhysicalEntity> outputs) {
+        if(outputs == null) return;
+        Map<Long, Output> map = new HashMap<>();
+        for (PhysicalEntity physicalEntity : outputs) {
+            Output output = map.get(physicalEntity.getDbId());
+            if (output == null) {
+                output = new Output();
+                output.setEvent(this);
+                output.setPhysicalEntity(physicalEntity);
+                map.put(physicalEntity.getDbId(), output);
+            } else {
+                output.setCardinality(output.getCardinality() + 1);
+            }
+        }
+        this.output = new ArrayList<>(map.values());
+    }
+
+//    public void setOutput(List<Output> output) {
 //        this.output = output;
 //    }
 }

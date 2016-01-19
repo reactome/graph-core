@@ -15,6 +15,6 @@ public interface EventRepository extends GraphRepository<Event> {
 
     Event findByDbId(Long dbId);
 
-    Event findByStId(String stId);
+//    Event findByStId(String stId);
 
 }

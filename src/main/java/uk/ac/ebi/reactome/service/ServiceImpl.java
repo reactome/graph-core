@@ -1,7 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
 import org.springframework.data.neo4j.repository.GraphRepository;
-import uk.ac.ebi.reactome.service.Service;
 
 /**
  * Created by:

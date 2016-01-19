@@ -1,8 +1,8 @@
 package uk.ac.ebi.reactome.service;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.repository.GenericRepository;
 
@@ -16,8 +16,7 @@ import uk.ac.ebi.reactome.repository.GenericRepository;
 @Transactional(readOnly = true)
 public class GenericServiceImpl implements GenericService {
 
-    //    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
+    private static final Logger logger = Logger.getLogger(GenericServiceImpl.class);
 
     @Autowired
     private GenericRepository genericRepository;
@@ -38,8 +37,8 @@ public class GenericServiceImpl implements GenericService {
     }
 
     @Override
-    public <T>T  findByStId(Class<T> clazz, String stId, Integer depth) {
-        return genericRepository.findByStId(clazz, stId, depth);
+    public <T>T  findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth) {
+        return genericRepository.findByStableIdentifier(clazz, stableIdentifier, depth);
     }
 
     @Override
@@ -47,18 +46,7 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.countEntries(clazz);
     }
 
-    @Override
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
-    public void cleanDatabase() {
-        genericRepository.cleanDatabase();;
-        logger.info("GraphDatabase has been cleaned");
-    }
 
-    @Override
-    public void addRelationship(Long dbIdA, Long dbIdB, String relationshipName){
-        if (!genericRepository.addRelationship(dbIdA, dbIdB, relationshipName)) {
-            logger.error("Adding " + relationshipName + " Relationship between entry with dbId: " + dbIdA + " and dbId: " + dbIdB + " failed");
-        }
-    }
+
 
 }

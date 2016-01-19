@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
 @EnableNeo4jRepositories
-@EnableTransactionManagement
+@EnableTransactionManagement //default= AdviceMode.PROXY
 public class Application extends Neo4jConfiguration{
 
 //    private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -51,6 +51,8 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
         SpringApplication.run(Application.class, args);
     }
 
+//    @Bean
+//    public DomainAspect simpleAspect() {return DomainAspect.aspectOf();}
 
     /**
      * Neo4jServer interface provides a URL for access to the Database.
@@ -90,6 +92,7 @@ private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogge
      */
     @Override
     @Bean
+//    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public Session getSession() throws Exception {
         logger.info("Initialising session-scoped Session Bean");
         return super.getSession();

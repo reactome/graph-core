@@ -25,9 +25,11 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Autowired
     private Neo4jOperations template;
 
-    // implemented this method because SDN 4.1 will add depth parameter
     @Override
     public <T> T loadByProperty(Class<T> clazz, String property, Object value){
+        /**
+         * implemented this method because SDN 4.1 will add depth parameter
+         */
         return template.loadByProperty(clazz, property, value);
     }
 
@@ -46,8 +48,8 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
     @Override
-    public <T> T findByStId(Class<T> clazz, String stId, Integer depth) {
-        Collection<T> collection =  session.loadAll(clazz, new Filter("stId", stId), depth);
+    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth) {
+        Collection<T> collection =  session.loadAll(clazz, new Filter("stableIdentifier", stableIdentifier), depth);
         if (collection!=null && !collection.isEmpty()) {
             return collection.iterator().next();
         }
@@ -64,7 +66,7 @@ public class GenericRepositoryImpl implements GenericRepository {
         session.purgeDatabase();
     }
 
-
+    @Override
     public boolean addRelationship(Long dbIdA, Long dbIdB, String relationshipName) {
         Map<String,Long> params = new HashMap<>();
         params.put("dbIdA", dbIdA);
@@ -76,21 +78,4 @@ public class GenericRepositoryImpl implements GenericRepository {
                 "RETURN COUNT(r)=1";
         return template.queryForObject(Boolean.class,query,params);
     }
-//    @Override
-//    public DatabaseObject findByDbId(Long dbId, Integer depth) {
-//        Collection<DatabaseObject> collection =  session.loadAll(DatabaseObject.class, new Filter("dbId", dbId), depth);
-//        if (collection!=null && !collection.isEmpty()) {
-//            return collection.iterator().next();
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public DatabaseObject findByStId(String stId, Integer depth) {
-//        Collection<DatabaseObject> collection =  session.loadAll(DatabaseObject.class, new Filter("stId", stId), depth);
-//        if (collection!=null && !collection.isEmpty()) {
-//            return collection.iterator().next();
-//        }
-//        return null;
-//    }
 }
