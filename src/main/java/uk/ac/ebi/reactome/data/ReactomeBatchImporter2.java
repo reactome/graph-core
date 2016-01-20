@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -43,7 +42,9 @@ public class ReactomeBatchImporter2 {
     private static BatchInserter batchInserter;
 
     private static final String PACKAGE_NAME    = "uk.ac.ebi.reactome.domain.model.";
-    private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
+//    private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
+private static final String DATA_DIR        = "target/graph.db";
+
 
     private static final String DBID = "dbId";
     private static final String STID = "stableIdentifier";
@@ -76,7 +77,7 @@ public class ReactomeBatchImporter2 {
      * It starts the import of Reactome data by top level pathways.
      * Each top level pathway will be iterated recursively.
      */
-    @PostConstruct
+//    @PostConstruct
     public void importAll() {
         prepareDatabase();
         try {
@@ -123,7 +124,7 @@ public class ReactomeBatchImporter2 {
         List<String> attributes = relationAttributesMap.get(clazz);
         if(attributes != null) {
             for (String attribute : attributes) {
-                if (instance.getSchemClass().isValidAttribute(attribute)) {
+                if (isValideGkInstanceAttribute(instance, attribute)) {
                     try {
                         List attributeValues = instance.getAttributeValuesList(attribute);
                         if (attributeValues == null || attributeValues.size() == 0) continue;
@@ -161,7 +162,7 @@ public class ReactomeBatchImporter2 {
             List<String> attributes = primitiveAttributesMap.get(clazz);
             if (attributes != null) {
                 for (String attribute : attributes) {
-                    if (instance.getSchemClass().isValidAttribute(attribute)) {
+                    if (isValideGkInstanceAttribute(instance,attribute)) {
                         Object value = instance.getAttributeValue(attribute);
                         if (value == null) continue;
                         if (attribute.equals(STID)) {
@@ -177,7 +178,7 @@ public class ReactomeBatchImporter2 {
             attributes = primitiveListAttributesMap.get(clazz);
             if (attributes != null) {
                 for (String attribute : attributes) {
-                    if (instance.getSchemClass().isValidAttribute(attribute)) {
+                    if (isValideGkInstanceAttribute(instance, attribute)) {
                         List valueList = instance.getAttributeValuesList(attribute);
                         if (valueList == null) continue;
                         List<String> array = new ArrayList<>();
@@ -272,7 +273,12 @@ public class ReactomeBatchImporter2 {
     private void cleanDatabase() {
 
         try {
-            FileUtils.cleanDirectory(new File(DATA_DIR));
+            File dir = new File(DATA_DIR);
+            if(dir.exists()) {
+                FileUtils.cleanDirectory(dir);
+            } else {
+                FileUtils.forceMkdir(dir);
+            }
         } catch (IOException | IllegalArgumentException e) {
             logger.warn("An error occurred while cleaning the old database");
         }
@@ -328,7 +334,14 @@ public class ReactomeBatchImporter2 {
             Method[] methods = clazz.getMethods();
             for (Method method : methods) {
                 String methodName = method.getName();
-                if (methodName.startsWith("get") && !methodName.equals("getClass") && !methodName.startsWith("getSuper") && !methodName.equals("getSchemaClass")) {
+                if (        methodName.startsWith("get")
+                        && !methodName.startsWith("getSuper")
+                        && !methodName.equals("getClass")
+                        && !methodName.equals("getId") //getter/setter should be removed from model
+                        && !methodName.equals("getDbId")
+                        && !methodName.equals("getDisplayName")
+                        && !methodName.equals("getTimestamp") //should be removed from model!
+                        && !methodName.equals("getSchemaClass")) { //should be removed from model!
                     Type returnType = method.getGenericReturnType();
                     if (returnType instanceof ParameterizedType) {
                         ParameterizedType type = (ParameterizedType) returnType;

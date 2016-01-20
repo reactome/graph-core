@@ -9,10 +9,12 @@ import java.util.List;
 public class DatabaseIdentifier extends DatabaseObject {
 
     private String identifier;
+
     /**
      * Valid URL based on referenceDatabase
+     * This can not be filled from GK Instance in a generic way !
      */
-    private String url;
+//    private String url;
 
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
@@ -30,13 +32,13 @@ public class DatabaseIdentifier extends DatabaseObject {
         this.identifier = identifier;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
+//    public String getUrl() {
+//        return url;
+//    }
+//
+//    public void setUrl(String url) {
+//        this.url = url;
+//    }
 
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;

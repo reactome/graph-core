@@ -69,20 +69,20 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
     @Relationship(type = "goActivity")
     private List<GO_MolecularFunction> goActivity;
 
-    @Relationship(type = "inhibitedEvent")
-    private List<Event> inhibitedEvent;
-
-    @Relationship(type = "activatedEvent")
-    private List<Event> activatedEvent;
-
-    @Relationship(type = "requiredEvent")
-    private List<Event> requiredEvent;
-
-    @Relationship(type = "producedByEvent")
-    private List<Event> producedByEvent;
-
-    @Relationship(type = "consumedByEvent")
-    private List<Event> consumedByEvent;
+//    @Relationship(type = "inhibitedEvent")
+//    private List<Event> inhibitedEvent;
+//
+//    @Relationship(type = "activatedEvent")
+//    private List<Event> activatedEvent;
+//
+//    @Relationship(type = "requiredEvent")
+//    private List<Event> requiredEvent;
+//
+//    @Relationship(type = "producedByEvent")
+//    private List<Event> producedByEvent;
+//
+//    @Relationship(type = "consumedByEvent")
+//    private List<Event> consumedByEvent;
     
     public PhysicalEntity() {}
 
@@ -237,46 +237,46 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
     public void setGoActivity(List<GO_MolecularFunction> goActivity) {
         this.goActivity = goActivity;
     }
-
-    public List<Event> getInhibitedEvent() {
-        return inhibitedEvent;
-    }
-
-    public void setInhibitedEvent(List<Event> inhibitedEvent) {
-        this.inhibitedEvent = inhibitedEvent;
-    }
-
-    public List<Event> getActivatedEvent() {
-        return activatedEvent;
-    }
-
-    public void setActivatedEvent(List<Event> activatedEvent) {
-        this.activatedEvent = activatedEvent;
-    }
-
-    public List<Event> getRequiredEvent() {
-        return requiredEvent;
-    }
-
-    public void setRequiredEvent(List<Event> requiredEvent) {
-        this.requiredEvent = requiredEvent;
-    }
-
-    public List<Event> getProducedByEvent() {
-        return producedByEvent;
-    }
-
-    public void setProducedByEvent(List<Event> producedByEvent) {
-        this.producedByEvent = producedByEvent;
-    }
-
-    public List<Event> getConsumedByEvent() {
-        return consumedByEvent;
-    }
-
-    public void setConsumedByEvent(List<Event> consumedByEvent) {
-        this.consumedByEvent = consumedByEvent;
-    }
+//
+//    public List<Event> getInhibitedEvent() {
+//        return inhibitedEvent;
+//    }
+//
+//    public void setInhibitedEvent(List<Event> inhibitedEvent) {
+//        this.inhibitedEvent = inhibitedEvent;
+//    }
+//
+//    public List<Event> getActivatedEvent() {
+//        return activatedEvent;
+//    }
+//
+//    public void setActivatedEvent(List<Event> activatedEvent) {
+//        this.activatedEvent = activatedEvent;
+//    }
+//
+//    public List<Event> getRequiredEvent() {
+//        return requiredEvent;
+//    }
+//
+//    public void setRequiredEvent(List<Event> requiredEvent) {
+//        this.requiredEvent = requiredEvent;
+//    }
+//
+//    public List<Event> getProducedByEvent() {
+//        return producedByEvent;
+//    }
+//
+//    public void setProducedByEvent(List<Event> producedByEvent) {
+//        this.producedByEvent = producedByEvent;
+//    }
+//
+//    public List<Event> getConsumedByEvent() {
+//        return consumedByEvent;
+//    }
+//
+//    public void setConsumedByEvent(List<Event> consumedByEvent) {
+//        this.consumedByEvent = consumedByEvent;
+//    }
 
 //
 //    public void addCrossReference(DatabaseIdentifier dbi) {

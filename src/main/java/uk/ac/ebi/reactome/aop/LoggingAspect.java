@@ -21,7 +21,7 @@ public class LoggingAspect {
 
     private static final Logger logger = Logger.getLogger(LoggingAspect.class);
 
-    @Pointcut("within(uk.ac.ebi.reactome.service..*)")
+    @Pointcut("within(uk.ac.ebi.reactome.service..*) || within(uk.ac.ebi.reactome.data.DatabaseObjectFactory.*)")
     public void loggingPointcut() {}
 
     /**
