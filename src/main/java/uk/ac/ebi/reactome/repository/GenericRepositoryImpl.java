@@ -7,8 +7,6 @@ import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by:
@@ -26,7 +24,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     private Neo4jOperations template;
 
     @Override
-    public <T> T loadByProperty(Class<T> clazz, String property, Object value){
+    public <T> T loadByProperty(Class<T> clazz, String property, Object value) {
         /**
          * implemented this method because SDN 4.1 will add depth parameter
          */
@@ -40,8 +38,8 @@ public class GenericRepositoryImpl implements GenericRepository {
 
     @Override
     public <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth) {
-        Collection<T> collection =  session.loadAll(clazz, new Filter("dbId", dbId), depth);
-        if (collection!=null && !collection.isEmpty()) {
+        Collection<T> collection = session.loadAll(clazz, new Filter("dbId", dbId), depth);
+        if (collection != null && !collection.isEmpty()) {
             return collection.iterator().next();
         }
         return null;
@@ -49,8 +47,8 @@ public class GenericRepositoryImpl implements GenericRepository {
 
     @Override
     public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth) {
-        Collection<T> collection =  session.loadAll(clazz, new Filter("stableIdentifier", stableIdentifier), depth);
-        if (collection!=null && !collection.isEmpty()) {
+        Collection<T> collection = session.loadAll(clazz, new Filter("stableIdentifier", stableIdentifier), depth);
+        if (collection != null && !collection.isEmpty()) {
             return collection.iterator().next();
         }
         return null;
@@ -59,23 +57,5 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public Long countEntries(Class<?> clazz) {
         return template.count(clazz);
-    }
-
-    @Override
-    public void cleanDatabase() {
-        session.purgeDatabase();
-    }
-
-    @Override
-    public boolean addRelationship(Long dbIdA, Long dbIdB, String relationshipName) {
-        Map<String,Long> params = new HashMap<>();
-        params.put("dbIdA", dbIdA);
-        params.put("dbIdB", dbIdB);
-        String query =  "MATCH(a:DatabaseObject {dbId:{dbIdA}}),(b:DatabaseObject {dbId:{dbIdB}}) " +
-                "MERGE (a)-[r:" + relationshipName +"]->(b) " +
-                "ON CREATE SET r =  {cardinality:1} " +
-                "ON MATCH  SET r += {cardinality:(r.cardinality+1)} " +
-                "RETURN COUNT(r)=1";
-        return template.queryForObject(Boolean.class,query,params);
     }
 }

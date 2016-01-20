@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-import uk.ac.ebi.reactome.domain.model.EntityWithAccessionedSequence;
+import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 
 import java.util.Collection;
 
@@ -22,17 +22,8 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     DatabaseObject findByStableIdentifier(String stableIdentifier);
 
     @Query ("MATCH (n:DatabaseObject{dbId:{0}}) Return n")
-    DatabaseObject find(Long dbId);
-
-    @Query ("CREATE CONSTRAINT ON (n:DatabaseObject) ASSERT n.dbId is UNIQUE")
-    void createConstraintOnDatabaseObjectDbId();
-
-    @Query ("CREATE CONSTRAINT ON (n:DatabaseObject) ASSERT n.stableIdentifier is UNIQUE")
-    void createConstraintOnDatabaseObjectStId();
-
-    @Query ("MATCH (n:DatabaseObject{dbId:{0}})-[r]-() Return n,r")
-    DatabaseObject find2(Long dbId);
+    DatabaseObject findByDbId2(Long dbId);
 
     @Query ("MATCH (n:Pathway{dbId:{0}})-[r:hasEvent|input|output|hasMember|hasComponent|repeatedUnit*]->(m:EntityWithAccessionedSequence) RETURN DISTINCT m")
-    Collection<EntityWithAccessionedSequence> getParticipating(Long dbId);
+    Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
 }

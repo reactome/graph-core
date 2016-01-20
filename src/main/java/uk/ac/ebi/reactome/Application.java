@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome;
 
+import org.apache.log4j.Logger;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.boot.SpringApplication;
@@ -37,8 +38,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement //default= AdviceMode.PROXY
 public class Application extends Neo4jConfiguration{
 
-//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-private  final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(this.getClass());
+private static final Logger logger = Logger.getLogger(Application.class);
+
 
     /**
      * The main() method uses Spring Boot’s SpringApplication.run() method to launch an application.

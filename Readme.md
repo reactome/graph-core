@@ -454,3 +454,21 @@ match (n:Event)-[r]-(y:Species{dbId:48887}) return n
 MATCH (n:Pathway{dbId:75153})-[:hasEvent*]->(m:Pathway)  RETURN n,m 
 
 MATCH (n:Event{dbId:373753})-[r:hasEvent|input|output|catalystActivity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m) WHERE m:ReferenceEntity RETURN DISTINCT m
+
+
+
+Neo4j REST INterface
+
+firefox: chrome://resteasy/content/resteasy.html
+
+POST: http://localhost:7474/db/data/transaction/commit
+Header
+Content-Type application/json
+Authentication: neo4j reactome
+Body
+{
+  "statements" : [ {
+    "statement" : "MATCH (n:DatabaseObject{dbId:1500931})-[:hasEvent|input|output|positivelyRegulate|negativelyRegulate|entityFunctionalStatus|physicalEntity|catalystActivity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m) WHERE m:ReferenceEntity RETURN DISTINCT  m.dbId, m.identifier, m.displayName"
+  } ]
+}
+

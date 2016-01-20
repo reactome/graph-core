@@ -1,6 +1,9 @@
 package uk.ac.ebi.reactome.service;
 
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+
+import java.util.Collection;
 
 /**
  * Created by:
@@ -11,8 +14,8 @@ import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 public interface DatabaseObjectService extends Service<DatabaseObject> {
 
     DatabaseObject findOne(Long id, int depth);
-    DatabaseObject findByDbId(Long dbId);
+    DatabaseObject findByDbId1(Long dbId);
     DatabaseObject findByDbId2(Long dbId);
-    DatabaseObject findByDbId3(Long dbId);
     DatabaseObject findByStableIdentifier(String stableIdentifier);
+    Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
 }

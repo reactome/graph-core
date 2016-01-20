@@ -16,7 +16,4 @@ public interface GenericRepository {
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
     Long countEntries(Class<?> clazz);
-    void cleanDatabase();
-    boolean addRelationship(Long dbIdA, Long dbIdB, String relationshipName);
-
 }

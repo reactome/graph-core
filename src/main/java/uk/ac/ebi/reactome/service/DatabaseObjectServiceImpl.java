@@ -6,7 +6,10 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
+
+import java.util.Collection;
 
 /**
  * Created by:
@@ -30,28 +33,27 @@ private  final Logger logger = Logger.getLogger(DatabaseObjectServiceImpl.class)
 
     @Override
     public DatabaseObject findOne(Long id, int depth) {
-        return databaseObjectRepository.findOne(id,depth);
+        return databaseObjectRepository.findOne(id, depth);
     }
 
     @Override
-    public DatabaseObject findByDbId(Long dbId) {
+    public DatabaseObject findByDbId1(Long dbId) {
         return databaseObjectRepository.findByDbId(dbId);
 
     }
     @Override
     public DatabaseObject findByDbId2(Long dbId) {
-        return databaseObjectRepository.find(dbId);
-
-    }
-
-    @Override
-    public DatabaseObject findByDbId3(Long dbId) {
-        return databaseObjectRepository.find2(dbId);
+        return databaseObjectRepository.findByDbId2(dbId);
 
     }
 
     @Override
     public DatabaseObject findByStableIdentifier(String stableIdentifier) {
         return databaseObjectRepository.findByStableIdentifier(stableIdentifier);
+    }
+
+    @Override
+    public Collection<ReferenceEntity> getParticipatingMolecules(Long dbId) {
+        return databaseObjectRepository.getParticipatingMolecules(dbId);
     }
 }
