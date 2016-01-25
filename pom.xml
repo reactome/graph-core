@@ -88,7 +88,7 @@
 
         <repository>
             <id>neo4j</id>
-            <url>http://m2.neo4j.org/content/repositories/snapshots</url>
+            <url>http://m2.neo4j.org/content/repositories</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
