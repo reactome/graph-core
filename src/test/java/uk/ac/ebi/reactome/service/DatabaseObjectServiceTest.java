@@ -5,14 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.ac.ebi.reactome.Application;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.MyConfiguration;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+import uk.ac.ebi.reactome.domain.result.LabelsCount;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by:
@@ -22,9 +25,14 @@ import java.util.Collection;
  *
  *
  */
+
+@ContextConfiguration(classes = { MyConfiguration.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DatabaseObjectServiceTest {
+
+//    @Autowired
+//    private DatabaseObjectRepository databaseObjectRepository;
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -56,10 +64,35 @@ public class DatabaseObjectServiceTest {
     @Test
     public void testFindByDbId() {
 
-        DatabaseObject databaseObject1 = DatabaseObjectFactory.createObject("5619102");
-        DatabaseObject databaseObject2 = genericService.loadByProperty(DatabaseObject.class, "dbId", 5619102L);
+//        Iterable<DatabaseObject> x = databaseObjectService.findAll();
+        DatabaseObject ob = databaseObjectService.findByDbId1(5205647L);
+
+
+//        DatabaseObject databaseObject1 = DatabaseObjectFactory.createObject("5619102");
+        DatabaseObject databaseObject2 = genericService.loadByProperty(DatabaseObject.class, "dbId", 5205647L);
 //        TODO add actual tests
 
-
+        DatabaseObject databaseObject3 = databaseObjectService.findByDbId2(5205647L);
+        System.out.println();
     }
+
+
+
+    @Test
+    public void test() {
+        Collection<LabelsCount> l = databaseObjectService.getLabelsCount();
+        Map<String,Integer> map = new HashMap<>();
+        for (LabelsCount labelsCount : l) {
+            for (String s : labelsCount.getLabels()) {
+                if(map.containsKey(s)) {
+                    int i = map.get(s);
+                    i += labelsCount.getCount();
+
+                }
+            }
+
+        }
+        System.out.println("");
+    }
+
 }

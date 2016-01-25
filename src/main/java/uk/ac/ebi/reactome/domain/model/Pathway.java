@@ -10,7 +10,7 @@ public class Pathway extends Event {
 
     private String doi;
     private String isCanonical;
-    private Boolean hasDiagram;
+//    private Boolean hasDiagram;
 
     @Relationship(type="hasEvent")
     private List<Event> hasEvent;
@@ -36,13 +36,13 @@ public class Pathway extends Event {
         this.isCanonical = isCanonical;
     }
 
-    public Boolean getHasDiagram() {
-        return hasDiagram;
-    }
-
-    public void setHasDiagram(Boolean hasDiagram) {
-        this.hasDiagram = hasDiagram;
-    }
+//    public Boolean getHasDiagram() {
+//        return hasDiagram;
+//    }
+//
+//    public void setHasDiagram(Boolean hasDiagram) {
+//        this.hasDiagram = hasDiagram;
+//    }
 
     public List<Event> getHasEvent() {
         return hasEvent;

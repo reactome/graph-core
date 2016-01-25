@@ -1,24 +1,11 @@
 package uk.ac.ebi.reactome;
 
 import org.apache.log4j.Logger;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.neo4j.config.Neo4jConfiguration;
-import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.data.neo4j.server.Neo4jServer;
-import org.springframework.data.neo4j.server.RemoteServer;
-import org.springframework.data.neo4j.template.Neo4jOperations;
-import org.springframework.data.neo4j.template.Neo4jTemplate;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import uk.ac.ebi.reactome.domain.result.LabelsCount;
+import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
+
+import java.util.Collection;
 
 /**
  * @since 27 October 2015
@@ -39,11 +26,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Neo4j username and password can be passed on the command line:
  *      mvn spring-boot:run -Drun.jvmArguments="-Dusername=user -Dpassword=password"
  */
-@SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
-@EnableNeo4jRepositories
-@EnableTransactionManagement //default= AdviceMode.PROXY
-@EnableSwagger2
-public class Application extends Neo4jConfiguration{
+
+
+public class Application {
 
 private static final Logger logger = Logger.getLogger(Application.class);
 
@@ -53,100 +38,21 @@ private static final Logger logger = Logger.getLogger(Application.class);
      * @param args Neo4j username and password can be passed on the command line:
      *             mvn spring-boot:run -Drun.jvmArguments="-Dusername=user -Dpassword=password"
      */
+
+;
+
     public static void main(String[] args) {
-//        System.setProperty("username", "neo4j");
-//        System.setProperty("password", "reactome");
-        SpringApplication.run(Application.class, args);
-    }
 
-//    @Bean
-//    public DomainAspect simpleAspect() {return DomainAspect.aspectOf();}
 
-    /**
-     * Neo4jServer interface provides a URL for access to the Database.
-     * In SpringDataNeo4j 4.0 only RemoteServers can be returned
-     * User and password can be specified as parameters
-     * new RemoteServer("http://localhost:7474",username,password);
-     *
-     * @return new neo4jRemoteServer
-     */
-    @Override
-    @Bean
-    public Neo4jServer neo4jServer() {
-        System.setProperty("username", "neo4j");
-        System.setProperty("password", "reactome");
-        logger.info("Initialising server connection");
-        return new RemoteServer("http://localhost:7474");
-    }
+        final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MyConfiguration.class);
+//        As the @Autowired annotation doesn't work in static context,
+//        we're using context.getBean(...) here instead.
 
-    /**
-     * The SessionFactory is needed to create instances of org.neo4j.ogm.session.Session.
-     *
-     * @return new Neo4jSessionFactory
-     */
-    @Override
-    @Bean
-    public SessionFactory getSessionFactory() {
-        logger.info("Initialising Session Factory");
-        return new SessionFactory("uk.ac.ebi.reactome.domain");
-    }
+        DatabaseObjectRepository repo = ctx.getBean(DatabaseObjectRepository.class);
+        Collection<LabelsCount> x= repo.getLabelsCount();
+        System.out.println();
 
-    /**
-     * Repositories and Neo4jTemplate are Session driven.
-     * By Autowiring the Session can be used in the code directly if needed.
-     *
-     * @return Session
-     * @throws Exception (unspecified)
-     */
-    @Override
-    @Bean
-//    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public Session getSession() throws Exception {
-        logger.info("Initialising session-scoped Session Bean");
-        return super.getSession();
-    }
-
-    /**
-     * Spring Data Neo4j offers a Neo4jTemplate for interacting with the Neo4jDatabase which can be used
-     * additionally to repositories
-     * Neo4jTemplate is based on org.neo4j.ogm.session.Session. It adds an additional layer on top of the session,
-     * handles transactions and provides exception translation.
-     * Neo4jTemplate offers implicit transactions (auto commits) for methods: getOrCreate delete query
-     * For other Methods Spring Transaction management of @Transactional can be used
-     * Interface is called Neo4jOperations
-     *
-     * @return default neo4jTemplate
-     * @throws Exception (unspecified)
-     */
-    @Override
-    @Bean
-    public Neo4jOperations neo4jTemplate() throws Exception {
-        return new Neo4jTemplate(getSession());
     }
 
 
-    /**
-     * SWAGGER TODO
-     * http://localhost:8080/swagger-ui.html
-     * @return
-     */
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build().apiInfo(apiInfo());
-    }
-
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-                "Reactome Content Service",
-                "RESTFul service for Reactome content",
-                "0.1",
-                "Terms of service",
-                "Reactome [help@reactome.org]",
-                "Creative Commons Attribution 3.0 Unported License",
-                "http://creativecommons.org/licenses/by/3.0/legalcode");
-    }
 }

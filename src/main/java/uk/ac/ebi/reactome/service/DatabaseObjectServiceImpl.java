@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
 
 import java.util.Collection;
@@ -55,5 +56,10 @@ private  final Logger logger = Logger.getLogger(DatabaseObjectServiceImpl.class)
     @Override
     public Collection<ReferenceEntity> getParticipatingMolecules(Long dbId) {
         return databaseObjectRepository.getParticipatingMolecules(dbId);
+    }
+
+    @Override
+    public Collection<LabelsCount> getLabelsCount() {
+        return databaseObjectRepository.getLabelsCount();
     }
 }

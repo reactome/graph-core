@@ -14,9 +14,9 @@ public class Polymer extends PhysicalEntity {//implements Modification
 
     private Integer maxUnitCount;
     private Integer minUnitCount;
-    private String totalProt;
-    private String maxHomologues;
-    private String inferredProt;
+//    private String totalProt;
+//    private String maxHomologues;
+//    private String inferredProt;
 
     @Relationship(type = "repeatedUnit")
     private RepeatedUnit repeatedUnit;
@@ -42,29 +42,29 @@ public class Polymer extends PhysicalEntity {//implements Modification
         this.minUnitCount = minUnitCount;
     }
 
-    public String getTotalProt() {
-        return totalProt;
-    }
-
-    public void setTotalProt(String totalProt) {
-        this.totalProt = totalProt;
-    }
-
-    public String getMaxHomologues() {
-        return maxHomologues;
-    }
-
-    public void setMaxHomologues(String maxHomologues) {
-        this.maxHomologues = maxHomologues;
-    }
-
-    public String getInferredProt() {
-        return inferredProt;
-    }
-
-    public void setInferredProt(String inferredProt) {
-        this.inferredProt = inferredProt;
-    }
+//    public String getTotalProt() {
+//        return totalProt;
+//    }
+//
+//    public void setTotalProt(String totalProt) {
+//        this.totalProt = totalProt;
+//    }
+//
+//    public String getMaxHomologues() {
+//        return maxHomologues;
+//    }
+//
+//    public void setMaxHomologues(String maxHomologues) {
+//        this.maxHomologues = maxHomologues;
+//    }
+//
+//    public String getInferredProt() {
+//        return inferredProt;
+//    }
+//
+//    public void setInferredProt(String inferredProt) {
+//        this.inferredProt = inferredProt;
+//    }
 
 
 

@@ -8,9 +8,9 @@ import java.util.List;
 @NodeEntity
 public class EntitySet extends PhysicalEntity{ //implements Modification
 
-    private String totalProt;
-    private String inferredProt;
-    private String maxHomologues;
+//    private String totalProt;
+//    private String inferredProt;
+//    private String maxHomologues;
     private Boolean isOrdered;
 
     @Relationship(type = "hasMember")
@@ -21,29 +21,29 @@ public class EntitySet extends PhysicalEntity{ //implements Modification
 
     public EntitySet() {}
 
-    public String getTotalProt() {
-        return totalProt;
-    }
-
-    public void setTotalProt(String totalProt) {
-        this.totalProt = totalProt;
-    }
-
-    public String getInferredProt() {
-        return inferredProt;
-    }
-
-    public void setInferredProt(String inferredProt) {
-        this.inferredProt = inferredProt;
-    }
-
-    public String getMaxHomologues() {
-        return maxHomologues;
-    }
-
-    public void setMaxHomologues(String maxHomologues) {
-        this.maxHomologues = maxHomologues;
-    }
+//    public String getTotalProt() {
+//        return totalProt;
+//    }
+//
+//    public void setTotalProt(String totalProt) {
+//        this.totalProt = totalProt;
+//    }
+//
+//    public String getInferredProt() {
+//        return inferredProt;
+//    }
+//
+//    public void setInferredProt(String inferredProt) {
+//        this.inferredProt = inferredProt;
+//    }
+//
+//    public String getMaxHomologues() {
+//        return maxHomologues;
+//    }
+//
+//    public void setMaxHomologues(String maxHomologues) {
+//        this.maxHomologues = maxHomologues;
+//    }
 
     public Boolean getIsOrdered() {
         return isOrdered;

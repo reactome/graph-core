@@ -456,6 +456,12 @@ MATCH (n:Pathway{dbId:75153})-[:hasEvent*]->(m:Pathway)  RETURN n,m
 MATCH (n:Event{dbId:373753})-[r:hasEvent|input|output|catalystActivity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m) WHERE m:ReferenceEntity RETURN DISTINCT m
 
 
+MATCH (n:DatabaseObject{dbId:5673001})<-[r:hasEvent|input|output*]-(x)  RETURN n,x 
+
+
+FIND TOP LEVEL PATHWAYS 
+
+
 
 Neo4j REST INterface
 

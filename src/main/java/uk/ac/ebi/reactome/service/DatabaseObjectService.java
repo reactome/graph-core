@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.service;
 
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+import uk.ac.ebi.reactome.domain.result.LabelsCount;
 
 import java.util.Collection;
 
@@ -18,4 +19,6 @@ public interface DatabaseObjectService extends Service<DatabaseObject> {
     DatabaseObject findByDbId2(Long dbId);
     DatabaseObject findByStableIdentifier(String stableIdentifier);
     Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
+
+    Collection<LabelsCount> getLabelsCount();
 }

@@ -6,7 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class Book extends Publication {
 
-    private String isbn;
+    private String ISBN;
     private String chapterTitle;
     private String pages;
     private Integer year;
@@ -16,12 +16,12 @@ public class Book extends Publication {
 
     public Book() {}
 
-    public String getIsbn() {
-        return isbn;
+    public String getISBN() {
+        return ISBN;
     }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
     }
 
     public String getChapterTitle() {

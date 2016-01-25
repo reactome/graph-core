@@ -13,17 +13,17 @@ import java.util.List;
 @NodeEntity
 public class Affiliation extends  DatabaseObject{
 
-    private String text;
+    private String address;
     private List<String> name;
 
     public Affiliation() {}
 
-    public String getText() {
-        return text;
+    public String getAddress() {
+        return address;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public List<String> getName() {

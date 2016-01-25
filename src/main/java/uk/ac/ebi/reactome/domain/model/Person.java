@@ -8,7 +8,7 @@ import java.util.List;
 @NodeEntity
 public class Person extends DatabaseObject {
 
-    private String emailAddress;
+    private String eMailAddress;
     private String firstname;
     private String initial;
     private String project;
@@ -22,12 +22,12 @@ public class Person extends DatabaseObject {
 
     public Person() {}
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String geteMailAddress() {
+        return eMailAddress;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void seteMailAddress(String eMailAddress) {
+        this.eMailAddress = eMailAddress;
     }
 
     public String getFirstname() {

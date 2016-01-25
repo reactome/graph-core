@@ -10,18 +10,18 @@ public abstract class Event extends DatabaseObject {//implements Regulator
 
     private Boolean _doRelease;
     private String releaseDate;
-    private String keywords;
-    private String speciesName;
+//    private String keywords;
+//    private String speciesName;
     private String definition;
     private List<String> name;
     /**
      * A simple label to indicate if this Event object is a disease
      */
-    private Boolean isInDisease;
-    /**
-     * A simple flag to indicate if this Event is inferred from another
-     */
-    private Boolean isInferred;
+//    private Boolean isInDisease;
+//    /**
+//     * A simple flag to indicate if this Event is inferred from another
+//     */
+//    private Boolean isInferred;
     
     @Relationship(type = "authored", direction = "OUTGOING")
     private List<InstanceEdit> authored;
@@ -58,9 +58,10 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     
     @Relationship(type = "precedingEvent")
     private List<Event> precedingEvent;
-    
-    @Relationship(type = "followingEvent")
-    private List<Event> followingEvent;
+
+//    relationship duplication ?
+//    @Relationship(type = "followingEvent")
+//    private List<Event> followingEvent;
     
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
@@ -68,27 +69,40 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     /**
      * Regulation related attributes
      */
-    @Relationship(type = "negativeRegulators")
-    private List<DatabaseObject> negativeRegulators;
+    @Relationship(type = "regulatedBy")
+    private List<Regulation> regulatedBy;
 
-    /**
-     * Regulators in PositiveRegulations but not Requirements. Requirement is a subclass to PositiveRegulation.
-     */
-    @Relationship(type = "positiveRegulators")
-    private List<DatabaseObject> positiveRegulators;
+//    /**
+//     * Regulators in PositiveRegulations but not Requirements. Requirement is a subclass to PositiveRegulation.
+//     */
+//    @Relationship(type = "positiveRegulators")
+//    private List<Regulation> positiveRegulators;
     
-    @Relationship(type = "requirements")
-    private List<DatabaseObject> requirements;
-    
+//    @Relationship(type = "requirements")
+//    private List<DatabaseObject> requirements;
+//
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
     
     @Relationship(type = "disease")
     private List<Disease> disease;
-    
+
+    /**
+     * Where are differences between inferredFrom and
+     * orthologous events ? 1 should have to go
+     */
     @Relationship(type = "inferredFrom")
     private List<Event> inferredFrom;
 
+    /**
+     * gets relationships from db in both directions .. needs fix in
+     * can all orthologous events be removed because this could be done by a query?
+     * would greatly reduce amount of relationships
+     *
+     * change to inferredTo --> computational inferred Events
+     * change to orthologousTo --> manually created Events
+     * Batch inserter
+     */
     @Relationship(type = "orthologousEvent")
     private List<Event> orthologousEvent;
     
@@ -112,22 +126,22 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
+//
+//    public String getKeywords() {
+//        return keywords;
+//    }
+//
+//    public void setKeywords(String keywords) {
+//        this.keywords = keywords;
+//    }
 
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public String getSpeciesName() {
-        return speciesName;
-    }
-
-    public void setSpeciesName(String speciesName) {
-        this.speciesName = speciesName;
-    }
+//    public String getSpeciesName() {
+//        return speciesName;
+//    }
+//
+//    public void setSpeciesName(String speciesName) {
+//        this.speciesName = speciesName;
+//    }
 
     public String getDefinition() {
         return definition;
@@ -137,21 +151,21 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         this.definition = definition;
     }
 
-    public Boolean getIsInDisease() {
-        return isInDisease;
-    }
-
-    public void setIsInDisease(Boolean isInDisease) {
-        this.isInDisease = isInDisease;
-    }
-
-    public Boolean getIsInferred() {
-        return isInferred;
-    }
-
-    public void setIsInferred(Boolean isInferred) {
-        this.isInferred = isInferred;
-    }
+//    public Boolean getIsInDisease() {
+//        return isInDisease;
+//    }
+//
+//    public void setIsInDisease(Boolean isInDisease) {
+//        this.isInDisease = isInDisease;
+//    }
+//
+//    public Boolean getIsInferred() {
+//        return isInferred;
+//    }
+//
+//    public void setIsInferred(Boolean isInferred) {
+//        this.isInferred = isInferred;
+//    }
 
     public List<InstanceEdit> getAuthored() {
         return authored;
@@ -249,13 +263,13 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         this.precedingEvent = precedingEvent;
     }
 
-    public List<Event> getFollowingEvent() {
-        return followingEvent;
-    }
-
-    public void setFollowingEvent(List<Event> followingEvent) {
-        this.followingEvent = followingEvent;
-    }
+//    public List<Event> getFollowingEvent() {
+//        return followingEvent;
+//    }
+//
+//    public void setFollowingEvent(List<Event> followingEvent) {
+//        this.followingEvent = followingEvent;
+//    }
 
     public List<Publication> getLiteratureReference() {
         return literatureReference;
@@ -265,29 +279,21 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         this.literatureReference = literatureReference;
     }
 
-    public List<DatabaseObject> getNegativeRegulators() {
-        return negativeRegulators;
+    public List<Regulation> getRegulatedBy() {
+        return regulatedBy;
     }
 
-    public void setNegativeRegulators(List<DatabaseObject> negativeRegulators) {
-        this.negativeRegulators = negativeRegulators;
+    public void setRegulatedBy(List<Regulation> regulatedBy) {
+        this.regulatedBy = regulatedBy;
     }
 
-    public List<DatabaseObject> getPositiveRegulators() {
-        return positiveRegulators;
-    }
-
-    public void setPositiveRegulators(List<DatabaseObject> positiveRegulators) {
-        this.positiveRegulators = positiveRegulators;
-    }
-
-    public List<DatabaseObject> getRequirements() {
-        return requirements;
-    }
-
-    public void setRequirements(List<DatabaseObject> requirements) {
-        this.requirements = requirements;
-    }
+//    public List<DatabaseObject> getRequirements() {
+//        return requirements;
+//    }
+//
+//    public void setRequirements(List<DatabaseObject> requirements) {
+//        this.requirements = requirements;
+//    }
 
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;

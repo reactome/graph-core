@@ -33,8 +33,8 @@ public class ReactionLikeEvent extends Event {
     @Relationship(type = "requiredInputComponent")
     private List<DatabaseObject> requiredInputComponent;
 
-    @Relationship(type = "hasMember")
-    private ReactionLikeEvent hasMember;
+//    @Relationship(type = "hasMember")
+//    private ReactionLikeEvent hasMember;
 
     @Relationship(type = "catalystActivity")
     private List<CatalystActivity> catalystActivity;
@@ -95,13 +95,13 @@ public class ReactionLikeEvent extends Event {
         this.requiredInputComponent = requiredInputComponent;
     }
 
-    public ReactionLikeEvent getHasMember() {
-        return hasMember;
-    }
-
-    public void setHasMember(ReactionLikeEvent hasMember) {
-        this.hasMember = hasMember;
-    }
+//    public ReactionLikeEvent getHasMember() {
+//        return hasMember;
+//    }
+//
+//    public void setHasMember(ReactionLikeEvent hasMember) {
+//        this.hasMember = hasMember;
+//    }
 
     public List<CatalystActivity> getCatalystActivity() {
         return catalystActivity;

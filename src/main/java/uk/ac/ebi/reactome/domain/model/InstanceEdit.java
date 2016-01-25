@@ -8,7 +8,7 @@ import java.util.List;
 @NodeEntity
 public class InstanceEdit extends DatabaseObject {
 
-    private String applyToAllEditedInstances;
+//    private String applyToAllEditedInstances;
     private String dateTime;
     private String note;
 
@@ -17,13 +17,13 @@ public class InstanceEdit extends DatabaseObject {
 
     public InstanceEdit() {}
 
-    public String getApplyToAllEditedInstances() {
-        return this.applyToAllEditedInstances;
-    }
-
-    public void setApplyToAllEditedInstances(String applyToAllEditedInstances) {
-        this.applyToAllEditedInstances = applyToAllEditedInstances;
-    }
+//    public String getApplyToAllEditedInstances() {
+//        return this.applyToAllEditedInstances;
+//    }
+//
+//    public void setApplyToAllEditedInstances(String applyToAllEditedInstances) {
+//        this.applyToAllEditedInstances = applyToAllEditedInstances;
+//    }
 
     public String getDateTime() {
         return this.dateTime;

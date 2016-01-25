@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.data;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ClassUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
@@ -11,8 +12,7 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.*;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 16.01.16.
  */
-@Component
+//@Component
 public class ReactomeBatchImporter2 {
 
     private static final Logger logger = Logger.getLogger(ReactomeBatchImporter2.class);
@@ -42,12 +42,13 @@ public class ReactomeBatchImporter2 {
     private static BatchInserter batchInserter;
 
     private static final String PACKAGE_NAME    = "uk.ac.ebi.reactome.domain.model.";
-//    private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
-private static final String DATA_DIR        = "target/graph.db";
+//        private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
+    private static final String DATA_DIR        = "target/graph.db";
 
 
     private static final String DBID = "dbId";
     private static final String STID = "stableIdentifier";
+    private static final String ACCESSION = "identifier";
     private static final String NAME = "displayName";
 
     private static final String CARDINALITY = "cardinality";
@@ -88,6 +89,7 @@ private static final String DATA_DIR        = "target/graph.db";
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
+                if (!instance.getDisplayName().equals("Mitophagy")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
@@ -124,15 +126,23 @@ private static final String DATA_DIR        = "target/graph.db";
         List<String> attributes = relationAttributesMap.get(clazz);
         if(attributes != null) {
             for (String attribute : attributes) {
-                if (isValideGkInstanceAttribute(instance, attribute)) {
-                    try {
-                        List attributeValues = instance.getAttributeValuesList(attribute);
+                try {
+                    if (isValideGkInstanceAttribute(instance, attribute)) {
+
+                        Collection<?> attributeValues = instance.getAttributeValuesList(attribute);
                         if (attributeValues == null || attributeValues.size() == 0) continue;
                         saveRelationships(id, attributeValues, attribute);
-                    } catch (Exception e) {
-                        logger.error("A problem occurred when trying to retrieve data from GkInstance with attribute name: " + attribute, e);
+
+                    } else if (attribute.equals("regulatedBy")) {
+                        Collection<?> referrers = instance.getReferers(ReactomeJavaConstants.regulatedEntity);
+                        if (referrers == null) continue;
+                        saveRelationships(id, referrers, attribute);
+
                     }
+                } catch (Exception e) {
+                    logger.error("A problem occurred when trying to retrieve data from GkInstance with attribute name: " + attribute, e);
                 }
+
             }
         }
         instance.deflate();
@@ -162,7 +172,7 @@ private static final String DATA_DIR        = "target/graph.db";
             List<String> attributes = primitiveAttributesMap.get(clazz);
             if (attributes != null) {
                 for (String attribute : attributes) {
-                    if (isValideGkInstanceAttribute(instance,attribute)) {
+                    if (isValideGkInstanceAttribute(instance, attribute)) {
                         Object value = instance.getAttributeValue(attribute);
                         if (value == null) continue;
                         if (attribute.equals(STID)) {
@@ -208,7 +218,7 @@ private static final String DATA_DIR        = "target/graph.db";
      * @param relationName Name of the relationship.
      * @throws ClassNotFoundException
      */
-    private void saveRelationships(Long oldId, List objects, String relationName) throws ClassNotFoundException {
+    private void saveRelationships(Long oldId, Collection objects, String relationName) throws ClassNotFoundException {
 
         Map<Long, GkInstanceCardinalityHelper> cardinalityMap = new HashMap<>();
         for (Object object : objects) {
@@ -255,6 +265,41 @@ private static final String DATA_DIR        = "target/graph.db";
 
         createSchemaConstraint(DynamicLabel.label(DatabaseObject.class.getSimpleName()), DBID);
         createSchemaConstraint(DynamicLabel.label(DatabaseObject.class.getSimpleName()), STID);
+
+        createSchemaConstraint(DynamicLabel.label(Event.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(Event.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(Pathway.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(Pathway.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(ReactionLikeEvent.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(ReactionLikeEvent.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(Reaction.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(Reaction.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(PhysicalEntity.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(PhysicalEntity.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(Complex.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(Complex.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(EntitySet.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(EntitySet.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(GenomeEncodedEntity.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(GenomeEncodedEntity.class.getSimpleName()),STID);
+
+        createSchemaConstraint(DynamicLabel.label(EntityWithAccessionedSequence.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(EntityWithAccessionedSequence.class.getSimpleName()),STID);
+//
+        createSchemaConstraint(DynamicLabel.label(ReferenceEntity.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(ReferenceEntity.class.getSimpleName()),STID);
+        createIndex(DynamicLabel.label(ReferenceEntity.class.getSimpleName()), ACCESSION);
+
+        createSchemaConstraint(DynamicLabel.label(ReferenceSequence.class.getSimpleName()),DBID);
+        createSchemaConstraint(DynamicLabel.label(ReferenceSequence.class.getSimpleName()),STID);
+        createIndex(DynamicLabel.label(ReferenceSequence.class.getSimpleName()), ACCESSION);
     }
 
     private static void createSchemaConstraint(Label label, String name) {
@@ -264,6 +309,10 @@ private static final String DATA_DIR        = "target/graph.db";
         } catch (ConstraintViolationException e) {
             logger.warn("Could not create Constraint on " + label + " " + name);
         }
+    }
+
+    private static void createIndex(Label label, String name) {
+        batchInserter.createDeferredSchemaIndex(label).on(name);
     }
 
     /**
@@ -287,7 +336,7 @@ private static final String DATA_DIR        = "target/graph.db";
     /**
      * Getting all SimpleNames as neo4j labels, for given class.
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
-     * @return Array of Neo4j Labels
+     * @return Array of Neo4j LabelsCount
      */
     private Label[] getLabels(Class clazz) {
 
@@ -303,7 +352,7 @@ private static final String DATA_DIR        = "target/graph.db";
     /**
      * Getting all SimpleNames as neo4j labels, for given class.
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
-     * @return Array of Neo4j Labels
+     * @return Array of Neo4j LabelsCount
      */
     private Label[] getAllClassNames(Class clazz) {
         List<?> superClasses = ClassUtils.getAllSuperclasses(clazz);
@@ -370,8 +419,9 @@ private static final String DATA_DIR        = "target/graph.db";
     private boolean isValideGkInstanceAttribute(GKInstance instance, String attribute) {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;
+        } if (!attribute.equals("regulatedBy")) {
+            logger.warn(attribute + " is not a valide attribute for instance " + instance.getSchemClass());
         }
-        logger.warn(attribute + " is not a valide attribute for instance " + instance.getSchemClass());
         return false;
     }
 
@@ -399,6 +449,9 @@ private static final String DATA_DIR        = "target/graph.db";
      * @return String
      */
     private String lowerFirst(String str) {
+        if(StringUtils.isAllUpperCase(str)) {
+            return str;
+        }
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 }

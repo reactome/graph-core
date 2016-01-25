@@ -23,8 +23,9 @@ public class Regulation extends DatabaseObject {
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    @Relationship(type = "regulatedEntity")
-    private DatabaseObject regulatedEntity;
+    // connection will be from Event to REgulation
+//    @Relationship(type = "regulatedEntity")
+//    private DatabaseObject regulatedEntity;
 
     @Relationship(type = "regulationType")
     private RegulationType regulationType;
@@ -94,13 +95,13 @@ public class Regulation extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public DatabaseObject getRegulatedEntity() {
-        return regulatedEntity;
-    }
-
-    public void setRegulatedEntity(DatabaseObject regulatedEntity) {
-        this.regulatedEntity = regulatedEntity;
-    }
+//    public DatabaseObject getRegulatedEntity() {
+//        return regulatedEntity;
+//    }
+//
+//    public void setRegulatedEntity(DatabaseObject regulatedEntity) {
+//        this.regulatedEntity = regulatedEntity;
+//    }
 
     public RegulationType getRegulationType() {
         return regulationType;

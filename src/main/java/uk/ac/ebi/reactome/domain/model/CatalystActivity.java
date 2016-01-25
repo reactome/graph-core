@@ -12,7 +12,7 @@ import java.util.List;
 @NodeEntity
 public class CatalystActivity extends DatabaseObject  { // implements Regulator
 
-    private String physicalEntityClass;
+//    private String physicalEntityClass;
 
     @Relationship(type = "activity")
     private GO_MolecularFunction activity;
@@ -25,13 +25,13 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
 
     public CatalystActivity() {}
 
-    public String getPhysicalEntityClass() {
-        return physicalEntityClass;
-    }
-
-    public void setPhysicalEntityClass(String physicalEntityClass) {
-        this.physicalEntityClass = physicalEntityClass;
-    }
+//    public String getPhysicalEntityClass() {
+//        return physicalEntityClass;
+//    }
+//
+//    public void setPhysicalEntityClass(String physicalEntityClass) {
+//        this.physicalEntityClass = physicalEntityClass;
+//    }
 
     public GO_MolecularFunction getActivity() {
         return activity;
