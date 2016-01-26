@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.ac.ebi.reactome.MyConfiguration;
+import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
@@ -63,16 +63,23 @@ public class DatabaseObjectServiceTest {
 
     @Test
     public void testFindByDbId() {
+        int i = 0;
+//        long start = System.currentTimeMillis();
+//        while (i < 1000) {
+            DatabaseObject databaseObject3 = databaseObjectService.findByDbId2(5205647L);
+//            i++;
+//        }
+//        long time = System.currentTimeMillis() - start;
+//        System.out.println(time/1000);
 
 //        Iterable<DatabaseObject> x = databaseObjectService.findAll();
         DatabaseObject ob = databaseObjectService.findByDbId1(5205647L);
 
 
 //        DatabaseObject databaseObject1 = DatabaseObjectFactory.createObject("5619102");
-        DatabaseObject databaseObject2 = genericService.loadByProperty(DatabaseObject.class, "dbId", 5205647L);
+        DatabaseObject databaseObject2 = genericService.loadByProperty(DatabaseObject.class, "dbId", 5205647L, 1);
 //        TODO add actual tests
 
-        DatabaseObject databaseObject3 = databaseObjectService.findByDbId2(5205647L);
         System.out.println();
     }
 

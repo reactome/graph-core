@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.service;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import java.util.Collection;
 @Transactional(readOnly = true)
 public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> implements DatabaseObjectService {
 
-private  final Logger logger = Logger.getLogger(DatabaseObjectServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;

@@ -11,14 +11,18 @@
 
     <properties>
         <java.version>1.7</java.version>
+
+        <spring.test.version>4.2.4.RELEASE</spring.test.version>
         <sdn.version>4.1.0.BUILD-SNAPSHOT</sdn.version>
         <!--<sdn.version>4.0.0.RELEASE</sdn.version>-->
-        <neo4j.version>2.3.2</neo4j.version>
-        <!--<neo4j.ogm.version></neo4j.ogm.version>-->
-        <junit.version>4.12</junit.version>
 
-        <aspectj.version>1.5.4</aspectj.version>
-        <log4j.version>1.2.17</log4j.version>
+        <neo4j.version>2.3.2</neo4j.version>
+        <neo4j.ogm.version>2.0.0-M01</neo4j.ogm.version>
+        <!--<neo4j.ogm.version>2.0.0-SNAPSHOT</neo4j.ogm.version>-->
+
+        <junit.version>4.12</junit.version>
+        <aspectj.version>1.8.8</aspectj.version>
+        <jasp.version>2.1</jasp.version>
     </properties>
 
     <dependencies>
@@ -38,7 +42,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.2.4.RELEASE</version>
+            <version>${spring.test.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -51,21 +55,19 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${neo4j.ogm.version}</version>
         </dependency>
 
-
         <dependency>
-            <groupId>aspectj</groupId>
+            <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
 
-
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
         </dependency>
 
         <dependency>
@@ -75,25 +77,32 @@
             <scope>test</scope>
         </dependency>
 
-
+        <dependency>
+            <groupId>com.martiansoftware</groupId>
+            <artifactId>jsap</artifactId>
+            <version>${jasp.version}</version>
+        </dependency>
 
     </dependencies>
+
     <repositories>
+
+        <!--<repository>-->
+            <!--<id>neo4j</id>-->
+            <!--<url>https://m2.neo4j.org/content/repositories/snapshots</url>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
+            <!--<releases>-->
+                <!--<enabled>true</enabled>-->
+            <!--</releases>-->
+        <!--</repository>-->
 
         <repository>
             <id>spring-libs-snapshot</id>
             <name>Spring</name>
             <url>http://repo.spring.io/libs-snapshot</url>
         </repository>
-
-        <repository>
-            <id>neo4j</id>
-            <url>http://m2.neo4j.org/content/repositories</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
 
         <repository>
             <id>nexus-ebi-repo</id>
@@ -105,6 +114,7 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
+
     </repositories>
 
     <build>

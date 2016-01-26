@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.service;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +17,14 @@ import uk.ac.ebi.reactome.repository.GenericRepository;
 @Transactional(readOnly = true)
 public class GenericServiceImpl implements GenericService {
 
-    private static final Logger logger = Logger.getLogger(GenericServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
 
     @Autowired
     private GenericRepository genericRepository;
 
     @Override
-    public <T>T loadByProperty(Class<T> clazz, String property, Object value){
-        return genericRepository.loadByProperty(clazz,property,value);
+    public <T>T loadByProperty(Class<T> clazz, String property, Object value, Integer depth){
+        return genericRepository.loadByProperty(clazz,property,value, depth);
     }
 
     @Override

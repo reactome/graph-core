@@ -24,11 +24,8 @@ public class GenericRepositoryImpl implements GenericRepository {
     private Neo4jOperations template;
 
     @Override
-    public <T> T loadByProperty(Class<T> clazz, String property, Object value) {
-        /**
-         * implemented this method because SDN 4.1 will add depth parameter
-         */
-        return template.loadByProperty(clazz, property, value);
+    public <T> T loadByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+        return template.loadByProperty(clazz, property, value, depth);
     }
 
     @Override

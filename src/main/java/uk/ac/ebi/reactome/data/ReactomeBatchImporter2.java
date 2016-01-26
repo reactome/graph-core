@@ -3,15 +3,14 @@ package uk.ac.ebi.reactome.data;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
 import org.neo4j.graphdb.*;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.ebi.reactome.domain.model.*;
 
 import java.io.File;
@@ -33,16 +32,14 @@ import java.util.*;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 16.01.16.
  */
-//@Component
 public class ReactomeBatchImporter2 {
 
-    private static final Logger logger = Logger.getLogger(ReactomeBatchImporter2.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReactomeBatchImporter2.class);
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
 
     private static final String PACKAGE_NAME    = "uk.ac.ebi.reactome.domain.model.";
-//        private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
     private static final String DATA_DIR        = "target/graph.db";
 
 
@@ -59,14 +56,9 @@ public class ReactomeBatchImporter2 {
     private static final Map<Class, Label[]> labelMap = new HashMap<>();
     private static final Map<Long, Long> dbIds = new HashMap<>();
 
-    @Autowired
-    public ReactomeBatchImporter2(@Value("${reactome.host}")     String host,
-                                  @Value("${reactome.database}") String database,
-                                  @Value("${reactome.user}")     String user,
-                                  @Value("${reactome.password}") String password,
-                                  @Value("${reactome.port}")     String port) {
+    public ReactomeBatchImporter2(String host,String database,String user,String password, Integer port) {
         try {
-            dba = new MySQLAdaptor(host,database,user,password,Integer.parseInt(port));
+            dba = new MySQLAdaptor(host,database,user,password,port);
             logger.info("Established connection to Reactome database");
         } catch (SQLException e) {
             logger.error("An error occurred while connection to the Reactome database", e);

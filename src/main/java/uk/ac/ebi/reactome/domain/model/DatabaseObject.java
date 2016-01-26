@@ -1,11 +1,9 @@
 package uk.ac.ebi.reactome.domain.model;
 
-import org.gk.model.GKInstance;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -55,10 +53,8 @@ public abstract class DatabaseObject implements java.io.Serializable {
         return stableIdentifier;
     }
 
-    public void setStableIdentifier(StableIdentifier stableIdentifier) {
-        if (stableIdentifier == null) return;
-        stableIdentifier.load();
-        this.stableIdentifier = stableIdentifier.getIdentifier();
+    public void setStableIdentifier(String stableIdentifier) {
+        this.stableIdentifier = stableIdentifier;
     }
 
     public String getDisplayName() {
@@ -97,26 +93,6 @@ public abstract class DatabaseObject implements java.io.Serializable {
         return getClass().getSimpleName();
     }
 
-    /**
-     * Loads the content from the Reactome relational database (MySQL)
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends DatabaseObject> T load() {
-        if (!isLoaded) {
-            GKInstance instance = null;
-            try {
-                instance = DatabaseObjectFactory.getInstance(dbId);
-                DatabaseObjectFactory.load(this, instance);
-                isLoaded = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                instance.deflate();
-                instance = null;
-            }
-        }
-        return (T) this;
-    }
 
     @Override
     public String toString() {

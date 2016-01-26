@@ -8,7 +8,7 @@ package uk.ac.ebi.reactome.service;
  */
 public interface GenericService {
 
-    <T> T loadByProperty(Class<T> clazz, String property, Object value);
+    <T> T loadByProperty(Class<T> clazz, String property, Object value, Integer depth);
     <T> T loadById(Class<T> clazz, Long id, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
