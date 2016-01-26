@@ -9,6 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
+import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
@@ -67,9 +68,13 @@ public class DatabaseObjectServiceTest {
 //        long start = System.currentTimeMillis();
 //        while (i < 1000) {
             DatabaseObject databaseObject3 = databaseObjectService.findByDbId2(5205647L);
+                long start = System.currentTimeMillis();
+            DatabaseObject databaseObject = DatabaseObjectFactory.createObject("5205647");
+                databaseObject.load();
+
 //            i++;
 //        }
-//        long time = System.currentTimeMillis() - start;
+        long time = System.currentTimeMillis() - start;
 //        System.out.println(time/1000);
 
 //        Iterable<DatabaseObject> x = databaseObjectService.findAll();
