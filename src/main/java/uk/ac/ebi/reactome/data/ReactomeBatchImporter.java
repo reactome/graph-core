@@ -32,9 +32,9 @@ import java.util.*;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 16.01.16.
  */
-public class ReactomeBatchImporter2 {
+public class ReactomeBatchImporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReactomeBatchImporter2.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReactomeBatchImporter.class);
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
@@ -56,7 +56,7 @@ public class ReactomeBatchImporter2 {
     private static final Map<Class, Label[]> labelMap = new HashMap<>();
     private static final Map<Long, Long> dbIds = new HashMap<>();
 
-    public ReactomeBatchImporter2(String host,String database,String user,String password, Integer port) {
+    public ReactomeBatchImporter(String host, String database, String user, String password, Integer port) {
         try {
             dba = new MySQLAdaptor(host,database,user,password,port);
             logger.info("Established connection to Reactome database");

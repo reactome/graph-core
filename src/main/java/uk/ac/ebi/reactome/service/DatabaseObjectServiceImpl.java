@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
+import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
 
 import java.util.Collection;
@@ -33,20 +34,15 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         return databaseObjectRepository;
     }
 
-    @Override
-    public DatabaseObject findOne(Long id, int depth) {
-        return databaseObjectRepository.findOne(id, depth);
-    }
 
     @Override
-    public DatabaseObject findByDbId1(Long dbId) {
+    public DatabaseObject findByDbId(Long dbId) {
         return databaseObjectRepository.findByDbId(dbId);
 
     }
     @Override
-    public DatabaseObject findByDbId2(Long dbId) {
-        return databaseObjectRepository.findByDbId2(dbId);
-
+    public DatabaseObject findByDbIdNoRelations(Long dbId) {
+        return databaseObjectRepository.findByDbIdNoRelations(dbId);
     }
 
     @Override
@@ -57,6 +53,11 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     @Override
     public Collection<ReferenceEntity> getParticipatingMolecules(Long dbId) {
         return databaseObjectRepository.getParticipatingMolecules(dbId);
+    }
+
+    @Override
+    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
+        return databaseObjectRepository.getParticipatingMolecules2(dbId);
     }
 
     @Override

@@ -2,10 +2,12 @@ package uk.ac.ebi.reactome.service;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
@@ -13,10 +15,15 @@ import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
+import uk.ac.ebi.reactome.util.JunitHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by:
@@ -24,74 +31,127 @@ import java.util.Map;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 10.11.15.
  *
- *
  */
-
 @ContextConfiguration(classes = { MyConfiguration.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DatabaseObjectServiceTest {
 
-//    @Autowired
-//    private DatabaseObjectRepository databaseObjectRepository;
+    private static final Logger logger = LoggerFactory.getLogger("testLogger");
+
+    private static final Long dbId = 5205685L;
+    private static final String stId = "R-HSA-5205685";
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
 
-    @Autowired
-    private GenericService genericService;
+    @BeforeClass
+    public static void setUpClass () {
+        logger.info("\n --- Running DatabaseObjectServiceTests --- \n");
+    }
 
     @Before
-    public void setUp() {}
+    public void setUp() throws Exception {
+        databaseObjectService.findByDbId(1l);
+        DatabaseObjectFactory.createObject("1");
+        DatabaseObjectFactory.clearCache();
+    }
 
     @After
     public void tearDown() {}
 
+    @Test
+    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
 
-    /**
-     *
-     * !!!!!!!!!   Execution Times will be monitored by LoggingAspect !!!!!!!!!!!!
-     *
-     */
+        logger.info("Started testing databaseObjectService.findByDbId");
+        long start, time;
 
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByDbId(dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        databaseObjectExpected.load();
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+    }
+    @Test
+    public void testFindByDbIdNoRelations() {
+
+        logger.info("Started testing databaseObjectService.findByDbIdNoRelations");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByDbIdNoRelations(dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
+        assertEquals(databaseObjectExpected.getDisplayName(),databaseObjectObserved.getDisplayName());
+    }
+
+    @Test
+    public void testFindByStableIdentifier() {
+
+        logger.info("Started testing databaseObjectService.findByStableIdentifier");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByStableIdentifier(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
+        databaseObjectExpected.load();
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
+        assertEquals(databaseObjectExpected.getDisplayName(), databaseObjectObserved.getDisplayName());
+    }
 
     @Test
     public void testGetParticipatingMolecules() {
-        Collection<ReferenceEntity> coll = databaseObjectService.getParticipatingMolecules(75153L);
+
+        logger.info("Started testing databaseObjectService.getParticipatingMolecules");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        Collection<ReferenceEntity> participants = databaseObjectService.getParticipatingMolecules(dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
 //        TODO add actual tests
 
     }
 
     @Test
-    public void testFindByDbId() {
-        int i = 0;
-//        long start = System.currentTimeMillis();
-//        while (i < 1000) {
-            DatabaseObject databaseObject3 = databaseObjectService.findByDbId2(5205647L);
-                long start = System.currentTimeMillis();
-            DatabaseObject databaseObject = DatabaseObjectFactory.createObject("5205647");
-                databaseObject.load();
+    public void testGetParticipatingMolecules2() {
 
-//            i++;
-//        }
-        long time = System.currentTimeMillis() - start;
-//        System.out.println(time/1000);
+        logger.info("Started testing databaseObjectService.getParticipatingMolecules");
+        long start, time;
 
-//        Iterable<DatabaseObject> x = databaseObjectService.findAll();
-        DatabaseObject ob = databaseObjectService.findByDbId1(5205647L);
+        start = System.currentTimeMillis();
+//        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
 
-
-//        DatabaseObject databaseObject1 = DatabaseObjectFactory.createObject("5619102");
-        DatabaseObject databaseObject2 = genericService.loadByProperty(DatabaseObject.class, "dbId", 5205647L, 1);
 //        TODO add actual tests
 
-        System.out.println();
     }
 
-
-
     @Test
-    public void test() {
+    public void testGetLabelsCount() {
         Collection<LabelsCount> l = databaseObjectService.getLabelsCount();
         Map<String,Integer> map = new HashMap<>();
         for (LabelsCount labelsCount : l) {

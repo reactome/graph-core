@@ -7,12 +7,13 @@ import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("unused")
 @NodeEntity
-public abstract class DatabaseObject implements java.io.Serializable {
+public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 
     public transient boolean isLoaded = false;
 
@@ -127,7 +128,41 @@ public abstract class DatabaseObject implements java.io.Serializable {
                 '}';
     }
 
-    //    public List<InstanceEdit> getModified() {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DatabaseObject that = (DatabaseObject) o;
+
+        if (dbId != null ? !dbId.equals(that.dbId) : that.dbId != null) return false;
+        if (stableIdentifier != null ? !stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier != null)
+            return false;
+        return !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = dbId != null ? dbId.hashCode() : 0;
+        result = 31 * result + (stableIdentifier != null ? stableIdentifier.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        return result;
+    }
+
+    /**
+     * sorting needed for junit tests
+     * @param o
+     * @return
+     */
+    @Override
+    public int compareTo(DatabaseObject o) {
+        return this.dbId.compareTo(o.dbId);
+    }
+
+
+
+//    public List<InstanceEdit> getModified() {
 //        return modified;
 //    }
 //

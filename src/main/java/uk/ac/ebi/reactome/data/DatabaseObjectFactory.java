@@ -127,6 +127,10 @@ public class DatabaseObjectFactory {
         }
     }
 
+    public static void clearCache() throws Exception {
+        dba.refresh();
+    }
+
     public static void fill(DatabaseObject databaseObject, GKInstance instance) throws Exception {
 
         Class clazz = databaseObject.getClass();

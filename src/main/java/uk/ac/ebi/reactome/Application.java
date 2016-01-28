@@ -3,7 +3,7 @@ package uk.ac.ebi.reactome;
 import com.martiansoftware.jsap.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.ac.ebi.reactome.data.ReactomeBatchImporter2;
+import uk.ac.ebi.reactome.data.ReactomeBatchImporter;
 
 /**
  * Created by:
@@ -39,9 +39,9 @@ public class Application {
         /**
          * @Autowired annotation does not work in a static context. context.getBean has to be used instead.
          * final AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MyConfiguration.class);
-         * ReactomeBatchImporter2 batchImporter = ctx.getBean(ReactomeBatchImporter2.class);
+         * ReactomeBatchImporter batchImporter = ctx.getBean(ReactomeBatchImporter.class);
          */
-        ReactomeBatchImporter2 batchImporter = new ReactomeBatchImporter2(
+        ReactomeBatchImporter batchImporter = new ReactomeBatchImporter(
                 config.getString("host"),
                 config.getString("database"),
                 config.getString("user"),

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
+import uk.ac.ebi.reactome.domain.result.Participant;
 
 import java.util.Collection;
 
@@ -23,13 +24,13 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     DatabaseObject findByStableIdentifier(String stableIdentifier);
 
     @Query("MATCH (n:DatabaseObject{dbId:{0}}) Return n")
-    DatabaseObject findByDbId2(Long dbId);
-
-//    @Query("MATCH (n:DatabaseObject{dbId:{0}})-[r]-() WHERE NOT (n)-[r:inferredTo]-()  RETURN  n,r")
-//    DatabaseObject findByDbId2(Long dbId);
+    DatabaseObject findByDbIdNoRelations(Long dbId);
 
     @Query("MATCH (n:Pathway{dbId:{0}})-[r:hasEvent|input|output|hasMember|hasComponent|repeatedUnit*]->(m:EntityWithAccessionedSequence) RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
+
+    @Query("MATCH (n:Pathway{dbId:{0}})-[:hasEvent|input|output*]->(m)-[:hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) RETURN m.dbId AS ewasDbId, m.displayName AS ewasName") //, COLLECT(DISTINCT x.dbId) AS refEntitiesDbIds, COLLECT(DISTINCT x.displayName) AS refEntitiesNames
+    Collection<Participant> getParticipatingMolecules2(Long dbId);
 
     @Query("MATCH (n) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<LabelsCount> getLabelsCount();
