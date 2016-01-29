@@ -1,6 +1,7 @@
 # intelliJ idea git ignore
 *.iml
 .idea
+*.log
 
 *target*
 # jar, war and class are covered by target
