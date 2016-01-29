@@ -8,58 +8,40 @@
     <version>1.0-SNAPSHOT</version>
     <name>reactome-graphDb-spring</name>
 
-
     <properties>
-        <java.version>1.7</java.version>
-
-        <spring.test.version>4.2.4.RELEASE</spring.test.version>
+        <reactome.version>1.2.1</reactome.version>
         <sdn.version>4.1.0.BUILD-SNAPSHOT</sdn.version>
-        <!--<sdn.version>4.0.0.RELEASE</sdn.version>-->
-
-        <neo4j.version>2.3.2</neo4j.version>
+        <spring.test.version>4.2.4.RELEASE</spring.test.version>
         <neo4j.ogm.version>2.0.0-M01</neo4j.ogm.version>
-        <!--<neo4j.ogm.version>2.0.0-SNAPSHOT</neo4j.ogm.version>-->
-
-        <junit.version>4.12</junit.version>
         <aspectj.version>1.8.8</aspectj.version>
+        <junit.version>4.12</junit.version>
         <jasp.version>2.1</jasp.version>
+        <maven.compiler.version>2.3.2</maven.compiler.version>
+        <java.version>1.7</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-        <!-- reactome-base for MYSQL Adapter -->
+        <!--Reactome-base for MYSQL Adapter-->
         <dependency>
             <groupId>org.reactome.base</groupId>
             <artifactId>reactome-base</artifactId>
-            <version>1.2.1</version>
+            <version>${reactome.version}</version>
         </dependency>
-
+        <!--Spring data neo4j-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
             <version>${sdn.version}</version>
         </dependency>
-
+        <!--Spring junit test framework-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.test.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-ogm</artifactId>-->
-            <!--<version>${neo4j.ogm.version}</version>-->
-        <!--</dependency>-->
-
-
-
+        <!--Neo4j object graph mapping -->
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm-api</artifactId>
@@ -70,55 +52,46 @@
             <artifactId>neo4j-ogm-core</artifactId>
             <version>${neo4j.ogm.version}</version>
         </dependency>
-
-
-
+        <!--Aspectj AOP -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-
+        <!--Junit Tests-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <!--Jasp console reader-->
         <dependency>
             <groupId>com.martiansoftware</groupId>
             <artifactId>jsap</artifactId>
             <version>${jasp.version}</version>
         </dependency>
-
     </dependencies>
 
     <repositories>
-
-        <repository>
-            <id>neo4j</id>
-            <url>https://m2.neo4j.org/content/repositories/everything</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-
+        <!--Spring snapshot repository-->
         <repository>
             <id>spring-libs-snapshot</id>
             <name>Spring</name>
             <url>http://repo.spring.io/libs-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
-
+        <!--Reactome repository-->
         <repository>
             <id>nexus-ebi-repo</id>
             <url>http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/</url>
@@ -129,7 +102,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
     </repositories>
 
     <build>
@@ -137,11 +109,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>UTF-8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -159,15 +130,14 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <id>make-assembly</id>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 

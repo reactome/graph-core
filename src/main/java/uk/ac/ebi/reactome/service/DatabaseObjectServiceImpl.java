@@ -34,19 +34,11 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         return databaseObjectRepository;
     }
 
-
-    @Override
-    public void test() {
-        System.out.println("bla");
-    }
-
     @Override
     public DatabaseObject findByDbId(Long dbId) {
-        System.out.println("was here");
-        DatabaseObject obj = databaseObjectRepository.findByDbId(dbId);
-        return obj;
-
+        return databaseObjectRepository.findByDbId(dbId);
     }
+
     @Override
     public DatabaseObject findByDbIdNoRelations(Long dbId) {
         return databaseObjectRepository.findByDbIdNoRelations(dbId);
