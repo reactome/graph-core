@@ -39,7 +39,8 @@ public class GenericServiceTest {
 
     @BeforeClass
     public static void setUpClass () {
-        logger.info("\n --- Running GenericServiceTests --- \n");
+        logger.info("\n");
+        logger.info(" --- Running GenericServiceTests --- \n");
     }
     
     /**
@@ -68,7 +69,6 @@ public class GenericServiceTest {
 
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
@@ -94,7 +94,6 @@ public class GenericServiceTest {
 
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
@@ -115,7 +114,6 @@ public class GenericServiceTest {
 
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
-        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 

@@ -65,12 +65,6 @@ public class ReactomeBatchImporter {
         }
     }
 
-    /**
-     * This Method will be executed directly after construction of the class.
-     * It starts the import of Reactome data by top level pathways.
-     * Each top level pathway will be iterated recursively.
-     */
-//    @PostConstruct
     public void importAll() {
         prepareDatabase();
         try {
@@ -81,7 +75,6 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-                if (!instance.getDisplayName().equals("Mitophagy")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
