@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.domain.result;
 
+
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Collection;

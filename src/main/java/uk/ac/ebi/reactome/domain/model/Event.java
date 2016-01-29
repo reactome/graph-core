@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
@@ -91,6 +92,7 @@ public abstract class Event extends DatabaseObject {//implements Regulator
      * Where are differences between inferredFrom and
      * orthologous events ? 1 should have to go
      */
+    @JsonIgnore
     @Relationship(type = "inferredFrom")
     private List<Event> inferredFrom;
 
@@ -103,6 +105,7 @@ public abstract class Event extends DatabaseObject {//implements Regulator
      * change to orthologousTo --> manually created Events
      * Batch inserter
      */
+    @JsonIgnore
     @Relationship(type = "orthologousEvent")
     private List<Event> orthologousEvent;
     

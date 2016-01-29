@@ -36,8 +36,15 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
 
 
     @Override
+    public void test() {
+        System.out.println("bla");
+    }
+
+    @Override
     public DatabaseObject findByDbId(Long dbId) {
-        return databaseObjectRepository.findByDbId(dbId);
+        System.out.println("was here");
+        DatabaseObject obj = databaseObjectRepository.findByDbId(dbId);
+        return obj;
 
     }
     @Override
