@@ -1,6 +1,6 @@
 # intelliJ idea git ignore
 *.iml
-.idea
+*.idea
 *.log
 
 *target*
