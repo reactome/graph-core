@@ -65,7 +65,7 @@ public class ReactomeBatchImporter {
         }
     }
 
-    public void importAll() {
+    public void importAll() throws IOException {
         prepareDatabase();
         try {
             Collection<?> frontPages = dba.fetchInstancesByClass(ReactomeJavaConstants.FrontPage);
@@ -112,7 +112,7 @@ public class ReactomeBatchImporter {
         if(attributes != null) {
             for (String attribute : attributes) {
                 try {
-                    if (isValideGkInstanceAttribute(instance, attribute)) {
+                    if (isValidGkInstanceAttribute(instance, attribute)) {
 
                         Collection<?> attributeValues = instance.getAttributeValuesList(attribute);
                         if (attributeValues == null || attributeValues.size() == 0) continue;
@@ -157,7 +157,7 @@ public class ReactomeBatchImporter {
             List<String> attributes = primitiveAttributesMap.get(clazz);
             if (attributes != null) {
                 for (String attribute : attributes) {
-                    if (isValideGkInstanceAttribute(instance, attribute)) {
+                    if (isValidGkInstanceAttribute(instance, attribute)) {
                         Object value = instance.getAttributeValue(attribute);
                         if (value == null) continue;
                         if (attribute.equals(STID)) {
@@ -173,7 +173,7 @@ public class ReactomeBatchImporter {
             attributes = primitiveListAttributesMap.get(clazz);
             if (attributes != null) {
                 for (String attribute : attributes) {
-                    if (isValideGkInstanceAttribute(instance, attribute)) {
+                    if (isValidGkInstanceAttribute(instance, attribute)) {
                         List valueList = instance.getAttributeValuesList(attribute);
                         if (valueList == null) continue;
                         List<String> array = new ArrayList<>();
@@ -235,10 +235,10 @@ public class ReactomeBatchImporter {
     /**
      * Cleaning the old database folder, instantiate BatchInserter, create Constraints for the new DB
      */
-    private void prepareDatabase() {
+    private void prepareDatabase() throws IOException {
 
-        cleanDatabase();
-        batchInserter = BatchInserters.inserter(DATA_DIR);
+        File file = cleanDatabase();
+        batchInserter = BatchInserters.inserter(file);
         createConstraints();
     }
 
@@ -304,10 +304,10 @@ public class ReactomeBatchImporter {
      * Cleaning the Neo4j data directory
      * Deleting of file will have worked even if error occurred here.
      */
-    private void cleanDatabase() {
+    private File cleanDatabase() {
 
+        File dir = new File(DATA_DIR);
         try {
-            File dir = new File(DATA_DIR);
             if(dir.exists()) {
                 FileUtils.cleanDirectory(dir);
             } else {
@@ -316,6 +316,7 @@ public class ReactomeBatchImporter {
         } catch (IOException | IllegalArgumentException e) {
             logger.warn("An error occurred while cleaning the old database");
         }
+        return dir;
     }
 
     /**
@@ -401,11 +402,11 @@ public class ReactomeBatchImporter {
         }
     }
 
-    private boolean isValideGkInstanceAttribute(GKInstance instance, String attribute) {
+    private boolean isValidGkInstanceAttribute(GKInstance instance, String attribute) {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;
         } if (!attribute.equals("regulatedBy")) {
-            logger.warn(attribute + " is not a valide attribute for instance " + instance.getSchemClass());
+            logger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
         }
         return false;
     }

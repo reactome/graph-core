@@ -1,9 +1,9 @@
 package uk.ac.ebi.reactome;
 
 import com.martiansoftware.jsap.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.ac.ebi.reactome.data.ReactomeBatchImporter;
+
+import java.io.IOException;
 
 /**
  * Created by:
@@ -13,14 +13,7 @@ import uk.ac.ebi.reactome.data.ReactomeBatchImporter;
  */
 public class Application {
 
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
-
-    /**
-     * The main() method uses Spring Boot’s SpringApplication.run() method to launch an application.
-     * @param args Neo4j username and password can be passed on the command line:
-     *             mvn spring-boot:run -Drun.jvmArguments="-Dusername=user -Dpassword=password"
-     */
-    public static void main(String[] args) throws JSAPException {
+    public static void main(String[] args) throws JSAPException, IOException {
 
 
         SimpleJSAP jsap = new SimpleJSAP(Application.class.getName(), "A tool for importing reactome data to the neo4j graphDb",

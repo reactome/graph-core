@@ -18,14 +18,15 @@ import static org.junit.Assert.assertEquals;
  */
 public class JunitHelper {
 
+    @SuppressWarnings("unchecked")
     public static void assertDatabaseObjectsEqual(DatabaseObject databaseObjectExpected, DatabaseObject databaseObjectObserved) throws InvocationTargetException, IllegalAccessException {
         Class clazz = databaseObjectExpected.getClass();
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             String methodName = method.getName();
             if (methodName.startsWith("get") && !methodName.equals("getId")) {
-                Object expected = method.invoke(databaseObjectExpected,null);
-                Object observed = method.invoke(databaseObjectObserved,null);
+                Object expected = method.invoke(databaseObjectExpected);
+                Object observed = method.invoke(databaseObjectObserved);
                 if (expected instanceof Collection) {
                     List<Object> expectedList = (List<Object>) expected;
                     List<Object> observedList = (List<Object>) observed;
