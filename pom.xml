@@ -52,11 +52,6 @@
             <artifactId>neo4j-ogm-core</artifactId>
             <version>${neo4j.ogm.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-drivers</artifactId>
-            <version>${neo4j.ogm.version}</version>
-        </dependency>
         <!--Aspectj AOP -->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -84,13 +79,6 @@
     </dependencies>
 
     <repositories>
-        <repository>
-            <id>neo4j-snapshots</id>
-            <url>http://m2.neo4j.org/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
         <!--Spring snapshot repository-->
         <repository>
             <id>spring-libs-snapshot</id>

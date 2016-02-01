@@ -40,7 +40,7 @@ public class ReactomeBatchImporter {
     private static BatchInserter batchInserter;
 
     private static final String PACKAGE_NAME    = "uk.ac.ebi.reactome.domain.model.";
-    private static final String DATA_DIR        = "target/graph.db";
+    private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
 
 
     private static final String DBID = "dbId";
