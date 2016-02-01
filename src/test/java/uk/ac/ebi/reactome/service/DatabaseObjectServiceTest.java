@@ -14,6 +14,7 @@ import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -129,6 +130,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
+        assertEquals(participants.size(),21);
 //        TODO add actual tests
 
     }
@@ -140,10 +142,11 @@ public class DatabaseObjectServiceTest {
         long start, time;
 
         start = System.currentTimeMillis();
-//        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
+        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
+        assertEquals(participants.size(), 21);
 //        TODO add actual tests
 
     }

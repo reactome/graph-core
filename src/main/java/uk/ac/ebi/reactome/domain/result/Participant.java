@@ -2,6 +2,8 @@ package uk.ac.ebi.reactome.domain.result;
 
 import org.springframework.data.neo4j.annotation.QueryResult;
 
+import java.util.Collection;
+
 /**
  * Created by:
  *
@@ -13,8 +15,8 @@ public class Participant {
 
     private Long ewasDbId;
     private String ewasName;
-//    private Collection<Long> refEntitiesDbIds;
-//    private Collection<String> refEntitiesNames;
+    private Collection<Long> refEntitiesDbIds;
+    private Collection<String> refEntitiesNames;
 
     public Long getEwasDbId() {
         return ewasDbId;
@@ -32,19 +34,19 @@ public class Participant {
         this.ewasName = ewasName;
     }
 
-//    public Collection<Long> getRefEntitiesDbIds() {
-//        return refEntitiesDbIds;
-//    }
-//
-//    public void setRefEntitiesDbIds(Collection<Long> refEntitiesDbIds) {
-//        this.refEntitiesDbIds = refEntitiesDbIds;
-//    }
-//
-//    public Collection<String> getRefEntitiesNames() {
-//        return refEntitiesNames;
-//    }
-//
-//    public void setRefEntitiesNames(Collection<String> refEntitiesNames) {
-//        this.refEntitiesNames = refEntitiesNames;
-//    }
+    public Collection<Long> getRefEntitiesDbIds() {
+        return refEntitiesDbIds;
+    }
+
+    public void setRefEntitiesDbIds(Collection<Long> refEntitiesDbIds) {
+        this.refEntitiesDbIds = refEntitiesDbIds;
+    }
+
+    public Collection<String> getRefEntitiesNames() {
+        return refEntitiesNames;
+    }
+
+    public void setRefEntitiesNames(Collection<String> refEntitiesNames) {
+        this.refEntitiesNames = refEntitiesNames;
+    }
 }

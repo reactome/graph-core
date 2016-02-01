@@ -11,6 +11,47 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * how to generally manage a doubly-linked list using SDN 4, specifically for the case where the underlying graph uses a single relationship type between nodes, e.g.
+
+ (post:Post)-[:NEXT]->(post:Post)
+
+ What you can't do
+
+ Due to limitations in the mapping framework, it is not possible to reliably declare the same relationship type twice in two different directions in your object model, i.e. this (currently) will not work:
+
+ class Post {
+@Relationship(type="NEXT", direction=Relationship.OUTGOING)
+Post next;
+
+@Relationship(type="NEXT", direction=Relationship.INCOMING)
+Post previous;
+}
+
+ What you can do
+
+ Instead we can combine the @Transient annotation with the use of annotated setter methods to obtain the desired result:
+
+ class Post {
+ Post next;
+
+ @Transient Post previous;
+
+ @Relationship(type="NEXT", direction=Relationship.OUTGOING)
+ public void setNext(Post next) {
+ this.next = next;
+ if (next != null) {
+ next.previous = this;
+ }
+ }
+ }
+
+ As a final point, if you then wanted to be able to navigate forwards and backwards through the entire list of Posts from any starting Post without having to continually refetch them from the database, you can set the fetch depth to -1 when you load the post, e.g:
+
+ findOne(post.getId(), -1);
+
+ Bear in mind that an infinite depth query will fetch every reachable object in the graph from the matched one, so use it with care!
+ */
 @SuppressWarnings("unused")
 @NodeEntity
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
