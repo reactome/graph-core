@@ -26,7 +26,7 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     @Query("MATCH (n:DatabaseObject{dbId:{0}}) Return n")
     DatabaseObject findByDbIdNoRelations(Long dbId);
 
-    @Query("MATCH (n:Pathway{dbId:{0}})-[r:hasEvent|input|output|hasMember|hasComponent|repeatedUnit*]->(m:EntityWithAccessionedSequence) RETURN DISTINCT m")
+    @Query("MATCH (n:Pathway{dbId:{0}})-[:hasEvent|input|output|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
 
     @Query("MATCH (n:Pathway{dbId:{0}})-[:hasEvent|input|output*]->(m)-[:hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) RETURN m.dbId AS ewasDbId, m.displayName AS ewasName, COLLECT(DISTINCT x.dbId) AS refEntitiesDbIds, COLLECT(DISTINCT x.displayName) AS refEntitiesNames")

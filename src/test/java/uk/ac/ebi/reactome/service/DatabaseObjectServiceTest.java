@@ -14,6 +14,7 @@ import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
@@ -130,7 +131,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(participants.size(),21);
+        assertEquals(participants.size(),15);
 //        TODO add actual tests
 
     }
@@ -151,21 +152,19 @@ public class DatabaseObjectServiceTest {
 
     }
 
-//    @Test
-//    public void testGetLabelsCount() {
-//        Collection<LabelsCount> l = databaseObjectService.getLabelsCount();
-//        Map<String,Integer> map = new HashMap<>();
-//        for (LabelsCount labelsCount : l) {
-//            for (String s : labelsCount.getLabels()) {
-//                if(map.containsKey(s)) {
-//                    int i = map.get(s);
-//                    i += labelsCount.getCount();
-//
-//                }
-//            }
-//
-//        }
-//        System.out.println("");
-//    }
+    @Test
+    public void testGetLabelsCount() {
+
+        logger.info("Started testing databaseObjectService.getParticipatingMolecules (Collection<Participant>)");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        Collection<LabelsCount> labelsCount = databaseObjectService.getLabelsCount();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+//        assertEquals(labelsCount.size(), 29);
+//        TODO add actual tests
+    }
 
 }
