@@ -13,13 +13,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.Pathway;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -58,14 +58,14 @@ public class DatabaseObjectServiceTest {
     public void setUp() throws Exception {
         databaseObjectService.findByDbId(1l);
         DatabaseObjectFactory.createObject("1");
-        DatabaseObjectFactory.clearCache();
+//        DatabaseObjectFactory.clearCache();
     }
 
     @After
     public void tearDown() {}
 
     @Test
-    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
+    public void testFindByDbId() throws Exception {
 
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
@@ -75,8 +75,10 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
+        DatabaseObjectFactory.clearCache();
+
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        Pathway databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
         databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");

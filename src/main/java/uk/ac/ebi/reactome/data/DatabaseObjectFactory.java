@@ -47,6 +47,7 @@ public class DatabaseObjectFactory {
             String password = properties.getProperty("reactome.password");
             String port = properties.getProperty("reactome.port");
             dba = new MySQLAdaptor(host,database,user,password,Integer.parseInt(port));
+            dba.setUseCache(false);
             logger.info("Established connection to Reactome database");
         } catch (SQLException e) {
             logger.error("An error occurred while connection to the Reactome database", e);
@@ -129,6 +130,7 @@ public class DatabaseObjectFactory {
 
     public static void clearCache() throws Exception {
         dba.refresh();
+//        dba.setUseCache(false);
     }
 
     public static void fill(DatabaseObject databaseObject, GKInstance instance) throws Exception {
