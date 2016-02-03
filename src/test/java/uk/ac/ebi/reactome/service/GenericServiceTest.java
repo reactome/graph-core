@@ -34,6 +34,9 @@ public class GenericServiceTest {
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
+//    private static final Long dbId = 507868L;  /
+//    private static final String stId = "R-HSA-507868";
+
     @Autowired
     private GenericService genericService;
 

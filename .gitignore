@@ -2,6 +2,7 @@
 *.iml
 *.idea
 *.log
+*.txt
 
 *target*
 # jar, war and class are covered by target

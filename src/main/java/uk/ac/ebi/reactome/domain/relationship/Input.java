@@ -15,6 +15,10 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  *
  * Input is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
  * inputs.
+ *
+ *
+ * Start node should allways be @JsonIgnore or infinity loop
+ *
  */
 @RelationshipEntity(type = "input")
 public class Input {

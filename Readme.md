@@ -478,3 +478,12 @@ Body
   } ]
 }
 
+
+Match (n:Summation)<-[r:summation]-() WITH n,count(r) as rel_cnt
+WHERE rel_cnt > 1 Return n Limit 10
+
+Loops
+$Match (n)-[r]->(x) Where (x)-[r]->(n) Return n,r,x
+
+Multiple rel for 2 nodes
+Match (n)-[r]->(x) WITH n,x,COUNT(r) as cnt WHERE cnt>1 Return n,x,cnt Limit 10

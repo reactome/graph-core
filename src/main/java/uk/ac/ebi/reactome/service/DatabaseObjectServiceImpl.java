@@ -10,6 +10,7 @@ import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
+import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
 
 import java.util.Collection;
@@ -57,6 +58,12 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     @Override
     public Collection<Participant> getParticipatingMolecules2(Long dbId) {
         return databaseObjectRepository.getParticipatingMolecules2(dbId);
+    }
+
+
+    @Override
+    public Collection<Participant2> getParticipatingMolecules3(Long dbId) {
+        return databaseObjectRepository.getParticipatingMolecules3(dbId);
     }
 
     @Override
