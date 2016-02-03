@@ -104,8 +104,11 @@ public class ReactomeBatchImporter {
         setUpMethods(clazz);
         Long id = saveDatabaseObject(instance, clazz);
 
+        //TODO: Remove if
         if (!dbIds.containsKey(instance.getDBID())) {
             dbIds.put(instance.getDBID(), id);
+        } else {
+            System.err.println("This should not happen");
         }
 
         List<String> attributes = relationAttributesMap.get(clazz);
@@ -130,6 +133,9 @@ public class ReactomeBatchImporter {
 
             }
         }
+        /**
+         * DEFLATING will ensure that the use of the GkInstance does not end in an OutOfMemory exception
+         */
         instance.deflate();
         return id;
     }

@@ -23,6 +23,12 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
     @Relationship(type = "activeUnit")
     private List<PhysicalEntity> activeUnit;
 
+    /**
+     * Regulation related attributes
+     */
+    @Relationship(type = "regulatedBy")
+    private List<Regulation> regulatedBy;
+
     public CatalystActivity() {}
 
 //    public String getPhysicalEntityClass() {
@@ -55,5 +61,13 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
 
     public void setActiveUnit(List<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
+    }
+
+    public List<Regulation> getRegulatedBy() {
+        return regulatedBy;
+    }
+
+    public void setRegulatedBy(List<Regulation> regulatedBy) {
+        this.regulatedBy = regulatedBy;
     }
 }
