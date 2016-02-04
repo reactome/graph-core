@@ -167,12 +167,33 @@ public class ReactomeBatchImporter {
                     if (isValidGkInstanceAttribute(instance, attribute)) {
                         Object value = instance.getAttributeValue(attribute);
                         if (value == null) continue;
-                        if (attribute.equals(STID)) {
-                            GKInstance stableIdentifier = (GKInstance) value;
-                            String identifier = (String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier);
-                            properties.put(attribute, identifier);
-                        } else {
-                            properties.put(attribute, value);
+                        switch (attribute) {
+                            case STID:
+                                GKInstance stableIdentifier = (GKInstance) value;
+                                String identifier = (String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier);
+                                properties.put(attribute, identifier);
+                                break;
+                            case "speciesName":
+                                List<?> speciesList = instance.getAttributeValuesList(ReactomeJavaConstants.species);
+                                if (speciesList != null && speciesList.size() > 0) {
+                                    GKInstance firstSpecies = (GKInstance) speciesList.get(0);
+                                    String name = firstSpecies.getDisplayName();
+                                    properties.put("speciesName", name);
+                                }
+                                break;
+                            case "isInDisease":
+                                GKInstance disease = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.disease);
+                                Boolean isInDisease = disease == null ? Boolean.FALSE : Boolean.TRUE;
+                                properties.put("isInDisease", isInDisease);
+                                break;
+                            case "isInferred":
+                                GKInstance isInferredFrom = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.inferredFrom);
+                                Boolean isInferred = isInferredFrom == null ? Boolean.FALSE : Boolean.TRUE;
+                                properties.put("isInferred", isInferred);
+                                break;
+                            default:
+                                properties.put(attribute, value);
+                                break;
                         }
                     }
                 }
