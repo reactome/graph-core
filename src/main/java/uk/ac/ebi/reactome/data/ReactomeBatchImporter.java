@@ -137,7 +137,7 @@ public class ReactomeBatchImporter {
                             }
                             saveRelationships(id, goMF, attribute);
                         }
-                    } else if (attribute.equals("catalysedEvent")) {
+                    } else if (attribute.equals("catalyzedEvent")) {
                         // List of CatalystActivities involved with this PE
                         Collection<GKInstance> cas = instance.getReferers(ReactomeJavaConstants.physicalEntity);
                         if (cas != null && cas.size() > 0) {
@@ -201,23 +201,23 @@ public class ReactomeBatchImporter {
                                 if (speciesList != null && speciesList.size() > 0) {
                                     GKInstance firstSpecies = (GKInstance) speciesList.get(0);
                                     String name = firstSpecies.getDisplayName();
-                                    properties.put("speciesName", name);
+                                    properties.put(attribute, name);
                                 }
                                 break;
                             case "isInDisease":
                                 GKInstance disease = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.disease);
-                                properties.put("isInDisease", disease != null);
+                                properties.put(attribute, disease != null);
                                 break;
                             case "isInferred":
                                 GKInstance isInferredFrom = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.inferredFrom);
-                                properties.put("isInferred", isInferredFrom != null);
+                                properties.put(attribute, isInferredFrom != null);
                                 break;
                             case "hasDiagram":
                                 if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
                                     DiagramGeneratorFromDB diagramHelper = new DiagramGeneratorFromDB();
                                     diagramHelper.setMySQLAdaptor((MySQLAdaptor) instance.getDbAdaptor());
                                     GKInstance diagram = diagramHelper.getPathwayDiagram(instance);
-                                    properties.put("hasDiagram", diagram != null);
+                                    properties.put(attribute, diagram != null);
                                 }
                                 break;
                             default:
@@ -469,7 +469,7 @@ public class ReactomeBatchImporter {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;
         } if (!attribute.equals("regulatedBy")) {
-            logger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
+//            logger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
         }
         return false;
     }
