@@ -39,8 +39,7 @@ public class ReactomeBatchImporter {
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
 
-    private static final String PACKAGE_NAME    = "uk.ac.ebi.reactome.domain.model.";
-    private static final String DATA_DIR        = "/var/lib/neo4j/data/graph.db";
+    private static final String DATA_DIR        = "/Users/amundo/Documents/Neo4j/default.graphdb";
 
 
     private static final String DBID = "dbId";
@@ -99,7 +98,7 @@ public class ReactomeBatchImporter {
      */
     private Long importGkInstance(GKInstance instance) throws ClassNotFoundException {
 
-        String clazzName = PACKAGE_NAME + instance.getSchemClass().getName();
+        String clazzName = DatabaseObject.class.getPackage() + instance.getSchemClass().getName();
         Class clazz = Class.forName(clazzName);
 
         setUpMethods(clazz);
