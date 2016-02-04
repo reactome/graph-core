@@ -13,7 +13,7 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 09.11.15.
  *
- * HasComponent is the relationship entity of Complexes. It is needed to specify the cardinality (stoichiometry) of
+ * HasComponent is the relationship entity of Complexes. It is needed to specify the stoichiometry (stoichiometry) of
  * components.
  */
 @RelationshipEntity(type = "hasComponent")
@@ -23,7 +23,7 @@ public class HasComponent {
     @GraphId
     private Long id;
 
-    private Integer cardinality = 1;
+    private Integer stoichiometry = 1;
 
     @StartNode
     private Complex complex;
@@ -32,13 +32,13 @@ public class HasComponent {
 
     public HasComponent() {}
 
-    public Integer getCardinality() {
-        return cardinality;
+    public Integer getStoichiometry() {
+        return stoichiometry;
     }
 
     @SuppressWarnings("unused")
-    public void setCardinality(Integer cardinality) {
-        this.cardinality = cardinality;
+    public void setStoichiometry(Integer stoichiometry) {
+        this.stoichiometry = stoichiometry;
     }
 
     public PhysicalEntity getComplex() {

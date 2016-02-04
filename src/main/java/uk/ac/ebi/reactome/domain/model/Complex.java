@@ -103,7 +103,7 @@ public class Complex extends PhysicalEntity {
         public List<PhysicalEntity> getHasComponent(){
         List<PhysicalEntity> rtn = new ArrayList<>();
         for (HasComponent component : this.hasComponent) {
-            for (int i = 0; i < component.getCardinality(); i++) {
+            for (int i = 0; i < component.getStoichiometry(); i++) {
                 rtn.add(component.getPhysicalEntity());
             }
         }
@@ -116,7 +116,7 @@ public class Complex extends PhysicalEntity {
         for (PhysicalEntity physicalEntity : hasComponent) {
             HasComponent component = components.get(physicalEntity.getDbId());
             if (component != null) {
-                component.setCardinality(component.getCardinality() + 1);
+                component.setStoichiometry(component.getStoichiometry() + 1);
             } else {
                 component = new HasComponent();
                 component.setComplex(this);

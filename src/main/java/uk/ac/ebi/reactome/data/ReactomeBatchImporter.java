@@ -48,7 +48,7 @@ public class ReactomeBatchImporter {
     private static final String ACCESSION = "identifier";
     private static final String NAME = "displayName";
 
-    private static final String CARDINALITY = "cardinality";
+    private static final String STOICHIOMETRY = "stoichiometry";
 
     private static final Map<Class, List<String>> primitiveAttributesMap = new HashMap<>();
     private static final Map<Class, List<String>> primitiveListAttributesMap = new HashMap<>();
@@ -75,6 +75,7 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
+                if (!instance.getDisplayName().equals("Circadian Clock")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
@@ -201,9 +202,13 @@ public class ReactomeBatchImporter {
      * Creating a relationships between the old instance (using oldId) and its children (List objects).
      * Relationships will be created depth first, if new instance does not already exist recursion will begin
      * (newId = importGkInstance)
-     * The cardinality map has to utilize a helperObject because the GkInstance does not implement Comparable and
+     * Every relationship entry will have a stoichiometry attribute, which is used as a counter. The same input of a Reaction
+     * for example can be present multiple times. Instead of saving a lot of relationships we just set a counter to indicate
+     * this behaviour. Since we can not query using the Batch inserter we have to iterate the collection of relationships
+     * first to identify the duplicates.
+     * The stoichiometry map has to utilize a helperObject because the GkInstance does not implement Comparable and
      * comparing instances will not work. In the helperObject the instance and a counter will be saved. Counter is used
-     * to set cardinality of a relationship.
+     * to set stoichiometry of a relationship.
      * @param oldId Old native neo4j id, used for saving a relationship to neo4j.
      * @param objects New list of GkInstances that have relationship to the old Instance (oldId).
      * @param relationName Name of the relationship.
@@ -211,20 +216,20 @@ public class ReactomeBatchImporter {
      */
     private void saveRelationships(Long oldId, Collection objects, String relationName) throws ClassNotFoundException {
 
-        Map<Long, GkInstanceCardinalityHelper> cardinalityMap = new HashMap<>();
+        Map<Long, GkInstanceStoichiometryHelper> stoichiometryMap = new HashMap<>();
         for (Object object : objects) {
             if (object instanceof GKInstance) {
                 GKInstance instance = (GKInstance) object;
-                if(cardinalityMap.containsKey(instance.getDBID())){
-                    cardinalityMap.get(instance.getDBID()).increment();
+                if(stoichiometryMap.containsKey(instance.getDBID())){
+                    stoichiometryMap.get(instance.getDBID()).increment();
                 } else {
-                    cardinalityMap.put(instance.getDBID(), new GkInstanceCardinalityHelper(instance,1));
+                    stoichiometryMap.put(instance.getDBID(), new GkInstanceStoichiometryHelper(instance, 1));
                 }
             }
         }
-        for (Long dbId : cardinalityMap.keySet()) {
+        for (Long dbId : stoichiometryMap.keySet()) {
 
-            GKInstance instance = cardinalityMap.get(dbId).getInstance();
+            GKInstance instance = stoichiometryMap.get(dbId).getInstance();
             Long newId;
             if (!dbIds.containsKey(dbId)) {
                 newId = importGkInstance(instance);
@@ -232,7 +237,7 @@ public class ReactomeBatchImporter {
                 newId = dbIds.get(dbId);
             }
             Map<String, Object> properties = new HashMap<>();
-            properties.put(CARDINALITY,cardinalityMap.get(dbId).getCount());
+            properties.put(STOICHIOMETRY,stoichiometryMap.get(dbId).getCount());
             RelationshipType relationshipType = DynamicRelationshipType.withName(relationName);
             batchInserter.createRelationship(oldId, newId, relationshipType, properties);
         }

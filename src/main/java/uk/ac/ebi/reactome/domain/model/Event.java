@@ -1,12 +1,15 @@
 package uk.ac.ebi.reactome.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
 @NodeEntity
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
 public abstract class Event extends DatabaseObject {//implements Regulator
 
     private Boolean _doRelease;
@@ -56,14 +59,13 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     
     @Relationship(type = "figure")
     private List<Figure> figure;
-    
-    @Relationship(type = "precedingEvent")
+
+    @Relationship(type = "precedingEvent", direction=Relationship.OUTGOING)
     private List<Event> precedingEvent;
 
-//    relationship duplication ?
-//    @Relationship(type = "followingEvent")
-//    private List<Event> followingEvent;
-    
+    @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
+    private List<Event> followingEvent;
+
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
@@ -266,13 +268,13 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         this.precedingEvent = precedingEvent;
     }
 
-//    public List<Event> getFollowingEvent() {
-//        return followingEvent;
-//    }
-//
-//    public void setFollowingEvent(List<Event> followingEvent) {
-//        this.followingEvent = followingEvent;
-//    }
+    public List<Event> getFollowingEvent() {
+        return followingEvent;
+    }
+
+    public void setFollowingEvent(List<Event> followingEvent) {
+        this.followingEvent = followingEvent;
+    }
 
     public List<Publication> getLiteratureReference() {
         return literatureReference;

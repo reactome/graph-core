@@ -8,12 +8,12 @@ import org.gk.model.GKInstance;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 18.01.16.
  */
-public class GkInstanceCardinalityHelper {
+public class GkInstanceStoichiometryHelper {
 
     private GKInstance instance;
     private Integer count;
 
-    public GkInstanceCardinalityHelper(GKInstance instance, Integer count) {
+    public GkInstanceStoichiometryHelper(GKInstance instance, Integer count) {
         this.instance = instance;
         this.count = count;
     }

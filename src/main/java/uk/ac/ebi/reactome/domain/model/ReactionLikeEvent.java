@@ -7,10 +7,7 @@ import org.springframework.stereotype.Component;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @NodeEntity
@@ -31,7 +28,7 @@ public class ReactionLikeEvent extends Event {
     private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "requiredInputComponent")
-    private List<DatabaseObject> requiredInputComponent;
+    private Set requiredInputComponent;
 
 //    @Relationship(type = "hasMember")
 //    private ReactionLikeEvent hasMember;
@@ -87,11 +84,11 @@ public class ReactionLikeEvent extends Event {
         this.entityOnOtherCell = entityOnOtherCell;
     }
 
-    public List<DatabaseObject> getRequiredInputComponent() {
+    public Set getRequiredInputComponent() {
         return requiredInputComponent;
     }
 
-    public void setRequiredInputComponent(List<DatabaseObject> requiredInputComponent) {
+    public void setRequiredInputComponent(Set requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
     }
 
@@ -156,7 +153,7 @@ public class ReactionLikeEvent extends Event {
         List<PhysicalEntity> rtn = new ArrayList<>();
             if(input!=null) {
                 for (Input aux : input) {
-                    for (int i = 0; i < aux.getCardinality(); i++) {
+                    for (int i = 0; i < aux.getStoichiometry(); i++) {
                         rtn.add(aux.getPhysicalEntity());
                     }
                 }
@@ -176,7 +173,7 @@ public class ReactionLikeEvent extends Event {
                 input.setPhysicalEntity(physicalEntity);
                 map.put(physicalEntity.getDbId(), input);
             } else {
-                input.setCardinality(input.getCardinality() + 1);
+                input.setStoichiometry(input.getStoichiometry() + 1);
             }
         }
         this.input = new ArrayList<>(map.values());
@@ -190,7 +187,7 @@ public class ReactionLikeEvent extends Event {
         List<PhysicalEntity> rtn = new ArrayList<>();
         if (output != null) {
             for (Output aux : output) {
-                for (int i = 0; i < aux.getCardinality(); i++) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getPhysicalEntity());
                 }
             }
@@ -210,7 +207,7 @@ public class ReactionLikeEvent extends Event {
                 output.setPhysicalEntity(physicalEntity);
                 map.put(physicalEntity.getDbId(), output);
             } else {
-                output.setCardinality(output.getCardinality() + 1);
+                output.setStoichiometry(output.getStoichiometry() + 1);
             }
         }
         this.output = new ArrayList<>(map.values());

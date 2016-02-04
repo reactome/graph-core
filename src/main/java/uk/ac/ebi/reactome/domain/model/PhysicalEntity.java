@@ -17,11 +17,11 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
 
     @Relationship(type = "goCellularComponent")
     private GO_CellularComponent goCellularComponent;
+
+
 //    avoid cyclic relation
 //    @Relationship(type = "inferredFrom")
 //    private List<PhysicalEntity> inferredFrom;
-
-
 
     //make import smaller
     @Relationship(type = "inferredTo")

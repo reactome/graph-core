@@ -13,7 +13,7 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 10.11.15.
  *
- * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the cardinality (stoichiometry) of
+ * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
  * outputs.
  */
 @RelationshipEntity(type = "output")
@@ -23,7 +23,7 @@ public class Output {
     @GraphId
     private Long id;
 
-    private Integer cardinality = 1;
+    private Integer stoichiometry = 1;
 
     @StartNode
     private Event event;
@@ -32,13 +32,13 @@ public class Output {
 
     public Output() {}
 
-    public Integer getCardinality() {
-        return cardinality;
+    public Integer getStoichiometry() {
+        return stoichiometry;
     }
 
     @SuppressWarnings("unused")
-    public void setCardinality(Integer cardinality) {
-        this.cardinality = cardinality;
+    public void setStoichiometry(Integer stoichiometry) {
+        this.stoichiometry = stoichiometry;
     }
 
     public Event getEvent() {

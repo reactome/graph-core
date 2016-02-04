@@ -97,7 +97,7 @@ public class Polymer extends PhysicalEntity {//implements Modification
     public List<PhysicalEntity> getRepeatedUnit() {
         List<PhysicalEntity> rtn = new ArrayList<>();
         if(repeatedUnit!=null){
-            for (int i = 0; i < repeatedUnit.getCardinality(); i++) {
+            for (int i = 0; i < repeatedUnit.getStoichiometry(); i++) {
                 rtn.add(repeatedUnit.getPhysicalEntity());
             }
         }
@@ -109,7 +109,7 @@ public class Polymer extends PhysicalEntity {//implements Modification
             this.repeatedUnit = new RepeatedUnit();
             this.repeatedUnit.setPolymer(this);
             this.repeatedUnit.setPhysicalEntity(repeatedUnit.get(0));
-            this.repeatedUnit.setCardinality(repeatedUnit.size());
+            this.repeatedUnit.setStoichiometry(repeatedUnit.size());
         }
     }
 

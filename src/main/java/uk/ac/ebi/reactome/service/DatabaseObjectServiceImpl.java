@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
@@ -22,7 +21,7 @@ import java.util.Collection;
  * @since 10.11.15.
  */
 @Service
-@Transactional(readOnly = true)
+//@Transactional(readOnly = true)
 public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> implements DatabaseObjectService {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
