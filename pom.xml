@@ -9,7 +9,7 @@
     <name>reactome-graphDb-spring</name>
 
     <properties>
-        <reactome.version>1.2.1</reactome.version>
+        <reactome.version>1.2.4</reactome.version>
         <sdn.version>4.1.0.BUILD-SNAPSHOT</sdn.version>
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
         <neo4j.ogm.version>2.0.0-M01</neo4j.ogm.version>
