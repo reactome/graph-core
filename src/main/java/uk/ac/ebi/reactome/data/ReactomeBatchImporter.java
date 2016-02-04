@@ -5,6 +5,7 @@ import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
+import org.gk.pathwaylayout.DiagramGeneratorFromDB;
 import org.gk.persistence.MySQLAdaptor;
 import org.neo4j.graphdb.*;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
@@ -182,13 +183,19 @@ public class ReactomeBatchImporter {
                                 break;
                             case "isInDisease":
                                 GKInstance disease = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.disease);
-                                Boolean isInDisease = disease == null ? Boolean.FALSE : Boolean.TRUE;
-                                properties.put("isInDisease", isInDisease);
+                                properties.put("isInDisease", disease != null);
                                 break;
                             case "isInferred":
                                 GKInstance isInferredFrom = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.inferredFrom);
-                                Boolean isInferred = isInferredFrom == null ? Boolean.FALSE : Boolean.TRUE;
-                                properties.put("isInferred", isInferred);
+                                properties.put("isInferred", isInferredFrom != null);
+                                break;
+                            case "hasDiagram":
+                                if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
+                                    DiagramGeneratorFromDB diagramHelper = new DiagramGeneratorFromDB();
+                                    diagramHelper.setMySQLAdaptor((MySQLAdaptor) instance.getDbAdaptor());
+                                    GKInstance diagram = diagramHelper.getPathwayDiagram(instance);
+                                    properties.put("hasDiagram", diagram != null);
+                                }
                                 break;
                             default:
                                 properties.put(attribute, value);
