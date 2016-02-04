@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -14,18 +15,21 @@ public abstract class Event extends DatabaseObject {//implements Regulator
 
     private Boolean _doRelease;
     private String releaseDate;
+
+//    This is not longer used (TODO: Check it out)
 //    private String keywords;
-//    private String speciesName;
+
+    private String speciesName;
     private String definition;
     private List<String> name;
     /**
      * A simple label to indicate if this Event object is a disease
      */
-//    private Boolean isInDisease;
-//    /**
-//     * A simple flag to indicate if this Event is inferred from another
-//     */
-//    private Boolean isInferred;
+    private Boolean isInDisease;
+    /**
+     * A simple flag to indicate if this Event is inferred from another
+     */
+    private Boolean isInferred;
     
     @Relationship(type = "authored", direction = "OUTGOING")
     private List<InstanceEdit> authored;
@@ -83,7 +87,7 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     
 //    @Relationship(type = "requirements")
 //    private List<DatabaseObject> requirements;
-//
+
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
     
@@ -131,22 +135,22 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
-//
+
 //    public String getKeywords() {
 //        return keywords;
 //    }
-//
+
 //    public void setKeywords(String keywords) {
 //        this.keywords = keywords;
 //    }
 
-//    public String getSpeciesName() {
-//        return speciesName;
-//    }
-//
-//    public void setSpeciesName(String speciesName) {
-//        this.speciesName = speciesName;
-//    }
+    public String getSpeciesName() {
+        return speciesName;
+    }
+
+    public void setSpeciesName(String speciesName) {
+        this.speciesName = speciesName;
+    }
 
     public String getDefinition() {
         return definition;
@@ -156,21 +160,21 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         this.definition = definition;
     }
 
-//    public Boolean getIsInDisease() {
-//        return isInDisease;
-//    }
-//
-//    public void setIsInDisease(Boolean isInDisease) {
-//        this.isInDisease = isInDisease;
-//    }
-//
-//    public Boolean getIsInferred() {
-//        return isInferred;
-//    }
-//
-//    public void setIsInferred(Boolean isInferred) {
-//        this.isInferred = isInferred;
-//    }
+    public Boolean getIsInDisease() {
+        return isInDisease;
+    }
+
+    public void setIsInDisease(Boolean isInDisease) {
+        this.isInDisease = isInDisease;
+    }
+
+    public Boolean getIsInferred() {
+        return isInferred;
+    }
+
+    public void setIsInferred(Boolean isInferred) {
+        this.isInferred = isInferred;
+    }
 
     public List<InstanceEdit> getAuthored() {
         return authored;
@@ -288,17 +292,40 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         return regulatedBy;
     }
 
+    public List<PositiveRegulation> getPositiveRegulation() {
+        List<PositiveRegulation> rtn = new ArrayList<>();
+        for (Regulation regulation : regulatedBy) {
+            if(regulation instanceof PositiveRegulation){
+                rtn.add((PositiveRegulation) regulation);
+            }
+        }
+        return rtn;
+    }
+
+    public List<NegativeRegulation> getNegativeRegulation() {
+        List<NegativeRegulation> rtn = new ArrayList<>();
+        for (Regulation regulation : regulatedBy) {
+            if(regulation instanceof NegativeRegulation){
+                rtn.add((NegativeRegulation) regulation);
+            }
+        }
+        return rtn;
+    }
+
+    public List<Requirement> getRequirements() {
+        List<Requirement> rtn = new ArrayList<>();
+        for (Regulation regulation : regulatedBy) {
+            if(regulation instanceof Requirement){
+                rtn.add((Requirement) regulation);
+            }
+        }
+        return rtn;
+    }
+
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
     }
 
-//    public List<DatabaseObject> getRequirements() {
-//        return requirements;
-//    }
-//
-//    public void setRequirements(List<DatabaseObject> requirements) {
-//        this.requirements = requirements;
-//    }
 
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
