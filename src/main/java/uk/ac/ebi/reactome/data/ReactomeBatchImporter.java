@@ -40,7 +40,7 @@ public class ReactomeBatchImporter {
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
 
-    private static final String DATA_DIR        = "/Users/amundo/Documents/Neo4j/default.graphdb";
+    private static String DATA_DIR;
 
 
     private static final String DBID = "dbId";
@@ -56,9 +56,10 @@ public class ReactomeBatchImporter {
     private static final Map<Class, Label[]> labelMap = new HashMap<>();
     private static final Map<Long, Long> dbIds = new HashMap<>();
 
-    public ReactomeBatchImporter(String host, String database, String user, String password, Integer port) {
+    public ReactomeBatchImporter(String host, String database, String user, String password, Integer port, String dir) {
         try {
             dba = new MySQLAdaptor(host,database,user,password,port);
+            DATA_DIR = dir;
             logger.info("Established connection to Reactome database");
         } catch (SQLException e) {
             logger.error("An error occurred while connection to the Reactome database", e);
@@ -99,7 +100,7 @@ public class ReactomeBatchImporter {
      */
     private Long importGkInstance(GKInstance instance) throws ClassNotFoundException {
 
-        String clazzName = DatabaseObject.class.getPackage() + instance.getSchemClass().getName();
+        String clazzName = DatabaseObject.class.getPackage().getName() + "." + instance.getSchemClass().getName();
         Class clazz = Class.forName(clazzName);
 
         setUpMethods(clazz);
@@ -402,6 +403,7 @@ public class ReactomeBatchImporter {
      * getFields[] can not be utilized here because this method can not return inherited fields.
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
      */
+    //TODO REMOVE new attributes that are not filled by GKInstance (eg followingEvent)
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
             Method[] methods = clazz.getMethods();
@@ -439,7 +441,7 @@ public class ReactomeBatchImporter {
             }
         }
     }
-
+    //TODO change code where this is used so that attributes like isInDisease pass here or do not log a message
     private boolean isValidGkInstanceAttribute(GKInstance instance, String attribute) {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;

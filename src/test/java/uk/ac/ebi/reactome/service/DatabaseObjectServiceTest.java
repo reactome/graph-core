@@ -38,7 +38,7 @@ public class DatabaseObjectServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-    private static final Long dbId = 7130561L;
+    private static final Long dbId = 381283L;//7130561L;
     private static final String stId = "R-HSA-5205685";
 
 //    private static final Long dbId = 5205685L;

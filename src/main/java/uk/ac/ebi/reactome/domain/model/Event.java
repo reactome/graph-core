@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @NodeEntity
@@ -77,16 +76,13 @@ public abstract class Event extends DatabaseObject {//implements Regulator
      * Regulation related attributes
      */
     @Relationship(type = "regulatedBy")
-    private List<Regulation> regulatedBy;
+    private List<NegativeRegulation> negativeRegulations;
 
-//    /**
-//     * Regulators in PositiveRegulations but not Requirements. Requirement is a subclass to PositiveRegulation.
-//     */
-//    @Relationship(type = "positiveRegulators")
-//    private List<Regulation> positiveRegulators;
-    
-//    @Relationship(type = "requirements")
-//    private List<DatabaseObject> requirements;
+    @Relationship(type = "regulatedBy")
+    private List<PositiveRegulation> positiveRegulations;
+
+    @Relationship(type = "regulatedBy")
+    private List<Requirement> requirements;
 
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
@@ -288,44 +284,29 @@ public abstract class Event extends DatabaseObject {//implements Regulator
         this.literatureReference = literatureReference;
     }
 
-    public List<Regulation> getRegulatedBy() {
-        return regulatedBy;
+    public List<NegativeRegulation> getNegativeRegulations() {
+        return negativeRegulations;
     }
 
-    public List<PositiveRegulation> getPositiveRegulation() {
-        List<PositiveRegulation> rtn = new ArrayList<>();
-        for (Regulation regulation : regulatedBy) {
-            if(regulation instanceof PositiveRegulation){
-                rtn.add((PositiveRegulation) regulation);
-            }
-        }
-        return rtn;
+    public void setNegativeRegulations(List<NegativeRegulation> negativeRegulations) {
+        this.negativeRegulations = negativeRegulations;
     }
 
-    public List<NegativeRegulation> getNegativeRegulation() {
-        List<NegativeRegulation> rtn = new ArrayList<>();
-        for (Regulation regulation : regulatedBy) {
-            if(regulation instanceof NegativeRegulation){
-                rtn.add((NegativeRegulation) regulation);
-            }
-        }
-        return rtn;
+    public List<PositiveRegulation> getPositiveRegulations() {
+        return positiveRegulations;
+    }
+
+    public void setPositiveRegulations(List<PositiveRegulation> positiveRegulations) {
+        this.positiveRegulations = positiveRegulations;
     }
 
     public List<Requirement> getRequirements() {
-        List<Requirement> rtn = new ArrayList<>();
-        for (Regulation regulation : regulatedBy) {
-            if(regulation instanceof Requirement){
-                rtn.add((Requirement) regulation);
-            }
-        }
-        return rtn;
+        return requirements;
     }
 
-    public void setRegulatedBy(List<Regulation> regulatedBy) {
-        this.regulatedBy = regulatedBy;
+    public void setRequirements(List<Requirement> requirements) {
+        this.requirements = requirements;
     }
-
 
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
