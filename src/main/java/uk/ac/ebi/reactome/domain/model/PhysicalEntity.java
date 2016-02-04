@@ -60,14 +60,14 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
     /**
      * List of Events catalysed by this PE
      */
-//    @Relationship(type = "catalyzedEvent")
-//    private List<Event> catalyzedEvent;
-//
-//    /**
-//     * List of GO MF related to this PE via CatalystActivity
-//     */
-//    @Relationship(type = "goActivity")
-//    private List<GO_MolecularFunction> goActivity;
+    @Relationship(type = "catalyzedEvent")
+    private List<Event> catalyzedEvent;
+
+    /**
+     * List of GO MF related to this PE via CatalystActivity
+     */
+    @Relationship(type = "goActivity")
+    private List<GO_MolecularFunction> goActivity;
 
 
 
@@ -224,23 +224,23 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
-//
-//    public List<Event> getCatalyzedEvent() {
-//        return catalyzedEvent;
-//    }
-//
-//    public void setCatalyzedEvent(List<Event> catalyzedEvent) {
-//        this.catalyzedEvent = catalyzedEvent;
-//    }
-//
-//    public List<GO_MolecularFunction> getGoActivity() {
-//        return goActivity;
-//    }
-//
-//    public void setGoActivity(List<GO_MolecularFunction> goActivity) {
-//        this.goActivity = goActivity;
-//    }
-//
+
+    public List<Event> getCatalyzedEvent() {
+        return catalyzedEvent;
+    }
+
+    public void setCatalyzedEvent(List<Event> catalyzedEvent) {
+        this.catalyzedEvent = catalyzedEvent;
+    }
+
+    public List<GO_MolecularFunction> getGoActivity() {
+        return goActivity;
+    }
+
+    public void setGoActivity(List<GO_MolecularFunction> goActivity) {
+        this.goActivity = goActivity;
+    }
+
 //    public List<Event> getInhibitedEvent() {
 //        return inhibitedEvent;
 //    }
