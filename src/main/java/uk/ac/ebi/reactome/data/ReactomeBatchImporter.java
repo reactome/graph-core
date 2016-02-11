@@ -63,6 +63,8 @@ public class ReactomeBatchImporter {
             dba = new MySQLAdaptor(host,database,user,password,port);
             DATA_DIR = dir;
             total = (int) dba.getClassInstanceCount(ReactomeJavaConstants.DatabaseObject);
+            total =- (int) dba.getClassInstanceCount(ReactomeJavaConstants.StableIdentifier);
+            total =- (int) dba.getClassInstanceCount(ReactomeJavaConstants.PathwayDiagramItem);
             fileLogger.info("Established connection to Reactome database");
         } catch (SQLException|InvalidClassException e) {
             fileLogger.error("An error occurred while connection to the Reactome database", e);
