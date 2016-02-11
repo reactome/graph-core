@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,13 @@ import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
+import uk.ac.ebi.reactome.service.helper.AttributeProperties;
 import uk.ac.ebi.reactome.service.helper.Node;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Created by:
@@ -87,11 +90,53 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
                     lowestClass = clazz;
                 }
             }
-            recursion(lowestClass,null,labelsCount.getCount());
+            recursion(lowestClass, null, labelsCount.getCount());
         }
         Node n = map.get(DatabaseObject.class.getSimpleName());
         correctCounts(n);
         return n;
+    }
+
+    public Set<AttributeProperties> getAttributeTable(Class clazz) {
+        Set<AttributeProperties> propertiesList = new TreeSet<>();
+        Set<Method> declaredMethods = new HashSet<>(Arrays.asList(clazz.getDeclaredMethods()));
+        for (Method method : clazz.getMethods()) {
+            String methodName = method.getName();
+            if (methodName.startsWith("get")
+                    && !methodName.startsWith("getSuper")
+                    && !methodName.equals("getClass")
+                    && !methodName.equals("getId")) {
+
+                AttributeProperties properties = (getAttributeProperties(method));
+                if (declaredMethods.contains(method)) {
+                    properties.setDeclaredMethod(true);
+                } else {
+                    properties.setDeclaredMethod(false);
+                }
+                propertiesList.add(properties);
+            }
+        }
+        return propertiesList;
+    }
+
+    private AttributeProperties getAttributeProperties(Method method) {
+        AttributeProperties properties = new AttributeProperties();
+        properties.setName(lowerFirst(method.getName().substring(3)));
+        Type returnType = method.getGenericReturnType();
+        if (returnType instanceof ParameterizedType) {
+            ParameterizedType type = (ParameterizedType) returnType;
+            Type[] typeArguments = type.getActualTypeArguments();
+            properties.setCardinality("+");
+            if (typeArguments.length>0) {
+                Class clazz = (Class) typeArguments[0];
+                properties.setValueType(clazz.getSimpleName());
+            }
+        } else {
+            Class clazz = (Class) returnType;
+            properties.setCardinality("1");
+            properties.setValueType(clazz.getSimpleName());
+        }
+        return properties;
     }
 
     private void correctCounts(Node node) {
@@ -122,6 +167,13 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
                 recursion(clazz.getSuperclass(),node,0);
             }
         }
+    }
+
+    private String lowerFirst(String str) {
+        if(StringUtils.isAllUpperCase(str)) {
+            return str;
+        }
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
 }

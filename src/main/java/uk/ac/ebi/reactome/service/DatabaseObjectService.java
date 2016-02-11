@@ -5,9 +5,11 @@ import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
+import uk.ac.ebi.reactome.service.helper.AttributeProperties;
 import uk.ac.ebi.reactome.service.helper.Node;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by:
@@ -28,4 +30,5 @@ public interface DatabaseObjectService extends Service<DatabaseObject> {
     Collection<LabelsCount> getLabelsCount();
 
     Node getGraphModelTree() throws ClassNotFoundException;
+    Set<AttributeProperties> getAttributeTable(Class clazz);
 }
