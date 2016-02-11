@@ -4,6 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the
@@ -21,7 +22,7 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
     private PhysicalEntity physicalEntity;
 
     @Relationship(type = "activeUnit")
-    private List<PhysicalEntity> activeUnit;
+    private Set<PhysicalEntity> activeUnit;
 
     /**
      * Regulation related attributes
@@ -30,14 +31,6 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
     private List<Regulation> regulatedBy;
 
     public CatalystActivity() {}
-
-//    public String getPhysicalEntityClass() {
-//        return physicalEntityClass;
-//    }
-//
-//    public void setPhysicalEntityClass(String physicalEntityClass) {
-//        this.physicalEntityClass = physicalEntityClass;
-//    }
 
     public GO_MolecularFunction getActivity() {
         return activity;
@@ -55,11 +48,11 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
         this.physicalEntity = physicalEntity;
     }
 
-    public List<PhysicalEntity> getActiveUnit() {
+    public Set<PhysicalEntity> getActiveUnit() {
         return activeUnit;
     }
 
-    public void setActiveUnit(List<PhysicalEntity> activeUnit) {
+    public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
     }
 

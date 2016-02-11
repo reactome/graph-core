@@ -3,13 +3,11 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
-import org.springframework.stereotype.Component;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
 import java.util.*;
 
-@Component
 @NodeEntity
 public class ReactionLikeEvent extends Event {
 
@@ -28,7 +26,7 @@ public class ReactionLikeEvent extends Event {
     private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "requiredInputComponent")
-    private Set requiredInputComponent;
+    private Set<PhysicalEntity> requiredInputComponent;
 
 //    @Relationship(type = "hasMember")
 //    private ReactionLikeEvent hasMember;
@@ -84,11 +82,11 @@ public class ReactionLikeEvent extends Event {
         this.entityOnOtherCell = entityOnOtherCell;
     }
 
-    public Set getRequiredInputComponent() {
+    public Set<PhysicalEntity> getRequiredInputComponent() {
         return requiredInputComponent;
     }
 
-    public void setRequiredInputComponent(Set requiredInputComponent) {
+    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
     }
 

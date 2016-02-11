@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @NodeEntity
-public class Polymer extends PhysicalEntity {//implements Modification
+public class Polymer extends PhysicalEntity implements Modification{
 
     private Integer maxUnitCount;
     private Integer minUnitCount;

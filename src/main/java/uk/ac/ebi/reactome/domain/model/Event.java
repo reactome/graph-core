@@ -1,16 +1,13 @@
 package uk.ac.ebi.reactome.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
 @NodeEntity
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
-public abstract class Event extends DatabaseObject {//implements Regulator
+public abstract class Event extends DatabaseObject implements Regulator {
 
     private Boolean _doRelease;
     private String releaseDate;
@@ -51,7 +48,7 @@ public abstract class Event extends DatabaseObject {//implements Regulator
     @Relationship(type = "evidenceType")
     private EvidenceType evidenceType;
     
-//    @Relationship(type = "goBiologicalProcess", direction = "OUTGOING")
+    @Relationship(type = "goBiologicalProcess")
     private GO_BiologicalProcess goBiologicalProcess;
 
     @Relationship(type = "summation")
@@ -107,7 +104,6 @@ public abstract class Event extends DatabaseObject {//implements Regulator
      * change to orthologousTo --> manually created Events
      * Batch inserter
      */
-    @JsonIgnore
     @Relationship(type = "orthologousEvent")
     private List<Event> orthologousEvent;
     

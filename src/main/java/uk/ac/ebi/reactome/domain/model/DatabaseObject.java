@@ -1,5 +1,7 @@
 package uk.ac.ebi.reactome.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.gk.model.GKInstance;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -54,6 +56,7 @@ Post previous;
  */
 @SuppressWarnings("unused")
 @NodeEntity
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 
     public transient boolean isLoaded = false;

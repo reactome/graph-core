@@ -8,13 +8,22 @@ import java.util.List;
 @NodeEntity
 public class Taxon extends DatabaseObject {
 
+    private List<String> name;
+
     @Relationship
     private List<DatabaseIdentifier> crossReference;
-    private List<String> name;
+
     @Relationship
     private Taxon superTaxon;
     
-    public Taxon() {
+    public Taxon() {}
+
+    public List<String> getName() {
+        return name;
+    }
+
+    public void setName(List<String> name) {
+        this.name = name;
     }
 
     public List<DatabaseIdentifier> getCrossReference() {
@@ -25,14 +34,6 @@ public class Taxon extends DatabaseObject {
         this.crossReference = crossReference;
     }
 
-    public List<String> getName() {
-        return name;
-    }
-
-    public void setName(List<String> name) {
-        this.name = name;
-    }
-
     public Taxon getSuperTaxon() {
         return superTaxon;
     }
@@ -40,6 +41,4 @@ public class Taxon extends DatabaseObject {
     public void setSuperTaxon(Taxon superTaxon) {
         this.superTaxon = superTaxon;
     }
-    
-
 }

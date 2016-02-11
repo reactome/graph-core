@@ -6,7 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.List;
 
 @NodeEntity
-public class PhysicalEntity extends DatabaseObject  {//implements Regulator
+public class PhysicalEntity extends DatabaseObject implements Regulator {
 
     private String definition;
 //    private String shortName;
@@ -18,14 +18,14 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
     @Relationship(type = "goCellularComponent")
     private GO_CellularComponent goCellularComponent;
 
-
-//    avoid cyclic relation
-//    @Relationship(type = "inferredFrom")
-//    private List<PhysicalEntity> inferredFrom;
-
     //make import smaller
-    @Relationship(type = "inferredTo")
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private List<PhysicalEntity> inferredTo;
+
+    //    avoid cyclic relation
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
+    private List<PhysicalEntity> inferredFrom;
+
 
     @Relationship(type = "figure")
     private List<Figure> figure;
@@ -143,6 +143,14 @@ public class PhysicalEntity extends DatabaseObject  {//implements Regulator
 
     public void setInferredTo(List<PhysicalEntity> inferredTo) {
         this.inferredTo = inferredTo;
+    }
+
+    public List<PhysicalEntity> getInferredFrom() {
+        return inferredFrom;
+    }
+
+    public void setInferredFrom(List<PhysicalEntity> inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     public List<Figure> getFigure() {
