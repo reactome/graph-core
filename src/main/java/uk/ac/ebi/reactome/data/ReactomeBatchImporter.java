@@ -7,6 +7,7 @@ import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.pathwaylayout.DiagramGeneratorFromDB;
 import org.gk.persistence.MySQLAdaptor;
+import org.gk.schema.InvalidClassException;
 import org.neo4j.graphdb.*;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
@@ -35,13 +36,11 @@ import java.util.*;
  */
 public class ReactomeBatchImporter {
 
-    private static final Logger logger = LoggerFactory.getLogger(ReactomeBatchImporter.class);
+    private static final Logger fileLogger = LoggerFactory.getLogger("importFileLogger");
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
-
     private static String DATA_DIR;
-
 
     private static final String DBID = "dbId";
     private static final String STID = "stableIdentifier";
@@ -56,13 +55,17 @@ public class ReactomeBatchImporter {
     private static final Map<Class, Label[]> labelMap = new HashMap<>();
     private static final Map<Long, Long> dbIds = new HashMap<>();
 
+    private static final int width = 100;
+    private static int total;
+
     public ReactomeBatchImporter(String host, String database, String user, String password, Integer port, String dir) {
         try {
             dba = new MySQLAdaptor(host,database,user,password,port);
             DATA_DIR = dir;
-            logger.info("Established connection to Reactome database");
-        } catch (SQLException e) {
-            logger.error("An error occurred while connection to the Reactome database", e);
+            total = (int) dba.getClassInstanceCount(ReactomeJavaConstants.DatabaseObject);
+            fileLogger.info("Established connection to Reactome database");
+        } catch (SQLException|InvalidClassException e) {
+            fileLogger.error("An error occurred while connection to the Reactome database", e);
         }
     }
 
@@ -72,19 +75,21 @@ public class ReactomeBatchImporter {
             Collection<?> frontPages = dba.fetchInstancesByClass(ReactomeJavaConstants.FrontPage);
             GKInstance frontPage = (GKInstance) frontPages.iterator().next();
             Collection<?> objects = frontPage.getAttributeValuesList(ReactomeJavaConstants.frontPageItem);
-            logger.info("Started importing " + objects.size() + " top level pathways");
+            fileLogger.info("Started importing " + objects.size() + " top level pathways");
+            System.out.println("Started importing " + objects.size() + " top level pathways");
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
+//                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
                 int sec = (int) (elapsedTime / 1000) % 60;
                 int min = (int) ((elapsedTime / (1000 * 60)) % 60);
-                logger.info(instance.getDisplayName() + " was processed within: " + min + " min " + sec + " sec " + ms + " ms");
+                fileLogger.info(instance.getDisplayName() + " was processed within: " + min + " min " + sec + " sec " + ms + " ms");
             }
-            logger.info("All top level pathways have been imported to Neo4j");
+            fileLogger.info("All top level pathways have been imported to Neo4j");
+            System.out.println("\nAll top level pathways have been imported to Neo4j");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,9 +106,10 @@ public class ReactomeBatchImporter {
     @SuppressWarnings("unchecked")
     private Long importGkInstance(GKInstance instance) throws ClassNotFoundException {
 
-        if (dbIds.size() % 1000 == 0 ) {
-            System.out.println(dbIds.size());
+        if (dbIds.size() % 100 == 0 ) {
+            updateProgressBar(dbIds.size(),total);
         }
+
         String clazzName = DatabaseObject.class.getPackage().getName() + "." + instance.getSchemClass().getName();
         Class clazz = Class.forName(clazzName);
 
@@ -159,7 +165,7 @@ public class ReactomeBatchImporter {
 //                        }
                     }
                 } catch (Exception e) {
-                    logger.error("A problem occurred when trying to retrieve data from instance " + instance.getDBID() + " "
+                    fileLogger.error("A problem occurred when trying to retrieve data from instance " + instance.getDBID() + " "
                             + instance.getDisplayName() + "with attribute name: " + attribute, e);
                 }
 
@@ -170,6 +176,23 @@ public class ReactomeBatchImporter {
          */
         instance.deflate();
         return id;
+    }
+
+    private void updateProgressBar(int done, int total) {
+        String format = "\r%3d%% %s %c";
+        char[] workchars = {'|', '/', '-', '\\'};
+        int percent = (++done * 100) / total;
+        StringBuilder progress = new StringBuilder(width);
+        progress.append('|');
+        int i = 0;
+        for (; i < percent; i++) {
+            progress.append("=");
+        }
+        for (; i < width; i++){
+            progress.append(" ");
+        }
+        progress.append('|');
+        System.out.printf(format, percent, progress, workchars[(((done - 1) % (workchars.length * 100)) /100)]);
     }
 
     /**
@@ -188,7 +211,7 @@ public class ReactomeBatchImporter {
         if (instance.getDisplayName() != null) {
             properties.put(NAME, instance.getDisplayName());
         } else {
-            logger.error("Found an entry without display name! dbId: " + instance.getDBID());
+            fileLogger.error("Found an entry without display name! dbId: " + instance.getDBID());
         }
 
         try {
@@ -259,12 +282,12 @@ public class ReactomeBatchImporter {
                 }
             }
         } catch (Exception e) {
-            logger.error("A problem occurred when trying to retrieve data from GkInstance :" + instance.getDisplayName() + instance.getDBID(), e);
+            fileLogger.error("A problem occurred when trying to retrieve data from GkInstance :" + instance.getDisplayName() + instance.getDBID(), e);
         }
         try {
             return batchInserter.createNode(properties, labels);
         } catch (IllegalArgumentException e) {
-            logger.error("A problem occurred when trying to save entry to the Grpah :" + instance.getDisplayName() + instance.getDBID(), e);
+            fileLogger.error("A problem occurred when trying to save entry to the Grpah :" + instance.getDisplayName() + instance.getDBID(), e);
             System.exit(-1);
             throw e;
         }
@@ -377,7 +400,7 @@ public class ReactomeBatchImporter {
         try {
             batchInserter.createDeferredConstraint(label).assertPropertyIsUnique(name).create();
         } catch (ConstraintViolationException e) {
-            logger.warn("Could not create Constraint on " + label + " " + name);
+            fileLogger.warn("Could not create Constraint on " + label + " " + name);
         }
     }
 
@@ -399,7 +422,7 @@ public class ReactomeBatchImporter {
                 FileUtils.forceMkdir(dir);
             }
         } catch (IOException | IllegalArgumentException e) {
-            logger.warn("An error occurred while cleaning the old database");
+            fileLogger.warn("An error occurred while cleaning the old database");
         }
         return dir;
     }
@@ -449,7 +472,7 @@ public class ReactomeBatchImporter {
      * getFields[] can not be utilized here because this method can not return inherited fields.
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
      */
-    //TODO REMOVE new attributes that are not filled by GKInstance (eg followingEvent)
+//TODO REMOVE new attributes that are not filled by GKInstance (eg followingEvent)
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
             Method[] methods = clazz.getMethods();
@@ -463,7 +486,7 @@ public class ReactomeBatchImporter {
                         && !methodName.equals("getDisplayName")
                         && !methodName.equals("getTimestamp") //should be removed from model!
                         && !methodName.equals("getInferredFrom") //is in the Database, should not be populated by Physical Entities
-                                                                 //Events have inferred From aswell
+                        //Events have inferred From aswell
                         && !methodName.equals("getSchemaClass")) { //should be removed from model!
 
                     Type returnType = method.getGenericReturnType();
@@ -495,7 +518,7 @@ public class ReactomeBatchImporter {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;
         } if (!attribute.equals("regulatedBy")) {
-            logger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
+//            logger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
         }
         return false;
     }
