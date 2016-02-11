@@ -45,13 +45,14 @@ public class GenericServiceTest {
         logger.info("\n");
         logger.info(" --- Running GenericServiceTests --- \n");
     }
-    
+
     /**
-     *
+     * clears neo4j cache, needed because otherwise smart object mapping will populate previously loaded objects
      */
     @Before
     public void setUp() throws Exception {
         genericService.findByDbId(DatabaseObject.class,1l,0);
+        genericService.clear();
         DatabaseObjectFactory.createObject("1");
         DatabaseObjectFactory.clearCache();
     }
@@ -66,7 +67,7 @@ public class GenericServiceTest {
         long start, time;
 
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = genericService.loadByProperty(DatabaseObject.class, "dbId", dbId, 1);
+        DatabaseObject databaseObjectObserved = genericService.findByProperty(DatabaseObject.class, "dbId", dbId, 1);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -124,8 +125,8 @@ public class GenericServiceTest {
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected,databaseObjectObserved);
     }
 
-//    @Test
-//    public void testCountEntries() {
-//
-//    }
+    @Test
+    public void testCountEntries() {
+
+    }
 }

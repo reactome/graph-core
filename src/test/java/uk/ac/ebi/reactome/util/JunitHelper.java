@@ -24,7 +24,7 @@ public class JunitHelper {
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             String methodName = method.getName();
-            if (methodName.startsWith("get") && !methodName.equals("getId")) {
+            if (methodName.startsWith("get") && !methodName.equals("getId") && !methodName.equals("getFollowingEvents")) {
                 Object expected = method.invoke(databaseObjectExpected);
                 Object observed = method.invoke(databaseObjectObserved);
                 if (expected instanceof Collection) {

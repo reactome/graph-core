@@ -17,6 +17,7 @@ import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
+import uk.ac.ebi.reactome.service.helper.Node;
 
 import java.util.Collection;
 
@@ -38,7 +39,7 @@ public class DatabaseObjectServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-    private static final Long dbId = 381283L;//7130561L;
+    private static final Long dbId = 7130561L; //381283L; // 75949L;
     private static final String stId = "R-HSA-5205685";
 
 //    private static final Long dbId = 5205685L;
@@ -50,6 +51,9 @@ public class DatabaseObjectServiceTest {
     @Autowired
     private DatabaseObjectService databaseObjectService;
 
+    @Autowired
+    private GenericService genericService;
+
     @BeforeClass
     public static void setUpClass () {
         logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
@@ -57,9 +61,10 @@ public class DatabaseObjectServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        databaseObjectService.findByDbId(1l);
+        genericService.findByDbId(DatabaseObject.class,1l,0);
+        genericService.clear();
         DatabaseObjectFactory.createObject("1");
-//        DatabaseObjectFactory.clearCache();
+        DatabaseObjectFactory.clearCache();
     }
 
     @After
@@ -89,6 +94,9 @@ public class DatabaseObjectServiceTest {
     }
     @Test
     public void testFindByDbIdNoRelations() {
+
+//        uk.ac.ebi.reactome.domain.result.Test t = databaseObjectRepository.findByDbIdNoRelations2(dbId);
+
 
         logger.info("Started testing databaseObjectService.findByDbIdNoRelations");
         long start, time;
@@ -177,17 +185,30 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void testGetLabelsCount() {
+    public void testGetLabelsCount() throws ClassNotFoundException {
 
         logger.info("Started testing databaseObjectService.getLabelsCout");
         long start, time;
 
         start = System.currentTimeMillis();
-        Collection<LabelsCount> labelsCount = databaseObjectService.getLabelsCount();
+        Collection<LabelsCount> labelsCounts = databaseObjectService.getLabelsCount();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-
 //        assertEquals(labelsCount.size(), 29);
+//        TODO add actual tests
+    }
+
+    @Test
+    public void testGetGraphModelTree() throws ClassNotFoundException {
+
+        logger.info("Started testing databaseObjectService.getLabelsCout");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        Node root = databaseObjectService.getGraphModelTree();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+//        assertEquals(root.getChildren().size(), 29);
 //        TODO add actual tests
     }
 
