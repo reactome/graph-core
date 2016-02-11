@@ -1,12 +1,15 @@
 package uk.ac.ebi.reactome.repository;
 
 import org.neo4j.ogm.cypher.Filter;
+import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by:
@@ -21,16 +24,82 @@ public class GenericRepositoryImpl implements GenericRepository {
     private Session session;
 
     @Autowired
-    private Neo4jOperations template;
+    private Neo4jOperations neo4jTemplate;
 
     @Override
-    public <T> T loadByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return template.loadByProperty(clazz, property, value, depth);
+    public <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships) {
+        String query = "MATCH (n:DatabaseObject{";
+        query += property + ":{" + property + "}})-[r]-(x) " +
+                "OPTIONAL MATCH (x:CatalystActivity)-[e]->(z) " +
+                "OPTIONAL MATCH (x:Regulation)-[e]-(z) " +
+                "Where NOT (n)-[r";
+        if (relationships != null && relationships.length > 0) {
+            String pipe = ":";
+            for (String relationship : relationships) {
+                query += pipe + relationship;
+                pipe = "|";
+            }
+        }
+        query += "]->(m) RETURN n,r,x,e,z";
+        Map<String,Object> map = new HashMap<>();
+        map.put(property,value);
+        Result result =  neo4jTemplate.query(query,map);
+        for (Map<String, Object> stringObjectMap : result) {
+            return (T) stringObjectMap.get("n");
+        }
+        return null;
     }
 
     @Override
-    public <T> T loadById(Class<T> clazz, Long id, Integer depth) {
-        return template.load(clazz, id, depth);
+    public <T> T findByPropertyWithRelations (String property, Object value, String... relationships) {
+        String query = "MATCH (n:DatabaseObject{";
+        query += property + ":{" + property + "}})-[r";
+        if (relationships != null && relationships.length > 0) {
+            String pipe = ":";
+            for (String relationship : relationships) {
+                query += pipe + relationship;
+                pipe = "|";
+            }
+        }
+        query += "]->(m) RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put(property,value);
+        Result result =  neo4jTemplate.query(query,map);
+        for (Map<String, Object> stringObjectMap : result) {
+            return (T) stringObjectMap.get("n");
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships) {
+        String query = "MATCH (n:DatabaseObject{";
+        query += property + ":{" + property + "}})-[r]->(m) WHERE NOT (n)-[r";
+        if (relationships != null && relationships.length > 0) {
+            String pipe = ":";
+            for (String relationship : relationships) {
+                query += pipe + relationship;
+                pipe = "|";
+            }
+        }
+        query += "]->(m) RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put(property,value);
+        Result result =  neo4jTemplate.query(query,map);
+        for (Map<String, Object> stringObjectMap : result) {
+            return (T) stringObjectMap.get("n");
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+        return neo4jTemplate.loadByProperty(clazz, property, value, depth);
+    }
+
+    @Override
+    public <T> T findById(Class<T> clazz, Long id, Integer depth) {
+        return neo4jTemplate.load(clazz, id, depth);
     }
 
     @Override
@@ -53,6 +122,11 @@ public class GenericRepositoryImpl implements GenericRepository {
 
     @Override
     public Long countEntries(Class<?> clazz) {
-        return template.count(clazz);
+        return neo4jTemplate.count(clazz);
+    }
+
+    @Override
+    public void clear() {
+        neo4jTemplate.clear();
     }
 }

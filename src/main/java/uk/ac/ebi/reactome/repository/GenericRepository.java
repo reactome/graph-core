@@ -11,9 +11,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GenericRepository {
 
-    <T> T loadByProperty(Class<T> clazz, String property, Object value, Integer depth);
-    <T> T loadById(Class<T> clazz, Long id, Integer depth);
+    <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships);
+    <T> T findByPropertyWithRelations (String property, Object value, String... relationships);
+    <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships);
+
+    <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
+    <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
     Long countEntries(Class<?> clazz);
+
+    void clear();
 }

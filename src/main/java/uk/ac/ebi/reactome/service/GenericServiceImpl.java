@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.repository.GenericRepository;
 
 /**
@@ -14,7 +13,6 @@ import uk.ac.ebi.reactome.repository.GenericRepository;
  * @since 15.11.15.
  */
 @Service
-@Transactional(readOnly = true)
 public class GenericServiceImpl implements GenericService {
 
     private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
@@ -23,13 +21,28 @@ public class GenericServiceImpl implements GenericService {
     private GenericRepository genericRepository;
 
     @Override
-    public <T>T loadByProperty(Class<T> clazz, String property, Object value, Integer depth){
-        return genericRepository.loadByProperty(clazz,property,value, depth);
+    public <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships) {
+        return genericRepository.findByPropertyIncludingSecondSteps(property,value,relationships);
     }
 
     @Override
-    public <T> T loadById(Class<T> clazz, Long id, Integer depth){
-        return genericRepository.loadById(clazz, id, depth);
+    public <T> T findByPropertyWithRelations (String property, Object value, String... relationships){
+        return genericRepository.findByPropertyWithRelations(property, value, relationships);
+    }
+
+    @Override
+    public <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships){
+        return genericRepository.findByPropertyWithoutRelations(property, value, relationships);
+    }
+
+    @Override
+    public <T>T findByProperty(Class<T> clazz, String property, Object value, Integer depth){
+        return genericRepository.findByProperty(clazz, property, value, depth);
+    }
+
+    @Override
+    public <T> T findById(Class<T> clazz, Long id, Integer depth){
+        return genericRepository.findById(clazz, id, depth);
     }
 
     @Override
@@ -47,7 +60,9 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.countEntries(clazz);
     }
 
-
-
+    @Override
+    public void clear() {
+        genericRepository.clear();
+    }
 
 }

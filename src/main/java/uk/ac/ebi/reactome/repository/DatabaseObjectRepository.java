@@ -24,7 +24,7 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     DatabaseObject findByDbId(Long dbId);
     DatabaseObject findByStableIdentifier(String stableIdentifier);
 
-    @Query("MATCH (n:DatabaseObject{dbId:{0}}) Return n")
+    @Query("MATCH (n:Event{dbId:{0}})-[r:input|output]->(m) RETURN n")
     DatabaseObject findByDbIdNoRelations(Long dbId);
 
     @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity|activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) RETURN DISTINCT m")
