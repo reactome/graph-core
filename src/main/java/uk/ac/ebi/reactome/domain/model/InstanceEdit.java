@@ -12,7 +12,7 @@ public class InstanceEdit extends DatabaseObject {
     private String dateTime;
     private String note;
 
-    @Relationship(type = "author")
+    @Relationship(type = "created", direction = Relationship.INCOMING)
     private List<Person> author;
 
     public InstanceEdit() {}

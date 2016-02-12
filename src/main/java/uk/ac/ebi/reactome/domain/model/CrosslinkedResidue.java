@@ -6,14 +6,12 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class CrosslinkedResidue extends TranslationalModification {
 
-    @Relationship
-    private DatabaseObject modification;
-
     private Integer secondCoordinate;
 
-    public CrosslinkedResidue() {
+    @Relationship(type = "modification")
+    private DatabaseObject modification;
 
-    }
+    public CrosslinkedResidue() {}
 
     public DatabaseObject getModification() {
         return modification;

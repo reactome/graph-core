@@ -10,15 +10,12 @@ import java.util.*;
 public class Complex extends PhysicalEntity {
 
     private Boolean isChimeric;
-//    private String totalProt;
-//    private String maxHomologues;
-//    private String inferredProt;
 
     @Relationship(type = "hasComponent")
     private Set<HasComponent> hasComponent;
 
-//    @Relationship(type = "entityOnOthercell")
-//    private List<PhysicalEntity> entityOnOthercell;
+    @Relationship(type = "entityOnOthercell")
+    private List<PhysicalEntity> entityOnOthercell;
 
     @Relationship(type = "includedLocation")
     private List<EntityCompartment> includedLocation;
@@ -36,45 +33,14 @@ public class Complex extends PhysicalEntity {
         this.isChimeric = isChimeric;
     }
 
-//    public String getTotalProt() {
-//        return totalProt;
-//    }
-//
-//    public void setTotalProt(String totalProt) {
-//        this.totalProt = totalProt;
-//    }
-//
-//    public String getMaxHomologues() {
-//        return maxHomologues;
-//    }
-//
-//    public void setMaxHomologues(String maxHomologues) {
-//        this.maxHomologues = maxHomologues;
-//    }
-//
-//    public String getInferredProt() {
-//        return inferredProt;
-//    }
-//
-//    public void setInferredProt(String inferredProt) {
-//        this.inferredProt = inferredProt;
-//    }
 
-//    public Set<HasComponent> getHasComponent() {
-//        return hasComponent;
-//    }
-//
-//    public void setHasComponent(Set<HasComponent> hasComponent) {
-//        this.hasComponent = hasComponent;
-//    }
+    public List<PhysicalEntity> getEntityOnOthercell() {
+        return entityOnOthercell;
+    }
 
-//    public List<PhysicalEntity> getEntityOnOthercell() {
-//        return entityOnOthercell;
-//    }
-//
-//    public void setEntityOnOthercell(List<PhysicalEntity> entityOnOthercell) {
-//        this.entityOnOthercell = entityOnOthercell;
-//    }
+    public void setEntityOnOthercell(List<PhysicalEntity> entityOnOthercell) {
+        this.entityOnOthercell = entityOnOthercell;
+    }
 
     public List<EntityCompartment> getIncludedLocation() {
         return includedLocation;

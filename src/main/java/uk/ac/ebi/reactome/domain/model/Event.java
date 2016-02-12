@@ -1,16 +1,16 @@
 package uk.ac.ebi.reactome.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
 @NodeEntity
-public abstract class Event extends DatabaseObject implements Regulator {
+public abstract class Event extends DatabaseObject {
 
     private Boolean _doRelease;
     private String releaseDate;
+    private String releaseStatus;
 
 //    This is not longer used (TODO: Check it out)
 //    private String keywords;
@@ -26,17 +26,38 @@ public abstract class Event extends DatabaseObject implements Regulator {
      * A simple flag to indicate if this Event is inferred from another
      */
     private Boolean isInferred;
-    
-    @Relationship(type = "authored", direction = "OUTGOING")
+
+    /**
+     * graph contains only relationships to Regulation
+     * positive and negativeRegulators have to be filled in service
+     */
+    private List<PhysicalEntity> positiveRegulators;
+    private List<PhysicalEntity> negativeRegulators;
+
+    /**
+     * inferred and orthologous contain the same data - error in data
+     * now only inferredTo will exist in the graph
+     * inferredFrom will be filled by the incoming relationship
+     * orthologous events will be filled in service
+     */
+    private List<Event> orthologousEvent;
+
+    @Relationship(type = "evidenceType")
+    private EvidenceType evidenceType;
+
+    @Relationship(type = "goBiologicalProcess")
+    private GO_BiologicalProcess goBiologicalProcess;
+
+    @Relationship(type = "authored")
     private List<InstanceEdit> authored;
 
-    @Relationship(type = "edited", direction = "OUTGOING")
+    @Relationship(type = "edited")
     private List<InstanceEdit> edited;
 
-    @Relationship(type = "revised", direction = "OUTGOING")
+    @Relationship(type = "revised")
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "reviewed", direction = "OUTGOING")
+    @Relationship(type = "reviewed")
     private List<InstanceEdit> reviewed;
     
     @Relationship(type = "species")
@@ -44,23 +65,14 @@ public abstract class Event extends DatabaseObject implements Regulator {
     
     @Relationship(type = "relatedSpecies")
     private List<Species> relatedSpecies;
-    
-    @Relationship(type = "evidenceType")
-    private EvidenceType evidenceType;
-    
-    @Relationship(type = "goBiologicalProcess")
-    private GO_BiologicalProcess goBiologicalProcess;
 
     @Relationship(type = "summation")
     private List<Summation> summation;
-    
-    @Relationship(type = "releaseStatus")
-    private String releaseStatus;
-    
+
     @Relationship(type = "figure")
     private List<Figure> figure;
 
-    @Relationship(type = "precedingEvent", direction=Relationship.OUTGOING)
+    @Relationship(type = "precedingEvent")
     private List<Event> precedingEvent;
 
     @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
@@ -69,9 +81,6 @@ public abstract class Event extends DatabaseObject implements Regulator {
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    /**
-     * Regulation related attributes
-     */
     @Relationship(type = "regulatedBy")
     private List<NegativeRegulation> negativeRegulations;
 
@@ -87,26 +96,12 @@ public abstract class Event extends DatabaseObject implements Regulator {
     @Relationship(type = "disease")
     private List<Disease> disease;
 
-    /**
-     * Where are differences between inferredFrom and
-     * orthologous events ? 1 should have to go
-     */
-    @JsonIgnore
-    @Relationship(type = "inferredFrom")
+    @Relationship(type = "inferredTo")
+    private List<Event> inferredTo;
+
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<Event> inferredFrom;
 
-    /**
-     * gets relationships from db in both directions .. needs fix in
-     * can all orthologous events be removed because this could be done by a query?
-     * would greatly reduce amount of relationships
-     *
-     * change to inferredTo --> computational inferred Events
-     * change to orthologousTo --> manually created Events
-     * Batch inserter
-     */
-    @Relationship(type = "orthologousEvent")
-    private List<Event> orthologousEvent;
-    
     @Relationship(type = "compartment")
     private List<Compartment> compartment;
 
@@ -128,14 +123,6 @@ public abstract class Event extends DatabaseObject implements Regulator {
         this.releaseDate = releaseDate;
     }
 
-//    public String getKeywords() {
-//        return keywords;
-//    }
-
-//    public void setKeywords(String keywords) {
-//        this.keywords = keywords;
-//    }
-
     public String getSpeciesName() {
         return speciesName;
     }
@@ -152,6 +139,14 @@ public abstract class Event extends DatabaseObject implements Regulator {
         this.definition = definition;
     }
 
+    public List<String> getName() {
+        return name;
+    }
+
+    public void setName(List<String> name) {
+        this.name = name;
+    }
+
     public Boolean getIsInDisease() {
         return isInDisease;
     }
@@ -166,6 +161,30 @@ public abstract class Event extends DatabaseObject implements Regulator {
 
     public void setIsInferred(Boolean isInferred) {
         this.isInferred = isInferred;
+    }
+
+    public List<PhysicalEntity> getPositiveRegulators() {
+        return positiveRegulators;
+    }
+
+    public void setPositiveRegulators(List<PhysicalEntity> positiveRegulators) {
+        this.positiveRegulators = positiveRegulators;
+    }
+
+    public List<PhysicalEntity> getNegativeRegulators() {
+        return negativeRegulators;
+    }
+
+    public void setNegativeRegulators(List<PhysicalEntity> negativeRegulators) {
+        this.negativeRegulators = negativeRegulators;
+    }
+
+    public List<Event> getOrthologousEvent() {
+        return orthologousEvent;
+    }
+
+    public void setOrthologousEvent(List<Event> orthologousEvent) {
+        this.orthologousEvent = orthologousEvent;
     }
 
     public List<InstanceEdit> getAuthored() {
@@ -320,28 +339,20 @@ public abstract class Event extends DatabaseObject implements Regulator {
         this.disease = disease;
     }
 
+    public List<Event> getInferredTo() {
+        return inferredTo;
+    }
+
+    public void setInferredTo(List<Event> inferredTo) {
+        this.inferredTo = inferredTo;
+    }
+
     public List<Event> getInferredFrom() {
         return inferredFrom;
     }
 
     public void setInferredFrom(List<Event> inferredFrom) {
         this.inferredFrom = inferredFrom;
-    }
-
-    public List<String> getName() {
-        return name;
-    }
-
-    public void setName(List<String> name) {
-        this.name = name;
-    }
-
-    public List<Event> getOrthologousEvent() {
-        return orthologousEvent;
-    }
-
-    public void setOrthologousEvent(List<Event> orthologousEvent) {
-        this.orthologousEvent = orthologousEvent;
     }
 
     public List<Compartment> getCompartment() {

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.gk.model.GKInstance;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 
@@ -65,11 +64,8 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     private Long id;
 
     private Long dbId;
-
     private String stableIdentifier;
-    @Property
     private String displayName;
-    @Property
     private Date timestamp;
 
     @Relationship(type = "created")

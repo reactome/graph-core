@@ -82,7 +82,7 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-//                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
+                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
@@ -139,33 +139,15 @@ public class ReactomeBatchImporter {
                     } else if (attribute.equals("regulatedBy")) {
                         Collection<?> referrers = instance.getReferers(ReactomeJavaConstants.regulatedEntity);
                         saveRelationships(id, referrers, attribute);
-                    } else if (attribute.equals("goActivity")) {
-                        // List of CatalystActivities involved with this PE
-                        Collection<GKInstance> cas = instance.getReferers(ReactomeJavaConstants.physicalEntity);
-                        if (cas != null && cas.size() > 0) {
-                            Set<GKInstance> goMF = new HashSet<>();
-                            for (GKInstance ca : cas) {
-                                if (ca.getSchemClass().isa(ReactomeJavaConstants.CatalystActivity)) {
-                                    List<GKInstance> values = ca.getAttributeValuesList(ReactomeJavaConstants.activity);
-                                    if (values != null) goMF.addAll(values);
-                                }
-                            }
-                            saveRelationships(id, goMF, attribute);
+                    } else if (attribute.equals("inferredTo")) {
+                        Collection<?> inferredTo = instance.getAttributeValuesList(ReactomeJavaConstants.orthologousEvent);
+                        if (inferredTo.size()>1) {
+                            saveRelationships(id, inferredTo, "inferredTo");
                         }
-                    } else if (attribute.equals("catalyzedEvent")) {
-                        // List of CatalystActivities involved with this PE
-//                        Collection<GKInstance> cas = instance.getReferers(ReactomeJavaConstants.physicalEntity);
-//                        if (cas != null && cas.size() > 0) {
-//                            Set<GKInstance> events = new HashSet<>();
-//                            for (GKInstance ca : cas) {
-//                                if (ca.getSchemClass().isa(ReactomeJavaConstants.CatalystActivity)) {
-//                                    Collection<GKInstance> referrers = ca.getReferers(ReactomeJavaConstants.catalystActivity);
-//                                    if (referrers != null) events.addAll(referrers);
-//                                }
-//                            }
-//                            saveRelationships(id, events, attribute);
-//                        }
                     }
+
+
+
                 } catch (Exception e) {
                     fileLogger.error("A problem occurred when trying to retrieve data from instance " + instance.getDBID() + " "
                             + instance.getDisplayName() + "with attribute name: " + attribute, e);
@@ -338,6 +320,7 @@ public class ReactomeBatchImporter {
             Map<String, Object> properties = new HashMap<>();
             properties.put(STOICHIOMETRY,stoichiometryMap.get(dbId).getCount());
             RelationshipType relationshipType = DynamicRelationshipType.withName(relationName);
+
             batchInserter.createRelationship(oldId, newId, relationshipType, properties);
         }
     }
@@ -489,7 +472,10 @@ public class ReactomeBatchImporter {
                         && !methodName.equals("getTimestamp") //should be removed from model!
                         && !methodName.equals("getInferredFrom") //is in the Database, should not be populated by Physical Entities
                         //Events have inferred From aswell
-                        && !methodName.equals("getSchemaClass")) { //should be removed from model!
+                        && !methodName.equals("getOrthologousEvent")
+                        && !methodName.equals("getSchemaClass")
+                        && !methodName.equals("getAuthor")
+                        ) { //should be removed from model!
 
                     Type returnType = method.getGenericReturnType();
                     if (returnType instanceof ParameterizedType) {

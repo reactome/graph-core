@@ -31,7 +31,4 @@ public class EntityFunctionalStatus extends DatabaseObject {
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
-    
-    
-    
 }

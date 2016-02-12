@@ -6,11 +6,32 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.List;
 
 @NodeEntity
-public class PhysicalEntity extends DatabaseObject implements Regulator {
+public class PhysicalEntity extends DatabaseObject {
 
     private String definition;
 //    private String shortName;
     private String systematicName;
+
+    ///NOT FILLED BY GRAPH
+    /**
+     * List of Events catalysed by this PE
+     */
+    private List<Event> catalyzedEvent;
+
+    /**
+     * List of GO MF related to this PE via CatalystActivity
+     */
+    private List<CatalystActivity> goActivity;
+
+    /**
+     * list of regulated Events filled in service
+     */
+    private List<Event> inhibitedEvent;
+    private List<Event> activatedEvent;
+    private List<Event> requiredEvent;
+    private List<Event> producedByEvent;
+    private List<Event> consumedByEvent;
+
 
     @Relationship(type = "authored")
     private InstanceEdit authored;
@@ -18,14 +39,11 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
     @Relationship(type = "goCellularComponent")
     private GO_CellularComponent goCellularComponent;
 
-    //make import smaller
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private List<PhysicalEntity> inferredTo;
 
-    //    avoid cyclic relation
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<PhysicalEntity> inferredFrom;
-
 
     @Relationship(type = "figure")
     private List<Figure> figure;
@@ -57,37 +75,15 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    /**
-     * List of Events catalysed by this PE
-     */
-    @Relationship(type = "catalyzedEvent")
-    private List<Event> catalyzedEvent;
+    @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
+    private List<CatalystActivity> catalystActivities;
 
-    /**
-     * List of GO MF related to this PE via CatalystActivity
-     */
-    @Relationship(type = "goActivity")
-    private List<GO_MolecularFunction> goActivity;
+    @Relationship(type = "regulator", direction = Relationship.INCOMING)
+    private List<Regulation> regulations;
 
 
-
-
-//    @Relationship(type = "inhibitedEvent")
-//    private List<Event> inhibitedEvent;
-//
-//    @Relationship(type = "activatedEvent")
-//    private List<Event> activatedEvent;
-//
-//    @Relationship(type = "requiredEvent")
-//    private List<Event> requiredEvent;
-//
-//    @Relationship(type = "producedByEvent")
-//    private List<Event> producedByEvent;
-//
-//    @Relationship(type = "consumedByEvent")
-//    private List<Event> consumedByEvent;
-    
-    public PhysicalEntity() {}
+    public PhysicalEntity() {
+    }
 
     public String getDefinition() {
         return definition;
@@ -97,20 +93,68 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
         this.definition = definition;
     }
 
-//    public String getShortName() {
-//        return shortName;
-//    }
-//
-//    public void setShortName(String shortName) {
-//        this.shortName = shortName;
-//    }
-
     public String getSystematicName() {
         return systematicName;
     }
 
     public void setSystematicName(String systematicName) {
         this.systematicName = systematicName;
+    }
+
+    public List<Event> getCatalyzedEvent() {
+        return catalyzedEvent;
+    }
+
+    public void setCatalyzedEvent(List<Event> catalyzedEvent) {
+        this.catalyzedEvent = catalyzedEvent;
+    }
+
+    public List<CatalystActivity> getGoActivity() {
+        return goActivity;
+    }
+
+    public void setGoActivity(List<CatalystActivity> goActivity) {
+        this.goActivity = goActivity;
+    }
+
+    public List<Event> getInhibitedEvent() {
+        return inhibitedEvent;
+    }
+
+    public void setInhibitedEvent(List<Event> inhibitedEvent) {
+        this.inhibitedEvent = inhibitedEvent;
+    }
+
+    public List<Event> getActivatedEvent() {
+        return activatedEvent;
+    }
+
+    public void setActivatedEvent(List<Event> activatedEvent) {
+        this.activatedEvent = activatedEvent;
+    }
+
+    public List<Event> getRequiredEvent() {
+        return requiredEvent;
+    }
+
+    public void setRequiredEvent(List<Event> requiredEvent) {
+        this.requiredEvent = requiredEvent;
+    }
+
+    public List<Event> getProducedByEvent() {
+        return producedByEvent;
+    }
+
+    public void setProducedByEvent(List<Event> producedByEvent) {
+        this.producedByEvent = producedByEvent;
+    }
+
+    public List<Event> getConsumedByEvent() {
+        return consumedByEvent;
+    }
+
+    public void setConsumedByEvent(List<Event> consumedByEvent) {
+        this.consumedByEvent = consumedByEvent;
     }
 
     public InstanceEdit getAuthored() {
@@ -128,14 +172,6 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
     public void setGoCellularComponent(GO_CellularComponent goCellularComponent) {
         this.goCellularComponent = goCellularComponent;
     }
-
-//    public List<PhysicalEntity> getInferredFrom() {
-//        return inferredFrom;
-//    }
-//
-//    public void setInferredFrom(List<PhysicalEntity> inferredFrom) {
-//        this.inferredFrom = inferredFrom;
-//    }
 
     public List<PhysicalEntity> getInferredTo() {
         return inferredTo;
@@ -233,72 +269,19 @@ public class PhysicalEntity extends DatabaseObject implements Regulator {
         this.literatureReference = literatureReference;
     }
 
-    public List<Event> getCatalyzedEvent() {
-        return catalyzedEvent;
+    public List<CatalystActivity> getCatalystActivities() {
+        return catalystActivities;
     }
 
-    public void setCatalyzedEvent(List<Event> catalyzedEvent) {
-        this.catalyzedEvent = catalyzedEvent;
+    public void setCatalystActivities(List<CatalystActivity> catalystActivities) {
+        this.catalystActivities = catalystActivities;
     }
 
-    public List<GO_MolecularFunction> getGoActivity() {
-        return goActivity;
+    public List<Regulation> getRegulations() {
+        return regulations;
     }
 
-    public void setGoActivity(List<GO_MolecularFunction> goActivity) {
-        this.goActivity = goActivity;
+    public void setRegulations(List<Regulation> regulations) {
+        this.regulations = regulations;
     }
-
-//    public List<Event> getInhibitedEvent() {
-//        return inhibitedEvent;
-//    }
-//
-//    public void setInhibitedEvent(List<Event> inhibitedEvent) {
-//        this.inhibitedEvent = inhibitedEvent;
-//    }
-//
-//    public List<Event> getActivatedEvent() {
-//        return activatedEvent;
-//    }
-//
-//    public void setActivatedEvent(List<Event> activatedEvent) {
-//        this.activatedEvent = activatedEvent;
-//    }
-//
-//    public List<Event> getRequiredEvent() {
-//        return requiredEvent;
-//    }
-//
-//    public void setRequiredEvent(List<Event> requiredEvent) {
-//        this.requiredEvent = requiredEvent;
-//    }
-//
-//    public List<Event> getProducedByEvent() {
-//        return producedByEvent;
-//    }
-//
-//    public void setProducedByEvent(List<Event> producedByEvent) {
-//        this.producedByEvent = producedByEvent;
-//    }
-//
-//    public List<Event> getConsumedByEvent() {
-//        return consumedByEvent;
-//    }
-//
-//    public void setConsumedByEvent(List<Event> consumedByEvent) {
-//        this.consumedByEvent = consumedByEvent;
-//    }
-
-//
-//    public void addCrossReference(DatabaseIdentifier dbi) {
-//        if (crossReference == null)
-//            crossReference = new ArrayList<>();
-//        // Avoid duplication
-//        for (DatabaseIdentifier tmp : crossReference) {
-//            if (tmp.getDbId().equals(dbi.getDbId()))
-//                return;
-//        }
-//        crossReference.add(dbi);
-//    }
-
 }
