@@ -212,16 +212,13 @@ public class ReactomeBatchImporter {
                                 properties.put(attribute, identifier);
                                 stableIdentifier.deflate();
                                 break;
-                            case "speciesName":
-                                List<?> speciesList = instance.getAttributeValuesList(ReactomeJavaConstants.species);
-                                if (speciesList != null && speciesList.size() > 0) {
-                                    GKInstance firstSpecies = (GKInstance) speciesList.get(0);
-                                    String name = firstSpecies.getDisplayName();
-                                    properties.put(attribute, name);
-                                }
-                                for (Object gkInstance : speciesList) {
-                                    GKInstance instance1 = (GKInstance) gkInstance;
-                                    instance1.deflate();
+                            case "hasDiagram":
+                                if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
+                                    DiagramGeneratorFromDB diagramHelper = new DiagramGeneratorFromDB();
+                                    diagramHelper.setMySQLAdaptor((MySQLAdaptor) instance.getDbAdaptor());
+                                    GKInstance diagram = diagramHelper.getPathwayDiagram(instance);
+                                    properties.put(attribute, diagram != null);
+                                    diagram.deflate();
                                 }
                                 break;
                             case "isInDisease":
@@ -234,14 +231,23 @@ public class ReactomeBatchImporter {
                                 properties.put(attribute, isInferredFrom != null);
                                 isInferredFrom.deflate();
                                 break;
-                            case "hasDiagram":
-                                if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
-                                    DiagramGeneratorFromDB diagramHelper = new DiagramGeneratorFromDB();
-                                    diagramHelper.setMySQLAdaptor((MySQLAdaptor) instance.getDbAdaptor());
-                                    GKInstance diagram = diagramHelper.getPathwayDiagram(instance);
-                                    properties.put(attribute, diagram != null);
-                                    diagram.deflate();
+                            case "speciesName":
+                                List<?> speciesList = instance.getAttributeValuesList(ReactomeJavaConstants.species);
+                                if (speciesList != null && speciesList.size() > 0) {
+                                    GKInstance firstSpecies = (GKInstance) speciesList.get(0);
+                                    String name = firstSpecies.getDisplayName();
+                                    properties.put(attribute, name);
                                 }
+                                for (Object gkInstance : speciesList) {
+                                    GKInstance instance1 = (GKInstance) gkInstance;
+                                    instance1.deflate();
+                                }
+                                break;
+                            case "url":
+                                identifier = (String) instance.getAttributeValue(ReactomeJavaConstants.identifier);
+                                GKInstance referenceDatabase = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.referenceDatabase);
+                                String url = (String) referenceDatabase.getAttributeValue(ReactomeJavaConstants.url);
+                                properties.put(attribute, url.replace("###ID###", identifier));
                                 break;
                             default:
                                 properties.put(attribute, value);

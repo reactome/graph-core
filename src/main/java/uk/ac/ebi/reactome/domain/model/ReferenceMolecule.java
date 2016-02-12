@@ -7,7 +7,7 @@ public class ReferenceMolecule extends ReferenceEntity {
 
     private String atomicConnectivity;
     private String formula;
-//    private String url;
+    private String url;
 
     public ReferenceMolecule() {}
 
@@ -27,12 +27,12 @@ public class ReferenceMolecule extends ReferenceEntity {
         this.formula = formula;
     }
 
-//    public String getUrl() {
-//		return url;
-//	}
-//
-//	public void setUrl(String url) {
-//		this.url = url;
-//	}
+    public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
 }
