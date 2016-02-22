@@ -6,7 +6,6 @@ public class GO_BiologicalProcess extends DatabaseObject{// implements Component
 
     private String accession;
     private String definition;
-//    private String referenceDatabaseClass;
 
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
@@ -28,14 +27,6 @@ public class GO_BiologicalProcess extends DatabaseObject{// implements Component
     public void setDefinition(String definition) {
         this.definition = definition;
     }
-
-//    public String getReferenceDatabaseClass() {
-//        return referenceDatabaseClass;
-//    }
-//
-//    public void setReferenceDatabaseClass(String referenceDatabaseClass) {
-//        this.referenceDatabaseClass = referenceDatabaseClass;
-//    }
 
     public ReferenceDatabase getReferenceDatabase() {
         return referenceDatabase;

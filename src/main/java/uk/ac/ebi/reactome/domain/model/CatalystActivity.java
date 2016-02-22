@@ -13,8 +13,6 @@ import java.util.Set;
 @NodeEntity
 public class CatalystActivity extends DatabaseObject  { // implements Regulator
 
-//    private String physicalEntityClass;
-
     @Relationship(type = "activity")
     private GO_MolecularFunction activity;
 
