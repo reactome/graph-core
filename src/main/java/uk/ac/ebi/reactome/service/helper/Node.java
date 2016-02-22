@@ -1,5 +1,7 @@
 package uk.ac.ebi.reactome.service.helper;
 
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -21,8 +23,8 @@ public class Node implements Comparable<Node>{
     public Node(Class clazz, Integer count) {
         this.clazz = clazz;
         this.count = count;
+        children = Collections.EMPTY_SET;
     }
-
 
     public Set<Node> getChildren() {
         return children;
@@ -49,10 +51,30 @@ public class Node implements Comparable<Node>{
     }
 
     public void addChild(Node node) {
-        if (children == null) {
+        if (children.isEmpty()) {
             children = new TreeSet<>();
         }
         children.add(node);
+    }
+
+    public Integer findMaxPage(String className, Integer offset) {
+        Node node = iterateTree(this,className);
+        if (node != null) {
+            return (int) Math.ceil(node.getCount() / (double) offset);
+        }
+        return 0;
+    }
+
+
+    private Node iterateTree(Node node, String className) {
+        if (node.getClazz().getSimpleName().equals(className))
+            return node;
+        Node result = null;
+        Iterator iterator = node.getChildren().iterator();
+        while(result == null && iterator.hasNext()) {
+            result = iterateTree((Node) iterator.next(), className);
+        }
+        return result;
     }
 
     @Override

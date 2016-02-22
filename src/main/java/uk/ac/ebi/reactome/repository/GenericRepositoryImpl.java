@@ -92,6 +92,18 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
+    public <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
+        String query = "MATCH (n:" +
+                clazz.getSimpleName() +
+                ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("limit", offset);
+        map.put("skip", (page-1) * offset);
+        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
+    }
+
+
     @Override
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
         return neo4jTemplate.loadByProperty(clazz, property, value, depth);
@@ -126,7 +138,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
     @Override
-    public void clear() {
+    public void clearCache() {
         neo4jTemplate.clear();
     }
 }

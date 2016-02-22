@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.reactome.repository.GenericRepository;
+import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
+
+import java.util.Collection;
 
 /**
  * Created by:
@@ -36,6 +39,11 @@ public class GenericServiceImpl implements GenericService {
     }
 
     @Override
+    public <T> Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
+        return genericRepository.getObjectsByClassName(DatabaseObjectUtils.getClassForName(className),page,offset);
+    }
+
+    @Override
     public <T>T findByProperty(Class<T> clazz, String property, Object value, Integer depth){
         return genericRepository.findByProperty(clazz, property, value, depth);
     }
@@ -61,8 +69,8 @@ public class GenericServiceImpl implements GenericService {
     }
 
     @Override
-    public void clear() {
-        genericRepository.clear();
+    public void clearCache() {
+        genericRepository.clearCache();
     }
 
 }

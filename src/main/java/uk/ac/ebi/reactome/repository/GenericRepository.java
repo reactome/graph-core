@@ -2,6 +2,8 @@ package uk.ac.ebi.reactome.repository;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 /**
  * Created by:
  *
@@ -14,6 +16,7 @@ public interface GenericRepository {
     <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships);
     <T> T findByPropertyWithRelations (String property, Object value, String... relationships);
     <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships);
+    <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset);
 
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
     <T> T findById(Class<T> clazz, Long id, Integer depth);
@@ -21,5 +24,5 @@ public interface GenericRepository {
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
     Long countEntries(Class<?> clazz);
 
-    void clear();
+    void clearCache();
 }

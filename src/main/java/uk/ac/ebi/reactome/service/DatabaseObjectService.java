@@ -5,11 +5,8 @@ import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
-import uk.ac.ebi.reactome.service.helper.AttributeProperties;
-import uk.ac.ebi.reactome.service.helper.Node;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by:
@@ -18,6 +15,8 @@ import java.util.Set;
  * @since 15.11.15.
  */
 public interface DatabaseObjectService extends Service<DatabaseObject> {
+
+    DatabaseObject findById(String id);
 
     DatabaseObject findByDbId(Long dbId);
     DatabaseObject findByDbIdNoRelations(Long dbId);
@@ -28,7 +27,4 @@ public interface DatabaseObjectService extends Service<DatabaseObject> {
     Collection<Participant2> getParticipatingMolecules3(Long dbId);
 
     Collection<LabelsCount> getLabelsCount();
-
-    Node getGraphModelTree() throws ClassNotFoundException;
-    Set<AttributeProperties> getAttributeTable(Class clazz);
 }

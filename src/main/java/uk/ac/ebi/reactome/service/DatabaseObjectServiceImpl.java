@@ -12,13 +12,8 @@ import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
-import uk.ac.ebi.reactome.service.helper.AttributeProperties;
-import uk.ac.ebi.reactome.service.helper.Node;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collection;
 
 /**
  * Created by:
@@ -31,10 +26,20 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
 
-    private Map<String,Node> map = new HashMap<>();
-
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
+
+    @Override
+    public DatabaseObject findById(String id) {
+        id = id.trim().split("\\.")[0];
+        if (id.startsWith("R")) {
+            return databaseObjectRepository.findByStableIdentifier(id);
+        } else if (StringUtils.isNumeric(id)){
+            return databaseObjectRepository.findByDbId(Long.parseLong(id));
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public GraphRepository<DatabaseObject> getRepository() {
@@ -66,7 +71,6 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         return databaseObjectRepository.getParticipatingMolecules2(dbId);
     }
 
-
     @Override
     public Collection<Participant2> getParticipatingMolecules3(Long dbId) {
         return databaseObjectRepository.getParticipatingMolecules3(dbId);
@@ -75,105 +79,6 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     @Override
     public Collection<LabelsCount> getLabelsCount() {
         return databaseObjectRepository.getLabelsCount();
-    }
-
-    @Override
-    public Node getGraphModelTree() throws ClassNotFoundException {
-
-        Collection<LabelsCount> labelsCounts = databaseObjectRepository.getLabelsCount();
-        String packageName = DatabaseObject.class.getPackage().getName() + ".";
-        for (LabelsCount labelsCount : labelsCounts) {
-            Class lowestClass = Object.class;
-            for (String label : labelsCount.getLabels()) {
-                Class clazz = Class.forName(packageName + label);
-                if (lowestClass.isAssignableFrom(clazz)) {
-                    lowestClass = clazz;
-                }
-            }
-            recursion(lowestClass, null, labelsCount.getCount());
-        }
-        Node n = map.get(DatabaseObject.class.getSimpleName());
-        correctCounts(n);
-        return n;
-    }
-
-    public Set<AttributeProperties> getAttributeTable(Class clazz) {
-        Set<AttributeProperties> propertiesList = new TreeSet<>();
-        Set<Method> declaredMethods = new HashSet<>(Arrays.asList(clazz.getDeclaredMethods()));
-        for (Method method : clazz.getMethods()) {
-            String methodName = method.getName();
-            if (methodName.startsWith("get")
-                    && !methodName.startsWith("getSuper")
-                    && !methodName.equals("getClass")
-                    && !methodName.equals("getId")) {
-
-                AttributeProperties properties = (getAttributeProperties(method));
-                if (declaredMethods.contains(method)) {
-                    properties.setDeclaredMethod(true);
-                } else {
-                    properties.setDeclaredMethod(false);
-                }
-                propertiesList.add(properties);
-            }
-        }
-        return propertiesList;
-    }
-
-    private AttributeProperties getAttributeProperties(Method method) {
-        AttributeProperties properties = new AttributeProperties();
-        properties.setName(lowerFirst(method.getName().substring(3)));
-        Type returnType = method.getGenericReturnType();
-        if (returnType instanceof ParameterizedType) {
-            ParameterizedType type = (ParameterizedType) returnType;
-            Type[] typeArguments = type.getActualTypeArguments();
-            properties.setCardinality("+");
-            if (typeArguments.length>0) {
-                Class clazz = (Class) typeArguments[0];
-                properties.setValueType(clazz.getSimpleName());
-            }
-        } else {
-            Class clazz = (Class) returnType;
-            properties.setCardinality("1");
-            properties.setValueType(clazz.getSimpleName());
-        }
-        return properties;
-    }
-
-    private void correctCounts(Node node) {
-        if (node.getChildren()!=null) {
-            for (Node node1 : node.getChildren()) {
-                correctCounts(node1);
-                node.setCount(node.getCount() + node1.getCount());
-            }
-        }
-    }
-
-    private void recursion(Class clazz,Node oldnode, int count) {
-
-        if (!clazz.equals(Object.class)) {
-            Node node = new Node(clazz,count);
-            if (map.containsKey(clazz.getSimpleName())) {
-                if (oldnode != null) {
-                    map.get(clazz.getSimpleName()).addChild(oldnode);
-                } else {
-                    Node existingNode = map.get(clazz.getSimpleName());
-                    existingNode.setCount(existingNode.getCount() + count);
-                }
-            } else {
-                if (oldnode != null) {
-                    node.addChild(oldnode);
-                }
-                map.put(clazz.getSimpleName(),node);
-                recursion(clazz.getSuperclass(),node,0);
-            }
-        }
-    }
-
-    private String lowerFirst(String str) {
-        if(StringUtils.isAllUpperCase(str)) {
-            return str;
-        }
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
 }

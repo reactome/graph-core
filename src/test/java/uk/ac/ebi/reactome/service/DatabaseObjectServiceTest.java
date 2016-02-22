@@ -13,12 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-import uk.ac.ebi.reactome.domain.model.Reaction;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.service.helper.Node;
+import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.util.Collection;
 
@@ -63,7 +63,7 @@ public class DatabaseObjectServiceTest {
     @Before
     public void setUp() throws Exception {
         genericService.findByDbId(DatabaseObject.class,1l,0);
-        genericService.clear();
+        genericService.clearCache();
         DatabaseObjectFactory.createObject("1");
         DatabaseObjectFactory.clearCache();
     }
@@ -206,7 +206,11 @@ public class DatabaseObjectServiceTest {
         long start, time;
 
         start = System.currentTimeMillis();
-        Node root = databaseObjectService.getGraphModelTree();
+
+        Node root = DatabaseObjectUtils.getGraphModelTree(databaseObjectService.getLabelsCount());
+        int x = root.findMaxPage("Pathway",25);
+
+
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 //        assertEquals(root.getChildren().size(), 29);
@@ -214,8 +218,8 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void test () {
-        databaseObjectService.getAttributeTable(Reaction.class);
+    public void test () throws ClassNotFoundException {
+//        databaseObjectService.getAttributeTable(Reaction.class.getSimpleName());
     }
 
 }

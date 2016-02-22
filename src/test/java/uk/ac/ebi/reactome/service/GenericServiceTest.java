@@ -13,9 +13,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.Pathway;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 import static org.junit.Assert.assertTrue;
 
@@ -41,7 +43,7 @@ public class GenericServiceTest {
     private GenericService genericService;
 
     @BeforeClass
-    public static void setUpClass () {
+    public static void setUpClass() {
         logger.info("\n");
         logger.info(" --- Running GenericServiceTests --- \n");
     }
@@ -51,14 +53,15 @@ public class GenericServiceTest {
      */
     @Before
     public void setUp() throws Exception {
-        genericService.findByDbId(DatabaseObject.class,1l,0);
-        genericService.clear();
+        genericService.findByDbId(DatabaseObject.class, 1l, 0);
+        genericService.clearCache();
         DatabaseObjectFactory.createObject("1");
         DatabaseObjectFactory.clearCache();
     }
 
     @After
-    public void tearDown() {}
+    public void tearDown() {
+    }
 
     @Test
     public void testLoadByProperty() throws InvocationTargetException, IllegalAccessException {
@@ -102,7 +105,7 @@ public class GenericServiceTest {
         logger.info("GkInstance execution time: " + time + "ms");
 
         assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected,databaseObjectObserved);
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
     }
 
     @Test
@@ -122,11 +125,18 @@ public class GenericServiceTest {
         logger.info("GkInstance execution time: " + time + "ms");
 
         assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected,databaseObjectObserved);
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
     }
 
     @Test
     public void testCountEntries() {
 
+    }
+
+    @Test
+    public void testGetObjectsByClassName() throws ClassNotFoundException {
+
+        Collection<Pathway> pathways =  genericService.getObjectsByClassName(Pathway.class.getSimpleName(), 1, 25);
+        System.out.println("");
     }
 }
