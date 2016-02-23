@@ -3,13 +3,14 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class GO_CellularComponent extends DatabaseObject {
 
     private String accession;
     private String definition;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     private ReferenceDatabase referenceDatabase;
 
     public GO_CellularComponent() {}

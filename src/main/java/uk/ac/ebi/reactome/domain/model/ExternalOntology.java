@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class ExternalOntology extends DatabaseObject {
 
@@ -13,10 +14,10 @@ public class ExternalOntology extends DatabaseObject {
     private List<String> name;
     private List<String> synonym;
 
-    @Relationship(type = "instanceOf")
+    @Relationship(type = "instanceOf", direction = Relationship.OUTGOING)
     private List<ExternalOntology> instanceOf;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     private ReferenceDatabase referenceDatabase;
 
     public ExternalOntology() {}

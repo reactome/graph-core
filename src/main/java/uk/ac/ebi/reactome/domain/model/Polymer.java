@@ -5,23 +5,24 @@ import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Logic in getter/setter of input and output is needed for retrieving data using the GKInstance.
+ * This is still used for testing if graph and sql produce the same data
+ */
+@SuppressWarnings("unused")
 @NodeEntity
 public class Polymer extends PhysicalEntity {
 
     private Integer maxUnitCount;
     private Integer minUnitCount;
-//    private String totalProt;
-//    private String maxHomologues;
-//    private String inferredProt;
 
-    @Relationship(type = "repeatedUnit")
+    @Relationship(type = "repeatedUnit", direction = Relationship.OUTGOING)
     private RepeatedUnit repeatedUnit;
 
-    @Relationship(type = "species")
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     private Set<Species> species;
 
     public Polymer() {}
@@ -42,58 +43,6 @@ public class Polymer extends PhysicalEntity {
         this.minUnitCount = minUnitCount;
     }
 
-//    public String getTotalProt() {
-//        return totalProt;
-//    }
-//
-//    public void setTotalProt(String totalProt) {
-//        this.totalProt = totalProt;
-//    }
-//
-//    public String getMaxHomologues() {
-//        return maxHomologues;
-//    }
-//
-//    public void setMaxHomologues(String maxHomologues) {
-//        this.maxHomologues = maxHomologues;
-//    }
-//
-//    public String getInferredProt() {
-//        return inferredProt;
-//    }
-//
-//    public void setInferredProt(String inferredProt) {
-//        this.inferredProt = inferredProt;
-//    }
-
-
-
-
-//    public RepeatedUnit getRepeatedUnit() {
-//        return repeatedUnit;
-//    }
-//
-//    public void setRepeatedUnit(RepeatedUnit repeatedUnit) {
-//        this.repeatedUnit = repeatedUnit;
-//    }
-
-    public Set<Species> getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(Set<Species> species) {
-        this.species = species;
-    }
-
-    public void setSpecies(Species species) {
-        Set<Species> speciesSet = new HashSet<>();
-        speciesSet.add(species);
-        this.species = speciesSet;
-    }
-
-
-
-
     public List<PhysicalEntity> getRepeatedUnit() {
         List<PhysicalEntity> rtn = new ArrayList<>();
         if(repeatedUnit!=null){
@@ -112,5 +61,21 @@ public class Polymer extends PhysicalEntity {
             this.repeatedUnit.setStoichiometry(repeatedUnit.size());
         }
     }
+
+    public Set<Species> getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(Set<Species> species) {
+        this.species = species;
+    }
+
+/*   public void setSpecies(Species species) {
+        Set<Species> speciesSet = new HashSet<>();
+        speciesSet.add(species);
+        this.species = speciesSet;
+    }
+
+*/
 
 }

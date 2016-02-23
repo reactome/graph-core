@@ -4,12 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 
 import java.util.List;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 17.12.15.
- */
+@SuppressWarnings("unused")
 @NodeEntity
 public class Affiliation extends  DatabaseObject{
 

@@ -3,13 +3,14 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class FunctionalStatus extends DatabaseObject {
 
-    @Relationship
+    @Relationship(type = "functionalStatusType", direction = Relationship.OUTGOING)
     private FunctionalStatusType functionalStatusType;
 
-    @Relationship
+    @Relationship(type = "structuralVariant", direction = Relationship.OUTGOING)
     private SequenceOntology structuralVariant;
     
     public FunctionalStatus() {}

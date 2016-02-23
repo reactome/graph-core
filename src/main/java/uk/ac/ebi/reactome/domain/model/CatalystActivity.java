@@ -10,25 +10,31 @@ import java.util.Set;
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the
  * exact active component of a complex or set.
  */
+@SuppressWarnings("unused")
 @NodeEntity
-public class CatalystActivity extends DatabaseObject  { // implements Regulator
+public class CatalystActivity extends DatabaseObject  {
 
-    @Relationship(type = "activity")
-    private GO_MolecularFunction activity;
-
-    @Relationship(type = "physicalEntity")
-    private PhysicalEntity physicalEntity;
-
-    @Relationship(type = "activeUnit")
+    @Relationship(type = "activeUnit", direction = Relationship.OUTGOING)
     private Set<PhysicalEntity> activeUnit;
 
-    /**
-     * Regulation related attributes
-     */
-    @Relationship(type = "regulatedBy")
+    @Relationship(type = "activity", direction = Relationship.OUTGOING)
+    private GO_MolecularFunction activity;
+
+    @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
+    private PhysicalEntity physicalEntity;
+
+    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<Regulation> regulatedBy;
 
     public CatalystActivity() {}
+
+    public Set<PhysicalEntity> getActiveUnit() {
+        return activeUnit;
+    }
+
+    public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
+        this.activeUnit = activeUnit;
+    }
 
     public GO_MolecularFunction getActivity() {
         return activity;
@@ -44,14 +50,6 @@ public class CatalystActivity extends DatabaseObject  { // implements Regulator
 
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
-    }
-
-    public Set<PhysicalEntity> getActiveUnit() {
-        return activeUnit;
-    }
-
-    public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
-        this.activeUnit = activeUnit;
     }
 
     public List<Regulation> getRegulatedBy() {

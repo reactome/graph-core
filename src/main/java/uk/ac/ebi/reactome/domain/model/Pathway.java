@@ -5,17 +5,19 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Pathway extends Event {
 
     private String doi;
-    private String isCanonical;
     private Boolean hasDiagram;
+    private String isCanonical;
 
-    @Relationship(type="hasEvent")
+
+    @Relationship(type="hasEvent", direction = Relationship.OUTGOING)
     private List<Event> hasEvent;
 
-    @Relationship(type = "normalPathway")
+    @Relationship(type = "normalPathway", direction = Relationship.OUTGOING)
     private Pathway normalPathway;
 
     public Pathway() {}
@@ -28,20 +30,20 @@ public class Pathway extends Event {
         this.doi = doi;
     }
 
-    public String getIsCanonical() {
-        return isCanonical;
-    }
-
-    public void setIsCanonical(String isCanonical) {
-        this.isCanonical = isCanonical;
-    }
-
     public Boolean getHasDiagram() {
         return hasDiagram;
     }
 
     public void setHasDiagram(Boolean hasDiagram) {
         this.hasDiagram = hasDiagram;
+    }
+
+    public String getIsCanonical() {
+        return isCanonical;
+    }
+
+    public void setIsCanonical(String isCanonical) {
+        this.isCanonical = isCanonical;
     }
 
     public List<Event> getHasEvent() {

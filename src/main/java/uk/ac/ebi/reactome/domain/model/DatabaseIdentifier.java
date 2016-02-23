@@ -5,21 +5,17 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class DatabaseIdentifier extends DatabaseObject {
 
     private String identifier;
-
-    /**
-     * Valid URL based on referenceDatabase
-     * This can not be filled from GK Instance in a generic way !
-     */
     private String url;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     private ReferenceDatabase referenceDatabase;
 
     public DatabaseIdentifier() {}

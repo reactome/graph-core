@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class ReferenceEntity extends DatabaseObject {
 
@@ -12,10 +13,10 @@ public class ReferenceEntity extends DatabaseObject {
     private List<String> name;
     private List<String> otherIdentifier;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     private ReferenceDatabase referenceDatabase;
 
     public ReferenceEntity() {}

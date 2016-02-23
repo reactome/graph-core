@@ -5,10 +5,11 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Species extends Taxon {
 
-    @Relationship(type = "figure")
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
 
     public Species() {}

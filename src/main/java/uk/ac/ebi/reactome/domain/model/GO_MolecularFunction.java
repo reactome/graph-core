@@ -3,27 +3,28 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@SuppressWarnings("unused")
 @NodeEntity
-public class GO_MolecularFunction extends DatabaseObject {//implements ComponentOf
+public class GO_MolecularFunction extends DatabaseObject {
 
     private String accession;
     private String definition;
     private String ecNumber;
     private String name;
 
-    @Relationship(type = "referenceDatabase")
-    private ReferenceDatabase referenceDatabase;
+    @Relationship(type = "componentOf", direction = Relationship.OUTGOING)
+    private DatabaseObject componentOf;
 
-//    @Relationship(type = "componentOf")
-//    private ComponentOf componentOf;
-
-    @Relationship(type = "negativelyRegulate")
+    @Relationship(type = "negativelyRegulate", direction = Relationship.OUTGOING)
     private GO_MolecularFunction negativelyRegulate;
 
-    @Relationship(type = "positivelyRegulate")
+    @Relationship(type = "positivelyRegulate", direction = Relationship.OUTGOING)
     private GO_MolecularFunction positivelyRegulate;
 
-    @Relationship(type = "regulate")
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    private ReferenceDatabase referenceDatabase;
+
+    @Relationship(type = "regulate", direction = Relationship.OUTGOING)
     private GO_MolecularFunction regulate;
 
     public GO_MolecularFunction() {}
@@ -60,21 +61,13 @@ public class GO_MolecularFunction extends DatabaseObject {//implements Component
         this.name = name;
     }
 
-    public ReferenceDatabase getReferenceDatabase() {
-        return referenceDatabase;
+    public DatabaseObject getComponentOf() {
+        return componentOf;
     }
 
-    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
-        this.referenceDatabase = referenceDatabase;
+    public void setComponentOf(DatabaseObject componentOf) {
+        this.componentOf = componentOf;
     }
-
-//    public ComponentOf getComponentOf() {
-//        return componentOf;
-//    }
-//
-//    public void setComponentOf(ComponentOf componentOf) {
-//        this.componentOf = componentOf;
-//    }
 
     public GO_MolecularFunction getNegativelyRegulate() {
         return negativelyRegulate;
@@ -90,6 +83,14 @@ public class GO_MolecularFunction extends DatabaseObject {//implements Component
 
     public void setPositivelyRegulate(GO_MolecularFunction positivelyRegulate) {
         this.positivelyRegulate = positivelyRegulate;
+    }
+
+    public ReferenceDatabase getReferenceDatabase() {
+        return referenceDatabase;
+    }
+
+    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
+        this.referenceDatabase = referenceDatabase;
     }
 
     public GO_MolecularFunction getRegulate() {

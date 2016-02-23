@@ -5,15 +5,16 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class EntitySet extends PhysicalEntity{
 
     private Boolean isOrdered;
 
-    @Relationship(type = "hasMember")
+    @Relationship(type = "hasMember", direction = Relationship.OUTGOING)
     private List<PhysicalEntity> hasMember;
 
-    @Relationship(type = "species")
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     private List<Species> species;
 
     public EntitySet() {}

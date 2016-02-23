@@ -4,6 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class FunctionalStatusType extends DatabaseObject {
 

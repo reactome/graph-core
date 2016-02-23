@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class InstanceEdit extends DatabaseObject {
 

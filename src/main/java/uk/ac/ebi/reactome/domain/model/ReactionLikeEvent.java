@@ -1,46 +1,46 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
 import java.util.*;
 
+/**
+ * Logic in getter/setter of input and output is needed for retrieving data using the GKInstance.
+ * This is still used for testing if graph and sql produce the same data
+ */
+@SuppressWarnings("unused")
 @NodeEntity
 public class ReactionLikeEvent extends Event {
 
-    @Property
     private Boolean isChimeric;
-    @Property
     private String systematicName;
 
-    @Relationship(type = "input")
-    private List<Input> input;
-
-    @Relationship(type = "output")
-    private List<Output> output;
-
-    @Relationship(type = "entityOnOtherCell")
-    private List<PhysicalEntity> entityOnOtherCell;
-
-    @Relationship(type = "requiredInputComponent")
-    private Set<PhysicalEntity> requiredInputComponent;
-
-//    @Relationship(type = "hasMember")
-//    private ReactionLikeEvent hasMember;
-
-    @Relationship(type = "catalystActivity")
+    @Relationship(type = "catalystActivity", direction = Relationship.OUTGOING)
     private List<CatalystActivity> catalystActivity;
 
-    @Relationship(type = "normalReaction")
-    private List<ReactionLikeEvent> normalReaction;
-
-    @Relationship(type = "entityFunctionalStatus")
+    @Relationship(type = "entityFunctionalStatus", direction = Relationship.OUTGOING)
     private List<EntityFunctionalStatus> entityFunctionalStatus;
 
+    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
+    private List<PhysicalEntity> entityOnOtherCell;
+
+    @Relationship(type = "input", direction = Relationship.OUTGOING)
+    private List<Input> input;
+
+    @Relationship(type = "normalReaction", direction = Relationship.OUTGOING)
+    private List<ReactionLikeEvent> normalReaction;
+
+    @Relationship(type = "output", direction = Relationship.OUTGOING)
+    private List<Output> output;
+
+    @Relationship(type = "requiredInputComponent", direction = Relationship.OUTGOING)
+    private Set<PhysicalEntity> requiredInputComponent;
+
     public ReactionLikeEvent() {}
+
 
     public Boolean getIsChimeric() {
         return isChimeric;
@@ -58,60 +58,12 @@ public class ReactionLikeEvent extends Event {
         this.systematicName = systematicName;
     }
 
-//    public List<Input> getInput() {
-//        return input;
-//    }
-//
-//    public void setInput(List<Input> input) {
-//        this.input = input;
-//    }
-//
-//    public List<Output> getOutput() {
-//        return output;
-//    }
-//
-//    public void setOutput(List<Output> output) {
-//        this.output = output;
-//    }
-
-    public List<PhysicalEntity> getEntityOnOtherCell() {
-        return entityOnOtherCell;
-    }
-
-    public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
-        this.entityOnOtherCell = entityOnOtherCell;
-    }
-
-    public Set<PhysicalEntity> getRequiredInputComponent() {
-        return requiredInputComponent;
-    }
-
-    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
-        this.requiredInputComponent = requiredInputComponent;
-    }
-
-//    public ReactionLikeEvent getHasMember() {
-//        return hasMember;
-//    }
-//
-//    public void setHasMember(ReactionLikeEvent hasMember) {
-//        this.hasMember = hasMember;
-//    }
-
     public List<CatalystActivity> getCatalystActivity() {
         return catalystActivity;
     }
 
     public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
         this.catalystActivity = catalystActivity;
-    }
-
-    public List<ReactionLikeEvent> getNormalReaction() {
-        return normalReaction;
-    }
-
-    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
-        this.normalReaction = normalReaction;
     }
 
     public List<EntityFunctionalStatus> getEntityFunctionalStatus() {
@@ -122,42 +74,25 @@ public class ReactionLikeEvent extends Event {
         this.entityFunctionalStatus = entityFunctionalStatus;
     }
 
-    //    public Set<Input> getInput() {
-//        return input;
-//    }
-//
-//    public void setInput(Set<Input> input) {
-//        this.input = input;
-//    }
-//
-//    public Set<Output> getOutput() {
-//        return output;
-//    }
-//
-//    public void setOutput(Set<Output> output) {
-//        this.output = output;
-//    }
+    public List<PhysicalEntity> getEntityOnOtherCell() {
+        return entityOnOtherCell;
+    }
 
-//    public List<Input> getInput() {
-//        return input;
-//    }
-//
-//    public void setInput(Set<Input> input) {
-//        this.input = input;
-//    }
+    public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
+        this.entityOnOtherCell = entityOnOtherCell;
+    }
 
-
-        public List<PhysicalEntity> getInput() {
+    public List<PhysicalEntity> getInput() {
         List<PhysicalEntity> rtn = new ArrayList<>();
-            if(input!=null) {
-                for (Input aux : input) {
-                    for (int i = 0; i < aux.getStoichiometry(); i++) {
-                        rtn.add(aux.getPhysicalEntity());
-                    }
+        if(input!=null) {
+            for (Input aux : input) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
+                    rtn.add(aux.getPhysicalEntity());
                 }
-                return rtn;
             }
-            return null;
+            return rtn;
+        }
+        return null;
     }
 
     public void setInput(List<PhysicalEntity> inputs) {
@@ -177,9 +112,13 @@ public class ReactionLikeEvent extends Event {
         this.input = new ArrayList<>(map.values());
     }
 
-//    public void setInput(Set<Input> input) {
-//        this.input = input;
-//    }
+    public List<ReactionLikeEvent> getNormalReaction() {
+        return normalReaction;
+    }
+
+    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
+        this.normalReaction = normalReaction;
+    }
 
     public List<PhysicalEntity> getOutput() {
         List<PhysicalEntity> rtn = new ArrayList<>();
@@ -211,7 +150,11 @@ public class ReactionLikeEvent extends Event {
         this.output = new ArrayList<>(map.values());
     }
 
-//    public void setOutput(List<Output> output) {
-//        this.output = output;
-//    }
+    public Set<PhysicalEntity> getRequiredInputComponent() {
+        return requiredInputComponent;
+    }
+
+    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
+        this.requiredInputComponent = requiredInputComponent;
+    }
 }

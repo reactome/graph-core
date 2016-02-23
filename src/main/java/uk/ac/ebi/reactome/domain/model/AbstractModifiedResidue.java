@@ -3,10 +3,11 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public abstract class AbstractModifiedResidue extends DatabaseObject {
 
-    @Relationship(type = "referenceSequence")
+    @Relationship(type = "referenceSequence", direction = Relationship.OUTGOING)
     private ReferenceSequence referenceSequence;
 
     public AbstractModifiedResidue() {}

@@ -5,13 +5,14 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
 
-    @Relationship(type = "equivalentTo")
+    @Relationship(type = "equivalentTo", direction = Relationship.OUTGOING)
     private List<InterChainCrosslinkedResidue> equivalentTo;
 
-    @Relationship(type = "secondReferenceSequence")
+    @Relationship(type = "secondReferenceSequence", direction = Relationship.OUTGOING)
     private List<ReferenceSequence> secondReferenceSequence;
     
     public InterChainCrosslinkedResidue() {}

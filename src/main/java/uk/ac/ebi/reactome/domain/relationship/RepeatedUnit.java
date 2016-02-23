@@ -8,18 +8,13 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
 import uk.ac.ebi.reactome.domain.model.Polymer;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 11.11.15.
- *
  * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
  * outputs.
  */
+@SuppressWarnings("unused")
 @RelationshipEntity(type = "repeatedUnit")
 public class RepeatedUnit {
 
-    @SuppressWarnings("unused")
     @GraphId
     private Long id;
 
@@ -36,7 +31,6 @@ public class RepeatedUnit {
         return stoichiometry;
     }
 
-    @SuppressWarnings("unused")
     public void setStoichiometry(Integer stoichiometry) {
         this.stoichiometry = stoichiometry;
     }
@@ -45,7 +39,6 @@ public class RepeatedUnit {
         return polymer;
     }
 
-    @SuppressWarnings("unused")
     public void setPolymer(Polymer polymer) {
         this.polymer = polymer;
     }
@@ -54,7 +47,6 @@ public class RepeatedUnit {
         return physicalEntity;
     }
 
-    @SuppressWarnings("unused")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }

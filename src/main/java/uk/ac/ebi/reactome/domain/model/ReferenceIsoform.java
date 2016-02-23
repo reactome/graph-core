@@ -5,12 +5,13 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class ReferenceIsoform extends ReferenceGeneProduct {
 
     private String variantIdentifier;
 
-    @Relationship(type = "isoformParent")
+    @Relationship(type = "isoformParent", direction = Relationship.OUTGOING)
     private List<ReferenceGeneProduct> isoformParent;
 
     public ReferenceIsoform() {}

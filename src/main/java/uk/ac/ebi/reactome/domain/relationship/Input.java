@@ -8,18 +8,13 @@ import uk.ac.ebi.reactome.domain.model.Event;
 import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 10.11.15.
- *
  * Input is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
  * inputs.
  */
+@SuppressWarnings("unused")
 @RelationshipEntity(type = "input")
 public class Input {
 
-    @SuppressWarnings("unused")
     @GraphId
     private Long id;
 
@@ -36,7 +31,6 @@ public class Input {
         return stoichiometry;
     }
 
-    @SuppressWarnings("unused")
     public void setStoichiometry(Integer stoichiometry) {
         this.stoichiometry = stoichiometry;
     }
@@ -45,7 +39,6 @@ public class Input {
         return physicalEntity;
     }
 
-    @SuppressWarnings("unused")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
@@ -54,7 +47,6 @@ public class Input {
         return event;
     }
 
-    @SuppressWarnings("unused")
     public void setEvent(Event event) {
         this.event = event;
     }

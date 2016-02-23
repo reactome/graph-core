@@ -9,24 +9,17 @@ import java.util.List;
  * BlackBoxEvent contains "unbalanced" reactions like synthesis or degradation and "shortcut" reactions representing
  * more complex processes
  */
+@SuppressWarnings("unused")
 @NodeEntity
 public class BlackBoxEvent extends ReactionLikeEvent {
 
-    @Relationship(type = "templateEvent")
-    private Event templateEvent;
-
-    @Relationship(type = "hasEvent")
+    @Relationship(type = "hasEvent", direction = Relationship.OUTGOING)
     private List<Event> hasEvent;
 
+    @Relationship(type = "templateEvent", direction = Relationship.OUTGOING)
+    private Event templateEvent;
+
     public BlackBoxEvent() {}
-
-    public Event getTemplateEvent() {
-        return this.templateEvent;
-    }
-
-    public void setTemplateEvent(Event templateEvent) {
-        this.templateEvent = templateEvent;
-    }
 
     public List<Event> getHasEvent() {
         return hasEvent;
@@ -36,4 +29,11 @@ public class BlackBoxEvent extends ReactionLikeEvent {
         this.hasEvent = hasEvent;
     }
 
+    public Event getTemplateEvent() {
+        return templateEvent;
+    }
+
+    public void setTemplateEvent(Event templateEvent) {
+        this.templateEvent = templateEvent;
+    }
 }

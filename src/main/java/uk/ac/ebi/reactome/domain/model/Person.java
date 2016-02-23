@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Person extends DatabaseObject {
 
@@ -14,19 +15,19 @@ public class Person extends DatabaseObject {
     private String project;
     private String surname;
 
-    @Relationship(type = "affiliation")
+    @Relationship(type = "affiliation", direction = Relationship.OUTGOING)
     private List<Affiliation> affiliation;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
 
     public Person() {}
 
-    public String geteMailAddress() {
+    public String getEMailAddress() {
         return eMailAddress;
     }
 
-    public void seteMailAddress(String eMailAddress) {
+    public void setEMailAddress(String eMailAddress) {
         this.eMailAddress = eMailAddress;
     }
 

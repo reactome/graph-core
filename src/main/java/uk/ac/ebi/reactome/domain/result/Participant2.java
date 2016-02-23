@@ -10,7 +10,10 @@ import java.util.Collection;
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 03.02.16.
+ *
+ * Object for retrieving Ewases and their ReferenceEntities for a given Pathway Id
  */
+@SuppressWarnings("unused")
 @QueryResult
 public class Participant2 {
 

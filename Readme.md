@@ -487,3 +487,86 @@ $Match (n)-[r]->(x) Where (x)-[r]->(n) Return n,r,x
 
 Multiple rel for 2 nodes
 Match (n)-[r]->(x) WITH n,x,COUNT(r) as cnt WHERE cnt>1 Return n,x,cnt Limit 10
+
+
+"spring" 
+Entities handled by Spring Data Neo4j must have an empty constructor to allow the library to construct
+the objects.
+
+
+Annotated and non-annoted objects can be used within the same project without issue. There is an
+EntityAccessStrategy used to control how objects are read from or written to. The default
+implementation of this uses the following convention:
+1. Annotated method (getter/setter)
+2. Annotated field
+3. Plain method (getter/setter)
+4. Plain field
+
+Fields that are annotated as @Transient or declared with the transient modifier are exempted
+from persistence. All fields that contain primitive values are persisted directly to the graph. All fields
+convertible to a String using the Spring conversion services will be stored as a string. Spring Data
+Neo4j includes default type converters that deal with the following types:
+• java.util.Date to a String in the ISO 8601 format: "yyyy-MM-dd’T’HH:mm:ss.SSSXXX"
+• java.math.BigInteger to a String property
+• java.math.BigDecimal to a String property
+• binary data (as byte[] or Byte[]) to base-64 String
+• java.lang.Enum types using the enum’s name() method and Enum.valueOf()
+
+
+
+
+
+/**
+ * how to generally manage a doubly-linked list using SDN 4, specifically for the case where the underlying graph uses a single relationship type between nodes, e.g.
+
+ (post:Post)-[:NEXT]->(post:Post)
+
+ What you can't do
+
+ Due to limitations in the mapping framework, it is not possible to reliably declare the same relationship type twice in two different directions in your object model, i.e. this (currently) will not work:
+
+ class Post {
+@Relationship(type="NEXT", direction=Relationship.OUTGOING)
+Post next;
+
+@Relationship(type="NEXT", direction=Relationship.INCOMING)
+Post previous;
+}
+
+ What you can do
+
+ Instead we can combine the @Transient annotation with the use of annotated setter methods to obtain the desired result:
+
+ class Post {
+ Post next;
+
+ @Transient Post previous;
+
+ @Relationship(type="NEXT", direction=Relationship.OUTGOING)
+ public void setNext(Post next) {
+ this.next = next;
+ if (next != null) {
+ next.previous = this;
+ }
+ }
+ }
+
+ As a final point, if you then wanted to be able to navigate forwards and backwards through the entire list of Posts from any starting Post without having to continually refetch them from the database, you can set the fetch depth to -1 when you load the post, e.g:
+
+ findOne(post.getId(), -1);
+
+ Bear in mind that an infinite depth query will fetch every reachable object in the graph from the matched one, so use it with care!
+ */
+
+
+
+
+ A query such as
+
+ MATCH (user:User {name: {username})-[rating:RATED]->(movie:Movie) RETURN u,r,m
+
+
+ executed by Session.query() will continue to return a Result which contains keys for user, rating and movie but the values are now domain node and relationship entities linked by relationships returned in the query.
+
+ This will make it much easier to deal with the results of custom queries and improve performance since your code will no longer need an additional load of the entity by ID.
+  */

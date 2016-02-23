@@ -40,14 +40,14 @@ public class DatabaseObjectServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-    private static final Long dbId = 7130561L; //381283L; // 75949L;
-    private static final String stId = "R-HSA-5205685";
+//    private static final Long dbId = 7130561L; //381283L; // 75949L;
+//    private static final String stId = "R-HSA-5205685";
 
 //    private static final Long dbId = 5205685L;
 //    private static final String stId = "R-HSA-5205685";
 
-//    private static final Long dbId = 507868L;
-//    private static final String stId = "R-HSA-507868";
+    private static final Long dbId = 507868L;
+    private static final String stId = "R-HSA-507868";
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -219,6 +219,8 @@ public class DatabaseObjectServiceTest {
 
     @Test
     public void test () throws ClassNotFoundException {
+
+        databaseObjectService.findByIdFillLegacyRelations(dbId.toString());
 //        databaseObjectService.getAttributeTable(Reaction.class.getSimpleName());
     }
 

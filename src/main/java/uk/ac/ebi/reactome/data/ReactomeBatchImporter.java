@@ -63,8 +63,8 @@ public class ReactomeBatchImporter {
             dba = new MySQLAdaptor(host,database,user,password,port);
             DATA_DIR = dir;
             total = (int) dba.getClassInstanceCount(ReactomeJavaConstants.DatabaseObject);
-            total =- (int) dba.getClassInstanceCount(ReactomeJavaConstants.StableIdentifier);
-            total =- (int) dba.getClassInstanceCount(ReactomeJavaConstants.PathwayDiagramItem);
+            total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.StableIdentifier);
+            total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.PathwayDiagramItem);
             fileLogger.info("Established connection to Reactome database");
         } catch (SQLException|InvalidClassException e) {
             fileLogger.error("An error occurred while connection to the Reactome database", e);
@@ -82,7 +82,7 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
+//                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
@@ -121,13 +121,7 @@ public class ReactomeBatchImporter {
 //                the recursion a wrong instance will be shown
         Long id = saveDatabaseObject(instance, clazz);
 
-
-        //TODO: Remove if
-        if (!dbIds.containsKey(instance.getDBID())) {
-            dbIds.put(instance.getDBID(), id);
-        } else {
-            System.err.println("This should not happen");
-        }
+        dbIds.put(instance.getDBID(), id);
 
         List<String> attributes = relationAttributesMap.get(clazz);
         if (attributes != null) {

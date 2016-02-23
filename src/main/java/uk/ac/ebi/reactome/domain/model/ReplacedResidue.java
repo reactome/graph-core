@@ -5,12 +5,13 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class ReplacedResidue extends GeneticallyModifiedResidue {
     
     private Integer coordinate;
 
-    @Relationship(type = "psiMod")
+    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
     private List<PsiMod> psiMod;
     
     public ReplacedResidue() {}

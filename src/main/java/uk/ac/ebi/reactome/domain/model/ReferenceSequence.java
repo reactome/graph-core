@@ -4,11 +4,10 @@ import org.neo4j.ogm.annotation.NodeEntity;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class ReferenceSequence extends ReferenceEntity {
 
-    private Integer sequenceLength;
-    private Species species;
     private String checksum;
     private List<String> comment;
     private List<String> description;
@@ -16,26 +15,11 @@ public class ReferenceSequence extends ReferenceEntity {
     private Boolean isSequenceChanged;
     private List<String> keyword;
     private List<String> secondaryIdentifier;
-
+    private Integer sequenceLength;
+    private Species species;
     private String url;
 
     public ReferenceSequence() {}
-
-    public Integer getSequenceLength() {
-        return this.sequenceLength;
-    }
-
-    public void setSequenceLength(Integer sequenceLength) {
-        this.sequenceLength = sequenceLength;
-    }
-
-    public Species getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(Species species) {
-        this.species = species;
-    }
 
     public String getChecksum() {
         return checksum;
@@ -91,6 +75,22 @@ public class ReferenceSequence extends ReferenceEntity {
 
     public void setSecondaryIdentifier(List<String> secondaryIdentifier) {
         this.secondaryIdentifier = secondaryIdentifier;
+    }
+
+    public Integer getSequenceLength() {
+        return sequenceLength;
+    }
+
+    public void setSequenceLength(Integer sequenceLength) {
+        this.sequenceLength = sequenceLength;
+    }
+
+    public Species getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(Species species) {
+        this.species = species;
     }
 
     public String getUrl() {

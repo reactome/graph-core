@@ -17,6 +17,7 @@ import java.util.Collection;
 public interface DatabaseObjectService extends Service<DatabaseObject> {
 
     DatabaseObject findById(String id);
+    DatabaseObject findByIdFillLegacyRelations(String id);
 
     DatabaseObject findByDbId(Long dbId);
     DatabaseObject findByDbIdNoRelations(Long dbId);

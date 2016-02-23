@@ -5,10 +5,11 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class ReferenceRNASequence extends ReferenceSequence {
 
-    @Relationship(type = "referenceGene")
+    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
     private List<ReferenceDNASequence> referenceGene;
     
     public ReferenceRNASequence() {}

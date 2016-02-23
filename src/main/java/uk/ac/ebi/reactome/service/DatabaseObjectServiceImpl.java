@@ -6,14 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
+import uk.ac.ebi.reactome.domain.model.*;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by:
@@ -39,6 +40,35 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         } else {
             return null;
         }
+    }
+
+    public DatabaseObject findByIdFillLegacyRelations(String id) {
+        DatabaseObject databaseObject = findById(id);
+        if (databaseObject instanceof Event) {
+            if (((Event) databaseObject).getNegativeRegulations() != null) {
+                for (NegativeRegulation negativeRegulation : ((Event) databaseObject).getNegativeRegulations()) {
+                    databaseObjectRepository.findOne(negativeRegulation.getId());
+                }
+//                databaseObjectRepository.find(((Event) databaseObject).getNegativeRegulations().)
+            }
+            if (((Event) databaseObject).getPositiveRegulations() != null) {
+                for (PositiveRegulation positiveRegulation : ((Event) databaseObject).getPositiveRegulations()) {
+                    databaseObjectRepository.findOne(positiveRegulation.getId());
+                }
+//                databaseObjectRepository.find(((Event) databaseObject).getNegativeRegulations().)
+            }
+            if (((Event) databaseObject).getOrthologousEvent() != null) {
+                Set<Event> orthologousEvents = new HashSet<>();
+                for (Event orthologousEvent : ((Event) databaseObject).getInferredTo()) {
+                    orthologousEvents.add(orthologousEvent);
+                }
+                ((Event) databaseObject).setOrthologousEvent(orthologousEvents);
+            }
+
+        } else if (databaseObject instanceof PhysicalEntity) {
+
+        }
+        return databaseObject;
     }
 
     @Override

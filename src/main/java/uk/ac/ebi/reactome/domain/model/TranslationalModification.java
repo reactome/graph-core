@@ -3,12 +3,13 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class TranslationalModification extends AbstractModifiedResidue {
 
     private Integer coordinate;
 
-    @Relationship(type = "psiMod")
+    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
     private PsiMod psiMod;
     
     public TranslationalModification() {}

@@ -5,13 +5,14 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class EntityFunctionalStatus extends DatabaseObject {
 
-    @Relationship(type = "functionalStatus")
+    @Relationship(type = "functionalStatus", direction = Relationship.OUTGOING)
     private List<FunctionalStatus> functionalStatus;
 
-    @Relationship(type = "physicalEntity")
+    @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
     private PhysicalEntity physicalEntity;
     
     public EntityFunctionalStatus() {}

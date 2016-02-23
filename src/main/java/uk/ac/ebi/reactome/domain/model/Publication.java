@@ -5,12 +5,13 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Publication extends DatabaseObject {
 
     private String title;
 
-    @Relationship(type = "author")
+    @Relationship(type = "author", direction = Relationship.OUTGOING)
     private List<Person> author;
 
     public Publication() {}

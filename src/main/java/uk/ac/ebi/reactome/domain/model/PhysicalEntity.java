@@ -2,41 +2,60 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Transient;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class PhysicalEntity extends DatabaseObject {
 
     private String definition;
-//    private String shortName;
+    private List<String> name;
     private String systematicName;
 
-    ///NOT FILLED BY GRAPH
-    /**
-     * List of Events catalysed by this PE
-     */
+    // List of CatalyzedEvents filled in service layer
+    @Transient
     private List<Event> catalyzedEvent;
 
-    /**
-     * List of GO MF related to this PE via CatalystActivity
-     */
+    // List of GO_MolecularFunctions filled in service layer
+    @Transient
     private List<CatalystActivity> goActivity;
 
-    /**
-     * list of regulated Events filled in service
-     */
-    private List<Event> inhibitedEvent;
+    // List of regulated Events filled in service layer
+    @Transient
     private List<Event> activatedEvent;
-    private List<Event> requiredEvent;
-    private List<Event> producedByEvent;
+    @Transient
     private List<Event> consumedByEvent;
+    @Transient
+    private List<Event> inhibitedEvent;
+    @Transient
+    private List<Event> producedByEvent;
+    @Transient
+    private List<Event> requiredEvent;
 
-
-    @Relationship(type = "authored")
+    @Relationship(type = "authored", direction = Relationship.OUTGOING)
     private InstanceEdit authored;
 
-    @Relationship(type = "goCellularComponent")
+    @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
+    private List<CatalystActivity> catalystActivities;
+
+    @Relationship(type = "compartment", direction = Relationship.OUTGOING)
+    private List<EntityCompartment> compartment;
+
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    private List<DatabaseIdentifier> crossReference;
+
+    @Relationship(type = "disease", direction = Relationship.OUTGOING)
+    private List<Disease> disease;
+
+    @Relationship(type = "edited", direction = Relationship.OUTGOING)
+    private List<InstanceEdit> edited;
+
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    private List<Figure> figure;
+
+    @Relationship(type = "goCellularComponent", direction = Relationship.OUTGOING)
     private GO_CellularComponent goCellularComponent;
 
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
@@ -45,45 +64,22 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
-    @Relationship(type = "figure")
-    private List<Figure> figure;
-
-    @Relationship(type = "summation")
-    private List<Summation> summation;
-
-    @Relationship(type = "edited")
-    private List<InstanceEdit> edited;
-
-    @Relationship(type = "reviewed")
-    private List<InstanceEdit> reviewed;
-
-    @Relationship(type = "revised")
-    private List<InstanceEdit> revised;
-
-    @Relationship(type = "name")
-    private List<String> name;
-
-    @Relationship(type = "compartment")
-    private List<EntityCompartment> compartment;
-
-    @Relationship(type = "crossReference")
-    private List<DatabaseIdentifier> crossReference;
-
-    @Relationship(type = "disease")
-    private List<Disease> disease;
-
-    @Relationship(type = "literatureReference")
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
-
-    @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
-    private List<CatalystActivity> catalystActivities;
 
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<Regulation> regulations;
 
+    @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
+    private List<InstanceEdit> reviewed;
 
-    public PhysicalEntity() {
-    }
+    @Relationship(type = "revised", direction = Relationship.OUTGOING)
+    private List<InstanceEdit> revised;
+
+    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    private List<Summation> summation;
+
+    public PhysicalEntity() {}
 
     public String getDefinition() {
         return definition;
@@ -91,6 +87,14 @@ public class PhysicalEntity extends DatabaseObject {
 
     public void setDefinition(String definition) {
         this.definition = definition;
+    }
+
+    public List<String> getName() {
+        return name;
+    }
+
+    public void setName(List<String> name) {
+        this.name = name;
     }
 
     public String getSystematicName() {
@@ -117,36 +121,12 @@ public class PhysicalEntity extends DatabaseObject {
         this.goActivity = goActivity;
     }
 
-    public List<Event> getInhibitedEvent() {
-        return inhibitedEvent;
-    }
-
-    public void setInhibitedEvent(List<Event> inhibitedEvent) {
-        this.inhibitedEvent = inhibitedEvent;
-    }
-
     public List<Event> getActivatedEvent() {
         return activatedEvent;
     }
 
     public void setActivatedEvent(List<Event> activatedEvent) {
         this.activatedEvent = activatedEvent;
-    }
-
-    public List<Event> getRequiredEvent() {
-        return requiredEvent;
-    }
-
-    public void setRequiredEvent(List<Event> requiredEvent) {
-        this.requiredEvent = requiredEvent;
-    }
-
-    public List<Event> getProducedByEvent() {
-        return producedByEvent;
-    }
-
-    public void setProducedByEvent(List<Event> producedByEvent) {
-        this.producedByEvent = producedByEvent;
     }
 
     public List<Event> getConsumedByEvent() {
@@ -157,6 +137,30 @@ public class PhysicalEntity extends DatabaseObject {
         this.consumedByEvent = consumedByEvent;
     }
 
+    public List<Event> getInhibitedEvent() {
+        return inhibitedEvent;
+    }
+
+    public void setInhibitedEvent(List<Event> inhibitedEvent) {
+        this.inhibitedEvent = inhibitedEvent;
+    }
+
+    public List<Event> getProducedByEvent() {
+        return producedByEvent;
+    }
+
+    public void setProducedByEvent(List<Event> producedByEvent) {
+        this.producedByEvent = producedByEvent;
+    }
+
+    public List<Event> getRequiredEvent() {
+        return requiredEvent;
+    }
+
+    public void setRequiredEvent(List<Event> requiredEvent) {
+        this.requiredEvent = requiredEvent;
+    }
+
     public InstanceEdit getAuthored() {
         return authored;
     }
@@ -165,76 +169,12 @@ public class PhysicalEntity extends DatabaseObject {
         this.authored = authored;
     }
 
-    public GO_CellularComponent getGoCellularComponent() {
-        return goCellularComponent;
+    public List<CatalystActivity> getCatalystActivities() {
+        return catalystActivities;
     }
 
-    public void setGoCellularComponent(GO_CellularComponent goCellularComponent) {
-        this.goCellularComponent = goCellularComponent;
-    }
-
-    public List<PhysicalEntity> getInferredTo() {
-        return inferredTo;
-    }
-
-    public void setInferredTo(List<PhysicalEntity> inferredTo) {
-        this.inferredTo = inferredTo;
-    }
-
-    public List<PhysicalEntity> getInferredFrom() {
-        return inferredFrom;
-    }
-
-    public void setInferredFrom(List<PhysicalEntity> inferredFrom) {
-        this.inferredFrom = inferredFrom;
-    }
-
-    public List<Figure> getFigure() {
-        return figure;
-    }
-
-    public void setFigure(List<Figure> figure) {
-        this.figure = figure;
-    }
-
-    public List<Summation> getSummation() {
-        return summation;
-    }
-
-    public void setSummation(List<Summation> summation) {
-        this.summation = summation;
-    }
-
-    public List<InstanceEdit> getEdited() {
-        return edited;
-    }
-
-    public void setEdited(List<InstanceEdit> edited) {
-        this.edited = edited;
-    }
-
-    public List<InstanceEdit> getReviewed() {
-        return reviewed;
-    }
-
-    public void setReviewed(List<InstanceEdit> reviewed) {
-        this.reviewed = reviewed;
-    }
-
-    public List<InstanceEdit> getRevised() {
-        return revised;
-    }
-
-    public void setRevised(List<InstanceEdit> revised) {
-        this.revised = revised;
-    }
-
-    public List<String> getName() {
-        return name;
-    }
-
-    public void setName(List<String> name) {
-        this.name = name;
+    public void setCatalystActivities(List<CatalystActivity> catalystActivities) {
+        this.catalystActivities = catalystActivities;
     }
 
     public List<EntityCompartment> getCompartment() {
@@ -261,6 +201,46 @@ public class PhysicalEntity extends DatabaseObject {
         this.disease = disease;
     }
 
+    public List<InstanceEdit> getEdited() {
+        return edited;
+    }
+
+    public void setEdited(List<InstanceEdit> edited) {
+        this.edited = edited;
+    }
+
+    public List<Figure> getFigure() {
+        return figure;
+    }
+
+    public void setFigure(List<Figure> figure) {
+        this.figure = figure;
+    }
+
+    public GO_CellularComponent getGoCellularComponent() {
+        return goCellularComponent;
+    }
+
+    public void setGoCellularComponent(GO_CellularComponent goCellularComponent) {
+        this.goCellularComponent = goCellularComponent;
+    }
+
+    public List<PhysicalEntity> getInferredTo() {
+        return inferredTo;
+    }
+
+    public void setInferredTo(List<PhysicalEntity> inferredTo) {
+        this.inferredTo = inferredTo;
+    }
+
+    public List<PhysicalEntity> getInferredFrom() {
+        return inferredFrom;
+    }
+
+    public void setInferredFrom(List<PhysicalEntity> inferredFrom) {
+        this.inferredFrom = inferredFrom;
+    }
+
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
@@ -269,19 +249,35 @@ public class PhysicalEntity extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public List<CatalystActivity> getCatalystActivities() {
-        return catalystActivities;
-    }
-
-    public void setCatalystActivities(List<CatalystActivity> catalystActivities) {
-        this.catalystActivities = catalystActivities;
-    }
-
     public List<Regulation> getRegulations() {
         return regulations;
     }
 
     public void setRegulations(List<Regulation> regulations) {
         this.regulations = regulations;
+    }
+
+    public List<InstanceEdit> getReviewed() {
+        return reviewed;
+    }
+
+    public void setReviewed(List<InstanceEdit> reviewed) {
+        this.reviewed = reviewed;
+    }
+
+    public List<InstanceEdit> getRevised() {
+        return revised;
+    }
+
+    public void setRevised(List<InstanceEdit> revised) {
+        this.revised = revised;
+    }
+
+    public List<Summation> getSummation() {
+        return summation;
+    }
+
+    public void setSummation(List<Summation> summation) {
+        this.summation = summation;
     }
 }

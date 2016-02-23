@@ -2,108 +2,104 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.neo4j.ogm.annotation.Transient;
 
 import java.util.List;
+import java.util.Set;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 
     private Boolean _doRelease;
+    private String definition;
+    //A simple flag to indicate if this Event object is a disease
+    private Boolean isInDisease;
+    //A simple flag to indicate if this Event is inferred from another
+    private Boolean isInferred;
+    private List<String> name;
     private String releaseDate;
     private String releaseStatus;
-
-//    This is not longer used (TODO: Check it out)
-//    private String keywords;
-
     private String speciesName;
-    private String definition;
-    private List<String> name;
-    /**
-     * A simple label to indicate if this Event object is a disease
-     */
-    private Boolean isInDisease;
-    /**
-     * A simple flag to indicate if this Event is inferred from another
-     */
-    private Boolean isInferred;
 
     /**
      * graph contains only relationships to Regulation
      * positive and negativeRegulators have to be filled in service
      */
-    private List<PhysicalEntity> positiveRegulators;
+    @Transient
     private List<PhysicalEntity> negativeRegulators;
+    @Transient
+    private List<PhysicalEntity> positiveRegulators;
 
     /**
-     * inferred and orthologous contain the same data - error in data
-     * now only inferredTo will exist in the graph
-     * inferredFrom will be filled by the incoming relationship
+     * inferred and orthologous contain the same data, in the Graph representation only inferredTo exists
      * orthologous events will be filled in service
      */
-    private List<Event> orthologousEvent;
+    @Transient
+    private Set<Event> orthologousEvent;
 
-    @Relationship(type = "evidenceType")
-    private EvidenceType evidenceType;
-
-    @Relationship(type = "goBiologicalProcess")
-    private GO_BiologicalProcess goBiologicalProcess;
-
-    @Relationship(type = "authored")
+    @Relationship(type = "authored", direction = Relationship.OUTGOING)
     private List<InstanceEdit> authored;
 
-    @Relationship(type = "edited")
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    private List<DatabaseIdentifier> crossReference;
+
+    @Relationship(type = "compartment", direction = Relationship.OUTGOING)
+    private List<Compartment> compartment;
+
+    @Relationship(type = "disease", direction = Relationship.OUTGOING)
+    private List<Disease> disease;
+
+    @Relationship(type = "edited", direction = Relationship.OUTGOING)
     private List<InstanceEdit> edited;
 
-    @Relationship(type = "revised")
-    private List<InstanceEdit> revised;
+    @Relationship(type = "evidenceType", direction = Relationship.OUTGOING)
+    private EvidenceType evidenceType;
 
-    @Relationship(type = "reviewed")
-    private List<InstanceEdit> reviewed;
-    
-    @Relationship(type = "species")
-    private List<Species> species;
-    
-    @Relationship(type = "relatedSpecies")
-    private List<Species> relatedSpecies;
-
-    @Relationship(type = "summation")
-    private List<Summation> summation;
-
-    @Relationship(type = "figure")
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
-
-    @Relationship(type = "precedingEvent")
-    private List<Event> precedingEvent;
 
     @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
     private List<Event> followingEvent;
 
-    @Relationship(type = "literatureReference")
-    private List<Publication> literatureReference;
+    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    private GO_BiologicalProcess goBiologicalProcess;
 
-    @Relationship(type = "regulatedBy")
-    private List<NegativeRegulation> negativeRegulations;
-
-    @Relationship(type = "regulatedBy")
-    private List<PositiveRegulation> positiveRegulations;
-
-    @Relationship(type = "regulatedBy")
-    private List<Requirement> requirements;
-
-    @Relationship(type = "crossReference")
-    private List<DatabaseIdentifier> crossReference;
-    
-    @Relationship(type = "disease")
-    private List<Disease> disease;
-
-    @Relationship(type = "inferredTo")
-    private List<Event> inferredTo;
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    private Set<Event> inferredTo;
 
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
-    private List<Event> inferredFrom;
+    private Set<Event> inferredFrom;
 
-    @Relationship(type = "compartment")
-    private List<Compartment> compartment;
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    private List<Publication> literatureReference;
+
+    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    private List<NegativeRegulation> negativeRegulations;
+
+    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    private List<PositiveRegulation> positiveRegulations;
+
+    @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
+    private List<Event> precedingEvent;
+
+    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    private List<Species> relatedSpecies;
+
+    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    private List<Requirement> requirements;
+
+    @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
+    private List<InstanceEdit> reviewed;
+
+    @Relationship(type = "revised", direction = Relationship.OUTGOING)
+    private List<InstanceEdit> revised;
+
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    private List<Species> species;
+
+    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    private List<Summation> summation;
 
     public Event() {}
 
@@ -115,36 +111,12 @@ public abstract class Event extends DatabaseObject {
         this._doRelease = _doRelease;
     }
 
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
-    public String getSpeciesName() {
-        return speciesName;
-    }
-
-    public void setSpeciesName(String speciesName) {
-        this.speciesName = speciesName;
-    }
-
     public String getDefinition() {
         return definition;
     }
 
     public void setDefinition(String definition) {
         this.definition = definition;
-    }
-
-    public List<String> getName() {
-        return name;
-    }
-
-    public void setName(List<String> name) {
-        this.name = name;
     }
 
     public Boolean getIsInDisease() {
@@ -163,12 +135,36 @@ public abstract class Event extends DatabaseObject {
         this.isInferred = isInferred;
     }
 
-    public List<PhysicalEntity> getPositiveRegulators() {
-        return positiveRegulators;
+    public List<String> getName() {
+        return name;
     }
 
-    public void setPositiveRegulators(List<PhysicalEntity> positiveRegulators) {
-        this.positiveRegulators = positiveRegulators;
+    public void setName(List<String> name) {
+        this.name = name;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public String getReleaseStatus() {
+        return releaseStatus;
+    }
+
+    public void setReleaseStatus(String releaseStatus) {
+        this.releaseStatus = releaseStatus;
+    }
+
+    public String getSpeciesName() {
+        return speciesName;
+    }
+
+    public void setSpeciesName(String speciesName) {
+        this.speciesName = speciesName;
     }
 
     public List<PhysicalEntity> getNegativeRegulators() {
@@ -179,11 +175,19 @@ public abstract class Event extends DatabaseObject {
         this.negativeRegulators = negativeRegulators;
     }
 
-    public List<Event> getOrthologousEvent() {
+    public List<PhysicalEntity> getPositiveRegulators() {
+        return positiveRegulators;
+    }
+
+    public void setPositiveRegulators(List<PhysicalEntity> positiveRegulators) {
+        this.positiveRegulators = positiveRegulators;
+    }
+
+    public Set<Event> getOrthologousEvent() {
         return orthologousEvent;
     }
 
-    public void setOrthologousEvent(List<Event> orthologousEvent) {
+    public void setOrthologousEvent(Set<Event> orthologousEvent) {
         this.orthologousEvent = orthologousEvent;
     }
 
@@ -195,44 +199,36 @@ public abstract class Event extends DatabaseObject {
         this.authored = authored;
     }
 
+    public List<DatabaseIdentifier> getCrossReference() {
+        return crossReference;
+    }
+
+    public void setCrossReference(List<DatabaseIdentifier> crossReference) {
+        this.crossReference = crossReference;
+    }
+
+    public List<Compartment> getCompartment() {
+        return compartment;
+    }
+
+    public void setCompartment(List<Compartment> compartment) {
+        this.compartment = compartment;
+    }
+
+    public List<Disease> getDisease() {
+        return disease;
+    }
+
+    public void setDisease(List<Disease> disease) {
+        this.disease = disease;
+    }
+
     public List<InstanceEdit> getEdited() {
         return edited;
     }
 
     public void setEdited(List<InstanceEdit> edited) {
         this.edited = edited;
-    }
-
-    public List<InstanceEdit> getRevised() {
-        return revised;
-    }
-
-    public void setRevised(List<InstanceEdit> revised) {
-        this.revised = revised;
-    }
-
-    public List<InstanceEdit> getReviewed() {
-        return reviewed;
-    }
-
-    public void setReviewed(List<InstanceEdit> reviewed) {
-        this.reviewed = reviewed;
-    }
-
-    public List<Species> getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(List<Species> species) {
-        this.species = species;
-    }
-
-    public List<Species> getRelatedSpecies() {
-        return relatedSpecies;
-    }
-
-    public void setRelatedSpecies(List<Species> relatedSpecies) {
-        this.relatedSpecies = relatedSpecies;
     }
 
     public EvidenceType getEvidenceType() {
@@ -243,30 +239,6 @@ public abstract class Event extends DatabaseObject {
         this.evidenceType = evidenceType;
     }
 
-    public GO_BiologicalProcess getGoBiologicalProcess() {
-        return goBiologicalProcess;
-    }
-
-    public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
-        this.goBiologicalProcess = goBiologicalProcess;
-    }
-
-    public List<Summation> getSummation() {
-        return summation;
-    }
-
-    public void setSummation(List<Summation> summation) {
-        this.summation = summation;
-    }
-
-    public String getReleaseStatus() {
-        return releaseStatus;
-    }
-
-    public void setReleaseStatus(String releaseStatus) {
-        this.releaseStatus = releaseStatus;
-    }
-
     public List<Figure> getFigure() {
         return figure;
     }
@@ -275,20 +247,36 @@ public abstract class Event extends DatabaseObject {
         this.figure = figure;
     }
 
-    public List<Event> getPrecedingEvent() {
-        return precedingEvent;
-    }
-
-    public void setPrecedingEvent(List<Event> precedingEvent) {
-        this.precedingEvent = precedingEvent;
-    }
-
     public List<Event> getFollowingEvent() {
         return followingEvent;
     }
 
     public void setFollowingEvent(List<Event> followingEvent) {
         this.followingEvent = followingEvent;
+    }
+
+    public GO_BiologicalProcess getGoBiologicalProcess() {
+        return goBiologicalProcess;
+    }
+
+    public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
+        this.goBiologicalProcess = goBiologicalProcess;
+    }
+
+    public Set<Event> getInferredTo() {
+        return inferredTo;
+    }
+
+    public void setInferredTo(Set<Event> inferredTo) {
+        this.inferredTo = inferredTo;
+    }
+
+    public Set<Event> getInferredFrom() {
+        return inferredFrom;
+    }
+
+    public void setInferredFrom(Set<Event> inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     public List<Publication> getLiteratureReference() {
@@ -315,6 +303,22 @@ public abstract class Event extends DatabaseObject {
         this.positiveRegulations = positiveRegulations;
     }
 
+    public List<Event> getPrecedingEvent() {
+        return precedingEvent;
+    }
+
+    public void setPrecedingEvent(List<Event> precedingEvent) {
+        this.precedingEvent = precedingEvent;
+    }
+
+    public List<Species> getRelatedSpecies() {
+        return relatedSpecies;
+    }
+
+    public void setRelatedSpecies(List<Species> relatedSpecies) {
+        this.relatedSpecies = relatedSpecies;
+    }
+
     public List<Requirement> getRequirements() {
         return requirements;
     }
@@ -323,43 +327,35 @@ public abstract class Event extends DatabaseObject {
         this.requirements = requirements;
     }
 
-    public List<DatabaseIdentifier> getCrossReference() {
-        return crossReference;
+    public List<InstanceEdit> getReviewed() {
+        return reviewed;
     }
 
-    public void setCrossReference(List<DatabaseIdentifier> crossReference) {
-        this.crossReference = crossReference;
+    public void setReviewed(List<InstanceEdit> reviewed) {
+        this.reviewed = reviewed;
     }
 
-    public List<Disease> getDisease() {
-        return disease;
+    public List<InstanceEdit> getRevised() {
+        return revised;
     }
 
-    public void setDisease(List<Disease> disease) {
-        this.disease = disease;
+    public void setRevised(List<InstanceEdit> revised) {
+        this.revised = revised;
     }
 
-    public List<Event> getInferredTo() {
-        return inferredTo;
+    public List<Species> getSpecies() {
+        return species;
     }
 
-    public void setInferredTo(List<Event> inferredTo) {
-        this.inferredTo = inferredTo;
+    public void setSpecies(List<Species> species) {
+        this.species = species;
     }
 
-    public List<Event> getInferredFrom() {
-        return inferredFrom;
+    public List<Summation> getSummation() {
+        return summation;
     }
 
-    public void setInferredFrom(List<Event> inferredFrom) {
-        this.inferredFrom = inferredFrom;
-    }
-
-    public List<Compartment> getCompartment() {
-        return compartment;
-    }
-
-    public void setCompartment(List<Compartment> compartment) {
-        this.compartment = compartment;
+    public void setSummation(List<Summation> summation) {
+        this.summation = summation;
     }
 }

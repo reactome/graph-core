@@ -5,12 +5,13 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Summation extends DatabaseObject {
 
     private String text;
 
-    @Relationship(type = "literatureReference")
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
     public Summation() {}

@@ -6,6 +6,7 @@ import uk.ac.ebi.reactome.domain.relationship.HasComponent;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Complex extends PhysicalEntity {
 
@@ -33,40 +34,7 @@ public class Complex extends PhysicalEntity {
         this.isChimeric = isChimeric;
     }
 
-
-    public List<PhysicalEntity> getEntityOnOthercell() {
-        return entityOnOthercell;
-    }
-
-    public void setEntityOnOthercell(List<PhysicalEntity> entityOnOthercell) {
-        this.entityOnOthercell = entityOnOthercell;
-    }
-
-    public List<EntityCompartment> getIncludedLocation() {
-        return includedLocation;
-    }
-
-    public void setIncludedLocation(List<EntityCompartment> includedLocation) {
-        this.includedLocation = includedLocation;
-    }
-
-    public List<Species> getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(List<Species> species) {
-        this.species = species;
-    }
-
-//    public Set<HasComponent> getHasComponent() {
-//        return hasComponent;
-//    }
-//
-//    public void setHasComponent(Set<HasComponent> hasComponent) {
-//        this.hasComponent = hasComponent;
-//    }
-
-        public List<PhysicalEntity> getHasComponent(){
+    public List<PhysicalEntity> getHasComponent(){
         List<PhysicalEntity> rtn = new ArrayList<>();
         for (HasComponent component : this.hasComponent) {
             for (int i = 0; i < component.getStoichiometry(); i++) {
@@ -93,5 +61,27 @@ public class Complex extends PhysicalEntity {
         this.hasComponent = new HashSet<>(components.values());
     }
 
+    public List<PhysicalEntity> getEntityOnOthercell() {
+        return entityOnOthercell;
+    }
 
+    public void setEntityOnOthercell(List<PhysicalEntity> entityOnOthercell) {
+        this.entityOnOthercell = entityOnOthercell;
+    }
+
+    public List<EntityCompartment> getIncludedLocation() {
+        return includedLocation;
+    }
+
+    public void setIncludedLocation(List<EntityCompartment> includedLocation) {
+        this.includedLocation = includedLocation;
+    }
+
+    public List<Species> getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(List<Species> species) {
+        this.species = species;
+    }
 }

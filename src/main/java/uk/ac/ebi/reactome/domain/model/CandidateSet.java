@@ -9,10 +9,11 @@ import java.util.List;
  * CandidateSets can additionally to DefinedSets contain candidates that are believed to be members but there is no
  * experimental data
  */
+@SuppressWarnings("unused")
 @NodeEntity
 public class CandidateSet extends EntitySet {
 
-    @Relationship(type = "hasCandidate")
+    @Relationship(type = "hasCandidate", direction = Relationship.OUTGOING)
     private List<PhysicalEntity> hasCandidate;
 
     public CandidateSet() {}

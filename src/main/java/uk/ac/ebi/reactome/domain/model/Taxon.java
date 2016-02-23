@@ -5,15 +5,16 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Taxon extends DatabaseObject {
 
     private List<String> name;
 
-    @Relationship
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship
+    @Relationship(type = "superTaxon", direction = Relationship.OUTGOING)
     private Taxon superTaxon;
     
     public Taxon() {}

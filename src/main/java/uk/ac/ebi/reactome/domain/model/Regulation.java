@@ -5,45 +5,46 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 @NodeEntity
 public class Regulation extends DatabaseObject {
 
     private String releaseDate;
     private List<String> name;
 
-    @Relationship(type = "authored")
+    @Relationship(type = "authored", direction = Relationship.OUTGOING)
     private InstanceEdit authored;
 
-    @Relationship(type = "edited")
+    @Relationship(type = "containedInPathway", direction = Relationship.OUTGOING)
+    private List<Pathway> containedInPathway;
+
+    @Relationship(type = "edited", direction = Relationship.OUTGOING)
     private List<InstanceEdit> edited;
 
-    @Relationship(type = "figure")
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
 
-    @Relationship(type = "literatureReference")
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     private DatabaseObject regulatedEntity;
 
-    @Relationship(type = "regulationType")
+    @Relationship(type = "regulationType", direction = Relationship.OUTGOING)
     private RegulationType regulationType;
 
-    @Relationship(type = "regulator")
+    @Relationship(type = "regulator", direction = Relationship.OUTGOING)
     private DatabaseObject regulator;
 
-    @Relationship(type = "reviewed")
+    @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised")
+    @Relationship(type = "revised", direction = Relationship.OUTGOING)
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "summation")
+    @Relationship(type = "summation", direction = Relationship.OUTGOING)
     private List<Summation> summation;
 
-    @Relationship(type = "containedInPathway")
-    private List<Pathway> containedInPathway;
-    
     public Regulation() {}
 
     public String getReleaseDate() {
@@ -68,6 +69,14 @@ public class Regulation extends DatabaseObject {
 
     public void setAuthored(InstanceEdit authored) {
         this.authored = authored;
+    }
+
+    public List<Pathway> getContainedInPathway() {
+        return containedInPathway;
+    }
+
+    public void setContainedInPathway(List<Pathway> containedInPathway) {
+        this.containedInPathway = containedInPathway;
     }
 
     public List<InstanceEdit> getEdited() {
@@ -140,13 +149,5 @@ public class Regulation extends DatabaseObject {
 
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
-    }
-
-    public List<Pathway> getContainedInPathway() {
-        return containedInPathway;
-    }
-
-    public void setContainedInPathway(List<Pathway> containedInPathway) {
-        this.containedInPathway = containedInPathway;
     }
 }

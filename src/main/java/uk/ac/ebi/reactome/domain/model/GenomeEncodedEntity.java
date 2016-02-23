@@ -6,6 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 /**
  * GEE contains proteins and nucleic acids with unknown sequences
  */
+@SuppressWarnings("unused")
 @NodeEntity
 public class GenomeEncodedEntity extends PhysicalEntity {
 
