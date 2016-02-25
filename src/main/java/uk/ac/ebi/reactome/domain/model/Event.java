@@ -75,10 +75,10 @@ public abstract class Event extends DatabaseObject {
     private List<Publication> literatureReference;
 
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    private List<NegativeRegulation> negativeRegulations;
+    private List<NegativeRegulation> negativelyRegulatedBy;
 
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    private List<PositiveRegulation> positiveRegulations;
+    private List<PositiveRegulation> positivelyRegulatedBy;
 
     @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
     private List<Event> precedingEvent;
@@ -287,20 +287,20 @@ public abstract class Event extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public List<NegativeRegulation> getNegativeRegulations() {
-        return negativeRegulations;
+    public List<NegativeRegulation> getNegativelyRegulatedBy() {
+        return negativelyRegulatedBy;
     }
 
-    public void setNegativeRegulations(List<NegativeRegulation> negativeRegulations) {
-        this.negativeRegulations = negativeRegulations;
+    public void setNegativelyRegulatedBy(List<NegativeRegulation> negativelyRegulatedBy) {
+        this.negativelyRegulatedBy = negativelyRegulatedBy;
     }
 
-    public List<PositiveRegulation> getPositiveRegulations() {
-        return positiveRegulations;
+    public List<PositiveRegulation> getPositivelyRegulatedBy() {
+        return positivelyRegulatedBy;
     }
 
-    public void setPositiveRegulations(List<PositiveRegulation> positiveRegulations) {
-        this.positiveRegulations = positiveRegulations;
+    public void setPositivelyRegulatedBy(List<PositiveRegulation> positivelyRegulatedBy) {
+        this.positivelyRegulatedBy = positivelyRegulatedBy;
     }
 
     public List<Event> getPrecedingEvent() {

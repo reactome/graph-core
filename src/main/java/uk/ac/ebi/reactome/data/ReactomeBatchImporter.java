@@ -65,6 +65,8 @@ public class ReactomeBatchImporter {
             total = (int) dba.getClassInstanceCount(ReactomeJavaConstants.DatabaseObject);
             total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.StableIdentifier);
             total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.PathwayDiagramItem);
+            total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.ReactionCoordinates);
+
             fileLogger.info("Established connection to Reactome database");
         } catch (SQLException|InvalidClassException e) {
             fileLogger.error("An error occurred while connection to the Reactome database", e);
@@ -82,7 +84,7 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-//                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
+                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
@@ -130,10 +132,17 @@ public class ReactomeBatchImporter {
                     if (isValidGkInstanceAttribute(instance, attribute)) {
                         Collection<?> attributeValues = instance.getAttributeValuesList(attribute);
                         saveRelationships(id, attributeValues, attribute);
-                    } else if (attribute.equals("regulatedBy")) {
+                    }
+                    /**
+                     * only one type of regulation is needed here, In the native data only regulatedBy exists
+                     * since the type of regulation is later determined by the Object Type we can only save one
+                     * otherwise relationships will be duplicated
+                     */
+                    else if (attribute.equals("regulatedBy") || attribute.equals("positivelyRegulatedBy")) {
                         Collection<?> referrers = instance.getReferers(ReactomeJavaConstants.regulatedEntity);
-                        saveRelationships(id, referrers, attribute);
-                    } else if (attribute.equals("inferredTo")) {
+                        saveRelationships(id, referrers, "regulatedBy");
+                    }
+                    else if (attribute.equals("inferredTo")) {
                         Collection<?> inferredTo = instance.getAttributeValuesList(ReactomeJavaConstants.orthologousEvent);
                         if (inferredTo.size()>1) {
                             saveRelationships(id, inferredTo, "inferredTo");
@@ -471,6 +480,14 @@ public class ReactomeBatchImporter {
                         && !methodName.equals("getDisplayName")
                         && !methodName.equals("getTimestamp") //should be removed from model!
                         && !methodName.equals("getInferredFrom") //is in the Database, should not be populated by Physical Entities
+
+                        && !methodName.equals("getRegulatedEntity") // is replaced by regulated by
+
+//                        positiveRegulations
+//                                negativeRegulations
+//                                positivilyRegulates
+//                                        negativelyRegulates
+
                         //Events have inferred From aswell
                         && !methodName.equals("getOrthologousEvent")
                         && !methodName.equals("getSchemaClass")
@@ -506,7 +523,7 @@ public class ReactomeBatchImporter {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;
         } if (!attribute.equals("regulatedBy")) {
-//            logger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
+            fileLogger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
         }
         return false;
     }

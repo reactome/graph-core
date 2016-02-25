@@ -106,12 +106,24 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
                 '}';
     }
 
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof DatabaseObject)) return false;
+//        DatabaseObject that = (DatabaseObject) o;
+//        return getDbId().equals(that.getDbId());
+//
+//    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DatabaseObject)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         DatabaseObject that = (DatabaseObject) o;
-        return getDbId().equals(that.getDbId());
+
+        return dbId.equals(that.dbId);
 
     }
 

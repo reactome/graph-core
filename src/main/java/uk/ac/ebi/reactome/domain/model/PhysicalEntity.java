@@ -68,7 +68,10 @@ public class PhysicalEntity extends DatabaseObject {
     private List<Publication> literatureReference;
 
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
-    private List<Regulation> regulations;
+    private List<NegativeRegulation> negativelyRegulates;
+
+    @Relationship(type = "regulator", direction = Relationship.INCOMING)
+    private List<PositiveRegulation> positivelyRegulates;
 
     @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
     private List<InstanceEdit> reviewed;
@@ -249,12 +252,20 @@ public class PhysicalEntity extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public List<Regulation> getRegulations() {
-        return regulations;
+    public List<NegativeRegulation> getNegativelyRegulates() {
+        return negativelyRegulates;
     }
 
-    public void setRegulations(List<Regulation> regulations) {
-        this.regulations = regulations;
+    public void setNegativelyRegulates(List<NegativeRegulation> negativelyRegulates) {
+        this.negativelyRegulates = negativelyRegulates;
+    }
+
+    public List<PositiveRegulation> getPositivelyRegulates() {
+        return positivelyRegulates;
+    }
+
+    public void setPositivelyRegulates(List<PositiveRegulation> positivelyRegulates) {
+        this.positivelyRegulates = positivelyRegulates;
     }
 
     public List<InstanceEdit> getReviewed() {

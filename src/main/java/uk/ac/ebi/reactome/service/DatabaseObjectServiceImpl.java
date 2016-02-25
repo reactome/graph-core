@@ -45,14 +45,14 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
     public DatabaseObject findByIdFillLegacyRelations(String id) {
         DatabaseObject databaseObject = findById(id);
         if (databaseObject instanceof Event) {
-            if (((Event) databaseObject).getNegativeRegulations() != null) {
-                for (NegativeRegulation negativeRegulation : ((Event) databaseObject).getNegativeRegulations()) {
+            if (((Event) databaseObject).getNegativelyRegulatedBy() != null) {
+                for (NegativeRegulation negativeRegulation : ((Event) databaseObject).getNegativelyRegulatedBy()) {
                     databaseObjectRepository.findOne(negativeRegulation.getId());
                 }
 //                databaseObjectRepository.find(((Event) databaseObject).getNegativeRegulations().)
             }
-            if (((Event) databaseObject).getPositiveRegulations() != null) {
-                for (PositiveRegulation positiveRegulation : ((Event) databaseObject).getPositiveRegulations()) {
+            if (((Event) databaseObject).getPositivelyRegulatedBy() != null) {
+                for (PositiveRegulation positiveRegulation : ((Event) databaseObject).getPositivelyRegulatedBy()) {
                     databaseObjectRepository.findOne(positiveRegulation.getId());
                 }
 //                databaseObjectRepository.find(((Event) databaseObject).getNegativeRegulations().)
