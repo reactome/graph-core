@@ -9,7 +9,7 @@ import java.util.List;
 @NodeEntity
 public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
 
-    @Relationship(type = "equivalentTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "equivalentTo", direction = Relationship.UNDIRECTED)
     private List<InterChainCrosslinkedResidue> equivalentTo;
 
     @Relationship(type = "secondReferenceSequence", direction = Relationship.OUTGOING)

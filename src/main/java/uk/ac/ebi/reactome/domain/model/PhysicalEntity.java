@@ -16,11 +16,11 @@ public class PhysicalEntity extends DatabaseObject {
 
     // List of CatalyzedEvents filled in service layer
     @Transient
-    private List<Event> catalyzedEvent;
+    private List<ReactionLikeEvent> catalyzedEvent;
 
     // List of GO_MolecularFunctions filled in service layer
     @Transient
-    private List<CatalystActivity> goActivity;
+    private List<GO_MolecularFunction> goActivity;
 
     // List of regulated Events filled in service layer
     @Transient
@@ -34,7 +34,7 @@ public class PhysicalEntity extends DatabaseObject {
     @Transient
     private List<Event> requiredEvent;
 
-    @Relationship(type = "authored", direction = Relationship.OUTGOING)
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
 
     @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
@@ -49,7 +49,7 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "disease", direction = Relationship.OUTGOING)
     private List<Disease> disease;
 
-    @Relationship(type = "edited", direction = Relationship.OUTGOING)
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
 
     @Relationship(type = "figure", direction = Relationship.OUTGOING)
@@ -73,10 +73,10 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
-    @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.OUTGOING)
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     private List<InstanceEdit> revised;
 
     @Relationship(type = "summation", direction = Relationship.OUTGOING)
@@ -108,19 +108,19 @@ public class PhysicalEntity extends DatabaseObject {
         this.systematicName = systematicName;
     }
 
-    public List<Event> getCatalyzedEvent() {
+    public List<ReactionLikeEvent> getCatalyzedEvent() {
         return catalyzedEvent;
     }
 
-    public void setCatalyzedEvent(List<Event> catalyzedEvent) {
+    public void setCatalyzedEvent(List<ReactionLikeEvent> catalyzedEvent) {
         this.catalyzedEvent = catalyzedEvent;
     }
 
-    public List<CatalystActivity> getGoActivity() {
+    public List<GO_MolecularFunction> getGoActivity() {
         return goActivity;
     }
 
-    public void setGoActivity(List<CatalystActivity> goActivity) {
+    public void setGoActivity(List<GO_MolecularFunction> goActivity) {
         this.goActivity = goActivity;
     }
 

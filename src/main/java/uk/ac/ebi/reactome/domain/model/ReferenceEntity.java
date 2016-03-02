@@ -12,6 +12,7 @@ public class ReferenceEntity extends DatabaseObject {
     private String identifier;
     private List<String> name;
     private List<String> otherIdentifier;
+    private String url;
 
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
@@ -43,6 +44,14 @@ public class ReferenceEntity extends DatabaseObject {
 
     public void setOtherIdentifier(List<String> otherIdentifier) {
         this.otherIdentifier = otherIdentifier;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public List<DatabaseIdentifier> getCrossReference() {

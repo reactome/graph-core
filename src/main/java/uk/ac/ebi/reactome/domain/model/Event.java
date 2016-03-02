@@ -27,9 +27,9 @@ public abstract class Event extends DatabaseObject {
      * positive and negativeRegulators have to be filled in service
      */
     @Transient
-    private List<PhysicalEntity> negativeRegulators;
+    private List<DatabaseObject> negativeRegulators;
     @Transient
-    private List<PhysicalEntity> positiveRegulators;
+    private List<DatabaseObject> positiveRegulators;
 
     /**
      * inferred and orthologous contain the same data, in the Graph representation only inferredTo exists
@@ -38,7 +38,7 @@ public abstract class Event extends DatabaseObject {
     @Transient
     private Set<Event> orthologousEvent;
 
-    @Relationship(type = "authored", direction = Relationship.OUTGOING)
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     private List<InstanceEdit> authored;
 
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
@@ -50,7 +50,7 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "disease", direction = Relationship.OUTGOING)
     private List<Disease> disease;
 
-    @Relationship(type = "edited", direction = Relationship.OUTGOING)
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
 
     @Relationship(type = "evidenceType", direction = Relationship.OUTGOING)
@@ -59,6 +59,7 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
 
+    @ReactomeTransient
     @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
     private List<Event> followingEvent;
 
@@ -68,6 +69,7 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private Set<Event> inferredTo;
 
+    @ReactomeTransient
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private Set<Event> inferredFrom;
 
@@ -89,10 +91,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<Requirement> requirements;
 
-    @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.OUTGOING)
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     private List<InstanceEdit> revised;
 
     @Relationship(type = "species", direction = Relationship.OUTGOING)
@@ -167,19 +169,19 @@ public abstract class Event extends DatabaseObject {
         this.speciesName = speciesName;
     }
 
-    public List<PhysicalEntity> getNegativeRegulators() {
+    public List<DatabaseObject> getNegativeRegulators() {
         return negativeRegulators;
     }
 
-    public void setNegativeRegulators(List<PhysicalEntity> negativeRegulators) {
+    public void setNegativeRegulators(List<DatabaseObject> negativeRegulators) {
         this.negativeRegulators = negativeRegulators;
     }
 
-    public List<PhysicalEntity> getPositiveRegulators() {
+    public List<DatabaseObject> getPositiveRegulators() {
         return positiveRegulators;
     }
 
-    public void setPositiveRegulators(List<PhysicalEntity> positiveRegulators) {
+    public void setPositiveRegulators(List<DatabaseObject> positiveRegulators) {
         this.positiveRegulators = positiveRegulators;
     }
 

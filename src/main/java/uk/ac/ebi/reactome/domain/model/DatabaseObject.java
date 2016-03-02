@@ -24,19 +24,22 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     @GraphId
     private Long id;
-
+    @ReactomeTransient
     private Long dbId;
+    @ReactomeTransient
     private String displayName;
     private String stableIdentifier;
+    @ReactomeTransient
     private Date timestamp;
 
-    @Relationship(type = "created", direction = Relationship.OUTGOING)
+    @Relationship(type = "created", direction = Relationship.INCOMING)
     private InstanceEdit created;
 
-    @Relationship(type = "modified", direction = Relationship.OUTGOING)
+    @Relationship(type = "modified", direction = Relationship.INCOMING)
     private List<InstanceEdit> modified;
 
     public DatabaseObject() {}
+
 
     public Long getId() {
         return id;
@@ -115,6 +118,27 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 //
 //    }
 
+    /**
+     * In version 4, the dependency of the framework upon a particular style of equals() or hashCode()
+     implementation has been removed. The graph-id field is directly checked to see if two entities
+     represent the same node and a 64-bit hash code is used for dirty checking, so you’re not forced to write
+     your code in a certain way!
+     * @param o
+     * @return
+     */
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//
+//        DatabaseObject that = (DatabaseObject) o;
+//
+//        return dbId.equals(that.dbId);
+//
+//    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -123,9 +147,13 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
         DatabaseObject that = (DatabaseObject) o;
 
-        return dbId.equals(that.dbId);
+        if (dbId != null ? !dbId.equals(that.dbId) : that.dbId != null) return false;
+        if (stableIdentifier != null ? !stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier != null)
+            return false;
+        return !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null);
 
     }
+
 
     @Override
     public int hashCode() {

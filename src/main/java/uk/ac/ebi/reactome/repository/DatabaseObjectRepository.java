@@ -24,7 +24,7 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     DatabaseObject findByDbId(Long dbId);
     DatabaseObject findByStableIdentifier(String stableIdentifier);
 
-    @Query("MATCH (n:Event{dbId:{0}})-[r:input|output]->(m) RETURN n")
+    @Query("MATCH (n:DatabaseObject{dbId:{0}}) RETURN n")
     DatabaseObject findByDbIdNoRelations(Long dbId);
 
     @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity|activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) RETURN DISTINCT m")
@@ -36,7 +36,7 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     @Query(" MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity*]->(m)-[:activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) RETURN m.dbId AS ewasDbId, m.displayName AS ewasName,  COLLECT(DISTINCT x) as referenceEntities")
     Collection<Participant2> getParticipatingMolecules3(Long dbId);
 
-    @Query("MATCH (n) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
+    @Query("MATCH (n) WHERE NOT (n:TopLevelPathway)  RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<LabelsCount> getLabelsCount();
 
 }

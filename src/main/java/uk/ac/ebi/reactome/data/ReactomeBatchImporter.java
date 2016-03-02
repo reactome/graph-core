@@ -9,6 +9,7 @@ import org.gk.pathwaylayout.DiagramGeneratorFromDB;
 import org.gk.persistence.MySQLAdaptor;
 import org.gk.schema.InvalidClassException;
 import org.neo4j.graphdb.*;
+import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.slf4j.Logger;
@@ -17,6 +18,8 @@ import uk.ac.ebi.reactome.domain.model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -36,7 +39,9 @@ import java.util.*;
  */
 public class ReactomeBatchImporter {
 
-    private static final Logger fileLogger = LoggerFactory.getLogger("importFileLogger");
+    //    private static final Logger fileLogger = LoggerFactory.getLogger("importFileLogger");
+    private static final Logger fileLogger = LoggerFactory.getLogger(ReactomeBatchImporter.class);
+
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
@@ -52,8 +57,15 @@ public class ReactomeBatchImporter {
     private static final Map<Class, List<String>> primitiveAttributesMap = new HashMap<>();
     private static final Map<Class, List<String>> primitiveListAttributesMap = new HashMap<>();
     private static final Map<Class, List<String>> relationAttributesMap = new HashMap<>();
+
+    private static final Map<Class, List<String>> primitiveAttributesMap2 = new HashMap<>();
+    private static final Map<Class, List<String>> primitiveListAttributesMap2 = new HashMap<>();
+    private static final Map<Class, List<String>> relationAttributesMap2 = new HashMap<>();
+
     private static final Map<Class, Label[]> labelMap = new HashMap<>();
     private static final Map<Long, Long> dbIds = new HashMap<>();
+    private static final Map<Long, Long> reverseReactions = new HashMap<>();
+    private static final Map<Long, Long> equivalentTo = new HashMap<>();
 
     private static final int width = 100;
     private static int total;
@@ -84,7 +96,10 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-                if (!instance.getDisplayName().equals("Mitophagy") && !instance.getDisplayName().equals("Circadian Clock")) continue;
+
+//                GKInstance instance1 = dba.fetchInstance(2559586l);
+//                importGkInstance(instance, false);
+//                if (!instance.getDisplayName().equals("Circadian Clock")) continue;
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
@@ -122,7 +137,6 @@ public class ReactomeBatchImporter {
 //                batchInsert can throw an illeagalArgumentExceptionnn but if not treated this will be caught here and due to
 //                the recursion a wrong instance will be shown
         Long id = saveDatabaseObject(instance, clazz);
-
         dbIds.put(instance.getDBID(), id);
 
         List<String> attributes = relationAttributesMap.get(clazz);
@@ -143,9 +157,20 @@ public class ReactomeBatchImporter {
                         saveRelationships(id, referrers, "regulatedBy");
                     }
                     else if (attribute.equals("inferredTo")) {
-                        Collection<?> inferredTo = instance.getAttributeValuesList(ReactomeJavaConstants.orthologousEvent);
-                        if (inferredTo.size()>1) {
-                            saveRelationships(id, inferredTo, "inferredTo");
+                        if (((GKInstance) instance.getAttributeValue(ReactomeJavaConstants.species)).getDBID().equals(48887L)) {
+                            Collection<?> inferredTo = instance.getAttributeValuesList(ReactomeJavaConstants.orthologousEvent);
+                            if (inferredTo != null && !inferredTo.isEmpty()) {
+                                saveRelationships(id, inferredTo, "inferredTo");
+                            } else {
+                                Collection<?> referrers = instance.getReferers(ReactomeJavaConstants.orthologousEvent);
+                                if (referrers != null && !referrers.isEmpty()) {
+                                    saveRelationships(id, referrers, "inferredTo");
+                                    fileLogger.error("Entry has referred orthologous but no attribute orthologous: " +
+                                            instance.getDBID() + " " + instance.getDisplayName());
+                                }
+                            }
+//
+
                         }
                     }
 
@@ -247,6 +272,8 @@ public class ReactomeBatchImporter {
                                 }
                                 break;
                             case "url":
+//                                TODO bug here: identifier does not exist for ReferenceDatabase
+//                                TODO switch case is not working here since url can be default case or can be a special case
                                 identifier = (String) instance.getAttributeValue(ReactomeJavaConstants.identifier);
                                 GKInstance referenceDatabase = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.referenceDatabase);
                                 String url = (String) referenceDatabase.getAttributeValue(ReactomeJavaConstants.url);
@@ -329,8 +356,25 @@ public class ReactomeBatchImporter {
             Map<String, Object> properties = new HashMap<>();
             properties.put(STOICHIOMETRY,stoichiometryMap.get(dbId).getCount());
             RelationshipType relationshipType = DynamicRelationshipType.withName(relationName);
-
-            batchInserter.createRelationship(oldId, newId, relationshipType, properties);
+            if (relationName.equals("reverseReaction")) {
+                if (!(reverseReactions.containsKey(oldId) && reverseReactions.containsValue(newId)) &&
+                        !(reverseReactions.containsKey(newId) && reverseReactions.containsValue(oldId))) {
+                    batchInserter.createRelationship(oldId, newId, relationshipType, properties);
+                    reverseReactions.put(oldId,newId);
+                }
+            } else if (relationName.equals("equivalentTo")) {
+                if (!(equivalentTo.containsKey(oldId) && equivalentTo.containsValue(newId)) &&
+                        !(equivalentTo.containsKey(newId) && equivalentTo.containsValue(oldId))) {
+                    batchInserter.createRelationship(oldId, newId, relationshipType, properties);
+                    equivalentTo.put(oldId,newId);
+                }
+            } else if (relationName.equals("author") || relationName.equals("authored") || relationName.equals("created") ||
+                    relationName.equals("edited") || relationName.equals("modified") || relationName.equals("revised") ||
+                    relationName.equals("reviewed")) {
+                batchInserter.createRelationship(newId, oldId, relationshipType, properties);
+            } else {
+                batchInserter.createRelationship(oldId, newId, relationshipType, properties);
+            }
         }
     }
 
@@ -469,63 +513,121 @@ public class ReactomeBatchImporter {
 //TODO REMOVE new attributes that are not filled by GKInstance (eg followingEvent)
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
+            List<Field> fields = getAllFields(new ArrayList<Field>(), clazz);
+            for (Field field : fields) {
+                Annotation[] annotations = field.getAnnotations();
+                String fieldName = field.getName();
+                if (annotations.length == 0) {
+                    if (Collection.class.isAssignableFrom(field.getType())) {
+                        addFields(primitiveListAttributesMap2, clazz, fieldName);
+                    } else {
+                        addFields(primitiveAttributesMap2, clazz, fieldName);
+                    }
+                } else if (annotations.length == 1) {
+                    Class annotationType = annotations[0].annotationType();
+                    if (annotationType.equals(Relationship.class)) {
+//                        Relationship relationships = (Relationship) annotations[0];
+//                        if (relationships.type().equals(fieldName)) {
+                            addFields(relationAttributesMap2, clazz, fieldName);
+//                        }
+
+                    }
+                } else {
+                    fileLogger.warn("blabla");
+                }
+            }
+
+
             Method[] methods = clazz.getMethods();
             for (Method method : methods) {
-                String methodName = method.getName();
-                if (        methodName.startsWith("get")
-                        && !methodName.startsWith("getSuper")
-                        && !methodName.equals("getClass")
-                        && !methodName.equals("getId") //getter/setter should be removed from model
-                        && !methodName.equals("getDbId")
-                        && !methodName.equals("getDisplayName")
-                        && !methodName.equals("getTimestamp") //should be removed from model!
-                        && !methodName.equals("getInferredFrom") //is in the Database, should not be populated by Physical Entities
+                if (method.getName().equals("getDbId")) {
+                    System.out.println();
+                }
 
-                        && !methodName.equals("getRegulatedEntity") // is replaced by regulated by
+                    String methodName = method.getName();
+                    if (        methodName.startsWith("get")
+                            && !methodName.startsWith("getSuper")
+                            && !methodName.equals("getClass")
+                            && !methodName.equals("getId") //getter/setter should be removed from model
+//                        && !methodName.equals("getDbId")
+                            && !methodName.equals("getDisplayName")
+                            && !methodName.equals("getTimestamp") //should be removed from model!
+
+                            && !methodName.equals("getInferredFrom") //is in the Database, should not be populated by Physical Entities
+                            && !methodName.equals("getRegulatedEntity") // is replaced by regulated by
+
+
+
 
 //                        positiveRegulations
 //                                negativeRegulations
 //                                positivilyRegulates
 //                                        negativelyRegulates
 
-                        //Events have inferred From aswell
-                        && !methodName.equals("getOrthologousEvent")
-                        && !methodName.equals("getSchemaClass")
-                        && !methodName.equals("getAuthor")
-                        ) { //should be removed from model!
+                            //Events have inferred From aswell
+                            && !methodName.equals("getOrthologousEvent")
+                            && !methodName.equals("getSchemaClass")
+//                        && !methodName.equals("getAuthor")
+                            ) { //should be removed from model!
 
-                    Type returnType = method.getGenericReturnType();
-                    if (returnType instanceof ParameterizedType) {
-                        ParameterizedType type = (ParameterizedType) returnType;
-                        Type[] typeArguments = type.getActualTypeArguments();
-                        for (Type typeArgument : typeArguments) {
-                            Class typeArgClass = (Class) typeArgument;
-                            if (DatabaseObject.class.isAssignableFrom(typeArgClass) ) {
-                                setMethods(relationAttributesMap, clazz, method);
+                        Type returnType = method.getGenericReturnType();
+                        if (returnType instanceof ParameterizedType) {
+                            ParameterizedType type = (ParameterizedType) returnType;
+                            Type[] typeArguments = type.getActualTypeArguments();
+                            for (Type typeArgument : typeArguments) {
+                                Class typeArgClass = (Class) typeArgument;
+                                if (DatabaseObject.class.isAssignableFrom(typeArgClass) ) {
+                                    setMethods(relationAttributesMap, clazz, method);
+                                }
+                                else {
+                                    setMethods(primitiveListAttributesMap, clazz, method);
+                                }
                             }
-                            else {
-                                setMethods(primitiveListAttributesMap, clazz, method);
-                            }
-                        }
-                    } else {
-                        if (DatabaseObject.class.isAssignableFrom(method.getReturnType())) {
-                            setMethods(relationAttributesMap, clazz, method);
                         } else {
-                            setMethods(primitiveAttributesMap, clazz, method);
+                            if (DatabaseObject.class.isAssignableFrom(method.getReturnType())) {
+                                setMethods(relationAttributesMap, clazz, method);
+                            } else {
+                                setMethods(primitiveAttributesMap, clazz, method);
+                            }
                         }
-                    }
+
                 }
             }
         }
     }
+    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+        if (type.getSuperclass() != null && !type.getSuperclass().equals(Object.class)) {
+            fields = getAllFields(fields, type.getSuperclass());
+        }
+        return fields;
+    }
+
+
+
     //TODO change code where this is used so that attributes like isInDisease pass here or do not log a message
     private boolean isValidGkInstanceAttribute(GKInstance instance, String attribute) {
         if(instance.getSchemClass().isValidAttribute(attribute)) {
             return true;
-        } if (!attribute.equals("regulatedBy")) {
+        } if (!attribute.equals("regulatedBy") &&
+                !attribute.equals("isInDisease")
+
+
+                ) {
             fileLogger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
         }
         return false;
+    }
+
+
+    private void addFields (Map<Class,List<String>> map, Class clazz, String fieldName) {
+        if(map.containsKey(clazz)) {
+            (map.get(clazz)).add(fieldName);
+        } else {
+            List<String> methodList = new ArrayList<>();
+            methodList.add(fieldName);
+            map.put(clazz, methodList);
+        }
     }
 
     /**

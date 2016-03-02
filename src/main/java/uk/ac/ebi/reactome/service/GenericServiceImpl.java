@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.ac.ebi.reactome.domain.model.Pathway;
 import uk.ac.ebi.reactome.repository.GenericRepository;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
@@ -66,6 +67,21 @@ public class GenericServiceImpl implements GenericService {
     @Override
     public Long countEntries(Class<?> clazz){
         return genericRepository.countEntries(clazz);
+    }
+
+    @Override
+    public Collection<Pathway> findTopLevelPathways() {
+        return genericRepository.findTopLevelPathways();
+    }
+
+    @Override
+    public Collection<Pathway> findTopLevelPathways(Long speciesId) {
+        return genericRepository.findTopLevelPathways(speciesId);
+    }
+
+    @Override
+    public Collection<Pathway> findTopLevelPathways(String speciesName) {
+        return genericRepository.findTopLevelPathways(speciesName);
     }
 
     @Override

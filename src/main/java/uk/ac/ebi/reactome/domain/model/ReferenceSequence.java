@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
@@ -16,8 +17,9 @@ public class ReferenceSequence extends ReferenceEntity {
     private List<String> keyword;
     private List<String> secondaryIdentifier;
     private Integer sequenceLength;
+
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     private Species species;
-    private String url;
 
     public ReferenceSequence() {}
 
@@ -93,11 +95,4 @@ public class ReferenceSequence extends ReferenceEntity {
         this.species = species;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

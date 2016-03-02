@@ -570,3 +570,16 @@ Post previous;
 
  This will make it much easier to deal with the results of custom queries and improve performance since your code will no longer need an additional load of the entity by ID.
   */
+
+
+  Find Pathways till root
+  Match (n:DatabaseObject{dbId:70523})<-[:hasEvent*]-(x:Pathway) Return n,x;
+
+  Match (n:DatabaseObject{dbId:163042})<-[r:hasEvent|input|output|hasComponent*]-(x:DatabaseObject) Return n,x,r;
+
+  Identify all selfloop relationships
+  Match (n)-[r]-(x) WHERE n=x RETURN n;
+
+  Identify all cyclic between 2 nodes
+  Match (n)-[r:reverseReaction|inferredTo|hasEvent]->(x),(n)<-[e:reverseReaction|inferredTo|hasEvent]-(x) RETURN n,e,r,x LIMIT 25
+

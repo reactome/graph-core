@@ -7,7 +7,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class Reaction extends ReactionLikeEvent {
 
-    @Relationship(type = "reverseReaction", direction = Relationship.OUTGOING)
+    @Relationship(type = "reverseReaction", direction = Relationship.UNDIRECTED)
     private Reaction reverseReaction;
 
     public Reaction() {}

@@ -1,5 +1,7 @@
 package uk.ac.ebi.reactome.service;
 
+import uk.ac.ebi.reactome.domain.model.Pathway;
+
 import java.util.Collection;
 
 /**
@@ -20,6 +22,10 @@ public interface GenericService {
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
     Long countEntries(Class<?> clazz);
+
+    Collection<Pathway> findTopLevelPathways();
+    Collection<Pathway> findTopLevelPathways(Long speciesId);
+    Collection<Pathway> findTopLevelPathways(String speciesName);
 
     void clearCache();
 }

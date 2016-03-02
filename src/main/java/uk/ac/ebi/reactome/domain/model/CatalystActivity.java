@@ -20,6 +20,9 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "activity", direction = Relationship.OUTGOING)
     private GO_MolecularFunction activity;
 
+    @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
+    private List<ReactionLikeEvent> catalyzedEvent;
+
     @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
     private PhysicalEntity physicalEntity;
 
@@ -42,6 +45,14 @@ public class CatalystActivity extends DatabaseObject  {
 
     public void setActivity(GO_MolecularFunction activity) {
         this.activity = activity;
+    }
+
+    public List<ReactionLikeEvent> getCatalyzedEvent() {
+        return catalyzedEvent;
+    }
+
+    public void setCatalyzedEvent(List<ReactionLikeEvent> catalyzedEvent) {
+        this.catalyzedEvent = catalyzedEvent;
     }
 
     public PhysicalEntity getPhysicalEntity() {

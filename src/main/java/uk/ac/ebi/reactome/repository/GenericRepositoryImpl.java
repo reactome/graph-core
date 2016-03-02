@@ -6,8 +6,10 @@ import org.neo4j.ogm.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
+import uk.ac.ebi.reactome.domain.model.Pathway;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,6 +132,29 @@ public class GenericRepositoryImpl implements GenericRepository {
             return collection.iterator().next();
         }
         return null;
+    }
+
+    @Override
+    public Collection<Pathway> findTopLevelPathways() {
+        String query = "Match (n:Pathway) Where NOT (n)<-[:hasEvent]-() AND NOT (n)<-[:inferredTo]-() RETURN n";
+        return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, Collections.EMPTY_MAP);
+    }
+
+    @Override
+    public Collection<Pathway> findTopLevelPathways(Long speciesId) {
+        String query = "Match (n:Pathway)-[:species]-(s) Where NOT (n)<-[:hasEvent]-() AND NOT (n)<-[:inferredTo]-() AND s.dbId = {speciesId} RETURN n";
+        Map<String,Object> map = new HashMap<>();
+        map.put("speciesId", speciesId);
+        return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
+    }
+
+
+    @Override
+    public Collection<Pathway> findTopLevelPathways(String speciesName) {
+        String query = "Match (n:Pathway)-[:species]-(s) Where NOT (n)<-[:hasEvent]-() AND NOT (n)<-[:inferredTo]-() AND s.displayName = {speciesName} RETURN n";
+        Map<String,Object> map = new HashMap<>();
+        map.put("speciesName", speciesName);
+        return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
     }
 
     @Override

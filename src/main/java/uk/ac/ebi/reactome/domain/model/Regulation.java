@@ -12,13 +12,13 @@ public class Regulation extends DatabaseObject {
     private String releaseDate;
     private List<String> name;
 
-    @Relationship(type = "authored", direction = Relationship.OUTGOING)
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
 
     @Relationship(type = "containedInPathway", direction = Relationship.OUTGOING)
     private List<Pathway> containedInPathway;
 
-    @Relationship(type = "edited", direction = Relationship.OUTGOING)
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
 
     @Relationship(type = "figure", direction = Relationship.OUTGOING)
@@ -36,10 +36,10 @@ public class Regulation extends DatabaseObject {
     @Relationship(type = "regulator", direction = Relationship.OUTGOING)
     private DatabaseObject regulator;
 
-    @Relationship(type = "reviewed", direction = Relationship.OUTGOING)
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.OUTGOING)
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     private List<InstanceEdit> revised;
 
     @Relationship(type = "summation", direction = Relationship.OUTGOING)

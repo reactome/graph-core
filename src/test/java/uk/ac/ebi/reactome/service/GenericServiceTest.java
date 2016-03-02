@@ -139,4 +139,18 @@ public class GenericServiceTest {
         Collection<Pathway> pathways =  genericService.getObjectsByClassName(Pathway.class.getSimpleName(), 1, 25);
         System.out.println("");
     }
+
+    @Test
+    public void testFindTopLevelPathways() {
+        Collection<Pathway> tlps = genericService.findTopLevelPathways();
+        System.out.println();
+    }
+
+    @Test
+    public void testFindTopLevelPathwayss() {
+        Collection<Pathway> tlps = genericService.findTopLevelPathways("Homo sapiens");
+        System.out.println();
+    }
+
+
 }
