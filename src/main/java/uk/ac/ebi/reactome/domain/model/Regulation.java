@@ -27,6 +27,7 @@ public class Regulation extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
+//    @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     private DatabaseObject regulatedEntity;
 

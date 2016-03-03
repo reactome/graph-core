@@ -13,7 +13,6 @@ public class Pathway extends Event {
     private Boolean hasDiagram;
     private String isCanonical;
 
-
     @Relationship(type="hasEvent", direction = Relationship.OUTGOING)
     private List<Event> hasEvent;
 

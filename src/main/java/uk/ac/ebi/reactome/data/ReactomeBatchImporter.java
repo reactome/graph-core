@@ -2,7 +2,7 @@ package uk.ac.ebi.reactome.data;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ClassUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.IllegalClassException;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.pathwaylayout.DiagramGeneratorFromDB;
@@ -20,9 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -39,9 +36,8 @@ import java.util.*;
  */
 public class ReactomeBatchImporter {
 
-    //    private static final Logger fileLogger = LoggerFactory.getLogger("importFileLogger");
-    private static final Logger fileLogger = LoggerFactory.getLogger(ReactomeBatchImporter.class);
-
+    private static final Logger errorLogger = LoggerFactory.getLogger("importErrorLogger");
+    private static final Logger importLogger = LoggerFactory.getLogger("importLogger");
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
@@ -57,10 +53,6 @@ public class ReactomeBatchImporter {
     private static final Map<Class, List<String>> primitiveAttributesMap = new HashMap<>();
     private static final Map<Class, List<String>> primitiveListAttributesMap = new HashMap<>();
     private static final Map<Class, List<String>> relationAttributesMap = new HashMap<>();
-
-    private static final Map<Class, List<String>> primitiveAttributesMap2 = new HashMap<>();
-    private static final Map<Class, List<String>> primitiveListAttributesMap2 = new HashMap<>();
-    private static final Map<Class, List<String>> relationAttributesMap2 = new HashMap<>();
 
     private static final Map<Class, Label[]> labelMap = new HashMap<>();
     private static final Map<Long, Long> dbIds = new HashMap<>();
@@ -78,10 +70,9 @@ public class ReactomeBatchImporter {
             total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.StableIdentifier);
             total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.PathwayDiagramItem);
             total = total - (int) dba.getClassInstanceCount(ReactomeJavaConstants.ReactionCoordinates);
-
-            fileLogger.info("Established connection to Reactome database");
+            importLogger.info("Established connection to Reactome database");
         } catch (SQLException|InvalidClassException e) {
-            fileLogger.error("An error occurred while connection to the Reactome database", e);
+            importLogger.error("An error occurred while connection to the Reactome database", e);
         }
     }
 
@@ -91,23 +82,19 @@ public class ReactomeBatchImporter {
             Collection<?> frontPages = dba.fetchInstancesByClass(ReactomeJavaConstants.FrontPage);
             GKInstance frontPage = (GKInstance) frontPages.iterator().next();
             Collection<?> objects = frontPage.getAttributeValuesList(ReactomeJavaConstants.frontPageItem);
-            fileLogger.info("Started importing " + objects.size() + " top level pathways");
+            importLogger.info("Started importing " + objects.size() + " top level pathways");
             System.out.println("Started importing " + objects.size() + " top level pathways");
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-
-//                GKInstance instance1 = dba.fetchInstance(2559586l);
-//                importGkInstance(instance, false);
-//                if (!instance.getDisplayName().equals("Circadian Clock")) continue;
-                importGkInstance(instance);
+                importGkInstance((GKInstance) object);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
                 int sec = (int) (elapsedTime / 1000) % 60;
                 int min = (int) ((elapsedTime / (1000 * 60)) % 60);
-                fileLogger.info(instance.getDisplayName() + " was processed within: " + min + " min " + sec + " sec " + ms + " ms");
+                importLogger.info(instance.getDisplayName() + " was processed within: " + min + " min " + sec + " sec " + ms + " ms");
             }
-            fileLogger.info("All top level pathways have been imported to Neo4j");
+            importLogger.info("All top level pathways have been imported to Neo4j");
             System.out.println("\nAll top level pathways have been imported to Neo4j");
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,80 +118,53 @@ public class ReactomeBatchImporter {
 
         String clazzName = DatabaseObject.class.getPackage().getName() + "." + instance.getSchemClass().getName();
         Class clazz = Class.forName(clazzName);
-
         setUpMethods(clazz);
-        // TODO saveDatabaseObject surround with try catch or should throw an error for better readability of errors
-//                batchInsert can throw an illeagalArgumentExceptionnn but if not treated this will be caught here and due to
-//                the recursion a wrong instance will be shown
         Long id = saveDatabaseObject(instance, clazz);
         dbIds.put(instance.getDBID(), id);
 
-        List<String> attributes = relationAttributesMap.get(clazz);
-        if (attributes != null) {
-            for (String attribute : attributes) {
-                try {
-                    if (isValidGkInstanceAttribute(instance, attribute)) {
-                        Collection<?> attributeValues = instance.getAttributeValuesList(attribute);
-                        saveRelationships(id, attributeValues, attribute);
-                    }
-                    /**
-                     * only one type of regulation is needed here, In the native data only regulatedBy exists
-                     * since the type of regulation is later determined by the Object Type we can only save one
-                     * otherwise relationships will be duplicated
-                     */
-                    else if (attribute.equals("regulatedBy") || attribute.equals("positivelyRegulatedBy")) {
-                        Collection<?> referrers = instance.getReferers(ReactomeJavaConstants.regulatedEntity);
-                        saveRelationships(id, referrers, "regulatedBy");
-                    }
-                    else if (attribute.equals("inferredTo")) {
-                        if (((GKInstance) instance.getAttributeValue(ReactomeJavaConstants.species)).getDBID().equals(48887L)) {
-                            Collection<?> inferredTo = instance.getAttributeValuesList(ReactomeJavaConstants.orthologousEvent);
-                            if (inferredTo != null && !inferredTo.isEmpty()) {
-                                saveRelationships(id, inferredTo, "inferredTo");
-                            } else {
-                                Collection<?> referrers = instance.getReferers(ReactomeJavaConstants.orthologousEvent);
-                                if (referrers != null && !referrers.isEmpty()) {
-                                    saveRelationships(id, referrers, "inferredTo");
-                                    fileLogger.error("Entry has referred orthologous but no attribute orthologous: " +
-                                            instance.getDBID() + " " + instance.getDisplayName());
+        if(relationAttributesMap.containsKey(clazz)) {
+            for (String attribute :  relationAttributesMap.get(clazz)) {
+
+                switch (attribute) {
+                    case "regulatedBy":
+                    case "positivelyRegulatedBy":
+                        saveRelationships(id, getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.regulatedEntity), "regulatedBy");
+                        break;
+                    case "inferredTo":
+                        /**
+                         * only one type of regulation is needed here, In the native data only regulatedBy exists
+                         * since the type of regulation is later determined by the Object Type we can only save one
+                         * otherwise relationships will be duplicated
+                         * if event will break otherwise (physical entity will fall to default
+                         */
+                        if (instance.getSchemClass().isa(ReactomeJavaConstants.Event)) {
+                            GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
+                            if (species == null) continue;
+                            if (species.getDBID().equals(48887L)) {
+                                Collection inferredTo = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
+                                if (inferredTo != null && !inferredTo.isEmpty()) {
+                                    saveRelationships(id, inferredTo, "inferredTo");
+                                } else {
+                                    Collection referrers = getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.orthologousEvent);
+                                    if (referrers != null && !referrers.isEmpty()) {
+                                        saveRelationships(id, referrers, "inferredTo");
+                                        errorLogger.error("Entry has referred orthologous but no attribute orthologous: " +
+                                                instance.getDBID() + " " + instance.getDisplayName());
+                                    }
                                 }
                             }
-//
-
+                            break;
                         }
-                    }
-
-
-
-                } catch (Exception e) {
-                    fileLogger.error("A problem occurred when trying to retrieve data from instance " + instance.getDBID() + " "
-                            + instance.getDisplayName() + "with attribute name: " + attribute, e);
+                    default:
+                        if (isValidGkInstanceAttribute(instance, attribute)) {
+                            saveRelationships(id, getCollectionFromGkInstance(instance, attribute), attribute);
+                        }
+                        break;
                 }
-
             }
         }
-        /**
-         * DEFLATING will ensure that the use of the GkInstance does not end in an OutOfMemory exception
-         */
-        instance.deflate();
+        instance.deflate(); //will ensure that the use of the GkInstance does not end in an OutOfMemory exception
         return id;
-    }
-
-    private void updateProgressBar(int done, int total) {
-        String format = "\r%3d%% %s %c";
-        char[] workchars = {'|', '/', '-', '\\'};
-        int percent = (++done * 100) / total;
-        StringBuilder progress = new StringBuilder(width);
-        progress.append('|');
-        int i = 0;
-        for (; i < percent; i++) {
-            progress.append("=");
-        }
-        for (; i < width; i++){
-            progress.append(" ");
-        }
-        progress.append('|');
-        System.out.printf(format, percent, progress, workchars[(((done - 1) % (workchars.length * 100)) /100)]);
     }
 
     /**
@@ -223,93 +183,80 @@ public class ReactomeBatchImporter {
         if (instance.getDisplayName() != null) {
             properties.put(NAME, instance.getDisplayName());
         } else {
-            fileLogger.error("Found an entry without display name! dbId: " + instance.getDBID());
+            errorLogger.error("Found an entry without display name! dbId: " + instance.getDBID());
         }
 
-        try {
-            List<String> attributes = primitiveAttributesMap.get(clazz);
-            if (attributes != null) {
-                for (String attribute : attributes) {
-                    if (isValidGkInstanceAttribute(instance, attribute)) {
-                        Object value = instance.getAttributeValue(attribute);
-                        if (value == null) continue;
-                        switch (attribute) {
-                            case STID:
-                                GKInstance stableIdentifier = (GKInstance) value;
-                                String identifier = (String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier);
-                                properties.put(attribute, identifier);
-                                stableIdentifier.deflate();
-                                break;
-                            case "hasDiagram":
-                                if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
-                                    DiagramGeneratorFromDB diagramHelper = new DiagramGeneratorFromDB();
-                                    diagramHelper.setMySQLAdaptor((MySQLAdaptor) instance.getDbAdaptor());
-                                    GKInstance diagram = diagramHelper.getPathwayDiagram(instance);
-                                    properties.put(attribute, diagram != null);
-                                    diagram.deflate();
-                                }
-                                break;
-                            case "isInDisease":
-                                GKInstance disease = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.disease);
-                                properties.put(attribute, disease != null);
-                                disease.deflate();
-                                break;
-                            case "isInferred":
-                                GKInstance isInferredFrom = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.inferredFrom);
-                                properties.put(attribute, isInferredFrom != null);
-                                isInferredFrom.deflate();
-                                break;
-                            case "speciesName":
-                                List<?> speciesList = instance.getAttributeValuesList(ReactomeJavaConstants.species);
-                                if (speciesList != null && speciesList.size() > 0) {
-                                    GKInstance firstSpecies = (GKInstance) speciesList.get(0);
-                                    String name = firstSpecies.getDisplayName();
-                                    properties.put(attribute, name);
-                                }
-                                for (Object gkInstance : speciesList) {
-                                    GKInstance instance1 = (GKInstance) gkInstance;
-                                    instance1.deflate();
-                                }
-                                break;
-                            case "url":
-//                                TODO bug here: identifier does not exist for ReferenceDatabase
-//                                TODO switch case is not working here since url can be default case or can be a special case
-                                identifier = (String) instance.getAttributeValue(ReactomeJavaConstants.identifier);
-                                GKInstance referenceDatabase = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.referenceDatabase);
-                                String url = (String) referenceDatabase.getAttributeValue(ReactomeJavaConstants.url);
-                                properties.put(attribute, url.replace("###ID###", identifier));
-                                break;
-                            default:
-                                properties.put(attribute, value);
-                                break;
+        if (primitiveAttributesMap.containsKey(clazz)) {
+            for (String attribute : primitiveAttributesMap.get(clazz)) {
+                switch (attribute) {
+                    case STID:
+                        GKInstance stableIdentifier = (GKInstance) getObjectFromGkInstance(instance, attribute);
+                        if (stableIdentifier == null) continue;
+                        String identifier = (String) getObjectFromGkInstance(stableIdentifier, ReactomeJavaConstants.identifier);
+                        if (identifier == null) continue;
+                        properties.put(attribute, identifier);
+                        break;
+                    case "hasDiagram":
+                        if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
+                            try {
+                                DiagramGeneratorFromDB diagramHelper = new DiagramGeneratorFromDB();
+                                diagramHelper.setMySQLAdaptor((MySQLAdaptor) instance.getDbAdaptor());
+                                GKInstance diagram = diagramHelper.getPathwayDiagram(instance);
+                                properties.put(attribute, diagram != null);
+                            } catch (Exception e) {
+                                errorLogger.error("An exception occurred while trying to retrieve a diagram from entry with dbId: " +
+                                        instance.getDBID() + "and name: " + instance.getDisplayName());
+                            }
                         }
-                    }
-                }
-            }
-            attributes = primitiveListAttributesMap.get(clazz);
-            if (attributes != null) {
-                for (String attribute : attributes) {
-                    if (isValidGkInstanceAttribute(instance, attribute)) {
-                        List valueList = instance.getAttributeValuesList(attribute);
-                        if (valueList == null) continue;
-                        List<String> array = new ArrayList<>();
-                        for (Object value : valueList) {
+                        break;
+                    case "isInDisease":
+                        GKInstance disease = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.disease);
+                        properties.put(attribute, disease != null);
+                        break;
+                    case "isInferred":
+                        GKInstance isInferredFrom = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
+                        properties.put(attribute, isInferredFrom != null);
+                        break;
+                    case "speciesName":
+                        List speciesList = (List) getCollectionFromGkInstance(instance, ReactomeJavaConstants.species);
+                        if (speciesList == null || speciesList.isEmpty()) continue;
+                        GKInstance species = (GKInstance) speciesList.get(0);
+                        properties.put(attribute, species.getDisplayName());
+                        break;
+                    case "url":
+                        if (instance.getSchemClass().isa(ReactomeJavaConstants.ReferenceDatabase) ||
+                                instance.getSchemClass().isa(ReactomeJavaConstants.Figure)) continue;
+                        GKInstance referenceDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
+                        if (referenceDatabase == null) continue;
+                        identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
+                        String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.url);
+                        if (url == null || identifier == null) continue;
+                        properties.put(attribute, url.replace("###ID###", identifier));
+                        break;
+                    default:
+                        if (isValidGkInstanceAttribute(instance, attribute)) {
+                            Object value = getObjectFromGkInstance(instance, attribute);
                             if (value == null) continue;
-                            array.add((String) value);
+                            properties.put(attribute, value);
                         }
-                        properties.put(attribute, array.toArray(new String[array.size()]));
-                    }
+                        break;
                 }
             }
-        } catch (Exception e) {
-            fileLogger.error("A problem occurred when trying to retrieve data from GkInstance :" + instance.getDisplayName() + instance.getDBID(), e);
+        }
+
+        if (primitiveListAttributesMap.containsKey(clazz)) {
+            for (String attribute : primitiveListAttributesMap.get(clazz)) {
+                if (isValidGkInstanceAttribute(instance, attribute)) {
+                    Collection values = getCollectionFromGkInstance(instance, attribute);
+                    if (values == null) continue;
+                    properties.put(attribute, values.toArray(new String[values.size()]));
+                }
+            }
         }
         try {
             return batchInserter.createNode(properties, labels);
         } catch (IllegalArgumentException e) {
-            fileLogger.error("A problem occurred when trying to save entry to the Grpah :" + instance.getDisplayName() + instance.getDBID(), e);
-            System.exit(-1);
-            throw e;
+            throw new IllegalClassException("A problem occurred when trying to save entry to the Graph :" + instance.getDisplayName() + ":" + instance.getDBID());
         }
     }
 
@@ -356,25 +303,39 @@ public class ReactomeBatchImporter {
             Map<String, Object> properties = new HashMap<>();
             properties.put(STOICHIOMETRY,stoichiometryMap.get(dbId).getCount());
             RelationshipType relationshipType = DynamicRelationshipType.withName(relationName);
-            if (relationName.equals("reverseReaction")) {
+            saveRelationship(newId,oldId,relationshipType,properties);
+        }
+    }
+
+    private void saveRelationship(Long newId, Long oldId, RelationshipType relationshipType, Map<String, Object> properties) {
+        String relationName = relationshipType.name();
+        switch (relationName) {
+            case "reverseReaction":
                 if (!(reverseReactions.containsKey(oldId) && reverseReactions.containsValue(newId)) &&
                         !(reverseReactions.containsKey(newId) && reverseReactions.containsValue(oldId))) {
                     batchInserter.createRelationship(oldId, newId, relationshipType, properties);
-                    reverseReactions.put(oldId,newId);
+                    reverseReactions.put(oldId, newId);
                 }
-            } else if (relationName.equals("equivalentTo")) {
+                break;
+            case "equivalentTo":
                 if (!(equivalentTo.containsKey(oldId) && equivalentTo.containsValue(newId)) &&
                         !(equivalentTo.containsKey(newId) && equivalentTo.containsValue(oldId))) {
                     batchInserter.createRelationship(oldId, newId, relationshipType, properties);
-                    equivalentTo.put(oldId,newId);
+                    equivalentTo.put(oldId, newId);
                 }
-            } else if (relationName.equals("author") || relationName.equals("authored") || relationName.equals("created") ||
-                    relationName.equals("edited") || relationName.equals("modified") || relationName.equals("revised") ||
-                    relationName.equals("reviewed")) {
+                break;
+            case "author":
+            case "authored":
+            case "created":
+            case "edited":
+            case "modified":
+            case "revised":
+            case "reviewed":
                 batchInserter.createRelationship(newId, oldId, relationshipType, properties);
-            } else {
+                break;
+            default:
                 batchInserter.createRelationship(oldId, newId, relationshipType, properties);
-            }
+                break;
         }
     }
 
@@ -421,34 +382,47 @@ public class ReactomeBatchImporter {
         createSchemaConstraint(DynamicLabel.label(GenomeEncodedEntity.class.getSimpleName()),DBID);
         createSchemaConstraint(DynamicLabel.label(GenomeEncodedEntity.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(EntityWithAccessionedSequence.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(EntityWithAccessionedSequence.class.getSimpleName()),STID);
-//
         createSchemaConstraint(DynamicLabel.label(ReferenceEntity.class.getSimpleName()),DBID);
         createSchemaConstraint(DynamicLabel.label(ReferenceEntity.class.getSimpleName()),STID);
-        createIndex(DynamicLabel.label(ReferenceEntity.class.getSimpleName()), ACCESSION);
 
-        createSchemaConstraint(DynamicLabel.label(ReferenceSequence.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(ReferenceSequence.class.getSimpleName()),STID);
-        createIndex(DynamicLabel.label(ReferenceSequence.class.getSimpleName()), ACCESSION);
+        batchInserter.createDeferredSchemaIndex(DynamicLabel.label(ReferenceEntity.class.getSimpleName())).on(ACCESSION);
     }
 
+    /**
+     * Simple wrapper for creating a isUnique constraint
+     * @param label Label (of specific Class)
+     * @param name fieldName
+     */
     private static void createSchemaConstraint(Label label, String name) {
-
         try {
             batchInserter.createDeferredConstraint(label).assertPropertyIsUnique(name).create();
         } catch (ConstraintViolationException e) {
-            fileLogger.warn("Could not create Constraint on " + label + " " + name);
+            importLogger.warn("Could not create Constraint on " + label + " " + name);
         }
     }
 
-    private static void createIndex(Label label, String name) {
-        batchInserter.createDeferredSchemaIndex(label).on(name);
+    /**
+     * Simple method that prints a progress bar to command line
+     * @param done Number of entries added to the graph
+     * @param total Total number of entries to be importet
+     */
+    private void updateProgressBar(int done, int total) {
+        String format = "\r%3d%% %s %c";
+        char[] rotators = {'|', '/', '-', '\\'};
+        int percent = (++done * 100) / total;
+        StringBuilder progress = new StringBuilder(width);
+        progress.append('|');
+        int i = 0;
+        for (; i < percent; i++)
+            progress.append("=");
+        for (; i < width; i++)
+            progress.append(" ");
+        progress.append('|');
+        System.out.printf(format, percent, progress, rotators[(((done - 1) % (rotators.length * 100)) /100)]);
     }
 
     /**
      * Cleaning the Neo4j data directory
-     * Deleting of file will have worked even if error occurred here.
      */
     private File cleanDatabase() {
 
@@ -460,7 +434,7 @@ public class ReactomeBatchImporter {
                 FileUtils.forceMkdir(dir);
             }
         } catch (IOException | IllegalArgumentException e) {
-            fileLogger.warn("An error occurred while cleaning the old database");
+            importLogger.warn("An error occurred while cleaning the old database");
         }
         return dir;
     }
@@ -492,25 +466,24 @@ public class ReactomeBatchImporter {
         labels.add(DynamicLabel.label(clazz.getSimpleName()));
         for (Object object : superClasses) {
             Class superClass = (Class) object;
-            if(!superClass.getSimpleName().equals("Object")) {
+            if(!superClass.equals(Object.class)) {
                 labels.add(DynamicLabel.label(superClass.getSimpleName()));
             }
         }
         return labels.toArray(new Label[labels.size()]);
     }
 
+    @SuppressWarnings("wrong")
     /**
-     * Gets and separates all Methods for specific Class to create attribute map.
-     * GetMethods are used to differentiate on the return type of the method.
-     * If return type is "primitive" eg String than this method will be used to provide a primitiveAttributeName
-     * If return type is "relationship" (Object of the model package) than this method will be used to provide a
-     * relationshipAttributeName.
-     * Getters are used here rather than setters because setters will return a Type[] when getting the
-     * GenericParameterTypes.
-     * getFields[] can not be utilized here because this method can not return inherited fields.
+     * Gets all Fields for specific Class in order to create attribute map.
+     * Annotations are used to differentiate attributes:
+     *      @Relationship is used to indicate a relationship that should be saved to the graph
+     *      @Transient is used for relationships that should not be persisted by the graph
+     *      @ReactomeTransient is used for all entries that can not be filled by the GkInstance automatically
+     *      Not annotated fields will be treated as primitive attributes (String, Long, List<String>...)
+     *      Twice annotated fields will not be filled by the GkInstance
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
      */
-//TODO REMOVE new attributes that are not filled by GKInstance (eg followingEvent)
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
             List<Field> fields = getAllFields(new ArrayList<Field>(), clazz);
@@ -519,82 +492,26 @@ public class ReactomeBatchImporter {
                 String fieldName = field.getName();
                 if (annotations.length == 0) {
                     if (Collection.class.isAssignableFrom(field.getType())) {
-                        addFields(primitiveListAttributesMap2, clazz, fieldName);
+                        addFields(primitiveListAttributesMap, clazz, fieldName);
                     } else {
-                        addFields(primitiveAttributesMap2, clazz, fieldName);
+                        addFields(primitiveAttributesMap, clazz, fieldName);
                     }
                 } else if (annotations.length == 1) {
                     Class annotationType = annotations[0].annotationType();
                     if (annotationType.equals(Relationship.class)) {
-//                        Relationship relationships = (Relationship) annotations[0];
-//                        if (relationships.type().equals(fieldName)) {
-                            addFields(relationAttributesMap2, clazz, fieldName);
-//                        }
-
+                        addFields(relationAttributesMap, clazz, fieldName);
                     }
-                } else {
-                    fileLogger.warn("blabla");
-                }
-            }
-
-
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                if (method.getName().equals("getDbId")) {
-                    System.out.println();
-                }
-
-                    String methodName = method.getName();
-                    if (        methodName.startsWith("get")
-                            && !methodName.startsWith("getSuper")
-                            && !methodName.equals("getClass")
-                            && !methodName.equals("getId") //getter/setter should be removed from model
-//                        && !methodName.equals("getDbId")
-                            && !methodName.equals("getDisplayName")
-                            && !methodName.equals("getTimestamp") //should be removed from model!
-
-                            && !methodName.equals("getInferredFrom") //is in the Database, should not be populated by Physical Entities
-                            && !methodName.equals("getRegulatedEntity") // is replaced by regulated by
-
-
-
-
-//                        positiveRegulations
-//                                negativeRegulations
-//                                positivilyRegulates
-//                                        negativelyRegulates
-
-                            //Events have inferred From aswell
-                            && !methodName.equals("getOrthologousEvent")
-                            && !methodName.equals("getSchemaClass")
-//                        && !methodName.equals("getAuthor")
-                            ) { //should be removed from model!
-
-                        Type returnType = method.getGenericReturnType();
-                        if (returnType instanceof ParameterizedType) {
-                            ParameterizedType type = (ParameterizedType) returnType;
-                            Type[] typeArguments = type.getActualTypeArguments();
-                            for (Type typeArgument : typeArguments) {
-                                Class typeArgClass = (Class) typeArgument;
-                                if (DatabaseObject.class.isAssignableFrom(typeArgClass) ) {
-                                    setMethods(relationAttributesMap, clazz, method);
-                                }
-                                else {
-                                    setMethods(primitiveListAttributesMap, clazz, method);
-                                }
-                            }
-                        } else {
-                            if (DatabaseObject.class.isAssignableFrom(method.getReturnType())) {
-                                setMethods(relationAttributesMap, clazz, method);
-                            } else {
-                                setMethods(primitiveAttributesMap, clazz, method);
-                            }
-                        }
-
                 }
             }
         }
     }
+
+    /**
+     * Method used to get all fields for given class, event inherited fields
+     * @param fields List of fields for storing fields during recursion
+     * @param type Current class
+     * @return inherited and declared fields
+     */
     public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
         fields.addAll(Arrays.asList(type.getDeclaredFields()));
         if (type.getSuperclass() != null && !type.getSuperclass().equals(Object.class)) {
@@ -603,23 +520,11 @@ public class ReactomeBatchImporter {
         return fields;
     }
 
-
-
-    //TODO change code where this is used so that attributes like isInDisease pass here or do not log a message
-    private boolean isValidGkInstanceAttribute(GKInstance instance, String attribute) {
-        if(instance.getSchemClass().isValidAttribute(attribute)) {
-            return true;
-        } if (!attribute.equals("regulatedBy") &&
-                !attribute.equals("isInDisease")
-
-
-                ) {
-            fileLogger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
-        }
-        return false;
-    }
-
-
+    /**
+     * Put Attribute name into map.
+     * @param map attribute map
+     * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
+     */
     private void addFields (Map<Class,List<String>> map, Class clazz, String fieldName) {
         if(map.containsKey(clazz)) {
             (map.get(clazz)).add(fieldName);
@@ -631,35 +536,68 @@ public class ReactomeBatchImporter {
     }
 
     /**
-     * Put Attribute name into map.
-     * @param map attribute map
-     * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
-     * @param method Method specific to clazz
+     * Checks if an attributeName is a valid attribute for a specific instance
+     * @param instance GkInstance
+     * @param attribute FieldName
+     * @return boolean
      */
-    private void setMethods (Map<Class,List<String>> map, Class clazz, Method method) {
-        String fieldName = method.getName().substring(3);
-        fieldName = lowerFirst(fieldName);
-        if(map.containsKey(clazz)) {
-            (map.get(clazz)).add(fieldName);
-        } else {
-            List<String> methodList = new ArrayList<>();
-            methodList.add(fieldName);
-            map.put(clazz, methodList);
+    private boolean isValidGkInstanceAttribute(GKInstance instance, String attribute) {
+        if(instance.getSchemClass().isValidAttribute(attribute)) {
+            return true;
         }
+        errorLogger.warn(attribute + " is not a valid attribute for instance " + instance.getSchemClass());
+        return false;
     }
 
     /**
-     * First letter of string made to lower case.
-     * @param str String
-     * @return String
+     * A simple wrapper of the GkInstance.getAttributeValue Method used for error handling
+     * @param instance GkInstance
+     * @param attribute FieldName
+     * @return Object
      */
-    private String lowerFirst(String str) {
-        if(StringUtils.isAllUpperCase(str)) {
-            return str;
+    private Object getObjectFromGkInstance(GKInstance instance, String attribute) {
+        if (isValidGkInstanceAttribute(instance,attribute)) {
+            try {
+                return instance.getAttributeValue(attribute);
+            } catch (Exception e) {
+                errorLogger.error("An error occurred when trying to retrieve an attribute from instance with DbId:"
+                        + instance.getDBID() + " and Name:" + instance.getDisplayName(),e);
+            }
         }
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
+        return null;
     }
 
+    /**
+     * A simple wrapper of the GkInstance.getAttributeValueList Method used for error handling
+     * @param instance GkInstance
+     * @param attribute FieldName
+     * @return Object
+     */
+    private Collection getCollectionFromGkInstance(GKInstance instance, String attribute) {
+        if (isValidGkInstanceAttribute(instance,attribute)) {
+            try {
+                return instance.getAttributeValuesList(attribute);
+            } catch (Exception e) {
+                errorLogger.error("An error occurred when trying to retrieve attributes from instance with DbId:"
+                        + instance.getDBID() + " and Name:" + instance.getDisplayName(),e);
+            }
+        }
+        return null;
+    }
 
-
+    /**
+     * A simple wrapper of the GkInstance.getReferrers Method used for error handling
+     * @param instance GkInstance
+     * @param attribute FieldName
+     * @return Object
+     */
+    private Collection getCollectionFromGkInstanceReferrals(GKInstance instance, String attribute) {
+        try {
+            return instance.getReferers(attribute);
+        } catch (Exception e) {
+            errorLogger.error("An error occurred when trying to retrieve referrals from instance with DbId:"
+                    + instance.getDBID() + " and Name:" + instance.getDisplayName(),e);
+        }
+        return null;
+    }
 }

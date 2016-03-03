@@ -19,6 +19,7 @@ import uk.ac.ebi.reactome.util.JunitHelper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -142,13 +143,31 @@ public class GenericServiceTest {
 
     @Test
     public void testFindTopLevelPathways() {
-        Collection<Pathway> tlps = genericService.findTopLevelPathways();
-        System.out.println();
+
+        logger.info("Started testing genericService.findTopLevelPathways");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        Collection<Pathway> observedTlps = genericService.findTopLevelPathways();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> expectedTlps = DatabaseObjectFactory.loadFrontPageItems();
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(expectedTlps.size(),observedTlps.size());
+        for (DatabaseObject expectedTlp : expectedTlps) {
+            observedTlps.contains(expectedTlp);
+        }
     }
 
     @Test
-    public void testFindTopLevelPathwayss() {
-        Collection<Pathway> tlps = genericService.findTopLevelPathways("Homo sapiens");
+    public void testFindTopLevelPathwaysSpeciesName() {
+//        Collection<Pathway> tlps = genericService.findTopLevelPathways("Homo sapiens");
+
+//        TODO cannot test DatabaseOBjectFactory cant do this
         System.out.println();
     }
 

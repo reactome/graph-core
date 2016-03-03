@@ -10,7 +10,7 @@
 
     <properties>
         <reactome.version>1.2.4</reactome.version>
-        <sdn.version>4.1.0.BUILD-SNAPSHOT</sdn.version>
+        <sdn.version>4.1.0.M1</sdn.version>
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
         <neo4j.ogm.version>2.0.0-M01</neo4j.ogm.version>
         <aspectj.version>1.8.8</aspectj.version>
@@ -82,19 +82,25 @@
             <artifactId>jsap</artifactId>
             <version>${jasp.version}</version>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
     </dependencies>
 
     <repositories>
         <!--Spring snapshot repository-->
         <repository>
-            <id>spring-libs-snapshot</id>
-            <name>Spring</name>
-            <url>http://repo.spring.io/libs-snapshot</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>http://repo.spring.io/milestone</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <!--Reactome repository-->

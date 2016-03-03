@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
 
+    @ReactomeTransient
     @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
     private List<CatalystActivity> catalystActivities;
 
@@ -61,15 +63,18 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private List<PhysicalEntity> inferredTo;
 
+    @ReactomeTransient
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
+    @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
+    @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 

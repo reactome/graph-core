@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "activity", direction = Relationship.OUTGOING)
     private GO_MolecularFunction activity;
 
+    @ReactomeTransient
     @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     private List<ReactionLikeEvent> catalyzedEvent;
 

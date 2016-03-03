@@ -8,7 +8,17 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>service-test-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
-            <maxHistory>0</maxHistory>
+            <maxHistory>-1</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="importFileErrors" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+            <maxHistory>-1</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
@@ -24,16 +34,18 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-
     <logger name="deng" level="DEBUG"/>
 
     <logger name="testLogger" level="INFO" additivity="false">
         <appender-ref ref="testFile"/>
     </logger>
-
-    <logger name="importFileLogger" level="INFO" additivity="false">
+    <logger name="importLogger" level="INFO" additivity="false">
         <appender-ref ref="importFile"/>
     </logger>
+    <logger name="importErrorLogger" level="WARN" additivity="false">
+        <appender-ref ref="importFileErrors"/>
+    </logger>
+
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />

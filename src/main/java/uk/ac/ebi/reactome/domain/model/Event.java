@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.util.List;
 import java.util.Set;
@@ -76,6 +77,7 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
+    @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<NegativeRegulation> negativelyRegulatedBy;
 
@@ -88,6 +90,7 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
     private List<Species> relatedSpecies;
 
+    @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<Requirement> requirements;
 

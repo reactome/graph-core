@@ -15,8 +15,8 @@ public class Complex extends PhysicalEntity {
     @Relationship(type = "hasComponent")
     private Set<HasComponent> hasComponent;
 
-    @Relationship(type = "entityOnOthercell")
-    private List<PhysicalEntity> entityOnOthercell;
+    @Relationship(type = "entityOnOtherCell")
+    private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "includedLocation")
     private List<EntityCompartment> includedLocation;
@@ -61,12 +61,12 @@ public class Complex extends PhysicalEntity {
         this.hasComponent = new HashSet<>(components.values());
     }
 
-    public List<PhysicalEntity> getEntityOnOthercell() {
-        return entityOnOthercell;
+    public List<PhysicalEntity> getEntityOnOtherCell() {
+        return entityOnOtherCell;
     }
 
-    public void setEntityOnOthercell(List<PhysicalEntity> entityOnOthercell) {
-        this.entityOnOthercell = entityOnOthercell;
+    public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
+        this.entityOnOtherCell = entityOnOtherCell;
     }
 
     public List<EntityCompartment> getIncludedLocation() {

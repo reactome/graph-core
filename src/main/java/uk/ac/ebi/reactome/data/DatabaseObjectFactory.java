@@ -12,10 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class DatabaseObjectFactory {
 
@@ -134,36 +131,45 @@ public class DatabaseObjectFactory {
     }
 
     public static void fill(DatabaseObject databaseObject, GKInstance instance) throws Exception {
-
-        Class clazz = databaseObject.getClass();
-        List<String> propNames = getJavaBeanProperties(clazz);
-        if (propNames.size() == 0) return;
-        String attributeName;
-        for (String propName : propNames) {
-            attributeName = lowerFirst(propName);
-            if (instance.getSchemClass().isValidAttribute(attributeName)) {
-                List attValues = instance.getAttributeValuesList(attributeName);
-                if (attValues == null || attValues.size() == 0) continue;
-                Method setMethod = getNamedMethod(databaseObject, "set" + propName);
-                if(setMethod == null) continue;
-                Class argType = setMethod.getParameterTypes()[0];
-                if (argType.equals(List.class)) {
-                    List<Object> caValues = new ArrayList<>();
-                    for (Object value : attValues) {
+        try {
+            Class clazz = databaseObject.getClass();
+            List<String> propNames = getJavaBeanProperties(clazz);
+            if (propNames.size() == 0) return;
+            String attributeName;
+            for (String propName : propNames) {
+                attributeName = lowerFirst(propName);
+                if (instance.getSchemClass().isValidAttribute(attributeName)) {
+                    Object j = instance.getAttributeValue(attributeName);
+                    List attValues = instance.getAttributeValuesList(attributeName);
+                    if (attValues == null || attValues.size() == 0) continue;
+                    Method setMethod = getNamedMethod(databaseObject, "set" + propName);
+                    if (setMethod == null) continue;
+                    Class argType = setMethod.getParameterTypes()[0];
+                    if (Collection.class.isAssignableFrom(argType)) {
+                        Collection caValues;
+                        if (Set.class.isAssignableFrom(argType)) {
+                            caValues = new HashSet<>();
+                        } else {
+                            caValues = new ArrayList<>();
+                        }
+                        for (Object value : attValues) {
+                            if (value instanceof GKInstance) {
+                                value = createObject((GKInstance) value);
+                            }
+                            caValues.add(value);
+                        }
+                        setMethod.invoke(databaseObject, caValues);
+                    } else {
+                        Object value = attValues.get(0);
                         if (value instanceof GKInstance) {
                             value = createObject((GKInstance) value);
                         }
-                        caValues.add(value);
+                        setMethod.invoke(databaseObject, value);
                     }
-                    setMethod.invoke(databaseObject, caValues);
-                } else {
-                    Object value = attValues.get(0);
-                    if (value instanceof GKInstance) {
-                        value = createObject((GKInstance) value);
-                    }
-                    setMethod.invoke(databaseObject, value);
                 }
             }
+        }catch(Exception e) {
+            e.printStackTrace();
         }
     }
 

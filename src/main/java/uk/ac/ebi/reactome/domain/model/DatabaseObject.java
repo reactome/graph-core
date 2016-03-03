@@ -7,6 +7,7 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.List;
 @NodeEntity
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 
+    @ReactomeTransient
     public transient boolean isLoaded = false;
 
     @GraphId
@@ -109,37 +111,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
                 '}';
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof DatabaseObject)) return false;
-//        DatabaseObject that = (DatabaseObject) o;
-//        return getDbId().equals(that.getDbId());
-//
-//    }
-
-    /**
-     * In version 4, the dependency of the framework upon a particular style of equals() or hashCode()
-     implementation has been removed. The graph-id field is directly checked to see if two entities
-     represent the same node and a 64-bit hash code is used for dirty checking, so you’re not forced to write
-     your code in a certain way!
-     * @param o
-     * @return
-     */
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//
-//        DatabaseObject that = (DatabaseObject) o;
-//
-//        return dbId.equals(that.dbId);
-//
-//    }
-
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -151,9 +122,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         if (stableIdentifier != null ? !stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier != null)
             return false;
         return !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null);
-
     }
-
 
     @Override
     public int hashCode() {

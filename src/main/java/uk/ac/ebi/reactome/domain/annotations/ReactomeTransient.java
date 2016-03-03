@@ -1,4 +1,4 @@
-package uk.ac.ebi.reactome.domain.model;
+package uk.ac.ebi.reactome.domain.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
