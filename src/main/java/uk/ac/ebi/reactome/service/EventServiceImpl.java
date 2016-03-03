@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.service;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.Event;
@@ -21,6 +22,7 @@ import java.util.Set;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 28.02.16.
  */
+@Service
 public class EventServiceImpl extends ServiceImpl<Event> implements EventService {
 
     @Autowired

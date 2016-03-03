@@ -4,6 +4,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
+import uk.ac.ebi.reactome.domain.relationship.Input;
+import uk.ac.ebi.reactome.domain.relationship.Output;
 
 import java.util.List;
 
@@ -25,15 +27,11 @@ public class PhysicalEntity extends DatabaseObject {
 
     // List of regulated Events filled in service layer
     @Transient
-    private List<Event> activatedEvent;
+    private List<DatabaseObject> activatedEvent;
     @Transient
-    private List<Event> consumedByEvent;
+    private List<DatabaseObject> inhibitedEvent;
     @Transient
-    private List<Event> inhibitedEvent;
-    @Transient
-    private List<Event> producedByEvent;
-    @Transient
-    private List<Event> requiredEvent;
+    private List<DatabaseObject> requiredEvent;
 
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
@@ -44,6 +42,10 @@ public class PhysicalEntity extends DatabaseObject {
 
     @Relationship(type = "compartment", direction = Relationship.OUTGOING)
     private List<EntityCompartment> compartment;
+
+    @ReactomeTransient
+    @Relationship(type = "input", direction = Relationship.INCOMING)
+    private List<Input> consumedByEvent;
 
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
@@ -67,6 +69,10 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
+    @ReactomeTransient
+    @Relationship(type = "regulator", direction = Relationship.INCOMING)
+    private List<Requirement> isRequired;
+
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
@@ -77,6 +83,9 @@ public class PhysicalEntity extends DatabaseObject {
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
+
+    @Relationship(type = "output", direction = Relationship.INCOMING)
+    private List<Output> producedByEvent;
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
@@ -129,43 +138,27 @@ public class PhysicalEntity extends DatabaseObject {
         this.goActivity = goActivity;
     }
 
-    public List<Event> getActivatedEvent() {
+    public List<DatabaseObject> getActivatedEvent() {
         return activatedEvent;
     }
 
-    public void setActivatedEvent(List<Event> activatedEvent) {
+    public void setActivatedEvent(List<DatabaseObject> activatedEvent) {
         this.activatedEvent = activatedEvent;
     }
 
-    public List<Event> getConsumedByEvent() {
-        return consumedByEvent;
-    }
-
-    public void setConsumedByEvent(List<Event> consumedByEvent) {
-        this.consumedByEvent = consumedByEvent;
-    }
-
-    public List<Event> getInhibitedEvent() {
+    public List<DatabaseObject> getInhibitedEvent() {
         return inhibitedEvent;
     }
 
-    public void setInhibitedEvent(List<Event> inhibitedEvent) {
+    public void setInhibitedEvent(List<DatabaseObject> inhibitedEvent) {
         this.inhibitedEvent = inhibitedEvent;
     }
 
-    public List<Event> getProducedByEvent() {
-        return producedByEvent;
-    }
-
-    public void setProducedByEvent(List<Event> producedByEvent) {
-        this.producedByEvent = producedByEvent;
-    }
-
-    public List<Event> getRequiredEvent() {
+    public List<DatabaseObject> getRequiredEvent() {
         return requiredEvent;
     }
 
-    public void setRequiredEvent(List<Event> requiredEvent) {
+    public void setRequiredEvent(List<DatabaseObject> requiredEvent) {
         this.requiredEvent = requiredEvent;
     }
 
@@ -191,6 +184,14 @@ public class PhysicalEntity extends DatabaseObject {
 
     public void setCompartment(List<EntityCompartment> compartment) {
         this.compartment = compartment;
+    }
+
+    public List<Input> getConsumedByEvent() {
+        return consumedByEvent;
+    }
+
+    public void setConsumedByEvent(List<Input> consumedByEvent) {
+        this.consumedByEvent = consumedByEvent;
     }
 
     public List<DatabaseIdentifier> getCrossReference() {
@@ -249,6 +250,14 @@ public class PhysicalEntity extends DatabaseObject {
         this.inferredFrom = inferredFrom;
     }
 
+    public List<Requirement> getIsRequired() {
+        return isRequired;
+    }
+
+    public void setIsRequired(List<Requirement> isRequired) {
+        this.isRequired = isRequired;
+    }
+
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
@@ -271,6 +280,14 @@ public class PhysicalEntity extends DatabaseObject {
 
     public void setPositivelyRegulates(List<PositiveRegulation> positivelyRegulates) {
         this.positivelyRegulates = positivelyRegulates;
+    }
+
+    public List<Output> getProducedByEvent() {
+        return producedByEvent;
+    }
+
+    public void setProducedByEvent(List<Output> producedByEvent) {
+        this.producedByEvent = producedByEvent;
     }
 
     public List<InstanceEdit> getReviewed() {

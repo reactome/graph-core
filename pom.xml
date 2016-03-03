@@ -12,9 +12,10 @@
         <reactome.version>1.2.4</reactome.version>
         <sdn.version>4.1.0.M1</sdn.version>
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
-        <neo4j.ogm.version>2.0.0-M01</neo4j.ogm.version>
+        <neo4j.ogm.version>2.0.0-M02</neo4j.ogm.version>
         <aspectj.version>1.8.8</aspectj.version>
         <junit.version>4.12</junit.version>
+        <slf4j.version>1.7.18</slf4j.version>
         <jasp.version>2.1</jasp.version>
         <maven.compiler.version>2.3.2</maven.compiler.version>
         <java.version>1.7</java.version>
@@ -76,21 +77,18 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--Slf4j binding-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
         <!--Jasp console reader-->
         <dependency>
             <groupId>com.martiansoftware</groupId>
             <artifactId>jsap</artifactId>
             <version>${jasp.version}</version>
         </dependency>
-
-
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-
     </dependencies>
 
     <repositories>

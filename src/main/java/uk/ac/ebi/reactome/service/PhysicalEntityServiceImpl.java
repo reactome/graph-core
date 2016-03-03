@@ -16,6 +16,7 @@ import java.util.List;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 28.02.16.
  */
+@org.springframework.stereotype.Service
 public class PhysicalEntityServiceImpl extends ServiceImpl<PhysicalEntity> implements PhysicalEntityService {
 
     @Autowired
@@ -52,29 +53,44 @@ public class PhysicalEntityServiceImpl extends ServiceImpl<PhysicalEntity> imple
     @Transactional
     public PhysicalEntity findByIdWithLegacyFields(String id) {
         PhysicalEntity physicalEntity = findById(id);
-        if (physicalEntity.getCatalystActivities() != null) {
-            List<ReactionLikeEvent> catalyzedEvents = new ArrayList<>();
-            List<GO_MolecularFunction> goActivities = new ArrayList<>();
-            for (CatalystActivity catalystActivity : physicalEntity.getCatalystActivities()) {
-                physicalEntityRepository.findOne(catalystActivity.getId());
-                catalyzedEvents.addAll(catalystActivity.getCatalyzedEvent());
-                goActivities.add(catalystActivity.getActivity());
+        if (physicalEntity != null) {
+            if (physicalEntity.getCatalystActivities() != null) {
+                List<ReactionLikeEvent> catalyzedEvents = new ArrayList<>();
+                List<GO_MolecularFunction> goActivities = new ArrayList<>();
+                for (CatalystActivity catalystActivity : physicalEntity.getCatalystActivities()) {
+                    physicalEntityRepository.findOne(catalystActivity.getId());
+                    catalyzedEvents.addAll(catalystActivity.getCatalyzedEvent());
+                    goActivities.add(catalystActivity.getActivity());
+                }
+                physicalEntity.setCatalyzedEvent(catalyzedEvents);
+                physicalEntity.setGoActivity(goActivities);
             }
-            physicalEntity.setCatalyzedEvent(catalyzedEvents);
-            physicalEntity.setGoActivity(goActivities);
-        }
-        if (physicalEntity.getPositivelyRegulates() != null) {
-            List<DatabaseObject> regulator = new ArrayList<>();
-            for (PositiveRegulation positiveRegulation : physicalEntity.getPositivelyRegulates()) {
-                physicalEntityRepository.findOne(positiveRegulation.getId());
+            if (physicalEntity.getIsRequired() != null) {
+                List<DatabaseObject> regulatedEntity = new ArrayList<>();
+                for (Requirement requirement : physicalEntity.getIsRequired()) {
+                    physicalEntityRepository.findOne(requirement.getId());
+                    regulatedEntity.add(requirement.getRegulatedEntity());
+                }
+                physicalEntity.setRequiredEvent(regulatedEntity);
             }
-        }
-        if (physicalEntity.getNegativelyRegulates() != null) {
-            List<DatabaseObject> regulator = new ArrayList<>();
-            for (NegativeRegulation negativeRegulation : physicalEntity.getNegativelyRegulates()) {
-                physicalEntityRepository.findOne(negativeRegulation.getId());
+            if (physicalEntity.getPositivelyRegulates() != null) {
+                List<DatabaseObject> regulatedEntity = new ArrayList<>();
+                for (PositiveRegulation positiveRegulation : physicalEntity.getPositivelyRegulates()) {
+                    physicalEntityRepository.findOne(positiveRegulation.getId());
+                    regulatedEntity.add(positiveRegulation.getRegulatedEntity());
+                }
+                physicalEntity.setActivatedEvent(regulatedEntity);
             }
+            if (physicalEntity.getNegativelyRegulates() != null) {
+                List<DatabaseObject> regulatedEntity = new ArrayList<>();
+                for (NegativeRegulation negativeRegulation : physicalEntity.getNegativelyRegulates()) {
+                    physicalEntityRepository.findOne(negativeRegulation.getId());
+                    regulatedEntity.add(negativeRegulation.getRegulatedEntity());
+                }
+                physicalEntity.setInhibitedEvent(regulatedEntity);
+            }
+            return physicalEntity;
         }
-        return physicalEntity;
+        return null;
     }
 }

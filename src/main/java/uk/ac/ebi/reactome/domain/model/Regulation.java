@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Regulation extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
-//    @ReactomeTransient
+    @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     private DatabaseObject regulatedEntity;
 
