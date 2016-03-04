@@ -10,6 +10,8 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class SimpleEntity extends PhysicalEntity {
 
+    private String referenceType;
+
     @Relationship(type = "referetnceEntity", direction = Relationship.OUTGOING)
     private ReferenceMolecule referenceEntity;
 
@@ -17,6 +19,14 @@ public class SimpleEntity extends PhysicalEntity {
     private Species species;
 
     public SimpleEntity() {}
+
+    public String getReferenceType() {
+        return referenceType;
+    }
+
+    public void setReferenceType(String referenceType) {
+        this.referenceType = referenceType;
+    }
 
     public ReferenceMolecule getReferenceEntity() {
         return referenceEntity;

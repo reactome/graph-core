@@ -113,7 +113,7 @@ public class DatabaseObjectServiceTest {
         logger.info("GkInstance execution time: " + time + "ms");
 
         assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
-//        assertEquals(databaseObjectExpected.getDisplayName(),databaseObjectObserved.getDisplayName());
+        assertEquals(databaseObjectExpected.getDisplayName(),databaseObjectObserved.getDisplayName());
     }
 
     @Test

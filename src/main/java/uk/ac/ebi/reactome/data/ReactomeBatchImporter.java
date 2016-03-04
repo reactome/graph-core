@@ -217,6 +217,11 @@ public class ReactomeBatchImporter {
                         GKInstance isInferredFrom = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
                         properties.put(attribute, isInferredFrom != null);
                         break;
+                    case "referenceType":
+                        GKInstance referenceEntity = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceEntity);
+                        if (referenceEntity == null) continue;
+                        properties.put(attribute, referenceEntity.getSchemClass().getName());
+                        break;
                     case "speciesName":
                         List speciesList = (List) getCollectionFromGkInstance(instance, ReactomeJavaConstants.species);
                         if (speciesList == null || speciesList.isEmpty()) continue;

@@ -33,7 +33,7 @@ public class PhysicalEntityServiceTest {
 //    private static final Long dbId = 5205685L;
 //    private static final String stId = "R-HSA-5205685";
 
-    private static final Long dbId = 51925l;//1368140l;//507868L;
+    private static final Long dbId = 187289l;//1368140l;//507868L;
 //    private static final String stId = "R-HSA-507868";
 
     @Autowired

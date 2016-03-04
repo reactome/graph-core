@@ -10,6 +10,7 @@ import java.util.List;
 public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
     private Integer endCoordinate;
+    private String referenceType;
     private Integer startCoordinate;
 
     @Relationship(type = "hasModifiedResidue", direction = Relationship.OUTGOING)
@@ -26,6 +27,14 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
     public void setEndCoordinate(Integer endCoordinate) {
         this.endCoordinate = endCoordinate;
+    }
+
+    public String getReferenceType() {
+        return referenceType;
+    }
+
+    public void setReferenceType(String referenceType) {
+        this.referenceType = referenceType;
     }
 
     public Integer getStartCoordinate() {

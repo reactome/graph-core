@@ -84,6 +84,7 @@ public class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
+    @ReactomeTransient
     @Relationship(type = "output", direction = Relationship.INCOMING)
     private List<Output> producedByEvent;
 

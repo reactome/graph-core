@@ -583,3 +583,9 @@ Post previous;
   Identify all cyclic between 2 nodes
   Match (n)-[r:reverseReaction|inferredTo|hasEvent]->(x),(n)<-[e:reverseReaction|inferredTo|hasEvent]-(x) RETURN n,e,r,x LIMIT 25
 
+
+
+Orphan guy example
+R-MMU-210774
+
+Match (n)-[r]-(x),(n)-[e]-(x) WHERE NOT (n)-[:author|created|edited|modified|revised|reviewed|input|output]-(x) RETURN Count(n)
