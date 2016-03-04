@@ -14,6 +14,8 @@ import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 
+import static org.junit.Assume.assumeTrue;
+
 /**
  * Created by:
  *
@@ -49,9 +51,8 @@ public class PhysicalEntityServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        genericService.findByDbId(DatabaseObject.class, 1l, 0);
+        assumeTrue(genericService.fitForService());
         genericService.clearCache();
-        DatabaseObjectFactory.createObject("1");
         DatabaseObjectFactory.clearCache();
     }
 

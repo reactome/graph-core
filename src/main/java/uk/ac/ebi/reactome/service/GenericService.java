@@ -28,4 +28,5 @@ public interface GenericService {
     Collection<Pathway> findTopLevelPathways(String speciesName);
 
     void clearCache();
+    boolean fitForService() ;
 }

@@ -29,6 +29,6 @@ public interface GenericRepository {
     Collection<Pathway> findTopLevelPathways(Long speciesId);
     Collection<Pathway> findTopLevelPathways(String speciesName);
 
-
+    boolean fitForService() ;
     void clearCache();
 }

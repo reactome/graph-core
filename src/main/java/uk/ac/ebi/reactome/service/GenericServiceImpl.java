@@ -89,4 +89,8 @@ public class GenericServiceImpl implements GenericService {
         genericRepository.clearCache();
     }
 
+    @Override
+    public boolean fitForService()  {
+        return genericRepository.fitForService();
+    }
 }

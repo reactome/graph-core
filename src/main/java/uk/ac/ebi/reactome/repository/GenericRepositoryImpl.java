@@ -1,8 +1,11 @@
 package uk.ac.ebi.reactome.repository;
 
 import org.neo4j.ogm.cypher.Filter;
+import org.neo4j.ogm.exception.ResultProcessingException;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
@@ -21,6 +24,8 @@ import java.util.Map;
  */
 @Repository
 public class GenericRepositoryImpl implements GenericRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(GenericRepository.class);
 
     @Autowired
     private Session session;
@@ -160,6 +165,19 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public Long countEntries(Class<?> clazz) {
         return neo4jTemplate.count(clazz);
+    }
+
+    @Override
+    public boolean fitForService() {
+        String query = "Match (n) Return Count(n)>0 AS fitForService";
+        try {
+            Result result = neo4jTemplate.query(query, Collections.EMPTY_MAP);
+            if (result != null && result.iterator().hasNext())
+                return (boolean) result.iterator().next().get("fitForService");
+        } catch (Exception e) {
+            logger.error("A connection with the Neo4j Graph cound not be established. Tests will be skipped");
+        }
+        return false;
     }
 
     @Override

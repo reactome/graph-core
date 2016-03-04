@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+
+import static org.junit.Assume.assumeNoException;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by:
@@ -36,6 +40,9 @@ public class EventServiceTest {
 //    private static final String stId = "R-HSA-507868";
 
     @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
     private EventService eventService;
 
     @Autowired
@@ -48,10 +55,10 @@ public class EventServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        genericService.findByDbId(DatabaseObject.class, 1l, 0);
+        assumeTrue(genericService.fitForService());
         genericService.clearCache();
-        DatabaseObjectFactory.createObject("1");
         DatabaseObjectFactory.clearCache();
+
     }
 
     @After

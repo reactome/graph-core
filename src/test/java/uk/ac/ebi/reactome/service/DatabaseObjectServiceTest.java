@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by:
@@ -62,9 +65,8 @@ public class DatabaseObjectServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        genericService.findByDbId(DatabaseObject.class,1l,0);
+        assumeTrue(genericService.fitForService());
         genericService.clearCache();
-        DatabaseObjectFactory.createObject("1");
         DatabaseObjectFactory.clearCache();
     }
 
