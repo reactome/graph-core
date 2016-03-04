@@ -37,6 +37,5 @@ public class MyConfiguration extends Neo4jConfiguration {
     @Bean
     public SessionFactory getSessionFactory() {
         return new SessionFactory(getConfiguration(), "uk.ac.ebi.reactome.domain" );
-
     }
 }

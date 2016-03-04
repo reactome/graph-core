@@ -6,6 +6,9 @@ import uk.ac.ebi.reactome.domain.relationship.HasComponent;
 
 import java.util.*;
 
+/**
+ * An entity formed by the association of two or more component entities (these components can themselves be complexes). Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components. At least one component must be specified.
+ */
 @SuppressWarnings("unused")
 @NodeEntity
 public class Complex extends PhysicalEntity {

@@ -2,6 +2,9 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 
+/**
+ * This describes an Event/CatalystActivity that is positively regulated by the Regulator (e.g., allosteric activation).
+ */
 @SuppressWarnings("unused")
 @NodeEntity
 public class PositiveRegulation extends Regulation {

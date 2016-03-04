@@ -4,7 +4,8 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 /**
- * ReferenceEntity is single valued (ReactomeDataModel is wrong in this case)
+ * A chemical species not encoded directly or indirectly in the genome, typically small molecules such as ATP or ethanol.
+ * The detailed structure of a simpleEntity is specified by linking it to details of the molecule in the ChEBI or KEGG databases via the referenceEntity slot. Use of KEGG is deprecated.
  */
 @SuppressWarnings("unused")
 @NodeEntity

@@ -6,8 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.List;
 
 /**
- * CandidateSets can additionally to DefinedSets contain candidates that are believed to be members but there is no
- * experimental data
+ * A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. At least one hasCandidate value is required; hasMember values are optional.
  */
 @SuppressWarnings("unused")
 @NodeEntity

@@ -6,6 +6,9 @@ import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.util.List;
 
+/**
+ * A regulator that is required for an Event/CatalystActivity to happen.
+ */
 @SuppressWarnings("unused")
 @NodeEntity
 public class Regulation extends DatabaseObject {

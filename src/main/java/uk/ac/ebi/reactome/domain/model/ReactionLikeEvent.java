@@ -8,6 +8,8 @@ import uk.ac.ebi.reactome.domain.relationship.Output;
 import java.util.*;
 
 /**
+ * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerisation. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
+ *
  * Logic in getter/setter of input and output is needed for retrieving data using the GKInstance.
  * This is still used for testing if graph and sql produce the same data
  */

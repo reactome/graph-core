@@ -87,7 +87,9 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-                importGkInstance((GKInstance) object);
+                                if (!instance.getDisplayName().equals("Circadian Clock")) continue;
+//
+                importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
                 int ms = (int) elapsedTime % 1000;
                 int sec = (int) (elapsedTime / 1000) % 60;

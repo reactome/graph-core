@@ -5,6 +5,9 @@ import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
 
+/**
+ * Two or more entities grouped because of a shared molecular feature. The superclass for CandidateSet, DefinedSet, and OpenSet.
+ */
 @SuppressWarnings("unused")
 @NodeEntity
 public class EntitySet extends PhysicalEntity{

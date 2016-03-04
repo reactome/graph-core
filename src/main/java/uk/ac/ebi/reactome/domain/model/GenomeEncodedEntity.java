@@ -4,7 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 /**
- * GEE contains proteins and nucleic acids with unknown sequences
+ * A peptide or polynucleotide whose sequence is unknown and thus cannot be linked to external sequence databases or used for orthology inference.
  */
 @SuppressWarnings("unused")
 @NodeEntity

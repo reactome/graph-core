@@ -589,3 +589,7 @@ Orphan guy example
 R-MMU-210774
 
 Match (n)-[r]-(x),(n)-[e]-(x) WHERE NOT (n)-[:author|created|edited|modified|revised|reviewed|input|output]-(x) RETURN Count(n)
+
+maven deploy -> deploy nexus
+maven site:site
+maven site:deploy

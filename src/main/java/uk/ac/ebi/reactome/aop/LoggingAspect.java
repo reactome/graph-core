@@ -29,7 +29,7 @@ public class LoggingAspect {
      * Logging around all Service Methods to see execution times
      * @param joinPoint loggingPointcut
      * @return Object returned by the method currently logged around
-     * @throws Throwable
+     * @throws Throwable exception when executing service methods
      */
     @Around("loggingPointcut()")
     public Object monitorExecutionTimes(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -44,6 +44,9 @@ public class LoggingAspect {
         return result;
     }
 
+    /**
+     *
+     */
 //    @AfterThrowing(pointcut = "within(uk.ac.ebi.reactome..*)", throwing = "e")
 //    public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
 //        logger.error(joinPoint.getSignature().getDeclaringType().getSimpleName() + ":" + joinPoint.getSignature().getName() +
