@@ -1,12 +1,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>reactome-data</groupId>
-    <artifactId>graphDb-spring</artifactId>
+    <groupId>org.reactome.server.tools</groupId>
+    <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>reactome-graphDb-spring</name>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Reactome Graph Core</name>
+
+    <description>
+        The reactome Graphe Core aims to .....
+    </description>
+    <url>http://www.reactome.org/</url>
+    <organization>
+        <name>The European Bioinformatics Institute</name>
+        <url>http://www.ebi.ac.uk/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>fkorn</id>
+            <name>Florian Korninger</name>
+            <email>fkorn@ebi.ac.uk</email>
+            <organization>http://www.ebi.ac.uk/</organization>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+        </contributor>
+    </contributors>
 
     <properties>
         <reactome.version>1.2.4</reactome.version>
@@ -18,6 +40,7 @@
         <logback.version>1.1.6</logback.version>
         <jasp.version>2.1</jasp.version>
         <maven.compiler.version>2.3.2</maven.compiler.version>
+        <maven.javadoc.version>2.10.1</maven.javadoc.version>
         <java.version>1.7</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -83,24 +106,19 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>
-
         <!--Jasp console reader-->
         <dependency>
             <groupId>com.martiansoftware</groupId>
             <artifactId>jsap</artifactId>
             <version>${jasp.version}</version>
         </dependency>
-
-
+        <!--To be removed soon -->
         <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>1.2.17</version>
-    </dependency>
-
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
     </dependencies>
-
-
 
     <repositories>
         <!--Spring snapshot repository-->
@@ -127,6 +145,7 @@
     </repositories>
 
     <build>
+        <finalName>${project.name}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -136,6 +155,17 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId>
+                        <version>2.10</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -162,5 +192,33 @@
             </plugin>
         </plugins>
     </build>
-
+    <distributionManagement>
+        <repository>
+            <id>nexus</id>
+            <!--<id>reactome-graph-release</id>-->
+            <name>local-nexus</name>
+            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>nexus</id>
+            <!--<id>reactome-graph-snapshots</id>-->
+            <name>local-nexus</name>
+            <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <site>
+            <id>nexus</id>
+            <name>local-nexus</name>
+            <url>dav:http://localhost:8081/nexus/content/sites/site/</url>
+        </site>
+    </distributionManagement>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
