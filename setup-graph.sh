@@ -105,17 +105,18 @@ if sudo service neo4j-service status; then
 fi
 
 git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
+git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
 #if ! git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git; then 
 #    echo "an error occured while cloning git repository"
 #    exit 1
 #fi
 
-if ! mvn -q -f ./graph-reactome/pom.xml clean package; then 
+if ! mvn -q -f ./graph-reactome/pom.xml clean package -DskipTests; then 
     echo "an error occured while packaging the project"
     exit 1
 fi 
 
-
+sudo rm -R graph-reactome
 
 echo "blabl" 
 
