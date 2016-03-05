@@ -101,7 +101,7 @@ if $_INSTALL_NEO4J = true; then
 fi
 
 if sudo service neo4j-service status; then
-    echo "Shutting down Neo4j DB in order to perpare data import"
+    echo "Shutting down Neo4j DB in order to perpare data import./"
     if ! sudo service neo4j-service stop; then 
         echo "an error occurred while trying to shut down neo4j db"
 	exit 1
@@ -137,23 +137,25 @@ if ! sudo service neo4j-service start; then
     exit 1
 fi 
 echo "Running Junit tests on the Reactome graph"
-if ! mvn -f ./graph-reactome/pom.xml test; then
+if ! mvn -f ./graph-reactome/pom.xml test >/dev/null 2>&1; then
     echo "An error occurred during testing phase."
     exit 1
 fi 
+echo "All tests have successfully finished, detail can be found ...."
 echo "Deploying project to nexus"
-if ! mvn -f ./graph-reactome/pom.xml deploy -DskipTests; then
+if ! mvn -f ./graph-reactome/pom.xml deploy -DskipTests >/dev/null 2>&1; then
     echo "An error occurred during deployment."
     exit 1
 fi 
 echo "Creating maven site"
-if ! mvn -f ./graph-reactome/pom.xml site:site; then
+if ! mvn -f ./graph-reactome/pom.xml site:site >/dev/null 2>&1; then
     echo "An error occurred during site creation."
     exit 1
 fi 
 echo "Deploying site to nexus"
-if ! mvn -f ./graph-reactome/pom.xml site:deploy; then
+if ! mvn -f ./graph-reactome/pom.xml site:deploy >/dev/null 2>&1; then
     echo "An error occurred during site deployment."
     exit 1
 fi 
+sudo rm -R graph-reactome
 echo "Done!"
