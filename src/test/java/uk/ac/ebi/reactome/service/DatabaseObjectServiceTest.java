@@ -49,8 +49,8 @@ public class DatabaseObjectServiceTest {
 //    private static final Long dbId = 5205685L;
 //    private static final String stId = "R-HSA-5205685";
 
-    private static final Long dbId = 187289l;//1368140l;//507868L;
-    private static final String stId = "R-HSA-507868";
+    private static final Long dbId = 400253l;//1368140l;//507868L;
+    private static final String stId = "R-HSA-400253";
 
     @Autowired
     private DatabaseObjectService databaseObjectService;

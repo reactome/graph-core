@@ -20,8 +20,8 @@ public class Application {
                 new Parameter[]{
                         new FlaggedOption("host",     JSAP.STRING_PARSER, "localhost",  JSAP.NOT_REQUIRED, 'h', "host",     "The database host"),
                         new FlaggedOption("port",     JSAP.INTEGER_PARSER,"3306",       JSAP.NOT_REQUIRED, 's', "port",     "The reactome port"),
-                        new FlaggedOption("database", JSAP.STRING_PARSER, "Reactome",   JSAP.NOT_REQUIRED, 'd', "database", "The reactome database name to connect to"),
-                        new FlaggedOption("user",     JSAP.STRING_PARSER, "root",       JSAP.NOT_REQUIRED, 'u', "user",     "The database user"),
+                        new FlaggedOption("database", JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'd', "database", "The reactome database name to connect to"),
+                        new FlaggedOption("user",     JSAP.STRING_PARSER, "reactome",       JSAP.NOT_REQUIRED, 'u', "user",     "The database user"),
                         new FlaggedOption("password", JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'p', "password", "The password to connect to the database"),
                         new FlaggedOption("dir",      JSAP.STRING_PARSER, "/var/lib/neo4j/data/graph.db",   JSAP.NOT_REQUIRED, 'l', "dir", "The path and dir to the database")
                 }
