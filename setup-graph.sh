@@ -116,29 +116,19 @@ if ! mvn -q -f ./graph-reactome/pom.xml clean package -DskipTests; then
     exit 1
 fi 
 
-sudo rm -R graph-reactome
+sudo chown -R flo /var/lib/neo4j/data/graph.db/
 
-echo "blabl" 
+if ! java -jar ./graph-reactome/target/DatabaseImporter.jar; then
+    echo "an error occured importing reactome data to the graph"
+    exit 1
+fi 
 
-exit 
+sudo chown -R neo4j /var/lib/neo4j/data/graph.db/
+sudo service neo4j-service start
 
+ mvn -q -f ./graph-reactome/pom.xml test deploy
 
-echo "Deleting old solr installed instances..."
-
-echo "Stopping solr service"
-service neo4j-service stop
-chown -R ... $_GRAPH_PATH.$_GRAPH_NAME 
-
-check current wd if stuff is there 
-git clone ... repo 
-
-
-java -jar .....jar
-
-chown -R ... $_GRAPH_PATH.$_GRAPH_NAME 
-service neo4j-service start
-
-mvn test
-java-jar QA.jar
+mvn -q -f ./graph-reactome/pom.xml site:site
+mvn -q -f ./graph-reactome/pom.xml site:deploy
 
 echo "Done!"
