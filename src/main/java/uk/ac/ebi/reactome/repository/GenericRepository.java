@@ -1,9 +1,11 @@
 package uk.ac.ebi.reactome.repository;
 
+import org.neo4j.ogm.model.Result;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.Pathway;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by:
@@ -23,12 +25,15 @@ public interface GenericRepository {
     <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
-    Long countEntries(Class<?> clazz);
 
     Collection<Pathway> findTopLevelPathways();
     Collection<Pathway> findTopLevelPathways(Long speciesId);
     Collection<Pathway> findTopLevelPathways(String speciesName);
 
-    boolean fitForService() ;
+    Result query (String query, Map<String,Object> map);
+    Long countEntries(Class<?> clazz);
+
+    boolean fitForService();
+
     void clearCache();
 }

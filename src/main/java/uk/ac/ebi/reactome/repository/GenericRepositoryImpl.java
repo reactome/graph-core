@@ -1,7 +1,6 @@
 package uk.ac.ebi.reactome.repository;
 
 import org.neo4j.ogm.cypher.Filter;
-import org.neo4j.ogm.exception.ResultProcessingException;
 import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.slf4j.Logger;
@@ -11,10 +10,7 @@ import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.Pathway;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by:
@@ -160,6 +156,11 @@ public class GenericRepositoryImpl implements GenericRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
+    }
+
+    @Override
+    public Result query (String query, Map<String,Object> map) {
+        return neo4jTemplate.query(query,map);
     }
 
     @Override

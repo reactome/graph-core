@@ -1,5 +1,7 @@
 package uk.ac.ebi.reactome.qa;
 
+import uk.ac.ebi.reactome.service.GenericService;
+
 /**
  * Created by:
  *
@@ -8,5 +10,5 @@ package uk.ac.ebi.reactome.qa;
  */
 public interface QualityAssurance {
 
-    void run();
+    void run(GenericService genericService);
 }

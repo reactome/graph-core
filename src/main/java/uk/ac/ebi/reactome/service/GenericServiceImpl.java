@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
+import org.neo4j.ogm.model.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import uk.ac.ebi.reactome.repository.GenericRepository;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by:
@@ -64,10 +66,6 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.findByStableIdentifier(clazz, stableIdentifier, depth);
     }
 
-    @Override
-    public Long countEntries(Class<?> clazz){
-        return genericRepository.countEntries(clazz);
-    }
 
     @Override
     public Collection<Pathway> findTopLevelPathways() {
@@ -82,6 +80,16 @@ public class GenericServiceImpl implements GenericService {
     @Override
     public Collection<Pathway> findTopLevelPathways(String speciesName) {
         return genericRepository.findTopLevelPathways(speciesName);
+    }
+
+    @Override
+    public Result query (String query, Map<String,Object> map) {
+        return genericRepository.query(query,map);
+    }
+
+    @Override
+    public Long countEntries(Class<?> clazz){
+        return genericRepository.countEntries(clazz);
     }
 
     @Override

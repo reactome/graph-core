@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 28.02.16.
  */
-@org.springframework.stereotype.Service
+@Service
 public class PhysicalEntityServiceImpl extends ServiceImpl<PhysicalEntity> implements PhysicalEntityService {
 
     @Autowired
