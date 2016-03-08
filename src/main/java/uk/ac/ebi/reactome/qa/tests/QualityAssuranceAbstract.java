@@ -43,22 +43,16 @@ public abstract class QualityAssuranceAbstract implements QualityAssurance {
 
     protected void printResult(Result result, Path path) throws IOException {
         List<String> lines = new ArrayList<>();
-        lines.add("dbIdA,stIdA,nameA,dbIdB,stIdB,nameB,authorA");
+        lines.add("dbId,stId,name,author");
         for (Map<String, Object> map : result) {
             StringBuilder line = new StringBuilder();
-            line.append(map.get("dbIdA"));
+            line.append(map.get("dbId"));
             line.append(",");
-            line.append(map.get("stIdA"));
+            line.append(map.get("stId"));
             line.append(",");
-            line.append("\"" + map.get("nameA") + "\"");
+            line.append("\"" + map.get("name") + "\"");
             line.append(",");
-            line.append(map.get("dbIdB"));
-            line.append(",");
-            line.append(map.get("stIdB"));
-            line.append(",");
-            line.append("\"" + map.get("nameB") + "\"");
-            line.append(",");
-            line.append("\"" + map.get("authorA") + "\"");
+            line.append("\"" + map.get("author") + "\"");
             lines.add(line.toString());
         }
         Files.write(path, lines, Charset.forName("UTF-8"));

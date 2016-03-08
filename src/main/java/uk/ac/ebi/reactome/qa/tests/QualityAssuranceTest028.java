@@ -15,32 +15,41 @@ import java.util.Map;
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 07.03.16.
+ * @since 08.03.16.
  */
 @SuppressWarnings("unused")
 @QATest
-public class QualityAssuranceTest002 extends QualityAssuranceAbstract{
+public class QualityAssuranceTest028 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "PersonWithoutProperName";
+        return "HasMemberAndHasCandidatePointToSameEntry";
     }
 
     @Override
     String getQuery() {
-        return "Match (n:Person)<-[:created]-(a) Where n.surname is NULL OR (n.firstname is NULL AND n.initial is NULL) " +
-                "RETURN n.dbId AS dbId, n.displayName AS name, a.displayName as author";
+        return "Match (n)-[r:hasMember|hasCandidate]->(x),(n)-[e]->(x),(n)<-[:created]-(a) RETURN DISTINCT(n.dbId) AS dbIdA," +
+                "n.stableIdentifier AS stIdA, n.displayName AS nameA, x.dbId AS dbIdB, x.stableIdentifier AS stIdB, " +
+                "x.displayName AS nameB, a.displayName AS author";
     }
 
     @Override
     protected void printResult(Result result, Path path) throws IOException {
         List<String> lines = new ArrayList<>();
-        lines.add("dbId,name,author");
+        lines.add("dbIdA,stIdA,nameA,dbIdB,stIdB,nameB,authorA");
         for (Map<String, Object> map : result) {
             StringBuilder line = new StringBuilder();
-            line.append(map.get("dbId"));
+            line.append(map.get("dbIdA"));
             line.append(",");
-            line.append(map.get("name"));
+            line.append(map.get("stIdA"));
+            line.append(",");
+            line.append("\"" + map.get("nameA") + "\"");
+            line.append(",");
+            line.append(map.get("dbIdB"));
+            line.append(",");
+            line.append(map.get("stIdB"));
+            line.append(",");
+            line.append("\"" + map.get("nameB") + "\"");
             line.append(",");
             line.append("\"" + map.get("author") + "\"");
             lines.add(line.toString());

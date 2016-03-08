@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.qa.tests;
 
 import org.neo4j.ogm.model.Result;
+import uk.ac.ebi.reactome.qa.QATest;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -16,6 +17,8 @@ import java.util.Map;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 07.03.16.
  */
+@SuppressWarnings("unused")
+@QATest
 public class QualityAssuranceTest004 extends QualityAssuranceAbstract {
 
     @Override

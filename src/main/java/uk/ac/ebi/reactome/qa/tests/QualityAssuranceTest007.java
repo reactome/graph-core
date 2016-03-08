@@ -19,17 +19,17 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 @QATest
-public class QualityAssuranceTest002 extends QualityAssuranceAbstract{
+public class QualityAssuranceTest007 extends QualityAssuranceAbstract{
 
     @Override
     String getName() {
-        return "PersonWithoutProperName";
+        return "EventsAndPhysicalEntitiesWithoutStId";
     }
 
     @Override
     String getQuery() {
-        return "Match (n:Person)<-[:created]-(a) Where n.surname is NULL OR (n.firstname is NULL AND n.initial is NULL) " +
-                "RETURN n.dbId AS dbId, n.displayName AS name, a.displayName as author";
+        return "Match (n)<-[:created]-(a) Where (n:Event OR n:PhysicalEntity) AND n.stableIdentifier is NULL " +
+                "RETURN n.dbId AS dbId, n.displayName AS name, a.displayName AS author";
     }
 
     @Override

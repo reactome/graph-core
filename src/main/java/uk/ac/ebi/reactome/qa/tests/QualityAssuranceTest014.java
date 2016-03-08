@@ -19,30 +19,25 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 @QATest
-public class QualityAssuranceTest002 extends QualityAssuranceAbstract{
+public class QualityAssuranceTest014 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "PersonWithoutProperName";
+        return "InstanceEditWithoutAuthor";
     }
 
     @Override
     String getQuery() {
-        return "Match (n:Person)<-[:created]-(a) Where n.surname is NULL OR (n.firstname is NULL AND n.initial is NULL) " +
-                "RETURN n.dbId AS dbId, n.displayName AS name, a.displayName as author";
+        return "Match (n:InstanceEdit) Where NOT (n)<-[:author]-() RETURN n.dbId AS dbId";
     }
 
     @Override
     protected void printResult(Result result, Path path) throws IOException {
         List<String> lines = new ArrayList<>();
-        lines.add("dbId,name,author");
+        lines.add("dbId");
         for (Map<String, Object> map : result) {
             StringBuilder line = new StringBuilder();
             line.append(map.get("dbId"));
-            line.append(",");
-            line.append(map.get("name"));
-            line.append(",");
-            line.append("\"" + map.get("author") + "\"");
             lines.add(line.toString());
         }
         Files.write(path, lines, Charset.forName("UTF-8"));

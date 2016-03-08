@@ -15,21 +15,21 @@ import java.util.Map;
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 07.03.16.
+ * @since 08.03.16.
  */
 @SuppressWarnings("unused")
 @QATest
-public class QualityAssuranceTest002 extends QualityAssuranceAbstract{
+public class QualityAssuranceTest023 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "PersonWithoutProperName";
+        return "DatabaseIdentifierWithoutReferenceDatabase";
     }
 
     @Override
     String getQuery() {
-        return "Match (n:Person)<-[:created]-(a) Where n.surname is NULL OR (n.firstname is NULL AND n.initial is NULL) " +
-                "RETURN n.dbId AS dbId, n.displayName AS name, a.displayName as author";
+        return "Match (n:DatabaseIdentifier)<-[:created]-(a) Where NOT (n)-[:referenceDatabase]->() RETURN n.dbId AS dbId, " +
+                "n.displayName AS name, a.displayName as author";
     }
 
     @Override
@@ -48,3 +48,7 @@ public class QualityAssuranceTest002 extends QualityAssuranceAbstract{
         Files.write(path, lines, Charset.forName("UTF-8"));
     }
 }
+
+
+
+
