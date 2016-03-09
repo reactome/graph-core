@@ -87,7 +87,7 @@ public class ReactomeBatchImporter {
             for (Object object : objects) {
                 long start = System.currentTimeMillis();
                 GKInstance instance = (GKInstance) object;
-                                if (!instance.getDisplayName().equals("Circadian Clock")) continue;
+//                                if (!instance.getDisplayName().equals("Circadian Clock")) continue;
 //
                 importGkInstance(instance);
                 long elapsedTime = System.currentTimeMillis() - start;
@@ -231,19 +231,20 @@ public class ReactomeBatchImporter {
                         properties.put(attribute, species.getDisplayName());
                         break;
                     case "url":
-                        if (instance.getSchemClass().isa(ReactomeJavaConstants.ReferenceDatabase) ||
-                                instance.getSchemClass().isa(ReactomeJavaConstants.Figure)) continue;
-                        GKInstance referenceDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
-                        if (referenceDatabase == null) continue;
-                        identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
-                        String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.url);
-                        if (url == null || identifier == null) continue;
-                        properties.put(attribute, url.replace("###ID###", identifier));
-                        break;
+                        if (! instance.getSchemClass().isa(ReactomeJavaConstants.ReferenceDatabase) && ! instance.getSchemClass().isa(ReactomeJavaConstants.Figure)) {
+                            GKInstance referenceDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
+                            if (referenceDatabase == null) continue;
+                            identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
+                            String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.url);
+                            if (url == null || identifier == null) continue;
+                            properties.put(attribute, url.replace("###ID###", identifier));
+                            break;
+                        }
                     default:
                         if (isValidGkInstanceAttribute(instance, attribute)) {
                             Object value = getObjectFromGkInstance(instance, attribute);
-                            if (value == null) continue;
+//                            TODO added not tested, may cause trouble
+                            if (value == null || value.toString().isEmpty()) continue;
                             properties.put(attribute, value);
                         }
                         break;
@@ -293,7 +294,7 @@ public class ReactomeBatchImporter {
                 if(stoichiometryMap.containsKey(instance.getDBID())){
                     stoichiometryMap.get(instance.getDBID()).increment();
                 } else {
-                    stoichiometryMap.put(instance.getDBID(), new GkInstanceStoichiometryHelper(instance, 1));
+                    stoichiometryMap.put(instance.getDBID(), new GkInstanceStoichiometryHelper(instance));
                 }
             }
         }
@@ -411,7 +412,7 @@ public class ReactomeBatchImporter {
     /**
      * Simple method that prints a progress bar to command line
      * @param done Number of entries added to the graph
-     * @param total Total number of entries to be importet
+     * @param total Total number of entries to be imported
      */
     private void updateProgressBar(int done, int total) {
         String format = "\r%3d%% %s %c";
@@ -519,7 +520,7 @@ public class ReactomeBatchImporter {
      * @param type Current class
      * @return inherited and declared fields
      */
-    public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+    private List<Field> getAllFields(List<Field> fields, Class<?> type) {
         fields.addAll(Arrays.asList(type.getDeclaredFields()));
         if (type.getSuperclass() != null && !type.getSuperclass().equals(Object.class)) {
             fields = getAllFields(fields, type.getSuperclass());

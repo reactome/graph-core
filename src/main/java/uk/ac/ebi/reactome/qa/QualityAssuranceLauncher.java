@@ -4,8 +4,6 @@ import org.reflections.Reflections;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.qa.tests.QualityAssuranceAbstract;
 import uk.ac.ebi.reactome.service.GenericService;

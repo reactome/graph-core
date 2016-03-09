@@ -14,7 +14,7 @@ public class QualityAssuranceTest022 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "RegulationsWithoutRegulatedEntityOrRegulator";
+        return "PhysicalEntityWithoutCompartment";
     }
 
     @Override

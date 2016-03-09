@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.service.helper;
 
+import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -15,31 +16,17 @@ public class Node implements Comparable<Node>{
 
     private Set<Node> children;
 
-    private Class clazz;
+    private final Class clazz;
     private Integer count;
-
-    public Node() {}
 
     public Node(Class clazz, Integer count) {
         this.clazz = clazz;
         this.count = count;
-        children = Collections.EMPTY_SET;
+        children = Collections.emptySet();
     }
 
     public Set<Node> getChildren() {
         return children;
-    }
-
-    public void setChildren(Set<Node> children) {
-        this.children = children;
-    }
-
-    public Class getClazz() {
-        return clazz;
-    }
-
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
     }
 
     public Integer getCount() {
@@ -65,9 +52,8 @@ public class Node implements Comparable<Node>{
         return 0;
     }
 
-
     private Node iterateTree(Node node, String className) {
-        if (node.getClazz().getSimpleName().equals(className))
+        if (node.clazz.getSimpleName().equals(className))
             return node;
         Node result = null;
         Iterator iterator = node.getChildren().iterator();
@@ -94,7 +80,7 @@ public class Node implements Comparable<Node>{
     }
 
     @Override
-    public int compareTo(Node node) {
+    public int compareTo(@Nonnull Node node) {
         return this.clazz.getSimpleName().compareTo(node.clazz.getSimpleName());
     }
 

@@ -1,17 +1,96 @@
 ![Logo](https://cdn.evbuc.com/images/3621635/40070539972/1/logo.png)
 
+# Reactome Graph Database
 
-# Reactome Interactors
-
-
-## What is the Reactome Interactors project
-Reactome Interactors Project is aiming to provide information about protein interactions for Reactome data.
+## What is the Reactome Graph Database
+The Reactome Graph Project 
+ 
+ 
+ iology are all examples of applications that can be represented in a
+ much more natural form. Comparisons will be drawn between relational database systems (Oracle, MySQL) and graph
+ databases (Neo4J) focusing on aspects such as data structures, data model features and query facilities. Additionally, several
+ of the inherent and contemporary limitations of current offerings comparing and contrasting graph vs. relational database
+ implementations will be explored.
+ 
+ 
+ The relational database model has been around since the late 1960s [4]. It has proven to consistently provide persistence,
+ concurrency control, and integration mechanisms. Relational databases maintain tables which are defined by sets of rows and
+ columns. A row can be perceived as an object while columns would be attributes/properties of that objects [15]. One of the
+ weaknesses of the relational model is its limited ability to explicitly capture requirement semantics [14]. Big data problems
+ involving complex interconnected information have become increasingly common in the sciences. Storing, retrieving, and
+ manipulating such complex data becomes onerous when using traditional RDBMS approaches. Schema based data models by
+ their very definition put in place limits on how information will be stored. There is an involved manual process to redesign
+ the schema in order to adapt to new data. Where the RDBMS is optimized for aggregated data, graph databases such as
+ Neo4j are optimized for highly connected data.
+ A graph is a data structure composed of edges and vertices [2]. Graph database technology is an effective tool for modeling
+ data when a focus on the relationship between entities is a driving force in the design of a data model [3]. Modeling objects
+ and the relationships between them means almost anything can be represented in a corresponding graph. A common graph
+ type supported by most systems is the property graph. Property graphs are attributed, labeled, directed multi-graphs [2].
+ Figure 1 provides a visual example of a property graph which represents interactions between people and objects. A benefit
+ to the multi graph is that it is the most complex implementation because every other type of graph consists of subsets of the
+ property graph implementation. This means a property graph can effectively model all other graph types. The graph database
+ is optimized for the efficient processing of dense, interrelated datasets [2]. This design allows the construction of predictive
+ models, and detection of correlations and patterns [3]. This highly dynamic data model in which all nodes are connected by
+ relations allows for fast traversals along the edges between vertices. A particular benefit is the fact that traversals are
+ localized and do not have to take into account sets of unrelated data. A problem that is inherent in SQL [15].
+ 
+ 
+ Graphs are ubiquitous in bioinformatics and frequently consist
+ of too many nodes and edges to represent in random access
+ memory. These graphs are thus stored in databases to allow
+ for efficient queries using declarative query languages such as
+ Structured Query Language (SQL). Traditional relational data-
+ bases (e.g. MySQL and PostgreSQL) have long been used for
+ this purpose and are based on decades of research into query
+ optimization. Recently, NoSQL databases have caught a lot of
+ attention because of their advantages in scalability. The term
+ NoSQL is used to refer to schemaless databases such as key/
+ value stores (e.g. Apache Cassandra), document stores
+ (e.g. MongoDB) and graph databases (e.g. AllegroGraph,
+ Neo4J, OpenLink Virtuoso), which do not fit within the trad-
+ itional relational paradigm. Most NoSQL databases do not have
+ a declarative query language. The widely used Neo4J graph data-
+ base is an exception (Webber et al., 2013). Its query language
+ Cypher is designed for expressing graph queries, but is still
+ evolving.
+ Graph databases have so far seen only limited use within bio-
+ informatics
+ 
+ A common task in STRING is to retrieve a neighbor network.
+ This involves finding the immediate neighbors of a protein and
+ all interactions between them. To express this as a single SQL
+ query requires the use of query nesting and a UNION set oper-
+ ation. Because Cypher currently supports neither of these fea-
+ tures, two queries are needed to solve the task: one to find
+ immediate neighbors and a second to find their interactions,
+ which must be run for each of the immediate neighbors.
+ Although this precludes some query optimizations, running all
+ these Cypher queries is 36Â faster than running the single SQL
+ query (Table 1). However, it should be noted that a 49Â fold
+ speedup is attainable with PostgreSQL by similarly decomposing
+ the complex query into multiple simple SQL queries. In theory,
+ posing the task as one declarative query maximizes the oppor-
+ tunity for query optimization, but in practice this does not
+ always give good performance. These results also show that
+ even for graph data, using a graph database is not necessarily
+ an advantage.
+ Finding the best scoring path in a weighted graph is another
+ frequently occurring task. For example, finding the best scoring
+ path connecting two proteins in the STRING network is a cru-
+ cial part of the NetworKIN algorithm (Linding et al., 2007). This
+ task can be expressed single query both in (recursive) SQL and in
+ Cypher. However, in practice neither query can be executed
+ unless the maximal path length is severely constrained, in
+ which case the Cypher query was faster by a factor of 981Â
+ (Table 1). The poor scalability is because of an exponential
+ explosion in the number of longer paths, which in part is because
+ 
+ 
+ is aiming to provide information about protein interactions for Reactome data.
 This project is micro-service based web-application built using following components:
-<ul>
-<li>Spring Boot</li>
-<li>Spring Data Neo4j</li>
-<li>Neo4j</li>
-</ul>
+* Spring Data Neo4j 
+* Neo4j
+
 
 #### Setup
 The application will attempt to use a Neo4j standalone server running on standard port:7474.
@@ -593,3 +672,37 @@ Match (n)-[r]-(x),(n)-[e]-(x) WHERE NOT (n)-[:author|created|edited|modified|rev
 maven deploy -> deploy nexus
 maven site:site
 maven site:deploy
+
+
+Pathways without hasEvents
+Match (n:Pathway)<-[:created]-(a) Where NOT (n)-[:hasEvent]->() RETURN n.dbId AS DbID, a.displayName as Author
+EWAS without
+Match (n:EntityWithAccessionedSequence)<-[:created]-(a) Where NOT (n)-[:referenceEntity]->() RETURN n.dbId AS DbID, a.displayName as Author
+Events and PHysicalEntities without stid
+Match (n)<-[:created]-(a) Where (n:Event OR n:PhysicalEntity) AND n.stableIdentifier is NULL RETURN n.dbId AS dbId,  a.displayName as author
+
+
+
+Match (n:Reaction)<-[:created]-(a) Where NOT (n)-[:output|input]->() RETURN n.dbId AS dbId, n.stableIdentifier AS stId, n.displayName AS name, a.displayName as author
+
+Match (n:Component)<-[:created]-(a) Where NOT (n)-[:hasComponent]->() RETURN n.dbId AS dbId, n.stableIdentifier AS stId, n.displayName AS name, a.displayName as author
+
+Match (n:EntitySet)<-[:created]-(a) Where NOT (n)-[:hasMember|hasCandidate]->() RETURN n.dbId AS dbId, n.stableIdentifier AS stId, n.displayName AS name, a.displayName as author
+
+
+simple entity does not need to have reference Entity ?
+Match (n:SimpleEntity)<-[:created]-(a) Where NOT (n)-[:referenceEntity]->() RETURN n.dbId AS dbId, n.stableIdentifier AS stId, n.displayName AS name, a.displayName as author
+
+reference identifier is null
+Match (n:ReferenceEntity)<-[:created]-(a) Where n.identifier is NULL RETURN n.dbId AS dbId, n.stableIdentifier AS stId, n.displayName AS name, a.displayName as author
+
+Instance Edit
+Match (n:InstanceEdit)<-[:created]-(a) Where NOT (n)<-[:author]-() RETURN n.dbId AS dbId
+
+DatabaseObject no name:
+idnk
+
+
+
+LAST modified
+Match (n:Pathway)-[:precedingEvent]->(),(n)-[:species]->(s), (n)<-[:modified]-(m) OPTIONAL MATCH (n)-[:created]-(a) WITH s,a,n,max(m.dateTime) as max MATCH (n)<-[:modified]-(m) WHERE m.dateTime = max AND s.displayName="Homo sapiens" RETURN DISTINCT(n.dbId) AS dbId, n.stableIdentifier AS stId, n.displayName AS name, a.displayName AS createdBy, m.displayName AS lastModified

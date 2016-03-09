@@ -1,8 +1,5 @@
 package uk.ac.ebi.reactome.service;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
@@ -12,6 +9,7 @@ import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
+import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.util.Collection;
 
@@ -24,7 +22,7 @@ import java.util.Collection;
 @Service
 public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> implements DatabaseObjectService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
@@ -36,14 +34,13 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
 
     @Override
     public DatabaseObject findById(String id) {
-        id = id.trim().split("\\.")[0];
-        if (id.startsWith("R")) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
             return databaseObjectRepository.findByStableIdentifier(id);
-        } else if (StringUtils.isNumeric(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)){
             return databaseObjectRepository.findByDbId(Long.parseLong(id));
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override

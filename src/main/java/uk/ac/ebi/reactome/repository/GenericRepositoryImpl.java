@@ -10,7 +10,10 @@ import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.Pathway;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by:
@@ -18,6 +21,7 @@ import java.util.*;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 11.11.15.
  */
+@SuppressWarnings("unused")
 @Repository
 public class GenericRepositoryImpl implements GenericRepository {
 
@@ -30,68 +34,28 @@ public class GenericRepositoryImpl implements GenericRepository {
     private Neo4jOperations neo4jTemplate;
 
     @Override
-    public <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships) {
-        String query = "MATCH (n:DatabaseObject{";
-        query += property + ":{" + property + "}})-[r]-(x) " +
-                "OPTIONAL MATCH (x:CatalystActivity)-[e]->(z) " +
-                "OPTIONAL MATCH (x:Regulation)-[e]-(z) " +
-                "Where NOT (n)-[r";
-        if (relationships != null && relationships.length > 0) {
-            String pipe = ":";
-            for (String relationship : relationships) {
-                query += pipe + relationship;
-                pipe = "|";
-            }
-        }
-        query += "]->(m) RETURN n,r,x,e,z";
-        Map<String,Object> map = new HashMap<>();
-        map.put(property,value);
-        Result result =  neo4jTemplate.query(query,map);
-        for (Map<String, Object> stringObjectMap : result) {
-            return (T) stringObjectMap.get("n");
-        }
-        return null;
-    }
-
-    @Override
-    public <T> T findByPropertyWithRelations (String property, Object value, String... relationships) {
-        String query = "MATCH (n:DatabaseObject{";
-        query += property + ":{" + property + "}})-[r";
-        if (relationships != null && relationships.length > 0) {
-            String pipe = ":";
-            for (String relationship : relationships) {
-                query += pipe + relationship;
-                pipe = "|";
-            }
-        }
+    public Object findByPropertyWithRelations (String property, Object value, String... relationships) {
+        String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r";
+        query += getRelationshipAsString(relationships);
         query += "]->(m) RETURN n,r,m";
         Map<String,Object> map = new HashMap<>();
         map.put(property,value);
         Result result =  neo4jTemplate.query(query,map);
-        for (Map<String, Object> stringObjectMap : result) {
-            return (T) stringObjectMap.get("n");
-        }
+        if (result != null && result.iterator().hasNext())
+            return result.iterator().next().get("n");
         return null;
     }
 
     @Override
-    public <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships) {
-        String query = "MATCH (n:DatabaseObject{";
-        query += property + ":{" + property + "}})-[r]->(m) WHERE NOT (n)-[r";
-        if (relationships != null && relationships.length > 0) {
-            String pipe = ":";
-            for (String relationship : relationships) {
-                query += pipe + relationship;
-                pipe = "|";
-            }
-        }
+    public Object findByPropertyWithoutRelations (String property, Object value, String... relationships) {
+        String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r]->(m) WHERE NOT (n)-[r";
+        query += getRelationshipAsString(relationships);
         query += "]->(m) RETURN n,r,m";
         Map<String,Object> map = new HashMap<>();
         map.put(property,value);
         Result result =  neo4jTemplate.query(query,map);
-        for (Map<String, Object> stringObjectMap : result) {
-            return (T) stringObjectMap.get("n");
-        }
+        if (result != null && result.iterator().hasNext())
+            return  result.iterator().next().get("n");
         return null;
     }
 
@@ -105,7 +69,6 @@ public class GenericRepositoryImpl implements GenericRepository {
         map.put("skip", (page-1) * offset);
         return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
     }
-
 
     @Override
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
@@ -138,7 +101,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public Collection<Pathway> findTopLevelPathways() {
         String query = "Match (n:Pathway) Where NOT (n)<-[:hasEvent]-() AND NOT (n)<-[:inferredTo]-() RETURN n";
-        return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, Collections.EMPTY_MAP);
+        return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, Collections.<String,Object>emptyMap());
     }
 
     @Override
@@ -148,7 +111,6 @@ public class GenericRepositoryImpl implements GenericRepository {
         map.put("speciesId", speciesId);
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
     }
-
 
     @Override
     public Collection<Pathway> findTopLevelPathways(String speciesName) {
@@ -172,11 +134,11 @@ public class GenericRepositoryImpl implements GenericRepository {
     public boolean fitForService() {
         String query = "Match (n) Return Count(n)>0 AS fitForService";
         try {
-            Result result = neo4jTemplate.query(query, Collections.EMPTY_MAP);
+            Result result = neo4jTemplate.query(query, Collections.<String,Object>emptyMap());
             if (result != null && result.iterator().hasNext())
                 return (boolean) result.iterator().next().get("fitForService");
         } catch (Exception e) {
-            logger.error("A connection with the Neo4j Graph cound not be established. Tests will be skipped");
+            logger.error("A connection with the Neo4j Graph could not be established. Tests will be skipped");
         }
         return false;
     }
@@ -184,5 +146,17 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public void clearCache() {
         neo4jTemplate.clear();
+    }
+
+    private String getRelationshipAsString (String... relationships) {
+        String result = "";
+        if (relationships != null && relationships.length > 0) {
+            String pipe = ":";
+            for (String relationship : relationships) {
+                result += pipe + relationship;
+                pipe = "|";
+            }
+        }
+        return result;
     }
 }

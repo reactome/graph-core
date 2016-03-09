@@ -14,11 +14,10 @@ import java.util.Map;
  */
 public interface GenericService {
 
-    <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships);
-    <T> T findByPropertyWithRelations (String property, Object value, String... relationships);
-    <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships);
-    <T> Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException;
+    Object findByPropertyWithRelations (String property, Object value, String... relationships);
+    Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
 
+    <T> Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException;
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
     <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);

@@ -9,13 +9,11 @@ import org.neo4j.ogm.annotation.Relationship;
 import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
 @NodeEntity
@@ -118,10 +116,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
         DatabaseObject that = (DatabaseObject) o;
 
-        if (dbId != null ? !dbId.equals(that.dbId) : that.dbId != null) return false;
-        if (stableIdentifier != null ? !stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier != null)
-            return false;
-        return !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null);
+        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stableIdentifier != null ? stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier == null && !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null));
     }
 
     @Override
@@ -133,7 +128,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     }
 
     @Override
-    public int compareTo(DatabaseObject o) {
+    public int compareTo(@Nonnull DatabaseObject o) {
         return this.dbId.compareTo(o.dbId);
     }
 

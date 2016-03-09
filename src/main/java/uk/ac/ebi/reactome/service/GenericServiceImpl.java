@@ -1,8 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
 import org.neo4j.ogm.model.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.reactome.domain.model.Pathway;
@@ -21,28 +19,25 @@ import java.util.Map;
 @Service
 public class GenericServiceImpl implements GenericService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
 
     @Autowired
     private GenericRepository genericRepository;
 
     @Override
-    public <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships) {
-        return genericRepository.findByPropertyIncludingSecondSteps(property,value,relationships);
-    }
-
-    @Override
-    public <T> T findByPropertyWithRelations (String property, Object value, String... relationships){
+    public Object findByPropertyWithRelations (String property, Object value, String... relationships){
         return genericRepository.findByPropertyWithRelations(property, value, relationships);
     }
 
     @Override
-    public <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships){
+    public Object findByPropertyWithoutRelations (String property, Object value, String... relationships){
         return genericRepository.findByPropertyWithoutRelations(property, value, relationships);
     }
 
+//    TODO fix warning
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
+    public <T>Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
         return genericRepository.getObjectsByClassName(DatabaseObjectUtils.getClassForName(className),page,offset);
     }
 
@@ -65,7 +60,6 @@ public class GenericServiceImpl implements GenericService {
     public <T>T  findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth) {
         return genericRepository.findByStableIdentifier(clazz, stableIdentifier, depth);
     }
-
 
     @Override
     public Collection<Pathway> findTopLevelPathways() {

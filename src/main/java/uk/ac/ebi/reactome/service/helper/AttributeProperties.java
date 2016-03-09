@@ -1,11 +1,14 @@
 package uk.ac.ebi.reactome.service.helper;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 11.02.16.
  */
+@SuppressWarnings("unused")
 public class AttributeProperties implements Comparable<AttributeProperties> {
 
     private String name;
@@ -47,7 +50,7 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
 
 
     @Override
-    public int compareTo(AttributeProperties o) {
+    public int compareTo(@Nonnull AttributeProperties o) {
         return this.name.compareTo(o.name);
     }
 }

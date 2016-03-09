@@ -1,5 +1,6 @@
 package uk.ac.ebi.reactome.qa.tests;
 
+import org.apache.commons.lang.StringUtils;
 import org.neo4j.ogm.model.Result;
 import uk.ac.ebi.reactome.qa.QualityAssurance;
 import uk.ac.ebi.reactome.service.GenericService;
@@ -9,7 +10,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by:
@@ -24,10 +28,12 @@ public abstract class QualityAssuranceAbstract implements QualityAssurance {
     abstract String getName();
     abstract String getQuery();
 
+    @SuppressWarnings({"SameReturnValue", "WeakerAccess"})
     protected Map getMap() {
         return Collections.EMPTY_MAP;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void run(GenericService genericService) {
 
@@ -41,22 +47,24 @@ public abstract class QualityAssuranceAbstract implements QualityAssurance {
         }
     }
 
-    protected void printResult(Result result, Path path) throws IOException {
+    void printResult(Result result, Path path) throws IOException {
+        print(result,path, "dbId","stId","name","author");
+    }
+
+    void print (Result result, Path path, String... attributes) throws IOException {
         List<String> lines = new ArrayList<>();
-        lines.add("dbId,stId,name,author");
+        lines.add(StringUtils.join(attributes,","));
         for (Map<String, Object> map : result) {
-            StringBuilder line = new StringBuilder();
-            line.append(map.get("dbId"));
-            line.append(",");
-            line.append(map.get("stId"));
-            line.append(",");
-            line.append("\"" + map.get("name") + "\"");
-            line.append(",");
-            line.append("\"" + map.get("author") + "\"");
-            lines.add(line.toString());
+            String line = "";
+            for (String attribute : attributes) {
+                line += "\"" + map.get(attribute) + "\",";
+            }
+            lines.add(line);
         }
         Files.write(path, lines, Charset.forName("UTF-8"));
     }
+
+
 
     private Path createFile() throws IOException {
         Path path = Paths.get(pathToFile + getName() + ".csv");

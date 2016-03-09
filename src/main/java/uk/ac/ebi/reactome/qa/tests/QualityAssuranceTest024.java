@@ -4,12 +4,7 @@ import org.neo4j.ogm.model.Result;
 import uk.ac.ebi.reactome.qa.QATest;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by:
@@ -33,19 +28,8 @@ public class QualityAssuranceTest024 extends QualityAssuranceAbstract {
     }
 
     @Override
-    protected void printResult(Result result, Path path) throws IOException {
-        List<String> lines = new ArrayList<>();
-        lines.add("dbId,name,author");
-        for (Map<String, Object> map : result) {
-            StringBuilder line = new StringBuilder();
-            line.append(map.get("dbId"));
-            line.append(",");
-            line.append(map.get("name"));
-            line.append(",");
-            line.append("\"" + map.get("author") + "\"");
-            lines.add(line.toString());
-        }
-        Files.write(path, lines, Charset.forName("UTF-8"));
+    void printResult(Result result, Path path) throws IOException {
+        print(result,path,"dbId","name","author");
     }
 }
 

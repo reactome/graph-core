@@ -6,6 +6,7 @@ import org.gk.persistence.MySQLAdaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class DatabaseObjectFactory {
     /**
      * Reactome MySql database adapter
      */
+    @SuppressWarnings("CanBeFinal") //can not be final
     private static MySQLAdaptor dba;
 
     /**
@@ -100,7 +102,7 @@ public class DatabaseObjectFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static GKInstance getInstance(String identifier) throws Exception {
+    private static GKInstance getInstance(String identifier) throws Exception {
 
         identifier = identifier.trim().split("\\.")[0];
         if (identifier.startsWith("REACT")){
@@ -130,23 +132,22 @@ public class DatabaseObjectFactory {
 //        dba.setUseCache(false);
     }
 
-    public static void fill(DatabaseObject databaseObject, GKInstance instance) throws Exception {
+    private static void fill(DatabaseObject databaseObject, GKInstance instance) {
         try {
             Class clazz = databaseObject.getClass();
             List<String> propNames = getJavaBeanProperties(clazz);
             if (propNames.size() == 0) return;
             String attributeName;
             for (String propName : propNames) {
-                attributeName = lowerFirst(propName);
+                attributeName = DatabaseObjectUtils.lowerFirst(propName);
                 if (instance.getSchemClass().isValidAttribute(attributeName)) {
-                    Object j = instance.getAttributeValue(attributeName);
                     List attValues = instance.getAttributeValuesList(attributeName);
                     if (attValues == null || attValues.size() == 0) continue;
                     Method setMethod = getNamedMethod(databaseObject, "set" + propName);
                     if (setMethod == null) continue;
                     Class argType = setMethod.getParameterTypes()[0];
                     if (Collection.class.isAssignableFrom(argType)) {
-                        Collection caValues;
+                        Collection<Object> caValues;
                         if (Set.class.isAssignableFrom(argType)) {
                             caValues = new HashSet<>();
                         } else {
@@ -189,7 +190,7 @@ public class DatabaseObjectFactory {
         return null ;
     }
 
-    public static List<String> getJavaBeanProperties(Class clazz) {
+    private static List<String> getJavaBeanProperties(Class clazz) {
         Method[] methods = clazz.getMethods();
         String methodName;
         String propertyName;
@@ -202,10 +203,6 @@ public class DatabaseObjectFactory {
             }
         }
         return propertyNames;
-    }
-
-    public static String lowerFirst(String propName) {
-        return propName.substring(0, 1).toLowerCase() + propName.substring(1);
     }
 
     private static Method getNamedMethod(Object target, String methodName) {

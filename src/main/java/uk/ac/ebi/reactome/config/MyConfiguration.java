@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableAspectJAutoProxy
 public class MyConfiguration extends Neo4jConfiguration {
 
-    public static final String NEO4J_HOST = "http://localhost:";
-    public static final int    NEO4J_PORT = 7474;
+    private static final String NEO4J_HOST = "http://localhost:";
+    private static final int    NEO4J_PORT = 7474;
 
     @Bean
     public Configuration getConfiguration() {

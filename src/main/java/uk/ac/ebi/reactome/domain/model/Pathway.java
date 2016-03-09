@@ -6,7 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import java.util.List;
 
 /**
- * A collection of related Events. These events can be ReactionlikeEvents or Pathways
+ * A collection of related Events. These events can be ReactionLikeEvents or Pathways
  */
 @SuppressWarnings("unused")
 @NodeEntity

@@ -31,7 +31,7 @@ public class DatabaseObjectUtils {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         for (LabelsCount labelsCount : labelsCounts) {
-            Class lowestClass = Object.class;
+            Class<?> lowestClass = Object.class;
             for (String label : labelsCount.getLabels()) {
                 Class clazz = Class.forName(packageName + label);
                 if (lowestClass.isAssignableFrom(clazz)) {
@@ -88,6 +88,17 @@ public class DatabaseObjectUtils {
         return propertiesList;
     }
 
+    public static String trimId(String id) {
+        return id.trim().split("\\.")[0];
+    }
+
+    public static boolean isStId(String id) {
+        return id.startsWith("R");
+    }
+
+    public static boolean isDbId(String id) {
+        return StringUtils.isNumeric(id);
+    }
 
     public static Class getClassForName(String className) throws ClassNotFoundException {
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
@@ -101,19 +112,19 @@ public class DatabaseObjectUtils {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
-    private static void recursion(Class clazz,Node oldnode, int count) {
+    private static void recursion(Class clazz,Node oldNode, int count) {
         if (!clazz.equals(Object.class)) {
             Node node = new Node(clazz,count);
             if (map.containsKey(clazz.getSimpleName())) {
-                if (oldnode != null) {
-                    map.get(clazz.getSimpleName()).addChild(oldnode);
+                if (oldNode != null) {
+                    map.get(clazz.getSimpleName()).addChild(oldNode);
                 } else {
                     Node existingNode = map.get(clazz.getSimpleName());
                     existingNode.setCount(existingNode.getCount() + count);
                 }
             } else {
-                if (oldnode != null) {
-                    node.addChild(oldnode);
+                if (oldNode != null) {
+                    node.addChild(oldNode);
                 }
                 map.put(clazz.getSimpleName(),node);
                 recursion(clazz.getSuperclass(),node,0);

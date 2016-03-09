@@ -16,11 +16,10 @@ import java.util.Map;
 @Repository
 public interface GenericRepository {
 
-    <T> T findByPropertyIncludingSecondSteps(String property, Object value, String... relationships);
-    <T> T findByPropertyWithRelations (String property, Object value, String... relationships);
-    <T> T findByPropertyWithoutRelations (String property, Object value, String... relationships);
-    <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset);
+    Object findByPropertyWithRelations (String property, Object value, String... relationships);
+    Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
 
+    <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset);
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
     <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
@@ -34,6 +33,5 @@ public interface GenericRepository {
     Long countEntries(Class<?> clazz);
 
     boolean fitForService();
-
     void clearCache();
 }

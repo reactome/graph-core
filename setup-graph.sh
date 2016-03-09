@@ -2,7 +2,7 @@
 
 #-----------------------------------------------------------
 # Script for an initial setup and data import of Reactome to the Graph  
-# WARNING: do not execute as sudo, permissons will be asked when required
+# WARNING: do not execute as sudo, permission will be asked when required
 #
 # 4 March 2015
 # Florian Korninger - fkorn@ebi.ac.uk
@@ -11,10 +11,10 @@
 
 usage="
 Script for an initial setup and data import of Reactome to the Graph  
-WARNING: Do not execute as sudo, permissons will be asked when required
+WARNING: Do not execute as sudo, permission will be asked when required
 
 The password will only be updated after installing or updating the neo4j server
-The neo4j server can be updated without unistalling it before. 
+The neo4j server can be updated without uninstalling it before.
 WARNING: If no password is specified the old password will persist.
 
 $(basename "$0") [-r <reactome_host> -s <reactome_port> —t <reactome_db_name> -u <reactome_db_user> -v <reactome_db_password> -d <neo4j_db_directory> -e <neo4j_db_name> -i <install_neo4j> -m <neo4j_user> -n <neo4j_password> ] 
@@ -28,7 +28,7 @@ where:
     -v  Reactome database password. DEFAULT: reactome
     -d  Neo4j directory of Db. DEFAULT: /var/lib/neo4j/data/
     -e  Neo4j name of graph Db. DEFAULT: graph.db
-    -i  Install neo4j. DEFAULT: flase
+    -i  Install neo4j. DEFAULT: false
     -n  Neo4j password (only set when neo4j is installed)."	
 
 _REACTOME_HOST="localhost"
@@ -41,7 +41,7 @@ _GRAPH_NAME="graph.db"
 _INSTALL_NEO4J=false
 
 # :h (help) should be at the very end of the while loop
-while getopts ‘:r:s:t:u:v:d:e:m:n:ih’ option; do
+while getopts ":r:s:t:u:v:d:e:m:n:ih" option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -72,7 +72,7 @@ while getopts ‘:r:s:t:u:v:d:e:m:n:ih’ option; do
 done
 shift $((OPTIND - 1))
 
-if $_INSTALL_NEO4J = true; then 
+if ${_INSTALL_NEO4J} = true; then
     echo "start installing neo4j"
     sudo sh -c "wget -O - https://debian.neo4j.org/neotechnology.gpg.key| apt-key add -" >/dev/null 2>&1
     sudo sh -c "echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list" >/dev/null 2>&1
@@ -96,14 +96,14 @@ if $_INSTALL_NEO4J = true; then
 	    fi
 	fi
 	echo "setting new password for user neo4j"	
-	curl -H "Content-Type: application/json" -X POST -d '{"password":"'$_NEO4J_PASSWORD'"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password >/dev/null >/dev/null 2>&1
+	curl -H "Content-Type: application/json" -X POST -d '{"password":"'${_NEO4J_PASSWORD}'"}' -u neo4j:neo4j http://localhost:7474/user/neo4j/password >/dev/null >/dev/null 2>&1
     fi 
 fi
 
 if sudo service neo4j-service status; then
-    echo "Shutting down Neo4j DB in order to perpare data import./"
+    echo "Shutting down Neo4j DB in order to prepare data import"
     if ! sudo service neo4j-service stop; then 
-        echo "an error occurred while trying to shut down neo4j db"
+        echo "An error occurred while trying to shut down neo4j db"
 	exit 1
     fi
 fi
@@ -117,44 +117,52 @@ if ! mvn -q -f ./graph-reactome/pom.xml clean package -DskipTests; then
     exit 1
 fi 
 echo "Changing permissions of neo4j graph"
-if ! sudo chown -R $USER /var/lib/neo4j/data/graph.db; then
-    echo "An error occurred when trying to change permissions of the neo4j graph."
+if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
+    echo "An error occurred when trying to change permissions of the neo4j graph"
     exit 1
 fi 
 echo "Started importing data to the neo4j database"
-if ! java -jar ./graph-reactome/target/DatabaseImporter.jar -h $_REACTOME_HOST -s $_REACTOME_PORT -d $_REACTOME_DATABASE -u $_REACTOME_USER -p $_REACTOME_PASSWORD; then
+if ! java -jar ./graph-reactome/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
     echo "An error occurred during the data import process"
     exit 1
 fi 
 echo "Changing permissions of neo4j graph"
 if ! sudo chown -R neo4j /var/lib/neo4j/data/graph.db; then
-    echo "An error occurred when trying to change permissions of the neo4j graph."
+    echo "An error occurred when trying to change permissions of the neo4j graph"
     exit 1
 fi 
 echo "Starting neo4j database"
 if ! sudo service neo4j-service start; then
-    echo "Neo4j database could not be started."
+    echo "Neo4j database could not be started"
     exit 1
 fi 
 echo "Running Junit tests on the Reactome graph"
 if ! mvn -f ./graph-reactome/pom.xml test >/dev/null 2>&1; then
-    echo "An error occurred during testing phase."
+    echo "An error occurred during testing phase"
     exit 1
-fi 
+fi
 echo "All tests have successfully finished, detail can be found ...."
+
+echo "Running quality assurance tests"
+if ! java -jar ./graph-reactome/target/QualityAssurance.jar; then
+    echo "An error occurred during the QA phase."
+    exit 1
+fi
+echo "All tests have successfully finished, detail can be found ...."
+
 echo "Deploying project to nexus"
 if ! mvn -f ./graph-reactome/pom.xml deploy -DskipTests >/dev/null 2>&1; then
-    echo "An error occurred during deployment."
+    echo "An error occurred during deployment"
     exit 1
 fi 
 echo "Creating maven site"
 if ! mvn -f ./graph-reactome/pom.xml site:site >/dev/null 2>&1; then
-    echo "An error occurred during site creation."
+    echo "An error occurred during site creation"
     exit 1
 fi 
 echo "Deploying site to nexus"
 if ! mvn -f ./graph-reactome/pom.xml site:deploy >/dev/null 2>&1; then
-    echo "An error occurred during site deployment."
+    echo "An error occurred during site deployment"
     exit 1
 fi 
 sudo rm -R graph-reactome

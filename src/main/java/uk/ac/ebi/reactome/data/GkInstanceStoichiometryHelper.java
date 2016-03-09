@@ -8,14 +8,14 @@ import org.gk.model.GKInstance;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 18.01.16.
  */
-public class GkInstanceStoichiometryHelper {
+class GkInstanceStoichiometryHelper {
 
-    private GKInstance instance;
+    private final GKInstance instance;
     private Integer count;
 
-    public GkInstanceStoichiometryHelper(GKInstance instance, Integer count) {
+    public GkInstanceStoichiometryHelper(GKInstance instance) {
         this.instance = instance;
-        this.count = count;
+        this.count = 1;
     }
 
     public GKInstance getInstance() {

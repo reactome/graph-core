@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
  */
 public abstract class ServiceImpl<T> implements Service<T> {
 
-    public abstract GraphRepository<T> getRepository();
+    protected abstract GraphRepository<T> getRepository();
 
     @Override
     public T find(Long id){

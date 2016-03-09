@@ -3,7 +3,6 @@ package uk.ac.ebi.reactome.aop;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,16 +21,13 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Pointcut("within(uk.ac.ebi.reactome.service..*)")
-    public void loggingPointcut() {}
-
     /**
      * Logging around all Service Methods to see execution times
      * @param joinPoint loggingPointcut
      * @return Object returned by the method currently logged around
      * @throws Throwable exception when executing service methods
      */
-    @Around("loggingPointcut()")
+    @Around("execution(public * uk.ac.ebi.reactome.service.*.*(..))")
     public Object monitorExecutionTimes(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed();
@@ -43,24 +39,4 @@ public class LoggingAspect {
                 " successfully executed in " + minutes + " min " + seconds + " sec " + milliseconds + " mil");
         return result;
     }
-
-    /**
-     *
-     */
-//    @AfterThrowing(pointcut = "within(uk.ac.ebi.reactome..*)", throwing = "e")
-//    public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-//        logger.error(joinPoint.getSignature().getDeclaringType().getSimpleName() + ":" + joinPoint.getSignature().getName() +
-//                " failed with message " + e.getMessage());
-//
-//        MailUtil mail = new MailUtil("localhost", 9999);
-//        StringBuilder body = new StringBuilder();
-//        body.append("An exception has occured at\n\n");
-//        body.append("Class: " + joinPoint.getSignature().getDeclaringTypeName());
-//        body.append("\n");
-//        body.append("Method: " + joinPoint.getSignature().getName());
-//        body.append("\n");
-//        body.append("Exception: " + e.toString());
-//        body.append("\n");
-//        mail.send("reactome-indexer@reactome.org", "fkorninger@yahoo.de", "An exception has occured", body.toString());
-//    }
 }

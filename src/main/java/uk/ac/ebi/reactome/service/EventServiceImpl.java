@@ -1,6 +1,5 @@
 package uk.ac.ebi.reactome.service;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
@@ -10,6 +9,7 @@ import uk.ac.ebi.reactome.domain.model.Event;
 import uk.ac.ebi.reactome.domain.model.NegativeRegulation;
 import uk.ac.ebi.reactome.domain.model.PositiveRegulation;
 import uk.ac.ebi.reactome.repository.EventRepository;
+import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,14 +35,13 @@ public class EventServiceImpl extends ServiceImpl<Event> implements EventService
 
     @Override
     public Event findById(String id) {
-        id = id.trim().split("\\.")[0];
-        if (id.startsWith("R")) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
             return eventRepository.findByStableIdentifier(id);
-        } else if (StringUtils.isNumeric(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)){
             return eventRepository.findByDbId(Long.parseLong(id));
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
