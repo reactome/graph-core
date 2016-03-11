@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 
 import static org.junit.Assume.assumeTrue;
@@ -60,8 +60,26 @@ public class PhysicalEntityServiceTest {
     public void tearDown() {
     }
 
+
+
     @Test
-    public void testFindByDbId() throws Exception {
+    public void testFindById() {
+        physicalEntityService.findById("");
+    }
+
+    @Test
+    public void testFindByDbId() {
+        physicalEntityService.findByDbId(1l);
+    }
+
+    @Test
+    public void testFindByStId() {
+        physicalEntityService.findByStableIdentifier("");
+    }
+
+
+    @Test
+    public void testFindByDbId2() throws Exception {
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
 

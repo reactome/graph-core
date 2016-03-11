@@ -5,27 +5,27 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.Pathway;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
 import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.service.helper.Node;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
+import uk.ac.ebi.reactome.util.JunitHelper;
 
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -74,13 +74,18 @@ public class DatabaseObjectServiceTest {
     public void tearDown() {}
 
     @Test
+    public void testById() {
+        databaseObjectService.findById("");
+    }
+
+    @Test
     public void testFindByDbId() throws Exception {
 
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
 
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findByDbId(dbId);
+        Pathway databaseObjectObserved = (Pathway) databaseObjectService.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -88,12 +93,12 @@ public class DatabaseObjectServiceTest {
 
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-        databaseObjectExpected.load();
+//        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
         assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
     }
     @Test
     public void testFindByDbIdNoRelations() {
@@ -131,7 +136,7 @@ public class DatabaseObjectServiceTest {
 
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
-        databaseObjectExpected.load();
+//        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 

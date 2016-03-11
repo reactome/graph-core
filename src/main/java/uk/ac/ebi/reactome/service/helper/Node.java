@@ -14,15 +14,20 @@ import java.util.TreeSet;
  */
 public class Node implements Comparable<Node>{
 
-    private Set<Node> children;
-
     private final Class clazz;
+
+    private Set<Node> children;
     private Integer count;
 
     public Node(Class clazz, Integer count) {
         this.clazz = clazz;
         this.count = count;
         children = Collections.emptySet();
+    }
+
+    @SuppressWarnings("unused") // clazz is used in the content service
+    public Class getClazz() {
+        return clazz;
     }
 
     public Set<Node> getChildren() {

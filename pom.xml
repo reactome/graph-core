@@ -9,9 +9,9 @@
     <name>Reactome Graph Core</name>
 
     <description>
-        The reactome Graph Core aims to .....
+        The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more information visit the reactome github repository.
     </description>
-    <url>http://www.reactome.org/</url>
+    <url>https://bitbucket.org/fabregatantonio/graph-reactome/</url>
     <organization>
         <name>The European Bioinformatics Institute</name>
         <url>http://www.ebi.ac.uk/</url>
@@ -45,6 +45,14 @@
         <java.version>1.7</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.locations.enabled>false</dependency.locations.enabled>
+        <!--will be set as system properties during testing phase-->
+        <neo4j.user>empty</neo4j.user>
+        <neo4j.password>empty</neo4j.password>
+        <reactome.host>empty</reactome.host>
+        <reactome.port>empty</reactome.port>
+        <reactome.database>empty</reactome.database>
+        <reactome.user>empty</reactome.user>
+        <reactome.password>empty</reactome.password>
     </properties>
 
     <dependencies>
@@ -54,7 +62,7 @@
             <artifactId>reactome-base</artifactId>
             <version>${reactome.version}</version>
         </dependency>
-        <!--Spring data neo4j-->
+        <!--Spring dataimport neo4j-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
@@ -120,14 +128,12 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
-
-
+        <!--Reflection library -->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
         </dependency>
-
     </dependencies>
 
     <repositories>
@@ -156,6 +162,12 @@
 
     <build>
         <finalName>${project.name}</finalName>
+        <resources>
+            <resource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -166,6 +178,23 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <!--injecting property values into system properties during testing phase-->
+            <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.12.4</version>
+            <configuration>
+                <systemPropertyVariables>
+                    <neo4j.user>${neo4j.user}</neo4j.user>
+                    <neo4j.password>${neo4j.password}</neo4j.password>
+                    <reactome.host>${reactome.host}</reactome.host>
+                    <reactome.port>${reactome.port}</reactome.port>
+                    <reactome.database>${reactome.database}</reactome.database>
+                    <reactome.user>${reactome.user}</reactome.user>
+                    <reactome.password>${reactome.password}</reactome.password>
+                </systemPropertyVariables>
+            </configuration>
+        </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -200,7 +229,7 @@
                             <finalName>DatabaseImporter</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>uk.ac.ebi.reactome.Application</mainClass>
+                                    <mainClass>uk.ac.ebi.reactome.dataimport.DataImportLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -215,7 +244,7 @@
                             <finalName>QualityAssurance</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>uk.ac.ebi.reactome.qa.QualityAssuranceLauncher</mainClass>
+                                    <mainClass>uk.ac.ebi.reactome.qualityassurance.QualityAssuranceLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -227,14 +256,12 @@
     <distributionManagement>
         <repository>
             <id>nexus</id>
-            <!--<id>reactome-graph-release</id>-->
             <name>local-nexus</name>
             <url>http://localhost:8081/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
             <id>nexus</id>
-            <!--<id>reactome-graph-snapshots</id>-->
             <name>local-nexus</name>
             <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>

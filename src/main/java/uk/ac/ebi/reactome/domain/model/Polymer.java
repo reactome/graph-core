@@ -11,8 +11,8 @@ import java.util.Set;
 /**
  * Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. The repeated unit(s) is(are) identified in the repeatedUnit slot.
  *
- * Logic in getter/setter of input and output is needed for retrieving data using the GKInstance.
- * This is still used for testing if graph and sql produce the same data
+ * Logic in getter/setter of input and output is needed for retrieving dataimport using the GKInstance.
+ * This is still used for testing if graph and sql produce the same dataimport
  */
 @SuppressWarnings("unused")
 @NodeEntity

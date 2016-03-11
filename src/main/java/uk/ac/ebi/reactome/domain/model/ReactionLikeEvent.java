@@ -10,8 +10,8 @@ import java.util.*;
 /**
  * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerisation. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
  *
- * Logic in getter/setter of input and output is needed for retrieving data using the GKInstance.
- * This is still used for testing if graph and sql produce the same data
+ * Logic in getter/setter of input and output is needed for retrieving dataimport using the GKInstance.
+ * This is still used for testing if graph and sql produce the same dataimport
  */
 @SuppressWarnings("unused")
 @NodeEntity

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #-----------------------------------------------------------
-# Script for an initial setup and data import of Reactome to the Graph  
+# Script for an initial setup and dataimport import of Reactome to the Graph
 # WARNING: do not execute as sudo, permission will be asked when required
 #
 # 4 March 2015
@@ -10,7 +10,7 @@
 #-----------------------------------------------------------
 
 usage="
-Script for an initial setup and data import of Reactome to the Graph  
+Script for an initial setup and dataimport import of Reactome to the Graph
 WARNING: Do not execute as sudo, permission will be asked when required
 
 The password will only be updated after installing or updating the neo4j server
@@ -26,7 +26,7 @@ where:
     -t  Reactome database name. DEFAULT: reactome
     -u  Reactome database user. DEFAULT: reactome
     -v  Reactome database password. DEFAULT: reactome
-    -d  Neo4j directory of Db. DEFAULT: /var/lib/neo4j/data/
+    -d  Neo4j directory of Db. DEFAULT: /var/lib/neo4j/dataimport/
     -e  Neo4j name of graph Db. DEFAULT: graph.db
     -i  Install neo4j. DEFAULT: false
     -n  Neo4j password (only set when neo4j is installed)."	
@@ -36,7 +36,7 @@ _REACTOME_PORT=3306
 _REACTOME_DATABASE="reactome"
 _REACTOME_USER="reactome"
 _REACTOME_PASSWORD="reactome"
-_GRAPH_DIR="/var/lib/neo4j/data/"
+_GRAPH_DIR="/var/lib/neo4j/dataimport/"
 _GRAPH_NAME="graph.db"
 _INSTALL_NEO4J=false
 
@@ -101,7 +101,7 @@ if ${_INSTALL_NEO4J} = true; then
 fi
 
 if sudo service neo4j-service status; then
-    echo "Shutting down Neo4j DB in order to prepare data import"
+    echo "Shutting down Neo4j DB in order to prepare dataimport import"
     if ! sudo service neo4j-service stop; then 
         echo "An error occurred while trying to shut down neo4j db"
 	exit 1
@@ -111,7 +111,7 @@ fi
 git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
 git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
 
-echo "Started packaging reactome importer"
+echo "Started packaging reactome dataimport"
 if ! mvn -q -f ./graph-reactome/pom.xml clean package -DskipTests; then 
     echo "An error occurred when packaging the project"
     exit 1
@@ -121,9 +121,9 @@ if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
     echo "An error occurred when trying to change permissions of the neo4j graph"
     exit 1
 fi 
-echo "Started importing data to the neo4j database"
+echo "Started importing dataimport to the neo4j database"
 if ! java -jar ./graph-reactome/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
-    echo "An error occurred during the data import process"
+    echo "An error occurred during the dataimport import process"
     exit 1
 fi 
 echo "Changing permissions of neo4j graph"

@@ -6,7 +6,6 @@ import org.gk.model.GKInstance;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import javax.annotation.Nonnull;
@@ -69,11 +68,8 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return stableIdentifier;
     }
 
-    // The logic in this method is only required for using the Gk-Instance during testing phase.
-    public void setStableIdentifier(StableIdentifier stableIdentifier) {
-        if (stableIdentifier == null) return;
-        stableIdentifier.load();
-        this.stableIdentifier = stableIdentifier.getIdentifier();
+    public void setStableIdentifier(String stableIdentifier) {
+        this.stableIdentifier = stableIdentifier;
     }
 
     public Date getTimestamp() {
@@ -135,26 +131,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     // Only needed during testing
     public String getSchemaClass() {
         return getClass().getSimpleName();
-    }
-
-    // Loads the content from the Reactome relational database (MySQL). This is only used during testing phase
-    @SuppressWarnings("unchecked")
-    public <T extends DatabaseObject> T load() {
-        if (!isLoaded) {
-            GKInstance instance = null;
-            try {
-                instance = DatabaseObjectFactory.getInstance(dbId);
-                DatabaseObjectFactory.load(this, instance);
-                isLoaded = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (instance != null) {
-                    instance.deflate();
-                }
-            }
-        }
-        return (T) this;
     }
 
 }

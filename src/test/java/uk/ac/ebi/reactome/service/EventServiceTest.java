@@ -5,17 +5,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 
-import static org.junit.Assume.assumeNoException;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -26,9 +23,14 @@ import static org.junit.Assume.assumeTrue;
  */
 @ContextConfiguration(classes = { MyConfiguration.class })
 @RunWith(SpringJUnit4ClassRunner.class)
+//@PropertySource("classpath:neo4j.properties")
 public class EventServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
+
+//    @Value("${neo4j.user}")
+//    public String value;
+
 
 //    private static final Long dbId = 7130561L; //381283L; // 75949L;
 //    private static final String stId = "R-HSA-5205685";
@@ -39,8 +41,13 @@ public class EventServiceTest {
     private static final Long dbId = 400253l;//1368140l;//507868L;
 //    private static final String stId = "R-HSA-507868";
 
-    @Autowired
-    private SessionFactory sessionFactory;
+
+//    @Value("#{systemProperties[neo4j-user]}")
+//    private String argument1 = "neo4j";
+//
+//    @Value("#{systemProperties[neo4j-user]}")
+//    private String argument1 = "neo4j";
+
 
     @Autowired
     private EventService eventService;
@@ -55,9 +62,9 @@ public class EventServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        assumeTrue(genericService.fitForService());
-        genericService.clearCache();
-        DatabaseObjectFactory.clearCache();
+//        assumeTrue(genericService.fitForService());
+//        genericService.clearCache();
+//        DatabaseObjectFactory.clearCache();
 
     }
 
@@ -66,7 +73,26 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testFindByDbId() throws Exception {
+    public void testFindById() {
+        eventService.findById("");
+    }
+
+    @Test
+    public void testFindByDbId() {
+
+        System.out.println(System.getProperty("user"));
+        eventService.findByDbId(1l);
+    }
+
+    @Test
+    public void testFindByStId() {
+        eventService.findByStableIdentifier("");
+    }
+
+
+    @Test
+    public void testFindByDbId2() throws Exception {
+
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
 

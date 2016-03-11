@@ -11,15 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
-import uk.ac.ebi.reactome.data.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.Pathway;
-import uk.ac.ebi.reactome.util.JunitHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -63,6 +61,22 @@ public class GenericServiceTest {
     @After
     public void tearDown() {
     }
+
+    @Test
+    public void findByPropertyWithRelations() {
+        genericService.findByPropertyWithRelations("dbId",1l);
+    }
+
+    @Test
+    public void findByPropertyWithoutRelations() {
+        genericService.findByPropertyWithoutRelations("dbId",1l);
+    }
+    @Test
+    public void findById() {
+        genericService.findById(DatabaseObject.class,1l,0);
+    }
+
+
 
     @Test
     public void testLoadByProperty() throws InvocationTargetException, IllegalAccessException {
@@ -164,12 +178,34 @@ public class GenericServiceTest {
     }
 
     @Test
-    public void testFindTopLevelPathwaysSpeciesName() {
-//        Collection<Pathway> tlps = genericService.findTopLevelPathways("Homo sapiens");
+    public void testFindTopLevelPathwaysWithId() {
 
-//        TODO cannot test DatabaseOBjectFactory cant do this
+        logger.info("Started testing genericService.findTopLevelPathways");
+        long start, time;
+
+        start = System.currentTimeMillis();
+        Collection<Pathway> observedTlps = genericService.findTopLevelPathways(1l);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+
+//        assertEquals(expectedTlps.size(),observedTlps.size());
+//        for (DatabaseObject expectedTlp : expectedTlps) {
+//            observedTlps.contains(expectedTlp);
+//        }
+    }
+
+
+    @Test
+    public void testFindTopLevelPathwaysWithString() {
+        Collection<Pathway> tlps = genericService.findTopLevelPathways("Homo sapiens");
+
+//        TODO cannot test DatabaseObjectFactory cant do this
         System.out.println();
     }
 
+    @Test void countEntries() {
+        genericService.countEntries(DatabaseObject.class);
+    }
 
 }

@@ -33,7 +33,7 @@ public abstract class Event extends DatabaseObject {
     private List<DatabaseObject> positiveRegulators;
 
     /**
-     * inferred and orthologous contain the same data, in the Graph representation only inferredTo exists
+     * inferred and orthologous contain the same dataimport, in the Graph representation only inferredTo exists
      * orthologous events will be filled in service
      */
     @Transient
