@@ -243,24 +243,24 @@ Command | Return
 ###### Writing
 
 * Create node with multiple labels and properties
-  * ```
+```
 CREATE (n:LABEL1:LABEL2:LABEL3{dbId:12345,stId:"R_HSA_12345"}) RETURN n
 ```
 * Merge node on dbId
-  * ```
+```
 MERGE (n:LABEL1:LABEL2:LABEL3 {dbId:12345})
 ON CREATE SET n = {dbId:12345,stId:"R_HSA_12345"}
 ON MATCH  SET n += {stId:"R_HSA_12345"}
 RETURN n
 ```
 * Create relationship between two nodes using dbId
-  * ```
+```
 MATCH(a {dbId:12345}),(b {dbId:12346})
 MERGE (a)<-[r:RELATIONSHIP_TYPE]-(b)
 RETURN COUNT(r)=1")
 ```
 * Create relationship with property "cardinality" between two nodes using dbId
-  * ```
+```
 MATCH(a {dbId:{0}}),(b {dbId:{1}})
 MERGE (a)<-[r:RELATIONSHIP_TYPE]-(b)
 ON CREATE SET r =  {cardinality:1}
@@ -268,7 +268,7 @@ ON MATCH  SET r += {cardinality:(r.cardinality+1)}
 RETURN COUNT(r)=1")
 ```
 * Delete all nodes and relationships
-  * ```
+```
 MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r
 ```
 
