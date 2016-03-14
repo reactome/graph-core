@@ -18,7 +18,7 @@ public class QualityAssuranceTest028 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "HasMemberAndHasCandidatePointToSameEntry";
+        return "QATest028-HasMemberAndHasCandidatePointToSameEntry";
     }
 
     @Override

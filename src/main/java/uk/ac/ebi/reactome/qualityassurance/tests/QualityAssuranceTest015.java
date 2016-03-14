@@ -18,7 +18,7 @@ public class QualityAssuranceTest015 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "CatalystActivityWithoutPhysicalEntity";
+        return "QATest015-CatalystActivityWithoutPhysicalEntity";
     }
 
     @Override

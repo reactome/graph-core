@@ -15,7 +15,7 @@ public class QualityAssuranceTest011 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "PolymerWithoutRepeatedUnit";
+        return "QATest011-PolymerWithoutRepeatedUnit";
     }
 
     @Override

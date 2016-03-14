@@ -18,7 +18,7 @@ public class QualityAssuranceTest029 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "CompartmentAndGoCellularComponentPointToSameEntry";
+        return "QATest029-CompartmentAndGoCellularComponentPointToSameEntry";
     }
 
     @Override

@@ -14,7 +14,7 @@ public class QualityAssuranceTest009 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "ComplexWithoutComponents";
+        return "QATest009-ComplexWithoutComponents";
     }
 
     @Override

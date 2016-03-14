@@ -14,7 +14,7 @@ public class QualityAssuranceTest001 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "DatabaseObjectsWithSelfLoops";
+        return "QATest001-DatabaseObjectsWithSelfLoops";
     }
 
     @Override

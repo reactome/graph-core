@@ -13,7 +13,7 @@ import uk.ac.ebi.reactome.qualityassurance.QATest;
 public class QualityAssuranceTest005 extends QualityAssuranceAbstract {
     @Override
     String getName() {
-        return "PathwaysWithoutEvents";
+        return "QATest005-PathwaysWithoutEvents";
     }
 
     @Override

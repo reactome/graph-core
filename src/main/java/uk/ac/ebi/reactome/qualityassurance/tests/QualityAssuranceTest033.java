@@ -18,7 +18,7 @@ public class QualityAssuranceTest033 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "OtherRelationsThatPointToTheSameEntry";
+        return "QATest033-OtherRelationsThatPointToTheSameEntry";
     }
 
     @Override

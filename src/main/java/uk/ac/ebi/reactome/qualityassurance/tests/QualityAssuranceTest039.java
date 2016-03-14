@@ -10,22 +10,22 @@ import java.nio.file.Path;
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 08.03.16.
+ * @since 14.03.16.
  */
 @SuppressWarnings("unused")
 @QATest
-public class QualityAssuranceTest030 extends QualityAssuranceAbstract {
+public class QualityAssuranceTest039 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest030-ReferenceSequenceAndSecondReferenceSequencePointToSameEntry";
+        return "QATest039-PrecedingEventRelationshipDuplication";
     }
 
     @Override
     String getQuery() {
-        return "Match (n)-[r:referenceSequence|secondReferenceSequence]->(x),(n)-[e]->(x),(n)<-[:created]-(a) " +
-                "RETURN DISTINCT(n.dbId) AS dbIdA,n.stableIdentifier AS stIdA, n.displayName AS nameA, x.dbId AS dbIdB, " +
-                "x.stableIdentifier AS stIdB, x.displayName AS nameB, a.displayName AS author";
+        return "Match (x)-[r:precedingEvent]->(y) OPTIONAL MATCH (x)<-[:created]-(a) WITH x,y,r,a WHERE r.stoichiometry > 1 " +
+                "Return DISTINCT(x.dbId) AS dbIdA,x.stableIdentifier AS stIdA, x.displayName AS nameA, y.dbId AS dbIdB, " +
+                "y.stableIdentifier AS stIdB, y.displayName AS nameB, a.displayName AS author";
     }
 
     @Override
@@ -33,4 +33,3 @@ public class QualityAssuranceTest030 extends QualityAssuranceAbstract {
         print(result,path,"dbIdA","stIdA","nameA","dbIdB","stIdB","nameB","author");
     }
 }
-

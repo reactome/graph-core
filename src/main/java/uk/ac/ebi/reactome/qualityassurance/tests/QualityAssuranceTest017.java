@@ -14,7 +14,7 @@ public class QualityAssuranceTest017 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "BlackBoxEventsWithoutHasEvent";
+        return "QATest017-BlackBoxEventsWithoutHasEvent";
     }
 
     @Override

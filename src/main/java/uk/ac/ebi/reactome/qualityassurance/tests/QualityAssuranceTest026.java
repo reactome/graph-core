@@ -18,7 +18,7 @@ public class QualityAssuranceTest026 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "HumanEventsWithCyclicPrecedingEvents";
+        return "QATest026-HumanEventsWithCyclicPrecedingEvents";
     }
 
     @Override

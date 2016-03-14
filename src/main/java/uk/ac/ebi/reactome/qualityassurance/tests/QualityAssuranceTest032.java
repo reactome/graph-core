@@ -18,7 +18,7 @@ public class QualityAssuranceTest032 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "PrecedingEventOrReverseReactionOrHasEventPointToSameEntry";
+        return "QATest032-PrecedingEventOrReverseReactionOrHasEventPointToSameEntry";
     }
 
     @Override

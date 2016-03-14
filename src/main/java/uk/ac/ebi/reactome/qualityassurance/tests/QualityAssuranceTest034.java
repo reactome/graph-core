@@ -10,24 +10,25 @@ import java.nio.file.Path;
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 07.03.16.
+ * @since 14.03.16.
  */
 @SuppressWarnings("unused")
 @QATest
-public class QualityAssuranceTest014 extends QualityAssuranceAbstract {
+public class QualityAssuranceTest034 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest014-InstanceEditWithoutAuthor";
+        return "QATest034-ModifiedRelationshipDuplication";
     }
 
     @Override
     String getQuery() {
-        return "Match (n:InstanceEdit) Where NOT (n)<-[:author]-() RETURN n.dbId AS dbId";
+        return "Match (n)<-[r:modified]-(m),(n)<-[:created]-(a) WHERE r.stoichiometry > 1 Return DISTINCT(n.dbId) AS dbIdA, " +
+                "n.displayName AS nameA, m.dbId AS dbIdB, m.displayName AS nameB, a.displayName AS author";
     }
 
     @Override
     void printResult(Result result, Path path) throws IOException {
-        print(result,path,"dbId");
+        print(result,path,"dbIdA","nameA","dbIdB","nameB","author");
     }
 }
