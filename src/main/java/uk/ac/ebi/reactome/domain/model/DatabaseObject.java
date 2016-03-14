@@ -10,6 +10,8 @@ import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -133,4 +135,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return getClass().getSimpleName();
     }
 
+    public static DatabaseObject emptyObject() {
+        return new Pathway();
+    }
 }

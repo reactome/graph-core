@@ -142,9 +142,16 @@ public class ReactomeBatchImporter {
                             GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
                             if (species == null) continue;
                             if (species.getDBID().equals(48887L)) {
-                                Collection inferredTo = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
-                                if (inferredTo != null && !inferredTo.isEmpty()) {
-                                    saveRelationships(id, inferredTo, "inferredTo");
+                                //TODO comment
+                                Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
+                                if (inferredFrom != null && !inferredFrom.isEmpty()) {
+                                    saveRelationships(id,inferredFrom,"inferredToReverse");
+                                    //TODO log
+                                }
+                                //TODO comment
+                                Collection orthologousEvents = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
+                                if (orthologousEvents != null && !orthologousEvents.isEmpty()) {
+                                    saveRelationships(id, orthologousEvents, "inferredTo");
                                 } else {
                                     Collection referrers = getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.orthologousEvent);
                                     if (referrers != null && !referrers.isEmpty()) {
@@ -331,6 +338,8 @@ public class ReactomeBatchImporter {
                     equivalentTo.put(oldId, newId);
                 }
                 break;
+            case "inferredToReverse":
+                batchInserter.createRelationship(newId, oldId, DynamicRelationshipType.withName("inferredTo"), properties);
             case "author":
             case "authored":
             case "created":

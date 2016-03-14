@@ -1,6 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,9 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
-import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.util.JunitHelper;
 
+import java.lang.reflect.InvocationTargetException;
+
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -22,21 +26,14 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 03.03.16.
  */
-
-@ContextConfiguration(classes = { MyConfiguration.class })
+@ContextConfiguration(classes = {MyConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class PhysicalEntityServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-//    private static final Long dbId = 7130561L; //381283L; // 75949L;
-//    private static final String stId = "R-HSA-5205685";
-
-//    private static final Long dbId = 5205685L;
-//    private static final String stId = "R-HSA-5205685";
-
-    private static final Long dbId = 400305l;//1368140l;//507868L;
-//    private static final String stId = "R-HSA-507868";
+    private static final Long dbId = 53787L;
+    private static final String stId = "R-HSA-53787";
 
     @Autowired
     private PhysicalEntityService physicalEntityService;
@@ -49,6 +46,11 @@ public class PhysicalEntityServiceTest {
         logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
     }
 
+    @AfterClass
+    public static void tearDownClass() {
+        logger.info("\n\n");
+    }
+
     @Before
     public void setUp() throws Exception {
         assumeTrue(genericService.fitForService());
@@ -56,46 +58,62 @@ public class PhysicalEntityServiceTest {
         DatabaseObjectFactory.clearCache();
     }
 
-    @After
-    public void tearDown() {
-    }
-
-
-
     @Test
-    public void testFindById() {
-        physicalEntityService.findById("");
-    }
+    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
 
-    @Test
-    public void testFindByDbId() {
-        physicalEntityService.findByDbId(1l);
-    }
-
-    @Test
-    public void testFindByStId() {
-        physicalEntityService.findByStableIdentifier("");
-    }
-
-
-    @Test
-    public void testFindByDbId2() throws Exception {
-        logger.info("Started testing databaseObjectService.findByDbId");
+        logger.info("Started testing physicalEntityService.findByDbId");
         long start, time;
-
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = physicalEntityService.findByIdWithLegacyFields(dbId.toString());
+        DatabaseObject databaseObjectObserved = physicalEntityService.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        DatabaseObjectFactory.clearCache();
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        databaseObjectExpected.load();
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
 
-//        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testFindByStId() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing physicalEntityService.findByStableIdentifier");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = physicalEntityService.findByStableIdentifier(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    /**
+     * Execution times do not give fair estimation since GkInstance does not fill any of the legacy fields.
+     *
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    @Test
+    public void findByIdWithLegacyFields() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing physicalEntityService.findByIdWithLegacyFields");
+
+        DatabaseObject databaseObjectObserved = physicalEntityService.findByIdWithLegacyFields(dbId.toString());
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 }

@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.util;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
+import org.gk.schema.SchemaClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
@@ -79,6 +80,7 @@ public class DatabaseObjectFactory {
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> T createObject(String identifier)  {
 
+
         try {
             GKInstance instance  = getInstance(identifier);
             DatabaseObject databaseObject = createObject(instance);
@@ -89,8 +91,14 @@ public class DatabaseObjectFactory {
         } catch (Exception e) {
             logger.error("An error occurred while trying to create an object from identifier " + identifier, e);
         }
-        return null;
+        return (T) DatabaseObject.emptyObject();
     }
+
+    public static boolean isValidAttribute(String className, String attribute) {
+        SchemaClass schemaClass = dba.getSchema().getClassByName(className);
+        return schemaClass != null && schemaClass.isValidAttribute(attribute);
+    }
+
 
     @SuppressWarnings("unchecked")
     private static GKInstance getInstance(String identifier) throws Exception {
@@ -105,7 +113,7 @@ public class DatabaseObjectFactory {
         }
     }
 
-    public static void load(DatabaseObject databaseObject, GKInstance instance) {
+    private static void load(DatabaseObject databaseObject, GKInstance instance) {
         try {
             fill(databaseObject,instance);
         } catch (Exception e) {
@@ -212,4 +220,6 @@ public class DatabaseObjectFactory {
         GKInstance stId = target.iterator().next();
         return (GKInstance) dba.fetchInstanceByAttribute(ReactomeJavaConstants.DatabaseObject, ReactomeJavaConstants.stableIdentifier, "=", stId).iterator().next();
     }
+
+
 }

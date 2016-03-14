@@ -5,10 +5,14 @@
 ## What is the Reactome Graph project
 
 The Reactome Graph Project aims to model the [Reactome knowledgebase](http://www.reactome.org) into a interconnected graph.
+
 At the cellular level, life is a network of molecular reactions. In Reactome, these processes are systematically described in molecular detail to generate an ordered network of molecular transformations (Fabregat et al. 2015). This amounts to millions of interconnected terms naturally forming a graph of biological knowledge. The Reactome Graph aims to provide an intuitive way for data retrieval as well as interpretation and analysis of pathway knowledge. 
+
 Retrieving, and especially analyzing such complex data becomes tedious when using relational Databases. Queries across the pathway knowledgebase are composed by a number of expensive join operations resulting in bad performance and a hard-to-maintain project. Due to the schema based approach, relational databases are limited on how information will be stored and thus are difficult to be scaled for new requirements. 
 In order to overcome these problems the Reactome database is imported in [Neo4j](http://neo4j.com), creating one big interconnected graph. The Graph database technology is an effective tool for modelling highly connected data. Since molecular networks are by their nature represented as a graph, storing Reactome data is in many ways beneficial: Firstly no normalization is required, data can be stored in its natural form. Secondly, nodes in the vicinity of a starting point can quickly be traversed, giving the user the possibility to not only retrieve data but perform fast analysis of these neighbor networks. Thus, knowledge can be retrieved that previously was not available due to the limitations of the relational data storage.
+
 In the Reactome Graph project Neo4j, a Java implemented, open source, transactional database, with native graph storage and processing, is utilized. Neo4j offers multiple integration possibilities for Java development. In this project, [String Data Neo4j](http://projects.spring.io/spring-data-neo4j/)    provides automatic object graph mapping on top of Neo4j and integrates tightly with other parts of the spring framework used across the project.
+
 #### Reactome graph limitations:
 
 While graph databases perform great on graph-local questions, there are possible drawbacks of the use of Neo4j in Reactome. Set oriented queries with the simple goal of aggregating large lists of properties, that does not require a lot of joins in the relational database will perform not be as favorable. Similarly global operations, operations on the entire data set can possibly be outperformed by the RDBMS.
@@ -54,6 +58,25 @@ The project can be used as a "Core" library providing a Data Object Layer on top
         <enabled>true</enabled>
     </snapshots>
 </repository>
+```
+
+#### Maven test
+
+Maven tests will only be executed if a connection to Neo4j can be established. Otherwise all tests will be skipped. All parameters needed to execute the JunitTests have to be provided as maven profile:
+
+```
+<profile>
+    <id>neo4j</id>
+    <properties>
+        <neo4j.user>neo4j</neo4j.user>
+        <neo4j.password>reactome</neo4j.password>
+        <reactome.host>localhost</reactome.host>
+        <reactome.port>3306</reactome.port>
+        <reactome.database>reactome</reactome.database>
+        <reactome.user>reactome</reactome.user>
+        <reactome.password>reactome</reactome.password>
+    </properties>
+</profile>
 ```
 
 #### Neo4j setup
@@ -140,7 +163,7 @@ The quality assurance module will be automatically run during the ```setup-graph
 
 #### Quality Assurance without the script
 
-The quality assurance modlue can be executed without the script using the QualitAssurance endpoint. This endpoint requires a running instance of neo4j. Use: ```java-jar QualityAssurance.jar```
+The quality assurance module can be executed without the script using the QualityAssurance endpoint. This endpoint requires a running instance of neo4j. Use: ```java-jar QualityAssurance.jar```
 
 #### Project Structure
 
@@ -161,7 +184,7 @@ by Spring Data Neo4j....
 SDN4 provides among other things:
 
 * Object-Graph-Mapping of annotated POJO entities
-* Repository infrastructure. Repositories provide commonly used persistance methods and can be extended by annotated, named or derived "finder" methods
+* Repository infrastructure. Repositories provide commonly used persistence methods and can be extended by annotated, named or derived "finder" methods
 
 #### Object Graph Mapping 
 
@@ -238,7 +261,7 @@ Command | Return
 ```MATCH n RETURN COUNT(n)``` | Count all nodes
 ```MATCH n-[r]-() RETURN n, COUNT(r) as rel_count ORDER BY rel_count DESC``` | Show all nodes and count their relationships
 ```MATCH (n{dbId:someId}) RETURN n``` | Find Node by property
-```MATCH (n{dbId:264870})-[r*]->() RETURN r``` | Find Outgoing Subgraph
+```MATCH (n{dbId:264870})-[r*]->() RETURN r``` | Find Outgoing sub-graph
 
 ###### Writing
 

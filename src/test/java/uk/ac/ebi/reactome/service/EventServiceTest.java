@@ -1,9 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +9,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.util.JunitHelper;
 
+import java.lang.reflect.InvocationTargetException;
+
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -21,33 +23,14 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 03.03.16.
  */
-@ContextConfiguration(classes = { MyConfiguration.class })
+@ContextConfiguration(classes = {MyConfiguration.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-//@PropertySource("classpath:neo4j.properties")
 public class EventServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-//    @Value("${neo4j.user}")
-//    public String value;
-
-
-//    private static final Long dbId = 7130561L; //381283L; // 75949L;
-//    private static final String stId = "R-HSA-5205685";
-
-//    private static final Long dbId = 5205685L;
-//    private static final String stId = "R-HSA-5205685";
-
-    private static final Long dbId = 400253l;//1368140l;//507868L;
-//    private static final String stId = "R-HSA-507868";
-
-
-//    @Value("#{systemProperties[neo4j-user]}")
-//    private String argument1 = "neo4j";
-//
-//    @Value("#{systemProperties[neo4j-user]}")
-//    private String argument1 = "neo4j";
-
+    private static final Long dbId = 1912416L;
+    private static final String stId = "R-HSA-1912416";
 
     @Autowired
     private EventService eventService;
@@ -60,55 +43,74 @@ public class EventServiceTest {
         logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
     }
 
+    @AfterClass
+    public static void tearDownClass() {
+        logger.info("\n\n");
+    }
+
     @Before
     public void setUp() throws Exception {
-//        assumeTrue(genericService.fitForService());
-//        genericService.clearCache();
-//        DatabaseObjectFactory.clearCache();
-
-    }
-
-    @After
-    public void tearDown() {
+        assumeTrue(genericService.fitForService());
+        genericService.clearCache();
+        DatabaseObjectFactory.clearCache();
     }
 
     @Test
-    public void testFindById() {
-        eventService.findById("");
-    }
+    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
 
-    @Test
-    public void testFindByDbId() {
-
-        System.out.println(System.getProperty("user"));
-        eventService.findByDbId(1l);
-    }
-
-    @Test
-    public void testFindByStId() {
-        eventService.findByStableIdentifier("");
-    }
-
-
-    @Test
-    public void testFindByDbId2() throws Exception {
-
-        logger.info("Started testing databaseObjectService.findByDbId");
+        logger.info("Started testing eventService.findByDbId");
         long start, time;
-
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = eventService.findByIdWithLegacyFields(dbId.toString());
+        DatabaseObject databaseObjectObserved = eventService.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        DatabaseObjectFactory.clearCache();
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        databaseObjectExpected.load();
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
 
-//        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testFindByStId() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing eventService.findByStableIdentifier");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = eventService.findByStableIdentifier(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    /**
+     * Execution times do not give fair estimation since GkInstance does not fill any of the legacy fields.
+     *
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    @Test
+    public void findByIdWithLegacyFields() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing eventService.findByIdWithLegacyFields");
+
+        DatabaseObject databaseObjectObserved = eventService.findByIdWithLegacyFields(dbId.toString());
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+
+        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 }
