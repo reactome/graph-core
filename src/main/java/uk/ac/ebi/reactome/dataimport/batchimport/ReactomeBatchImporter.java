@@ -41,7 +41,7 @@ public class ReactomeBatchImporter {
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
-    private static final String DATA_DIR = "/var/lib/neo4j/dataimport/graph.db";
+    private static final String DATA_DIR = "/var/lib/neo4j/data/graph.db";
 
     private static final String DBID = "dbId";
     private static final String STID = "stableIdentifier";
@@ -361,7 +361,7 @@ public class ReactomeBatchImporter {
     private void prepareDatabase() throws IOException {
 
         File file = cleanDatabase();
-        batchInserter = BatchInserters.inserter(file);
+       batchInserter = BatchInserters.inserter(file);
         createConstraints();
     }
 
