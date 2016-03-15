@@ -138,7 +138,7 @@ public class ReactomeBatchImporter {
                          * otherwise relationships will be duplicated
                          * if event will break otherwise (physical entity will fall to default
                          */
-//                        if (instance.getSchemClass().isa(ReactomeJavaConstants.Event)) {
+//                        if (instance.getSchemaClass().isa(ReactomeJavaConstants.Event)) {
                             GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
                             if (species == null) continue;
                             if (species.getDBID().equals(48887L)) {

@@ -23,11 +23,6 @@ public abstract class ServiceImpl<T> implements Service<T> {
     }
 
     @Override
-    public Iterable<T> findAll() {
-        return getRepository().findAll();
-    }
-
-    @Override
     public T save(T entity) {
         return getRepository().save(entity);
     }

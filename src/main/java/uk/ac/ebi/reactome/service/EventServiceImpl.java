@@ -12,9 +12,7 @@ import uk.ac.ebi.reactome.repository.EventRepository;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by:

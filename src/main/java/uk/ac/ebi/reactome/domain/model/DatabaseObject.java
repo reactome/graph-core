@@ -2,7 +2,6 @@ package uk.ac.ebi.reactome.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import org.gk.model.GKInstance;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -10,8 +9,6 @@ import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 

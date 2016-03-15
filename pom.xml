@@ -6,7 +6,7 @@
 
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Reactome Graph Core</name>
+    <name>ReactomeGraphCore</name>
 
     <description>
         The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more information visit the reactome github repository.

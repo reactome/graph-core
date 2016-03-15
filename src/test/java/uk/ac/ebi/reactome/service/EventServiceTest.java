@@ -1,6 +1,9 @@
 package uk.ac.ebi.reactome.service;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +17,6 @@ import uk.ac.ebi.reactome.util.JunitHelper;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**

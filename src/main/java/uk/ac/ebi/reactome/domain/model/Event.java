@@ -185,14 +185,6 @@ public abstract class Event extends DatabaseObject {
         this.positiveRegulators = positiveRegulators;
     }
 
-    public Set<Event> getOrthologousEvent() {
-        return orthologousEvent;
-    }
-
-    public void setOrthologousEvent(Set<Event> orthologousEvent) {
-        this.orthologousEvent = orthologousEvent;
-    }
-
     public List<InstanceEdit> getAuthored() {
         return authored;
     }
@@ -295,6 +287,14 @@ public abstract class Event extends DatabaseObject {
 
     public void setNegativelyRegulatedBy(List<NegativeRegulation> negativelyRegulatedBy) {
         this.negativelyRegulatedBy = negativelyRegulatedBy;
+    }
+
+    public Set<Event> getOrthologousEvent() {
+        return orthologousEvent;
+    }
+
+    public void setOrthologousEvent(Set<Event> orthologousEvent) {
+        this.orthologousEvent = orthologousEvent;
     }
 
     public List<PositiveRegulation> getPositivelyRegulatedBy() {

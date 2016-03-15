@@ -1,6 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,14 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
-import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
+import uk.ac.ebi.reactome.util.JunitHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -33,24 +36,22 @@ public class GenericServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-    private static final Long dbId = 400253l;
-    private static final String stId = "R-HSA-400253";
-
-//    private static final Long dbId = 507868L;  /
-//    private static final String stId = "R-HSA-507868";
+    private static final Long dbId = 5205685L;
+    private static final String stId = "R-HSA-5205685";
 
     @Autowired
     private GenericService genericService;
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info("\n");
-        logger.info(" --- Running GenericServiceTests --- \n");
+        logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
     }
 
-    /**
-     * clears neo4j cache, needed because otherwise smart object mapping will populate previously loaded objects
-     */
+    @AfterClass
+    public static void tearDownClass() {
+        logger.info("\n\n");
+    }
+
     @Before
     public void setUp() throws Exception {
         assumeTrue(genericService.fitForService());
@@ -58,32 +59,26 @@ public class GenericServiceTest {
         DatabaseObjectFactory.clearCache();
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void findByPropertyWithRelations() {
-        genericService.findByPropertyWithRelations("dbId",1l);
-    }
-
-    @Test
-    public void findByPropertyWithoutRelations() {
-        genericService.findByPropertyWithoutRelations("dbId",1l);
-    }
     @Test
     public void findById() {
-        genericService.findById(DatabaseObject.class,1l,0);
+
+        Long id = genericService.findByDbId(DatabaseObject.class, dbId, 0).getId();
+        logger.info("Started testing genericService.findById");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = genericService.findById(DatabaseObject.class, id, 0);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(dbId, databaseObjectObserved.getDbId());
+        logger.info("Finished");
     }
 
-
-
     @Test
-    public void testLoadByProperty() throws InvocationTargetException, IllegalAccessException {
+    public void testFindByProperty() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing genericService.loadByProperty");
+        logger.info("Started testing genericService.findByProperty");
         long start, time;
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = genericService.findByProperty(DatabaseObject.class, "dbId", dbId, 1);
         time = System.currentTimeMillis() - start;
@@ -94,21 +89,15 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
-
-//    @Test
-//    public void testLoadById() {
-//
-//    }
 
     @Test
     public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
 
         logger.info("Started testing genericService.findByDbId");
         long start, time;
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = genericService.findByDbId(DatabaseObject.class, dbId, 1);
         time = System.currentTimeMillis() - start;
@@ -119,8 +108,8 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 
     @Test
@@ -128,7 +117,6 @@ public class GenericServiceTest {
 
         logger.info("Started testing genericService.findByStableIdentifier");
         long start, time;
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = genericService.findByStableIdentifier(DatabaseObject.class, stId, 1);
         time = System.currentTimeMillis() - start;
@@ -139,71 +127,127 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 
-    @Test
-    public void testCountEntries() {
-
-    }
-
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
+     * @throws ClassNotFoundException
+     */
     @Test
     public void testGetObjectsByClassName() throws ClassNotFoundException {
 
-        Collection<Pathway> pathways =  genericService.getObjectsByClassName(Pathway.class.getSimpleName(), 1, 25);
-        System.out.println("");
+        logger.info("Started testing genericService.getObjectsByClassName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> pathways = genericService.getObjectsByClassName(Pathway.class.getSimpleName(), 1, 25);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(25, pathways.size());
+        logger.info("Finished");
     }
 
+    @Test
+    public void testFindByPropertyWithRelations() throws ClassNotFoundException {
+
+        logger.info("Started testing genericService.getObjectsByClassName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Pathway pathway = (Pathway) genericService.findByPropertyWithRelations("dbId",dbId,"hasEvent");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertNotNull(pathway.getHasEvent());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testFindByPropertyWithoutRelations() throws ClassNotFoundException {
+
+        logger.info("Started testing genericService.getObjectsByClassName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Pathway pathway = (Pathway) genericService.findByPropertyWithoutRelations("dbId",dbId,"authored","created","edited","modified","revised","reviewed");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertNull(pathway.getAuthored());
+        assertNull(pathway.getCreated());
+        assertNull(pathway.getEdited());
+        assertNull(pathway.getModified());
+        assertNull(pathway.getRevised());
+        assertNull(pathway.getReviewed());
+        logger.info("Finished");
+    }
+
+    @SuppressWarnings("unused")
     @Test
     public void testFindTopLevelPathways() {
 
         logger.info("Started testing genericService.findTopLevelPathways");
         long start, time;
-
         start = System.currentTimeMillis();
-        Collection<Pathway> observedTlps = genericService.findTopLevelPathways();
+        Set<Pathway> observedTlps = new HashSet<>(genericService.findTopLevelPathways());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> expectedTlps = DatabaseObjectFactory.loadFrontPageItems();
+        Set<DatabaseObject> expectedTlps = new HashSet<>(DatabaseObjectFactory.loadFrontPageItems());
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-//        assertEquals(expectedTlps.size(),observedTlps.size());
-//        for (DatabaseObject expectedTlp : expectedTlps) {
-//            observedTlps.contains(expectedTlp);
-//        }
+//        assertEquals(expectedTlps, observedTlps);
+        logger.info("Finished");
     }
 
+    @SuppressWarnings("unused")
     @Test
     public void testFindTopLevelPathwaysWithId() {
 
-        logger.info("Started testing genericService.findTopLevelPathways");
+        logger.info("Started testing genericService.findTopLevelPathwaysWithId");
         long start, time;
-
         start = System.currentTimeMillis();
-        Collection<Pathway> observedTlps = genericService.findTopLevelPathways(1l);
+        Collection<Pathway> observedTlps = genericService.findTopLevelPathways(48887L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-
-//        assertEquals(expectedTlps.size(),observedTlps.size());
-//        for (DatabaseObject expectedTlp : expectedTlps) {
-//            observedTlps.contains(expectedTlp);
-//        }
+//        assertEquals(11,observedTlps.size());
+        logger.info("Finished");
     }
 
-
+    @SuppressWarnings("unused")
     @Test
-    public void testFindTopLevelPathwaysWithString() {
-        Collection<Pathway> tlps = genericService.findTopLevelPathways("Homo sapiens");
+    public void testFindTopLevelPathwaysWithName() {
 
-//        TODO cannot test DatabaseObjectFactory cant do this
-        System.out.println();
+        logger.info("Started testing genericService.findTopLevelPathwaysWithId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> observedTlps = genericService.findTopLevelPathways("Homo sapiens");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+//        assertEquals(11,observedTlps.size());
+        logger.info("Finished");
     }
 
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+     * change when content is added to reactome.
+     */
+    @SuppressWarnings("unused")
+    @Test
+    public void testCountEntries() {
 
+        logger.info("Started testing genericService.countEntries");
+        long start, time;
+        start = System.currentTimeMillis();
+        long count = genericService.countEntries(Pathway.class);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
 
+        assertEquals(1234L,count);
+        logger.info("Finished");
+    }
 }
