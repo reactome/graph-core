@@ -113,7 +113,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         if (o == null || getClass() != o.getClass()) return false;
 
         DatabaseObject that = (DatabaseObject) o;
-
         return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stableIdentifier != null ? stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier == null && !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null));
     }
 

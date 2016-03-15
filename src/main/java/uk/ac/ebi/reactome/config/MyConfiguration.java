@@ -31,7 +31,6 @@ public class MyConfiguration extends Neo4jConfiguration {
     @Bean
     public Configuration getConfiguration() {
         Configuration config = new Configuration();
-        System.out.println(System.getProperty("neo4j.user"));
         config.driverConfiguration().setDriverClassName("org.neo4j.ogm.drivers.http.driver.HttpDriver")
                 .setURI(NEO4J_HOST + NEO4J_PORT).setCredentials(System.getProperty("neo4j.user"),System.getProperty("neo4j.password"));
         return config;

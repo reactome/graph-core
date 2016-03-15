@@ -22,7 +22,7 @@
     </appender>
     <appender name="importFileErrors" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./target/data-import-logging/data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
@@ -32,7 +32,7 @@
     </appender>
     <appender name="importFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>data-import-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./target/data-import-logging/data-import-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
@@ -49,7 +49,7 @@
     <logger name="importErrorLogger" level="WARN" additivity="false">
         <appender-ref ref="importFileErrors"/>
     </logger>
-    <root level="INFO">
-        <appender-ref ref="STDOUT" />
-    </root>
+    <!--<root level="INFO">-->
+        <!--<appender-ref ref="STDOUT" />-->
+    <!--</root>-->
 </configuration>

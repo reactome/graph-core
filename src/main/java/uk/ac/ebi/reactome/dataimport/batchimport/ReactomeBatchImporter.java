@@ -131,14 +131,14 @@ public class ReactomeBatchImporter {
                     case "positivelyRegulatedBy":
                         saveRelationships(id, getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.regulatedEntity), "regulatedBy");
                         break;
-                    case "inferredTo":
+                    case "orthologousEvent":
                         /**
                          * only one type of regulation is needed here, In the native dataimport only regulatedBy exists
                          * since the type of regulation is later determined by the Object Type we can only save one
                          * otherwise relationships will be duplicated
                          * if event will break otherwise (physical entity will fall to default
                          */
-                        if (instance.getSchemClass().isa(ReactomeJavaConstants.Event)) {
+//                        if (instance.getSchemClass().isa(ReactomeJavaConstants.Event)) {
                             GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
                             if (species == null) continue;
                             if (species.getDBID().equals(48887L)) {
@@ -162,7 +162,7 @@ public class ReactomeBatchImporter {
                                 }
                             }
                             break;
-                        }
+//                        }
                     default:
                         if (isValidGkInstanceAttribute(instance, attribute)) {
                             saveRelationships(id, getCollectionFromGkInstance(instance, attribute), attribute);
@@ -340,6 +340,7 @@ public class ReactomeBatchImporter {
                 break;
             case "inferredToReverse":
                 batchInserter.createRelationship(newId, oldId, DynamicRelationshipType.withName("inferredTo"), properties);
+                break;
             case "author":
             case "authored":
             case "created":

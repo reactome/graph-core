@@ -1,9 +1,6 @@
 package uk.ac.ebi.reactome.service;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +19,9 @@ import uk.ac.ebi.reactome.service.helper.Node;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,14 +42,8 @@ public class DatabaseObjectServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-//    private static final Long dbId = 7130561L; //381283L; // 75949L;
-//    private static final String stId = "R-HSA-5205685";
-
-//    private static final Long dbId = 5205685L;
-//    private static final String stId = "R-HSA-5205685";
-
-    private static final Long dbId = 400253l;//1368140l;//507868L;
-    private static final String stId = "R-HSA-400253";
+    private static final Long dbId = 5205685L;
+    private static final String stId = "R-HSA-5205685";
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -59,8 +52,13 @@ public class DatabaseObjectServiceTest {
     private GenericService genericService;
 
     @BeforeClass
-    public static void setUpClass () {
+    public static void setUpClass() {
         logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        logger.info("\n\n");
     }
 
     @Before
@@ -70,45 +68,29 @@ public class DatabaseObjectServiceTest {
         DatabaseObjectFactory.clearCache();
     }
 
-    @After
-    public void tearDown() {}
-
-    @Test
-    public void testById() {
-        databaseObjectService.findById("");
-    }
-
     @Test
     public void testFindByDbId() throws Exception {
 
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
-
         start = System.currentTimeMillis();
         Pathway databaseObjectObserved = (Pathway) databaseObjectService.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        DatabaseObjectFactory.clearCache();
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
     @Test
     public void testFindByDbIdNoRelations() {
 
-//        uk.ac.ebi.reactome.domain.result.Test t = databaseObjectRepository.findByDbIdNoRelations2(dbId);
-
-
         logger.info("Started testing databaseObjectService.findByDbIdNoRelations");
         long start, time;
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = databaseObjectService.findByDbIdNoRelations(dbId);
         time = System.currentTimeMillis() - start;
@@ -119,16 +101,15 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
-        assertEquals(databaseObjectExpected.getDisplayName(),databaseObjectObserved.getDisplayName());
+        assertEquals(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 
     @Test
-    public void testFindByStableIdentifier() {
+    public void testFindByStableIdentifier() throws InvocationTargetException, IllegalAccessException {
 
         logger.info("Started testing databaseObjectService.findByStableIdentifier");
         long start, time;
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = databaseObjectService.findByStableIdentifier(stId);
         time = System.currentTimeMillis() - start;
@@ -136,105 +117,87 @@ public class DatabaseObjectServiceTest {
 
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
-//        databaseObjectExpected.load();
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
-        assertEquals(databaseObjectExpected.getDisplayName(), databaseObjectObserved.getDisplayName());
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+     * possibly change when content is added to reactome. This method will provide all participating ReferenceEntities
+     * (even if the tests participatingMolecules 2 and 3 will provide 23, in this casee 22 is the correct number)
+     */
     @Test
     public void testGetParticipatingMolecules() {
 
         logger.info("Started testing databaseObjectService.getParticipatingMolecules");
         long start, time;
-
         start = System.currentTimeMillis();
         Collection<ReferenceEntity> participants = databaseObjectService.getParticipatingMolecules(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(participants.size(),15);
-//        TODO add actual tests
-
+        assertEquals(participants.size(),22);
+        logger.info("Finished");
     }
 
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+     * possibly change when content is added to reactome. This method will provide all participating Ewases
+     * of an Event and their ReferenceEntities dbIds and names.
+     */
     @Test
     public void testGetParticipatingMolecules2() {
 
         logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
         long start, time;
-
         start = System.currentTimeMillis();
         Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(participants.size(), 21);
-//        TODO add actual tests
-
+        assertEquals(participants.size(), 23);
+        logger.info("Finished");
     }
 
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+     * possibly change when content is added to reactome. This method will provide all participating Ewases
+     * of an Event and their ReferenceEntities.
+     */
     @Test
     public void testGetParticipatingMolecules3() {
 
         logger.info("Started testing databaseObjectService.getParticipatingMolecules3");
         long start, time;
-
         start = System.currentTimeMillis();
         Collection<Participant2> participants = databaseObjectService.getParticipatingMolecules3(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(participants.size(), 21);
-//        TODO add actual tests
-
+        assertEquals(participants.size(), 23);
+        logger.info("Finished");
     }
 
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+     * possibly change when content is added to reactome. This method provides all different labels used in the
+     * graph paired with the numbers of entries belonging to these labels.
+     * @throws ClassNotFoundException
+     */
     @Test
     public void testGetLabelsCount() throws ClassNotFoundException {
 
-        logger.info("Started testing databaseObjectService.getLabelsCout");
+        logger.info("Started testing databaseObjectService.getLabelsCount");
         long start, time;
-
         start = System.currentTimeMillis();
         Collection<LabelsCount> labelsCounts = databaseObjectService.getLabelsCount();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-//        assertEquals(labelsCount.size(), 29);
-//        TODO add actual tests
+
+        assertEquals(labelsCounts.size(), 59);
+        logger.info("Finished");
     }
-
-    @Test
-    public void testGetGraphModelTree() throws ClassNotFoundException {
-
-        logger.info("Started testing databaseObjectService.getLabelsCout");
-        long start, time;
-
-        start = System.currentTimeMillis();
-
-        Node root = DatabaseObjectUtils.getGraphModelTree(databaseObjectService.getLabelsCount());
-        int x = root.findMaxPage("Pathway",25);
-
-
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-//        assertEquals(root.getChildren().size(), 29);
-//        TODO add actual tests
-    }
-
-    @Test
-    public void test () throws ClassNotFoundException {
-
-        logger.info("Started testing database");
-        long start, time;
-
-        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = databaseObjectService.findByIdFillLegacyRelations(dbId.toString());
-//        databaseObjectService.getAttributeTable(Reaction.class.getSimpleName());
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-    }
-
 }

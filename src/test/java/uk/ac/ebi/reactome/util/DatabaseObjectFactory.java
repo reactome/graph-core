@@ -183,6 +183,21 @@ public class DatabaseObjectFactory {
             DatabaseObject databaseObject = clazz.newInstance();
             databaseObject.setDbId(instance.getDBID());
             databaseObject.setDisplayName(instance.getDisplayName());
+
+            if (instance.getSchemClass().isValidAttribute(ReactomeJavaConstants.stableIdentifier)) {
+                try {
+                    GKInstance stableIdentifier = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.stableIdentifier);
+                    if (stableIdentifier != null) {
+                        databaseObject.setStableIdentifier((String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier));
+                    }
+                }
+                    catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+
             return databaseObject;
         } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
             logger.error("Error occurred when trying to get Class for Name " + clazzName);

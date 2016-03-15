@@ -111,7 +111,11 @@ fi
 git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
 git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
 
-echo "Started packaging reactome dataimport"
+#if mvn -q clean package -DskipTests; then
+#    if [ -f /target/DatabaseImporter.jar ]; then
+#fi
+
+echo "Started packaging reactome project"
 if ! mvn -q -f ./graph-reactome/pom.xml clean package -DskipTests; then 
     echo "An error occurred when packaging the project"
     exit 1

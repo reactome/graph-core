@@ -33,6 +33,11 @@ public abstract class ServiceImpl<T> implements Service<T> {
     }
 
     @Override
+    public T save(T entity, Integer depth) {
+        return getRepository().save(entity, depth);
+    }
+
+    @Override
     public void delete(Long id) {
         getRepository().delete(id);
     }

@@ -70,7 +70,6 @@ public class EventServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
     }
@@ -90,7 +89,6 @@ public class EventServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
     }
@@ -109,7 +107,6 @@ public class EventServiceTest {
         DatabaseObject databaseObjectObserved = eventService.findByIdWithLegacyFields(dbId.toString());
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
 
-        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
     }

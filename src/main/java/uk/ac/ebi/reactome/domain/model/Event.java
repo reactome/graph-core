@@ -32,13 +32,6 @@ public abstract class Event extends DatabaseObject {
     @Transient
     private List<DatabaseObject> positiveRegulators;
 
-    /**
-     * inferred and orthologous contain the same dataimport, in the Graph representation only inferredTo exists
-     * orthologous events will be filled in service
-     */
-    @Transient
-    private Set<Event> orthologousEvent;
-
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private List<InstanceEdit> authored;
 
@@ -67,8 +60,9 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
     private GO_BiologicalProcess goBiologicalProcess;
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
-    private Set<Event> inferredTo;
+//    InferredTo is orthologousEvents, Spring cant currently map the same thing twice
+//    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+//    private Set<Event> inferredTo;
 
     @ReactomeTransient
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
@@ -80,6 +74,9 @@ public abstract class Event extends DatabaseObject {
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<NegativeRegulation> negativelyRegulatedBy;
+
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    private Set<Event> orthologousEvent;
 
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<PositiveRegulation> positivelyRegulatedBy;
@@ -268,13 +265,13 @@ public abstract class Event extends DatabaseObject {
         this.goBiologicalProcess = goBiologicalProcess;
     }
 
-    public Set<Event> getInferredTo() {
-        return inferredTo;
-    }
-
-    public void setInferredTo(Set<Event> inferredTo) {
-        this.inferredTo = inferredTo;
-    }
+//    public Set<Event> getInferredTo() {
+//        return inferredTo;
+//    }
+//
+//    public void setInferredTo(Set<Event> inferredTo) {
+//        this.inferredTo = inferredTo;
+//    }
 
     public Set<Event> getInferredFrom() {
         return inferredFrom;

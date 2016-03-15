@@ -12,5 +12,6 @@ public interface Service<T> {
     T find(Long id, Integer depth);
     Iterable<T> findAll();
     T save(T entity);
+    T save(T entity, Integer depth);
     void delete (Long id);
 }

@@ -1,20 +1,22 @@
 package uk.ac.ebi.reactome.util;
 
-import org.neo4j.cypher.internal.compiler.v1_9.commands.expressions.Collect;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
-import uk.ac.ebi.reactome.domain.model.OpenSet;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
- * Created by:
+ * Provides helper method for testing equality of two Database Objects. All get Methods that are valid GkInstance fields will be tested
+ * AssertEquals will utilize the equals method implemented in the DatabaseObject. It will check the equality of the dbId, stId and
+ * DisplayName.
  *
+ * Created by:
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 28.01.16.
  */
@@ -34,38 +36,13 @@ public class JunitHelper {
                     Object observed = method.invoke(databaseObjectObserved);
                     if (expected == null && observed == null) continue;
                     if (expected instanceof Collection) {
-                        List expectedList = new ArrayList((Collection) expected);
-                        List observedList = new ArrayList((Collection) observed);
-                        assertEquals(expectedList.size(), observedList.size());
-                        if (expectedList.size() > 0) {
-                            if (expectedList.get(0) instanceof DatabaseObject) {
-                                List<DatabaseObject> expectedObjectList = (List<DatabaseObject>) expected;
-                                List<DatabaseObject> observedObjectList = (List<DatabaseObject>) observed;
-                                Collections.sort(expectedObjectList);
-                                Collections.sort(observedObjectList);
-                                for (int i = 0; i < expectedObjectList.size(); i++) {
-                                    DatabaseObject expectedValue = expectedObjectList.get(i);
-                                    DatabaseObject observedValue = observedObjectList.get(i);
-                                    assertEquals(expectedValue.getDbId(), observedValue.getDbId());
-                                    assertEquals(expectedValue.getDisplayName(), observedValue.getDisplayName());
-                                }
-                            } else {
-                                for (int i = 0; i < expectedList.size(); i++) {
-                                    Object expectedValue = expectedList.get(i);
-                                    Object observedValue = observedList.get(i);
-                                    assertEquals(expectedValue, observedValue);
-                                }
-                            }
-                        }
+                        //Needs to be cast to a Set to remove all duplicates of the expected list
+                        Set expectedSet = new HashSet((Collection) expected);
+                        Set observedSet = new HashSet((Collection) observed);
+                        assertEquals(expectedSet.size(), observedSet.size());
+                        assertEquals(expectedSet, observedSet);
                     } else {
-                        if (expected instanceof DatabaseObject) {
-                            DatabaseObject expectedObject = (DatabaseObject) expected;
-                            DatabaseObject observedObject = (DatabaseObject) observed;
-                            assertEquals(expectedObject.getDbId(), observedObject.getDbId());
-                            assertEquals(expectedObject.getDisplayName(), observedObject.getDisplayName());
-                        } else {
-                            assertEquals(expected, observed);
-                        }
+                        assertEquals(expected, observed);
                     }
                 }
             }
