@@ -74,13 +74,13 @@ public class EventServiceImpl extends ServiceImpl<Event> implements EventService
             }
             event.setPositiveRegulators(regulator);
         }
-        if (event.getOrthologousEvent() != null) {
-            Set<Event> orthologousEvents = new HashSet<>();
-            for (Event orthologousEvent : event.getInferredTo()) {
-                orthologousEvents.add(orthologousEvent);
-            }
-            event.setOrthologousEvent(orthologousEvents);
-        }
+//        if (event.getOrthologousEvent() != null) {
+//            Set<Event> orthologousEvents = new HashSet<>();
+//            for (Event orthologousEvent : event.getInferredTo()) {
+//                orthologousEvents.add(orthologousEvent);
+//            }
+//            event.setOrthologousEvent(orthologousEvents);
+//        }
         return event;
     }
 }
