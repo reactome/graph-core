@@ -204,8 +204,6 @@ public class GenericServiceTest {
         System.out.println();
     }
 
-    @Test void countEntries() {
-        genericService.countEntries(DatabaseObject.class);
-    }
+
 
 }
