@@ -142,12 +142,12 @@ public class ReactomeBatchImporter {
                             GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
                             if (species == null) continue;
                             if (species.getDBID().equals(48887L)) {
-                                //TODO comment
-                                Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
-                                if (inferredFrom != null && !inferredFrom.isEmpty()) {
-                                    saveRelationships(id,inferredFrom,"inferredToReverse");
-                                    //TODO log
-                                }
+                                //TODO comment need to remove for now because of the fake tlps
+//                                Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
+//                                if (inferredFrom != null && !inferredFrom.isEmpty()) {
+//                                    saveRelationships(id,inferredFrom,"inferredToReverse");
+//                                    //TODO log
+//                                }
                                 //TODO comment
                                 Collection orthologousEvents = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
                                 if (orthologousEvents != null && !orthologousEvents.isEmpty()) {

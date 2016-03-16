@@ -13,7 +13,9 @@ import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.Event;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.util.JunitHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,8 @@ import static org.junit.Assume.assumeTrue;
 public class ServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
+
+    private static final Long dbId = 1912416L;
 
     @Autowired
     private Service<DatabaseObject> service;
@@ -52,13 +56,31 @@ public class ServiceTest {
     @Test
     public void find() {
 
-        service.find(1L);
+        DatabaseObject databaseObjectExpected = genericService.findByDbId(DatabaseObject.class,dbId,0);
+        logger.info("Started testing physicalEntityService.findByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = service.find(databaseObjectExpected.getId());
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected,databaseObjectObserved);
+        logger.info("Finished");
     }
 
     @Test
-    public void findWithDepth() {
+    public void findWithDepth() throws InvocationTargetException, IllegalAccessException {
 
-        service.find(1L,1);
+        DatabaseObject databaseObjectExpected = genericService.findByDbId(DatabaseObject.class,dbId,1);
+        logger.info("Started testing physicalEntityService.findByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = service.find(databaseObjectExpected.getId(),1);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 
     @Test

@@ -8,6 +8,7 @@ import uk.ac.ebi.reactome.domain.model.Event;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 28.02.16.
  */
+@SuppressWarnings("SameParameterValue")
 public interface EventService extends Service<Event>  {
 
     Event findById(String id);

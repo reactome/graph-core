@@ -12,6 +12,7 @@ import java.util.Map;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 15.11.15.
  */
+@SuppressWarnings("SameParameterValue")
 public interface GenericService {
 
     <T> T findById(Class<T> clazz, Long id, Integer depth);

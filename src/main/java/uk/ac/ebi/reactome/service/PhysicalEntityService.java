@@ -8,6 +8,7 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 28.02.16.
  */
+@SuppressWarnings("SameParameterValue")
 public interface PhysicalEntityService  extends Service<PhysicalEntity>  {
 
     PhysicalEntity findById(String id);

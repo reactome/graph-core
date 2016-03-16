@@ -198,7 +198,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-//        assertEquals(expectedTlps, observedTlps);
+        assertEquals(expectedTlps, observedTlps);
         logger.info("Finished");
     }
 
@@ -213,7 +213,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(11,observedTlps.size());
+        assertEquals(25,observedTlps.size());
         logger.info("Finished");
     }
 
@@ -228,7 +228,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(11,observedTlps.size());
+        assertEquals(25,observedTlps.size());
         logger.info("Finished");
     }
 
@@ -247,7 +247,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1234L,count);
+        assertEquals(20439L,count);
         logger.info("Finished");
     }
 }

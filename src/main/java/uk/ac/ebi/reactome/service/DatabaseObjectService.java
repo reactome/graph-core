@@ -16,6 +16,7 @@ import java.util.Collection;
  */
 public interface DatabaseObjectService extends Service<DatabaseObject> {
 
+    @SuppressWarnings("unused")
     DatabaseObject findById(String id);
     DatabaseObject findByDbId(Long dbId);
     DatabaseObject findByDbIdNoRelations(Long dbId);

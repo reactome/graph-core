@@ -49,6 +49,7 @@ public class Node implements Comparable<Node>{
         children.add(node);
     }
 
+    @SuppressWarnings("unused")
     public Integer findMaxPage(String className, Integer offset) {
         Node node = iterateTree(this,className);
         if (node != null) {
