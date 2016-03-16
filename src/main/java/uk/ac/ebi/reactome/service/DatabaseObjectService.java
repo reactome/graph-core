@@ -14,6 +14,7 @@ import java.util.Collection;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 15.11.15.
  */
+@SuppressWarnings("SameParameterValue")
 public interface DatabaseObjectService extends Service<DatabaseObject> {
 
     @SuppressWarnings("unused")

@@ -11,6 +11,7 @@ import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
 @SuppressWarnings("SameParameterValue")
 public interface PhysicalEntityService  extends Service<PhysicalEntity>  {
 
+    @SuppressWarnings("unused")
     PhysicalEntity findById(String id);
     PhysicalEntity findByDbId(Long dbId);
     PhysicalEntity findByStableIdentifier(String stableIdentifier);

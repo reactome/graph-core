@@ -11,6 +11,7 @@ import uk.ac.ebi.reactome.domain.model.Event;
 @SuppressWarnings("SameParameterValue")
 public interface EventService extends Service<Event>  {
 
+    @SuppressWarnings("unused")
     Event findById(String id);
     Event findByDbId(Long dbId);
     Event findByStableIdentifier(String stableIdentifier);

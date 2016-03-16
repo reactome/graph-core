@@ -51,7 +51,7 @@ public class ServiceTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         if (!checkedOnce) {
             isFit = genericService.fitForService();
             checkedOnce = true;
