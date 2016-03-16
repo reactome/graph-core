@@ -40,6 +40,8 @@ _GRAPH_DIR="/var/lib/neo4j/dataimport/"
 _GRAPH_NAME="graph.db"
 _INSTALL_NEO4J=false
 
+_PROBLEMS=0
+
 # :h (help) should be at the very end of the while loop
 while getopts ":r:s:t:u:v:d:e:m:n:ih" option; do
   case "$option" in
@@ -108,15 +110,18 @@ if sudo service neo4j-service status; then
     fi
 fi
 
-git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
-git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
-
-#if mvn -q clean package -DskipTests; then
-#    if [ -f /target/DatabaseImporter.jar ]; then
-#fi
+echo "Checking if current directory is valid project for importing"
+if ! mvn -q clean package -DskipTests; then
+    if [! -f /target/DatabaseImporter.jar]; then
+        echo "Cloning new repo from git"
+        git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
+        git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
+        _PATH="/graph-reactome"
+    fi
+fi
 
 echo "Started packaging reactome project"
-if ! mvn -q -f ./graph-reactome/pom.xml clean package -DskipTests; then 
+if ! mvn -q -f .${_PATH}/pom.xml clean package -DskipTests; then
     echo "An error occurred when packaging the project"
     exit 1
 fi 
@@ -126,10 +131,12 @@ if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
     exit 1
 fi 
 echo "Started importing dataimport to the neo4j database"
-if ! java -jar ./graph-reactome/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
+if ! java -jar .${_PATH}/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
     echo "An error occurred during the dataimport import process"
     exit 1
-fi 
+fi
+echo "DataImport finished successfully!"
+
 echo "Changing permissions of neo4j graph"
 if ! sudo chown -R neo4j /var/lib/neo4j/data/graph.db; then
     echo "An error occurred when trying to change permissions of the neo4j graph"
@@ -141,33 +148,35 @@ if ! sudo service neo4j-service start; then
     exit 1
 fi 
 echo "Running Junit tests on the Reactome graph"
-if ! mvn -f ./graph-reactome/pom.xml test >/dev/null 2>&1; then
-    echo "An error occurred during testing phase"
-    exit 1
+if ! mvn -f .${_PATH}/pom.xml test >/dev/null 2>&1; then
+    echo "WARNING!: JUnit tests could not finish successfully !!!"
+    _PROBLEMS=_PROBLEMS+1
 fi
 echo "All tests have successfully finished, detail can be found ...."
 
 echo "Running quality assurance tests"
-if ! java -jar ./graph-reactome/target/QualityAssurance.jar; then
-    echo "An error occurred during the QA phase."
-    exit 1
+if ! java -jar .${_PATH}/target/QualityAssurance.jar; then
+     echo "WARNING!: QA tests could not finish successfully !!!"
+     _PROBLEMS=_PROBLEMS+1
 fi
 echo "All tests have successfully finished, detail can be found ...."
 
 echo "Deploying project to nexus"
-if ! mvn -f ./graph-reactome/pom.xml deploy -DskipTests >/dev/null 2>&1; then
-    echo "An error occurred during deployment"
-    exit 1
+if ! mvn -f .${_PATH}/pom.xml deploy -DskipTests >/dev/null 2>&1; then
+    echo "WARNING!: An error occurred during deployment !!!"
+    _PROBLEMS=_PROBLEMS+1
 fi 
 echo "Creating maven site"
-if ! mvn -f ./graph-reactome/pom.xml site:site >/dev/null 2>&1; then
-    echo "An error occurred during site creation"
-    exit 1
+if ! mvn -f .${_PATH}/pom.xml site:site >/dev/null 2>&1; then
+    echo "WARNING!: An error occurred during site creation !!!"
+    _PROBLEMS=_PROBLEMS+1
 fi 
 echo "Deploying site to nexus"
-if ! mvn -f ./graph-reactome/pom.xml site:deploy >/dev/null 2>&1; then
-    echo "An error occurred during site deployment"
-    exit 1
-fi 
-sudo rm -R graph-reactome
-echo "Done!"
+if ! mvn -f .${_PATH}/pom.xml site:deploy >/dev/null 2>&1; then
+    echo "WARNING!: An error occurred during site deployment !!!"
+    _PROBLEMS=_PROBLEMS+1
+fi
+if [ ! -z "$_PATH" ]; then
+    sudo rm -R graph-reactome
+fi
+echo "Script finished with ${_PROBLEMS} problems!"

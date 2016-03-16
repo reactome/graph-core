@@ -79,6 +79,48 @@ Maven tests will only be executed if a connection to Neo4j can be established. O
 </profile>
 ```
 
+#### Project deployment
+
+Using maven this project can be deployed to a nexus repository.
+
+###### Repo deployment
+
+For deploying the project use: ```mvn deploy```. Projects with suffix _-SNAPSHOT_ will automatically be deployed to the nexus snapshot repository, without any suffix projects will deploy to release. Repositories can be found:
+* http://localhost:8081/nexus/content/repositories/releases/
+* http://localhost:8081/nexus/content/repositories/snapshots/
+
+Authentication for accessing nexus needs to be specified in the maven settings.xml:
+
+```
+<servers>
+    <server>
+        <id>nexus-release</id>
+        <username>user</username>
+        <password>password</password>
+    </server>
+    <server>
+        <id>nexus-snapshot</id>
+        <username>user</username>
+        <password>password</password>
+    </server>
+</servers>
+```
+
+###### Site deployment
+
+Maven _site_ provides a project summary and JavaDoc documentation. To create the maven _site_ htmls use: ```mvn site:site```. To deploy maven _site_ use: ```mvn site:deploy```. Note that deployment requires a successful execution of _site_.  When deployed it will be hosted by nexus: http://localhost:8081/nexus/content/sites/site/.
+Authentication for accessing nexus needs to be specified in the maven settings.xml:
+
+```
+<servers>
+    <server>
+        <id>nexus-site</id>
+        <username>user</username>
+        <password>password</password>
+    </server>
+</servers>
+```
+
 #### Neo4j setup
 
 ```setup-graph.sh``` is a script for Neo4j installation/upgrading, initial data import and deployment of the Reactome Graph project to nexus. For additional information and usage: ```setup-graph.sh -h``` 

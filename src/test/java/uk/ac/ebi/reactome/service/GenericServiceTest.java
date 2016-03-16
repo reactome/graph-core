@@ -36,6 +36,9 @@ public class GenericServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
+    private static Boolean checkedOnce = false;
+    private static Boolean isFit = false;
+
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
@@ -54,7 +57,11 @@ public class GenericServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        assumeTrue(genericService.fitForService());
+        if (!checkedOnce) {
+            isFit = genericService.fitForService();
+            checkedOnce = true;
+        }
+        assumeTrue(isFit);
         genericService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
@@ -213,7 +220,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(25,observedTlps.size());
+        assertEquals(24,observedTlps.size());
         logger.info("Finished");
     }
 
@@ -228,7 +235,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(25,observedTlps.size());
+        assertEquals(24,observedTlps.size());
         logger.info("Finished");
     }
 
@@ -247,7 +254,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(20439L,count);
+        assertEquals(20418L,count);
         logger.info("Finished");
     }
 }

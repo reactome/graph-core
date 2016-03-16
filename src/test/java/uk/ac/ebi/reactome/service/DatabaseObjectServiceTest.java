@@ -44,6 +44,9 @@ public class DatabaseObjectServiceTest {
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
+    private static Boolean checkedOnce = false;
+    private static Boolean isFit = false;
+
     @Autowired
     private DatabaseObjectService databaseObjectService;
 
@@ -62,7 +65,11 @@ public class DatabaseObjectServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        assumeTrue(genericService.fitForService());
+        if (!checkedOnce) {
+            isFit = genericService.fitForService();
+            checkedOnce = true;
+        }
+        assumeTrue(isFit);
         genericService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
@@ -196,7 +203,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(labelsCounts.size(), 59);
+        assertEquals(labelsCounts.size(), 58);
         logger.info("Finished");
     }
 }

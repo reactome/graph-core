@@ -32,6 +32,9 @@ public class PhysicalEntityServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
+    private static Boolean checkedOnce = false;
+    private static Boolean isFit = false;
+
     private static final Long dbId = 53787L;
     private static final String stId = "R-HSA-53787";
 
@@ -53,7 +56,11 @@ public class PhysicalEntityServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        assumeTrue(genericService.fitForService());
+        if (!checkedOnce) {
+            isFit = genericService.fitForService();
+            checkedOnce = true;
+        }
+        assumeTrue(isFit);
         genericService.clearCache();
         DatabaseObjectFactory.clearCache();
     }

@@ -31,6 +31,9 @@ public class EventServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
+    private static Boolean checkedOnce = false;
+    private static Boolean isFit = false;
+
     private static final Long dbId = 1912416L;
     private static final String stId = "R-HSA-1912416";
 
@@ -52,7 +55,11 @@ public class EventServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        assumeTrue(genericService.fitForService());
+        if (!checkedOnce) {
+            isFit = genericService.fitForService();
+            checkedOnce = true;
+        }
+        assumeTrue(isFit);
         genericService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
