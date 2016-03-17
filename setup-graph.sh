@@ -117,14 +117,15 @@ if ! mvn -q clean package -DskipTests; then
         git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
         git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
         _PATH="/graph-reactome"
+
+        echo "Started packaging reactome project"
+        if ! mvn -q -f .${_PATH}/pom.xml clean package -DskipTests; then
+            echo "An error occurred when packaging the project"
+            exit 1
+        fi
     fi
 fi
 
-echo "Started packaging reactome project"
-if ! mvn -q -f .${_PATH}/pom.xml clean package -DskipTests; then
-    echo "An error occurred when packaging the project"
-    exit 1
-fi 
 echo "Changing permissions of neo4j graph"
 if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
     echo "An error occurred when trying to change permissions of the neo4j graph"
@@ -150,33 +151,33 @@ fi
 echo "Running Junit tests on the Reactome graph"
 if ! mvn -f .${_PATH}/pom.xml test >/dev/null 2>&1; then
     echo "WARNING!: JUnit tests could not finish successfully !!!"
-    _PROBLEMS=_PROBLEMS+1
+    (( _PROBLEMS += 1 ))
+else
+    echo "All tests have successfully finished, detail can be found in ...."
 fi
-echo "All tests have successfully finished, detail can be found ...."
-
 echo "Running quality assurance tests"
-if ! java -jar .${_PATH}/target/QualityAssurance.jar; then
+if ! java -jar .${_PATH}/target/QualityAssurance.jar >/dev/null 2>&1; then
      echo "WARNING!: QA tests could not finish successfully !!!"
-     _PROBLEMS=_PROBLEMS+1
+    (( _PROBLEMS += 1 ))
+else
+    echo "All QaTests have successfully finished, detail can be found ...."
 fi
-echo "All tests have successfully finished, detail can be found ...."
-
 echo "Deploying project to nexus"
 if ! mvn -f .${_PATH}/pom.xml deploy -DskipTests >/dev/null 2>&1; then
     echo "WARNING!: An error occurred during deployment !!!"
-    _PROBLEMS=_PROBLEMS+1
+    (( _PROBLEMS += 1 ))
 fi 
 echo "Creating maven site"
 if ! mvn -f .${_PATH}/pom.xml site:site >/dev/null 2>&1; then
     echo "WARNING!: An error occurred during site creation !!!"
-    _PROBLEMS=_PROBLEMS+1
+    (( _PROBLEMS += 1 ))
 fi 
 echo "Deploying site to nexus"
 if ! mvn -f .${_PATH}/pom.xml site:deploy >/dev/null 2>&1; then
     echo "WARNING!: An error occurred during site deployment !!!"
-    _PROBLEMS=_PROBLEMS+1
+    (( _PROBLEMS += 1 ))
 fi
 if [ ! -z "$_PATH" ]; then
     sudo rm -R graph-reactome
 fi
-echo "Script finished with ${_PROBLEMS} problems!"
+echo "Script finished with"  ${_PROBLEMS} "problems!"

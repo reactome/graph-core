@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1-RC1</version>
     <name>ReactomeGraphCore</name>
 
     <description>
@@ -67,12 +67,6 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
             <version>${sdn.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.neo4j</groupId>
-                    <artifactId>neo4j-ogm-http-driver</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--Spring junit test framework-->
         <dependency>
@@ -80,17 +74,6 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.test.version}</version>
             <scope>test</scope>
-        </dependency>
-        <!--Neo4j object graph mapping -->
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-api</artifactId>
-            <version>${neo4j.ogm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-core</artifactId>
-            <version>${neo4j.ogm.version}</version>
         </dependency>
         <!--Aspectj AOP -->
         <dependency>
@@ -249,7 +232,7 @@
                             <finalName>QualityAssurance</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>uk.ac.ebi.reactome.qualityassurance.QualityAssuranceLauncher</mainClass>
+                                    <mainClass>uk.ac.ebi.reactome.qa.QualityAssuranceLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

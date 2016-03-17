@@ -254,7 +254,7 @@ public class GenericServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(20418L,count);
+        assertEquals(20439L,count);
         logger.info("Finished");
     }
 }

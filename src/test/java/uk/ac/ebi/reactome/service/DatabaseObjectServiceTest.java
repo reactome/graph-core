@@ -203,7 +203,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(labelsCounts.size(), 58);
+        assertEquals(labelsCounts.size(), 59);
         logger.info("Finished");
     }
 }

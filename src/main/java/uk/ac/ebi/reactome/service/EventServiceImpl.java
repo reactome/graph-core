@@ -56,6 +56,7 @@ public class EventServiceImpl extends ServiceImpl<Event> implements EventService
     @Transactional
     public Event findByIdWithLegacyFields(String id) {
         Event event = findById(id);
+        if (event == null) return null;
         if (event.getNegativelyRegulatedBy() != null) {
             List<DatabaseObject> regulator = new ArrayList<>();
             for (NegativeRegulation negativeRegulation : event.getNegativelyRegulatedBy()) {
