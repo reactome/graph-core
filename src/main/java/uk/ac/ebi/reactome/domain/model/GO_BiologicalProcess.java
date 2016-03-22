@@ -2,12 +2,15 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
 @NodeEntity
 public class GO_BiologicalProcess extends DatabaseObject{
 
+    @ReactomeProperty
     private String accession;
+    @ReactomeProperty
     private String definition;
 
     @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)

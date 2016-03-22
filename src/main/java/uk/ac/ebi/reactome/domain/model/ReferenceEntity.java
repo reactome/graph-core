@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 import java.util.List;
 
@@ -9,9 +10,13 @@ import java.util.List;
 @NodeEntity
 public class ReferenceEntity extends DatabaseObject {
 
+    @ReactomeProperty
     private String identifier;
+    @ReactomeProperty
     private List<String> name;
+    @ReactomeProperty
     private List<String> otherIdentifier;
+    @ReactomeProperty
     private String url;
 
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)

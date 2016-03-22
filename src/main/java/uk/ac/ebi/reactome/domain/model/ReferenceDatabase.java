@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 import java.util.List;
 
@@ -8,8 +9,11 @@ import java.util.List;
 @NodeEntity
 public class ReferenceDatabase extends DatabaseObject {
 
+    @ReactomeProperty
     private String accessUrl;
+    @ReactomeProperty
     private List<String> name;
+    @ReactomeProperty
     private String url;
     
     public ReferenceDatabase() {}

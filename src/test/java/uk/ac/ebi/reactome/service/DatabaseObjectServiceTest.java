@@ -13,10 +13,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
-import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
@@ -154,19 +154,19 @@ public class DatabaseObjectServiceTest {
      * possibly change when content is added to reactome. This method will provide all participating Ewases
      * of an Event and their ReferenceEntities dbIds and names.
      */
-    @Test
-    public void testGetParticipatingMolecules2() {
-
-        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(participants.size(), 23);
-        logger.info("Finished");
-    }
+//    @Test
+//    public void testGetParticipatingMolecules2() {
+//
+//        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
+//        long start, time;
+//        start = System.currentTimeMillis();
+//        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GraphDb execution time: " + time + "ms");
+//
+//        assertEquals(participants.size(), 23);
+//        logger.info("Finished");
+//    }
 
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
@@ -179,13 +179,33 @@ public class DatabaseObjectServiceTest {
         logger.info("Started testing databaseObjectService.getParticipatingMolecules3");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Participant2> participants = databaseObjectService.getParticipatingMolecules3(dbId);
+        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules3(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(participants.size(), 23);
         logger.info("Finished");
     }
+
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+     * possibly change when content is added to reactome. This method will provide all participating PhysicalEntities
+     * of an Event
+     */
+    @Test
+    public void testGetParticipatingMolecules4() {
+
+        logger.info("Started testing databaseObjectService.getParticipatingMolecules4");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<PhysicalEntity> participants = databaseObjectService.getParticipatingMolecules4(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(participants.size(), 22);
+        logger.info("Finished");
+    }
+
 
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will

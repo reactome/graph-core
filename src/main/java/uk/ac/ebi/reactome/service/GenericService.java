@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.service;
 
 import org.neo4j.ogm.model.Result;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.Species;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,9 +26,11 @@ public interface GenericService {
     Object findByPropertyWithRelations (String property, Object value, String... relationships);
     Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
 
-    Collection<Pathway> findTopLevelPathways();
-    Collection<Pathway> findTopLevelPathways(Long speciesId);
-    Collection<Pathway> findTopLevelPathways(String speciesName);
+    Collection<Pathway> getTopLevelPathways();
+    Collection<Pathway> getTopLevelPathways(Long speciesId);
+    Collection<Pathway> getTopLevelPathways(String speciesName);
+
+    Collection<Species> getSpecies();
 
     Result query (String query, Map<String,Object> map);
     Long countEntries(Class<?> clazz);

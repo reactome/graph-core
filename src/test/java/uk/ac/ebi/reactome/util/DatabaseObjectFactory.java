@@ -7,10 +7,13 @@ import org.gk.schema.SchemaClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.Species;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DatabaseObjectFactory {
@@ -21,6 +24,7 @@ public class DatabaseObjectFactory {
      * The package name is used to create Object from GkInstance by reflection
      */
     private static final String PACKAGE_NAME = "uk.ac.ebi.reactome.domain.model.";
+    private static final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * Reactome MySql database adapter
@@ -70,6 +74,22 @@ public class DatabaseObjectFactory {
         }
         return databaseObjects;
     }
+
+    public static List<Species> getSpecies() {
+        List<Species> species = new ArrayList<>();
+        try {
+            Collection<?> objects = dba.fetchInstancesByClass(ReactomeJavaConstants.Species);
+            for (Object object : objects) {
+                GKInstance instance = (GKInstance) object;
+                DatabaseObject databaseObject = createObject(instance);
+                species.add((Species) databaseObject);
+            }
+        } catch (Exception e) {
+            logger.error("An error occurred while trying to load Reactome top level pathways", e);
+        }
+        return species;
+    }
+
 
     /**
      * Method to create an object from a given Reactome identifier.
@@ -138,6 +158,29 @@ public class DatabaseObjectFactory {
                 if (instance.getSchemClass().isValidAttribute(attributeName)) {
                     List attValues = instance.getAttributeValuesList(attributeName);
                     if (attValues == null || attValues.size() == 0) continue;
+
+                    if (attributeName.equals("modified")) {
+                        if (attValues.size() > 1) {
+                            try {
+                                GKInstance latestModified = (GKInstance) attValues.iterator().next();
+                                Date latestDate = formatter.parse((String) latestModified.getAttributeValue(ReactomeJavaConstants.dateTime));
+                                for (Object object : attValues) {
+                                    GKInstance gkInstance = (GKInstance) object;
+                                    Date date = formatter.parse((String) gkInstance.getAttributeValue(ReactomeJavaConstants.dateTime));
+                                    if (latestDate.before(date)) {
+                                        latestDate = date;
+                                        latestModified = gkInstance;
+                                    }
+                                }
+                                attValues.clear();
+                                //noinspection unchecked
+                                attValues.add(latestModified);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
                     Method setMethod = getNamedMethod(databaseObject, "set" + propName);
                     if (setMethod == null) continue;
                     Class argType = setMethod.getParameterTypes()[0];
@@ -183,7 +226,6 @@ public class DatabaseObjectFactory {
             DatabaseObject databaseObject = clazz.newInstance();
             databaseObject.setDbId(instance.getDBID());
             databaseObject.setDisplayName(instance.getDisplayName());
-
             if (instance.getSchemClass().isValidAttribute(ReactomeJavaConstants.stableIdentifier)) {
                 try {
                     GKInstance stableIdentifier = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.stableIdentifier);
@@ -191,13 +233,10 @@ public class DatabaseObjectFactory {
                         databaseObject.setStableIdentifier((String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier));
                     }
                 }
-                    catch (Exception e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
-
-
             return databaseObject;
         } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
             logger.error("Error occurred when trying to get Class for Name " + clazzName);

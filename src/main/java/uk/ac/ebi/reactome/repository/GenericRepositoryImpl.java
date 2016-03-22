@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.Species;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -99,13 +100,13 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
     @Override
-    public Collection<Pathway> findTopLevelPathways() {
+    public Collection<Pathway> getTopLevelPathways() {
         String query = "Match (n:TopLevelPathway) RETURN n";
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, Collections.<String,Object>emptyMap());
     }
 
     @Override
-    public Collection<Pathway> findTopLevelPathways(Long speciesId) {
+    public Collection<Pathway> getTopLevelPathways(Long speciesId) {
         String query = "Match (n:TopLevelPathway)-[:species]-(s) Where s.dbId = {speciesId} RETURN n";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesId", speciesId);
@@ -113,11 +114,17 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
     @Override
-    public Collection<Pathway> findTopLevelPathways(String speciesName) {
+    public Collection<Pathway> getTopLevelPathways(String speciesName) {
         String query = "Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {speciesName} RETURN n";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
+    }
+
+    @Override
+    public Collection<Species> getSpecies() {
+        String query = "Match (n:Species) Return n";
+        return (Collection<Species>) neo4jTemplate.queryForObjects(Species.class, query, Collections.<String,Object>emptyMap());
     }
 
     @Override

@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 import java.util.List;
 
@@ -12,8 +13,11 @@ import java.util.List;
 @NodeEntity
 public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
+    @ReactomeProperty
     private Integer endCoordinate;
+    @ReactomeProperty
     private String referenceType;
+    @ReactomeProperty
     private Integer startCoordinate;
 
     @Relationship(type = "hasModifiedResidue", direction = Relationship.OUTGOING)

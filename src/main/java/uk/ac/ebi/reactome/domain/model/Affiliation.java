@@ -1,6 +1,7 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 import java.util.List;
 
@@ -8,7 +9,9 @@ import java.util.List;
 @NodeEntity
 public class Affiliation extends  DatabaseObject{
 
+    @ReactomeProperty
     private String address;
+    @ReactomeProperty
     private List<String> name;
 
     public Affiliation() {}

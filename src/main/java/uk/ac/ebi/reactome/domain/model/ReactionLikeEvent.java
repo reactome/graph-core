@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
@@ -17,7 +18,9 @@ import java.util.*;
 @NodeEntity
 public class ReactionLikeEvent extends Event {
 
+    @ReactomeProperty
     private Boolean isChimeric;
+    @ReactomeProperty
     private String systematicName;
 
     @Relationship(type = "catalystActivity", direction = Relationship.OUTGOING)

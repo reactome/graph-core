@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import java.util.List;
@@ -12,15 +13,23 @@ import java.util.Set;
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 
+    @ReactomeProperty
     private Boolean _doRelease;
+    @ReactomeProperty
     private String definition;
     //A simple flag to indicate if this Event object is a disease
+    @ReactomeProperty
     private Boolean isInDisease;
     //A simple flag to indicate if this Event is inferred from another
+    @ReactomeProperty
     private Boolean isInferred;
+    @ReactomeProperty
     private List<String> name;
+    @ReactomeProperty
     private String releaseDate;
+    @ReactomeProperty
     private String releaseStatus;
+    @ReactomeProperty
     private String speciesName;
 
     /**

@@ -1,17 +1,21 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import io.swagger.annotations.ApiModelProperty;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
+/**
+ *  DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
+ */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
 @NodeEntity
@@ -20,24 +24,29 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeTransient
     public transient boolean isLoaded = false;
 
+    @JsonIgnore
     @GraphId
     private Long id;
-    @ReactomeTransient
-    private Long dbId;
-    @ReactomeTransient
-    private String displayName;
-    private String stableIdentifier;
-    @ReactomeTransient
-    private Date timestamp;
 
+    @ApiModelProperty(value = "This is the main internal identifier of a Reactome entry", required = true)
+    private Long dbId;
+
+    @ApiModelProperty(value = "This is the main name of a Reactome entry", required = true)
+    private String displayName;
+
+    @ApiModelProperty(value = "This is the main external identifier of a Reactome entry")
+    @ReactomeProperty
+    private String stableIdentifier;
+
+    @ApiModelProperty(value = "Instance that created this entry")
     @Relationship(type = "created", direction = Relationship.INCOMING)
     private InstanceEdit created;
 
+    @ApiModelProperty(value = "Last instance that modified this entry")
     @Relationship(type = "modified", direction = Relationship.INCOMING)
-    private List<InstanceEdit> modified;
+    private InstanceEdit modified;
 
     public DatabaseObject() {}
-
 
     public Long getId() {
         return id;
@@ -71,14 +80,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.stableIdentifier = stableIdentifier;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public InstanceEdit getCreated() {
         return created;
     }
@@ -87,11 +88,11 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.created = created;
     }
 
-    public List<InstanceEdit> getModified() {
+    public InstanceEdit getModified() {
         return modified;
     }
 
-    public void setModified(List<InstanceEdit> modified) {
+    public void setModified(InstanceEdit modified) {
         this.modified = modified;
     }
 

@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
@@ -13,8 +14,11 @@ import java.util.List;
 @NodeEntity
 public class PhysicalEntity extends DatabaseObject {
 
+    @ReactomeProperty
     private String definition;
+    @ReactomeProperty
     private List<String> name;
+    @ReactomeProperty
     private String systematicName;
 
     // List of CatalyzedEvents filled in service layer

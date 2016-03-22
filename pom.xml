@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>0.0.1-RC1</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>ReactomeGraphCore</name>
 
     <description>
@@ -39,6 +39,8 @@
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
         <jasp.version>2.1</jasp.version>
+        <reflection.version>0.9.9-RC2</reflection.version>
+        <swagger.version>2.4.0</swagger.version>
         <maven.compiler.version>2.3.2</maven.compiler.version>
         <maven.javadoc.version>2.10.1</maven.javadoc.version>
         <maven.assembly.version>2.6</maven.assembly.version>
@@ -116,6 +118,13 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
+        </dependency>
+        <!-- Swagger for Annotations -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.6</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -248,7 +257,7 @@
         </repository>
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
-            <id>nexus-snapshots</id>
+            <id>nexus-snapshot</id>
             <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
         <site>

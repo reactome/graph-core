@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
+import uk.ac.ebi.reactome.domain.model.PhysicalEntity;
 import uk.ac.ebi.reactome.domain.model.ReferenceEntity;
 import uk.ac.ebi.reactome.domain.result.LabelsCount;
 import uk.ac.ebi.reactome.domain.result.Participant;
-import uk.ac.ebi.reactome.domain.result.Participant2;
 import uk.ac.ebi.reactome.repository.DatabaseObjectRepository;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
@@ -63,14 +63,25 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         return databaseObjectRepository.getParticipatingMolecules(dbId);
     }
 
+//    @Override
+//    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
+//        return databaseObjectRepository.getParticipatingMolecules2(dbId);
+//    }
+
     @Override
-    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
-        return databaseObjectRepository.getParticipatingMolecules2(dbId);
+    public Collection<Participant> getParticipatingMolecules3(Long dbId) {
+        return databaseObjectRepository.getParticipatingMolecules3(dbId);
     }
 
     @Override
-    public Collection<Participant2> getParticipatingMolecules3(Long dbId) {
-        return databaseObjectRepository.getParticipatingMolecules3(dbId);
+    public Collection<PhysicalEntity> getParticipatingMolecules4(String id) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return databaseObjectRepository.getParticipatingMolecules4(id);
+        } else if (DatabaseObjectUtils.isDbId(id)){
+            return databaseObjectRepository.getParticipatingMolecules4(Long.parseLong(id));
+        }
+        return null;
     }
 
     @Override

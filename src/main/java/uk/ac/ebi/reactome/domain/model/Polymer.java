@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 import uk.ac.ebi.reactome.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
@@ -18,7 +19,9 @@ import java.util.Set;
 @NodeEntity
 public class Polymer extends PhysicalEntity {
 
+    @ReactomeProperty
     private Integer maxUnitCount;
+    @ReactomeProperty
     private Integer minUnitCount;
 
     @Relationship(type = "repeatedUnit", direction = Relationship.OUTGOING)

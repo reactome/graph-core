@@ -14,13 +14,16 @@ import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
 import uk.ac.ebi.reactome.domain.model.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -42,6 +45,7 @@ public class ReactomeBatchImporter {
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;
     private static final String DATA_DIR = "/var/lib/neo4j/data/graph.db";
+//    private static final String DATA_DIR = "./target/graph.db";
 
     private static final String DBID = "dbId";
     private static final String STID = "stableIdentifier";
@@ -61,6 +65,8 @@ public class ReactomeBatchImporter {
 
     private static final int width = 100;
     private static int total;
+
+    private static final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public ReactomeBatchImporter(String host, String database, String user, String password, Integer port) {
         try {
@@ -139,29 +145,29 @@ public class ReactomeBatchImporter {
                          * if event will break otherwise (physical entity will fall to default
                          */
 //                        if (instance.getSchemaClass().isa(ReactomeJavaConstants.Event)) {
-                            GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
-                            if (species == null) continue;
-                            if (species.getDBID().equals(48887L)) {
-                                //TODO comment need to remove for now because of the fake tlps
-                                Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
-                                if (inferredFrom != null && !inferredFrom.isEmpty()) {
-                                    saveRelationships(id,inferredFrom,"inferredToReverse");
-                                    //TODO log
-                                }
-                                //TODO comment
-                                Collection orthologousEvents = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
-                                if (orthologousEvents != null && !orthologousEvents.isEmpty()) {
-                                    saveRelationships(id, orthologousEvents, "inferredTo");
-                                } else {
-                                    Collection referrers = getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.orthologousEvent);
-                                    if (referrers != null && !referrers.isEmpty()) {
-                                        saveRelationships(id, referrers, "inferredTo");
-                                        errorLogger.error("Entry has referred orthologous but no attribute orthologous: " +
-                                                instance.getDBID() + " " + instance.getDisplayName());
-                                    }
+                        GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
+                        if (species == null) continue;
+                        if (species.getDBID().equals(48887L)) {
+                            //TODO comment need to remove for now because of the fake tlps
+                            Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
+                            if (inferredFrom != null && !inferredFrom.isEmpty()) {
+                                saveRelationships(id,inferredFrom,"inferredToReverse");
+                                //TODO log
+                            }
+                            //TODO comment
+                            Collection orthologousEvents = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
+                            if (orthologousEvents != null && !orthologousEvents.isEmpty()) {
+                                saveRelationships(id, orthologousEvents, "inferredTo");
+                            } else {
+                                Collection referrers = getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.orthologousEvent);
+                                if (referrers != null && !referrers.isEmpty()) {
+                                    saveRelationships(id, referrers, "inferredTo");
+                                    errorLogger.error("Entry has referred orthologous but no attribute orthologous: " +
+                                            instance.getDBID() + " " + instance.getDisplayName());
                                 }
                             }
-                            break;
+                        }
+                        break;
 //                        }
                     default:
                         if (isValidGkInstanceAttribute(instance, attribute)) {
@@ -247,7 +253,7 @@ public class ReactomeBatchImporter {
                             GKInstance referenceDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
                             if (referenceDatabase == null) continue;
                             identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
-                            String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.url);
+                            String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.accessUrl);
                             if (url == null || identifier == null) continue;
                             properties.put(attribute, url.replace("###ID###", identifier));
                             break;
@@ -298,6 +304,28 @@ public class ReactomeBatchImporter {
      */
     private void saveRelationships(Long oldId, Collection objects, String relationName) throws ClassNotFoundException {
         if (objects == null || objects.isEmpty()) return;
+
+        if (relationName.equals("modified")) {
+            if (objects.size() > 1) {
+                try {
+                    GKInstance latestModified = (GKInstance) objects.iterator().next();
+                    Date latestDate = formatter.parse((String) getObjectFromGkInstance( latestModified, ReactomeJavaConstants.dateTime));
+                    for (Object object : objects) {
+                        GKInstance gkInstance = (GKInstance) object;
+                        Date date = formatter.parse((String) getObjectFromGkInstance(gkInstance, ReactomeJavaConstants.dateTime));
+                        if (latestDate.before(date)) {
+                            latestDate = date;
+                            latestModified = gkInstance;
+                        }
+                    }
+                    objects.clear();
+                    //noinspection unchecked
+                    objects.add(latestModified);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         Map<Long, GkInstanceStoichiometryHelper> stoichiometryMap = new HashMap<>();
         for (Object object : objects) {
@@ -368,7 +396,7 @@ public class ReactomeBatchImporter {
     private void prepareDatabase() throws IOException {
 
         File file = cleanDatabase();
-       batchInserter = BatchInserters.inserter(file);
+        batchInserter = BatchInserters.inserter(file);
         createConstraints();
     }
 
@@ -511,18 +539,16 @@ public class ReactomeBatchImporter {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
             List<Field> fields = getAllFields(new ArrayList<Field>(), clazz);
             for (Field field : fields) {
-                Annotation[] annotations = field.getAnnotations();
                 String fieldName = field.getName();
-                if (annotations.length == 0) {
+                if (field.getAnnotation(Relationship.class)!= null) {
+                    if (field.getAnnotation(ReactomeTransient.class) == null) {
+                        addFields(relationAttributesMap, clazz, fieldName);
+                    }
+                } else if (field.getAnnotation(ReactomeProperty.class)!= null) {
                     if (Collection.class.isAssignableFrom(field.getType())) {
                         addFields(primitiveListAttributesMap, clazz, fieldName);
                     } else {
                         addFields(primitiveAttributesMap, clazz, fieldName);
-                    }
-                } else if (annotations.length == 1) {
-                    Class annotationType = annotations[0].annotationType();
-                    if (annotationType.equals(Relationship.class)) {
-                        addFields(relationAttributesMap, clazz, fieldName);
                     }
                 }
             }

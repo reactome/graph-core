@@ -2,14 +2,19 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
 @NodeEntity
 public class Book extends Publication {
 
+    @ReactomeProperty
     private String ISBN;
+    @ReactomeProperty
     private String chapterTitle;
+    @ReactomeProperty
     private String pages;
+    @ReactomeProperty
     private Integer year;
 
     @Relationship(type = "publisher", direction = Relationship.OUTGOING)

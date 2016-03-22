@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 /**
  * A chemical species not encoded directly or indirectly in the genome, typically small molecules such as ATP or ethanol.
@@ -11,6 +12,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class SimpleEntity extends PhysicalEntity {
 
+    @ReactomeProperty
     private String referenceType;
 
     @Relationship(type = "referetnceEntity", direction = Relationship.OUTGOING)

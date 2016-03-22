@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.reactome.config.MyConfiguration;
 import uk.ac.ebi.reactome.domain.model.DatabaseObject;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.Species;
 import uk.ac.ebi.reactome.util.DatabaseObjectFactory;
 import uk.ac.ebi.reactome.util.JunitHelper;
 
@@ -189,14 +190,13 @@ public class GenericServiceTest {
         logger.info("Finished");
     }
 
-    @SuppressWarnings("unused")
     @Test
-    public void testFindTopLevelPathways() {
+    public void testGetTopLevelPathways() {
 
-        logger.info("Started testing genericService.findTopLevelPathways");
+        logger.info("Started testing genericService.getTopLevelPathways");
         long start, time;
         start = System.currentTimeMillis();
-        Set<Pathway> observedTlps = new HashSet<>(genericService.findTopLevelPathways());
+        Set<Pathway> observedTlps = new HashSet<>(genericService.getTopLevelPathways());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -209,14 +209,13 @@ public class GenericServiceTest {
         logger.info("Finished");
     }
 
-    @SuppressWarnings("unused")
     @Test
-    public void testFindTopLevelPathwaysWithId() {
+    public void testGetTopLevelPathwaysWithId() {
 
-        logger.info("Started testing genericService.findTopLevelPathwaysWithId");
+        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> observedTlps = genericService.findTopLevelPathways(48887L);
+        Collection<Pathway> observedTlps = genericService.getTopLevelPathways(48887L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -224,18 +223,36 @@ public class GenericServiceTest {
         logger.info("Finished");
     }
 
-    @SuppressWarnings("unused")
     @Test
-    public void testFindTopLevelPathwaysWithName() {
+    public void testGetTopLevelPathwaysWithName() {
 
-        logger.info("Started testing genericService.findTopLevelPathwaysWithId");
+        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> observedTlps = genericService.findTopLevelPathways("Homo sapiens");
+        Collection<Pathway> observedTlps = genericService.getTopLevelPathways("Homo sapiens");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(24,observedTlps.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testGetSpecies() {
+
+        logger.info("Started testing genericService.getSpecies");
+        long start, time;
+        start = System.currentTimeMillis();
+        Set<Species> observedSpecies = new HashSet<>(genericService.getSpecies());
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        Set<Species> expectedSpecies = new HashSet<>(DatabaseObjectFactory.getSpecies());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(expectedSpecies, observedSpecies);
         logger.info("Finished");
     }
 
@@ -243,7 +260,6 @@ public class GenericServiceTest {
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
      * change when content is added to reactome.
      */
-    @SuppressWarnings("unused")
     @Test
     public void testCountEntries() {
 

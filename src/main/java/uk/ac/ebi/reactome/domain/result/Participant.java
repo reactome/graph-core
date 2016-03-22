@@ -8,7 +8,7 @@ import java.util.Collection;
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 28.01.16.
+ * @since 03.02.16.
  *
  * Object for retrieving Ewases and their ReferenceEntities for a given Pathway Id
  */
@@ -16,40 +16,34 @@ import java.util.Collection;
 @QueryResult
 public class Participant {
 
-    private Long ewasDbId;
-    private String ewasName;
-    private Collection<Long> refEntitiesDbIds;
-    private Collection<String> refEntitiesNames;
+    private Long peDbId;
+    private String displayName;
+    private Collection<Object> refEntities;
 
-    public Long getEwasDbId() {
-        return ewasDbId;
+    public Participant() {
     }
 
-    public void setEwasDbId(Long ewasDbId) {
-        this.ewasDbId = ewasDbId;
+    public Long getPeDbId() {
+        return peDbId;
     }
 
-    public String getEwasName() {
-        return ewasName;
+    public void setPeDbId(Long peDbId) {
+        this.peDbId = peDbId;
     }
 
-    public void setEwasName(String ewasName) {
-        this.ewasName = ewasName;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public Collection<Long> getRefEntitiesDbIds() {
-        return refEntitiesDbIds;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
-    public void setRefEntitiesDbIds(Collection<Long> refEntitiesDbIds) {
-        this.refEntitiesDbIds = refEntitiesDbIds;
+    public Collection<Object> getRefEntities() {
+        return refEntities;
     }
 
-    public Collection<String> getRefEntitiesNames() {
-        return refEntitiesNames;
-    }
-
-    public void setRefEntitiesNames(Collection<String> refEntitiesNames) {
-        this.refEntitiesNames = refEntitiesNames;
+    public void setRefEntities(Collection<Object> refEntities) {
+        this.refEntities = refEntities;
     }
 }

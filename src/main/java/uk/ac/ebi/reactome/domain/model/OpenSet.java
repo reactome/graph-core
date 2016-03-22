@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 /**
  * A group of entities that could be listed in principle but not in practice, such as mRNA or long-chain fatty acid. Examples can be specified as values of the hasMember slot, but are not an exhaustive list of the possible members. The referenceEntity slot indicates the chemical feature that is common to all the members of this class, e.g. The OpenSet  for Alcohol  would have the -OH group defined for referenceEntity.
@@ -10,6 +11,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class OpenSet extends EntitySet {
 
+    @ReactomeProperty
     private String referenceType;
 
     @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)

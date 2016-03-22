@@ -17,7 +17,7 @@ The password will only be updated after installing or updating the neo4j server
 The neo4j server can be updated without uninstalling it before.
 WARNING: If no password is specified the old password will persist.
 
-$(basename "$0") [-r <reactome_host> -s <reactome_port> —t <reactome_db_name> -u <reactome_db_user> -v <reactome_db_password> -d <neo4j_db_directory> -e <neo4j_db_name> -i <install_neo4j> -m <neo4j_user> -n <neo4j_password> ] 
+$(basename "$0") [-r <reactome_host> -s <reactome_port> —t <reactome_db_name> -u <reactome_db_user> -v <reactome_db_password> -d <neo4j_db_directory> -e <neo4j_db_name> -j <import_data> -i <install_neo4j> -m <neo4j_user> -n <neo4j_password> ]
 
 where:
     -h  Program help/usage
@@ -28,6 +28,7 @@ where:
     -v  Reactome database password. DEFAULT: reactome
     -d  Neo4j directory of Db. DEFAULT: /var/lib/neo4j/dataimport/
     -e  Neo4j name of graph Db. DEFAULT: graph.db
+    -j  Import Reactome data. DEFAULT: false
     -i  Install neo4j. DEFAULT: false
     -n  Neo4j password (only set when neo4j is installed)."	
 
@@ -38,12 +39,13 @@ _REACTOME_USER="reactome"
 _REACTOME_PASSWORD="reactome"
 _GRAPH_DIR="/var/lib/neo4j/dataimport/"
 _GRAPH_NAME="graph.db"
+_IMPORT_DATA=false
 _INSTALL_NEO4J=false
 
 _PROBLEMS=0
 
 # :h (help) should be at the very end of the while loop
-while getopts ":r:s:t:u:v:d:e:m:n:ih" option; do
+while getopts ":r:s:t:u:v:d:e:m:n:ijh" option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -63,6 +65,8 @@ while getopts ":r:s:t:u:v:d:e:m:n:ih" option; do
     e) _GRAPH_NAME=$OPTARG
        ;;
     i) _INSTALL_NEO4J=true
+       ;;
+    j) _IMPORT_DATA=true
        ;;
     n) _NEO4J_PASSWORD=$OPTARG
        ;;
@@ -102,17 +106,9 @@ if ${_INSTALL_NEO4J} = true; then
     fi 
 fi
 
-if sudo service neo4j-service status; then
-    echo "Shutting down Neo4j DB in order to prepare dataimport import"
-    if ! sudo service neo4j-service stop; then 
-        echo "An error occurred while trying to shut down neo4j db"
-	exit 1
-    fi
-fi
-
-echo "Checking if current directory is valid project for importing"
+echo "Checking if current directory is valid project"
 if ! mvn -q clean package -DskipTests; then
-    if [! -f /target/DatabaseImporter.jar]; then
+    if [ ! -f /target/DatabaseImporter.jar ]; then
         echo "Cloning new repo from git"
         git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
         git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
@@ -126,28 +122,49 @@ if ! mvn -q clean package -DskipTests; then
     fi
 fi
 
-echo "Changing permissions of neo4j graph"
-if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
-    echo "An error occurred when trying to change permissions of the neo4j graph"
-    exit 1
-fi 
-echo "Started importing dataimport to the neo4j database"
-if ! java -jar .${_PATH}/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
-    echo "An error occurred during the dataimport import process"
-    exit 1
-fi
-echo "DataImport finished successfully!"
+if ${_IMPORT_DATA} = true; then
 
-echo "Changing permissions of neo4j graph"
-if ! sudo chown -R neo4j /var/lib/neo4j/data/graph.db; then
-    echo "An error occurred when trying to change permissions of the neo4j graph"
-    exit 1
-fi 
-echo "Starting neo4j database"
-if ! sudo service neo4j-service start; then
-    echo "Neo4j database could not be started"
-    exit 1
-fi 
+    if sudo service neo4j-service status; then
+        echo "Shutting down Neo4j DB in order to prepare dataimport import"
+        if ! sudo service neo4j-service stop; then
+            echo "An error occurred while trying to shut down neo4j db"
+        exit 1
+        fi
+    fi
+
+    if [ ! -d /var/lib/neo4j/data/graph.db ]; then
+        echo "Creating new database folder"
+        if ! sudo mkdir /var/lib/neo4j/data/graph.db; then
+            echo "An error occurred while trying to create a new database folder"
+            exit 1
+        fi
+    fi
+
+    echo "Changing permissions of neo4j graph"
+    if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
+        echo "An error occurred when trying to change permissions of the neo4j graph"
+    fi
+
+    echo "Started importing dataimport to the neo4j database"
+    if ! java -jar .${_PATH}/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
+        echo "An error occurred during the dataimport import process"
+        exit 1
+    fi
+    echo "DataImport finished successfully!"
+
+    echo "Changing permissions of neo4j graph"
+    if ! sudo chown -R neo4j /var/lib/neo4j/data/graph.db; then
+        echo "An error occurred when trying to change permissions of the neo4j graph"
+        exit 1
+    fi
+fi
+if ! sudo service neo4j-service status >/dev/null 2>&1; then
+    echo "Starting neo4j database"
+    if ! sudo service neo4j-service start; then
+        echo "Neo4j database could not be started"
+        exit 1
+    fi
+fi
 echo "Running Junit tests on the Reactome graph"
 if ! mvn -f .${_PATH}/pom.xml test >/dev/null 2>&1; then
     echo "WARNING!: JUnit tests could not finish successfully !!!"

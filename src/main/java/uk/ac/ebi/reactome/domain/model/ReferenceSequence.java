@@ -2,6 +2,7 @@ package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 import java.util.List;
 
@@ -9,13 +10,21 @@ import java.util.List;
 @NodeEntity
 public class ReferenceSequence extends ReferenceEntity {
 
+    @ReactomeProperty
     private String checksum;
+    @ReactomeProperty
     private List<String> comment;
+    @ReactomeProperty
     private List<String> description;
+    @ReactomeProperty
     private List<String> geneName;
+    @ReactomeProperty
     private Boolean isSequenceChanged;
+    @ReactomeProperty
     private List<String> keyword;
+    @ReactomeProperty
     private List<String> secondaryIdentifier;
+    @ReactomeProperty
     private Integer sequenceLength;
 
     @Relationship(type = "species", direction = Relationship.OUTGOING)

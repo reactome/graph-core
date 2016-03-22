@@ -4,6 +4,7 @@ import org.neo4j.ogm.model.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.Species;
 import uk.ac.ebi.reactome.repository.GenericRepository;
 import uk.ac.ebi.reactome.service.util.DatabaseObjectUtils;
 
@@ -62,18 +63,23 @@ public class GenericServiceImpl implements GenericService {
     }
 
     @Override
-    public Collection<Pathway> findTopLevelPathways() {
-        return genericRepository.findTopLevelPathways();
+    public Collection<Pathway> getTopLevelPathways() {
+        return genericRepository.getTopLevelPathways();
     }
 
     @Override
-    public Collection<Pathway> findTopLevelPathways(Long speciesId) {
-        return genericRepository.findTopLevelPathways(speciesId);
+    public Collection<Pathway> getTopLevelPathways(Long speciesId) {
+        return genericRepository.getTopLevelPathways(speciesId);
     }
 
     @Override
-    public Collection<Pathway> findTopLevelPathways(String speciesName) {
-        return genericRepository.findTopLevelPathways(speciesName);
+    public Collection<Pathway> getTopLevelPathways(String speciesName) {
+        return genericRepository.getTopLevelPathways(speciesName);
+    }
+
+    @Override
+    public Collection<Species> getSpecies() {
+        return genericRepository.getSpecies();
     }
 
     @Override

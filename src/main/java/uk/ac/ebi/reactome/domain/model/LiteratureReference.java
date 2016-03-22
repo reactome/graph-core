@@ -1,15 +1,21 @@
 package uk.ac.ebi.reactome.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
 @NodeEntity
 public class LiteratureReference extends Publication {
 
+    @ReactomeProperty
     private String journal;
+    @ReactomeProperty
     private String pages;
+    @ReactomeProperty
     private Integer pubMedIdentifier;
+    @ReactomeProperty
     private Integer volume;
+    @ReactomeProperty
     private Integer year;
 
     public LiteratureReference() {}

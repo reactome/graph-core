@@ -3,6 +3,7 @@ package uk.ac.ebi.reactome.repository;
 import org.neo4j.ogm.model.Result;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.reactome.domain.model.Pathway;
+import uk.ac.ebi.reactome.domain.model.Species;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,9 +26,11 @@ public interface GenericRepository {
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
 
-    Collection<Pathway> findTopLevelPathways();
-    Collection<Pathway> findTopLevelPathways(Long speciesId);
-    Collection<Pathway> findTopLevelPathways(String speciesName);
+    Collection<Pathway> getTopLevelPathways();
+    Collection<Pathway> getTopLevelPathways(Long speciesId);
+    Collection<Pathway> getTopLevelPathways(String speciesName);
+
+    Collection<Species> getSpecies();
 
     Result query (String query, Map<String,Object> map);
     Long countEntries(Class<?> clazz);
