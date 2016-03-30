@@ -76,7 +76,7 @@ public class DatabaseObjectUtils {
                     && !methodName.equals("getClass")
                     && !methodName.equals("getId")) {
 
-                AttributeProperties properties = (getAttributeProperties(method));
+                AttributeProperties properties = getAttributeProperties(method);
                 if (declaredMethods.contains(method)) {
                     properties.setDeclaredMethod(true);
                 } else {

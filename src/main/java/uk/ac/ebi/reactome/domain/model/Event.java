@@ -56,6 +56,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
 
+    @ReactomeTransient
+    @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
+    private List<Event> eventOf;
+
     @Relationship(type = "evidenceType", direction = Relationship.OUTGOING)
     private EvidenceType evidenceType;
 
@@ -236,6 +240,14 @@ public abstract class Event extends DatabaseObject {
 
     public EvidenceType getEvidenceType() {
         return evidenceType;
+    }
+
+    public List<Event> getEventOf() {
+        return eventOf;
+    }
+
+    public void setEventOf(List<Event> eventOf) {
+        this.eventOf = eventOf;
     }
 
     public void setEvidenceType(EvidenceType evidenceType) {

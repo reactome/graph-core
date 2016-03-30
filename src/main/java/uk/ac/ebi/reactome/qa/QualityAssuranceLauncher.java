@@ -39,6 +39,7 @@ public class QualityAssuranceLauncher {
 
         Reflections reflections = new Reflections(QualityAssuranceAbstract.class.getPackage().getName());
         Set<Class<?>> tests = reflections.getTypesAnnotatedWith(QATest.class);
+
         for (Class test : tests) {
             try {
                 Object object = test.newInstance();

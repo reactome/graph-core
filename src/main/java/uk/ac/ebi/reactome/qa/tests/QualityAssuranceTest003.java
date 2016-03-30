@@ -14,7 +14,7 @@ public class QualityAssuranceTest003 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest003-DatabaseIdentifierWithoutIdentifier";
+        return "DatabaseIdentifierWithoutIdentifier";
     }
 
     @Override

@@ -19,7 +19,7 @@ public class QualityAssuranceTest018 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest018-DatabaseObjectsWithoutCreated";
+        return "DatabaseObjectsWithoutCreated";
     }
 
     @Override

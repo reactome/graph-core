@@ -30,6 +30,8 @@ public interface GenericService {
     Collection<Pathway> getTopLevelPathways(Long speciesId);
     Collection<Pathway> getTopLevelPathways(String speciesName);
 
+    Pathway getEventHierarchy(Long dbId);
+
     Collection<Species> getSpecies();
 
     Result query (String query, Map<String,Object> map);

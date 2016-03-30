@@ -18,7 +18,7 @@ public class QualityAssuranceTest031 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest031-PhysicalEntityAndActiveUnitPointToSameEntry";
+        return "PhysicalEntityAndActiveUnitPointToSameEntry";
     }
 
     @Override

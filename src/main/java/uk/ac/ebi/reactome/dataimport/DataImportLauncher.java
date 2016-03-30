@@ -21,7 +21,7 @@ public class DataImportLauncher {
                         new FlaggedOption("host",     JSAP.STRING_PARSER, "localhost",  JSAP.NOT_REQUIRED, 'h', "host",     "The database host"),
                         new FlaggedOption("port",     JSAP.INTEGER_PARSER,"3306",       JSAP.NOT_REQUIRED, 's', "port",     "The reactome port"),
                         new FlaggedOption("database", JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'd', "database", "The reactome database name to connect to"),
-                        new FlaggedOption("user",     JSAP.STRING_PARSER, "reactome",       JSAP.NOT_REQUIRED, 'u', "user",     "The database user"),
+                        new FlaggedOption("user",     JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'u', "user",     "The database user"),
                         new FlaggedOption("password", JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'p', "password", "The password to connect to the database")
                 }
         );

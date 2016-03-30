@@ -14,7 +14,7 @@ public class QualityAssuranceTest046 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest046-OrphanEventsNotComputationalInferred";
+        return "OrphanEventsNotComputationalInferred";
     }
 
     @Override

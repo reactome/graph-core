@@ -273,4 +273,18 @@ public class GenericServiceTest {
         assertEquals(20439L,count);
         logger.info("Finished");
     }
+
+
+    @Test
+    public void testGetEventHierarchy () {
+        logger.info("Started testing genericService.getEventHierarchy");
+        long start, time;
+        start = System.currentTimeMillis();
+        Pathway eventHierarchy = genericService.getEventHierarchy(dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(dbId,eventHierarchy.getDbId());
+        logger.info("Finished");
+    }
 }

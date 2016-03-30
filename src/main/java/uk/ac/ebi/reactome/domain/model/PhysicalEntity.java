@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeProperty;
 import uk.ac.ebi.reactome.domain.annotations.ReactomeTransient;
+import uk.ac.ebi.reactome.domain.relationship.HasComponent;
 import uk.ac.ebi.reactome.domain.relationship.Input;
 import uk.ac.ebi.reactome.domain.relationship.Output;
 
@@ -46,6 +47,10 @@ public class PhysicalEntity extends DatabaseObject {
 
     @Relationship(type = "compartment", direction = Relationship.OUTGOING)
     private List<EntityCompartment> compartment;
+
+    @ReactomeTransient
+    @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
+    private List<HasComponent> componentOf;
 
     @ReactomeTransient
     @Relationship(type = "input", direction = Relationship.INCOMING)
@@ -189,6 +194,14 @@ public class PhysicalEntity extends DatabaseObject {
 
     public void setCompartment(List<EntityCompartment> compartment) {
         this.compartment = compartment;
+    }
+
+    public List<HasComponent> getComponentOf() {
+        return componentOf;
+    }
+
+    public void setComponentOf(List<HasComponent> componentOf) {
+        this.componentOf = componentOf;
     }
 
     public List<Input> getConsumedByEvent() {

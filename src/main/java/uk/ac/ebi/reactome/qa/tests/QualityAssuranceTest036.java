@@ -17,8 +17,13 @@ import java.nio.file.Path;
 public class QualityAssuranceTest036 extends QualityAssuranceAbstract {
 
     @Override
+    Boolean doTest() {
+        return false;
+    }
+
+    @Override
     String getName() {
-        return "QATest036-AuthorRelationshipDuplication";
+        return "AuthorRelationshipDuplication";
     }
 
     @Override

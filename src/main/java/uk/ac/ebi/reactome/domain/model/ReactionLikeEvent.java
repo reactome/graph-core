@@ -16,7 +16,7 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 @NodeEntity
-public class ReactionLikeEvent extends Event {
+public abstract class ReactionLikeEvent extends Event {
 
     @ReactomeProperty
     private Boolean isChimeric;

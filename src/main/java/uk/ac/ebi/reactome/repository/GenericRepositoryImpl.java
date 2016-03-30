@@ -121,6 +121,28 @@ public class GenericRepositoryImpl implements GenericRepository {
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
     }
 
+    //TODO
+    public Pathway getEventHierarchy(Long dbId) {
+        String query = "Match (n:Event{dbId:{dbId}})-[r:hasEvent*]->(m:Event) return n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (Pathway) result.iterator().next().get("n");
+        return null;
+    }
+
+    //TODO
+    public Object getSomehierarchy(Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:hasComponent|hasMember|input|output|hasEvent*]-(m) " +
+                "RETURN n.dbId,n.stableIdentifier,n.displayName, " +
+                "EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName]) as nodePairCollection";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        Result result =  neo4jTemplate.query(query, map);
+        return null;
+    }
+
     @Override
     public Collection<Species> getSpecies() {
         String query = "Match (n:Species) Return n";

@@ -78,6 +78,11 @@ public class GenericServiceImpl implements GenericService {
     }
 
     @Override
+    public Pathway getEventHierarchy(Long dbId) {
+        return genericRepository.getEventHierarchy(dbId);
+    }
+
+    @Override
     public Collection<Species> getSpecies() {
         return genericRepository.getSpecies();
     }

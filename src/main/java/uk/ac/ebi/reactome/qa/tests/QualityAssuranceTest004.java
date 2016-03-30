@@ -18,7 +18,7 @@ public class QualityAssuranceTest004 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest004-EntriesWithoutDisplayName";
+        return "EntriesWithoutDisplayName";
     }
 
     @Override

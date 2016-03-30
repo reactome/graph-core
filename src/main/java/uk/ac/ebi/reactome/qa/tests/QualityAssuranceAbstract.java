@@ -23,10 +23,15 @@ import java.util.Map;
  */
 public abstract class QualityAssuranceAbstract implements QualityAssurance {
 
-    private static final String pathToFile = "./target/qATests/";
+    private static final String PATH = "./target/qATests/";
+    private static final String PREFIX = "QATest";
 
     abstract String getName();
     abstract String getQuery();
+
+    Boolean doTest() {
+        return true;
+    }
 
     @SuppressWarnings({"SameReturnValue", "WeakerAccess"})
     protected Map getMap() {
@@ -36,14 +41,15 @@ public abstract class QualityAssuranceAbstract implements QualityAssurance {
     @SuppressWarnings("unchecked")
     @Override
     public void run(GenericService genericService) {
-
-        Result result = genericService.query(getQuery(),getMap());
-        if (result == null || !result.iterator().hasNext()) return;
-        try {
-            Path path = createFile();
-            printResult(result,path);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(doTest()) {
+            Result result = genericService.query(getQuery(), getMap());
+            if (result == null || !result.iterator().hasNext()) return;
+            try {
+                Path path = createFile();
+                printResult(result, path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -64,13 +70,15 @@ public abstract class QualityAssuranceAbstract implements QualityAssurance {
         Files.write(path, lines, Charset.forName("UTF-8"));
     }
 
-
-
     private Path createFile() throws IOException {
-        Path path = Paths.get(pathToFile + getName() + ".csv");
+        Path path = Paths.get(PATH + getPrefix() + getName() + ".csv");
         Files.deleteIfExists(path);
         Files.createDirectories(path.getParent());
         Files.createFile(path);
         return path;
+    }
+
+    private String getPrefix() {
+        return  PREFIX + this.getClass().getSimpleName().replaceAll("\\D+","") + "-";
     }
 }

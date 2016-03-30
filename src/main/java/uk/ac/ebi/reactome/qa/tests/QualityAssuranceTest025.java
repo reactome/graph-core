@@ -18,7 +18,7 @@ public class QualityAssuranceTest025 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest025-EntriesWithCyclicInferredToRelations";
+        return "EntriesWithCyclicInferredToRelations";
     }
 
     @Override

@@ -18,7 +18,7 @@ public class QualityAssuranceTest030 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest030-ReferenceSequenceAndSecondReferenceSequencePointToSameEntry";
+        return "ReferenceSequenceAndSecondReferenceSequencePointToSameEntry";
     }
 
     @Override

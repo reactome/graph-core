@@ -18,7 +18,7 @@ public class QualityAssuranceTest043 extends QualityAssuranceAbstract {
 
     @Override
     String getName() {
-        return "QATest043-HasCandidateRelationshipDuplication";
+        return "HasCandidateRelationshipDuplication";
     }
 
     @Override

@@ -31,22 +31,30 @@
     </contributors>
 
     <properties>
+        <!--dependencies-->
         <reactome.version>1.2.4</reactome.version>
-        <sdn.version>4.1.0.M1</sdn.version>
+        <sdn.version>4.1.0.RC1</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
-        <neo4j.ogm.version>2.0.0-M02</neo4j.ogm.version>
+        <neo4j.kernel.version>2.3.2</neo4j.kernel.version>
         <aspectj.version>1.8.8</aspectj.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
         <jasp.version>2.1</jasp.version>
         <reflection.version>0.9.9-RC2</reflection.version>
-        <swagger.version>2.4.0</swagger.version>
+        <swagger.annotations.version>1.5.6</swagger.annotations.version>
+        <!--build-->
+        <jdk.version>1.7</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <dependency.locations.enabled>false</dependency.locations.enabled>
+        <!--maven build and plugins-->
         <maven.compiler.version>2.3.2</maven.compiler.version>
         <maven.javadoc.version>2.10.1</maven.javadoc.version>
         <maven.assembly.version>2.6</maven.assembly.version>
-        <java.version>1.7</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dependency.locations.enabled>false</dependency.locations.enabled>
+        <maven.surefire.version>2.12.4</maven.surefire.version>
+        <maven.site.version>3.4</maven.site.version>
+        <maven.info.report.version>2.8.1</maven.info.report.version>
+        <jackrabbit.version>2.10</jackrabbit.version>
+        <pmd.version>3.6</pmd.version>
         <!--will be set as system properties during testing phase-->
         <neo4j.user>empty</neo4j.user>
         <neo4j.password>empty</neo4j.password>
@@ -76,6 +84,17 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.test.version}</version>
             <scope>test</scope>
+        </dependency>
+        <!--&lt;!&ndash;TODO remove: Neo4j kernel and index for batch import (had to added since SDN.4.1.0 &ndash;&gt;-->
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>${neo4j.kernel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-lucene-index</artifactId>
+            <version>${neo4j.kernel.version}</version>
         </dependency>
         <!--Aspectj AOP -->
         <dependency>
@@ -117,18 +136,26 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.10</version>
+            <version>${reflection.version}</version>
         </dependency>
         <!-- Swagger for Annotations -->
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>1.5.6</version>
+            <version>${swagger.annotations.version}</version>
             <scope>compile</scope>
         </dependency>
+
+
+        <!--<dependency>-->
+        <!--<groupId>net.sourceforge.pmd</groupId>-->
+        <!--<artifactId>pmd</artifactId>-->
+        <!--<version>5.4.1</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <repositories>
+        <!--TODO REMOVE ONE -->
         <!--Spring snapshot repository-->
         <repository>
             <id>spring-milestones</id>
@@ -136,6 +163,14 @@
             <url>http://repo.spring.io/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/libs-snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
         <!--Reactome repository-->
@@ -169,15 +204,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                 </configuration>
             </plugin>
             <!--injecting property values into system properties during testing phase-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
+                <version>${maven.surefire.version}</version>
                 <configuration>
                     <systemPropertyVariables>
                         <neo4j.user>${neo4j.user}</neo4j.user>
@@ -194,12 +229,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.4</version>
+                <version>${maven.site.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.wagon</groupId>
                         <artifactId>wagon-webdav-jackrabbit</artifactId>
-                        <version>2.10</version>
+                        <version>${jackrabbit.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -210,7 +245,6 @@
                 <version>${maven.assembly.version}</version>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
-                    <attach>false</attach>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
@@ -250,6 +284,7 @@
             </plugin>
         </plugins>
     </build>
+    <!--Configures the distribution to nexus repository -->
     <distributionManagement>
         <repository>
             <id>nexus-release</id>
@@ -286,7 +321,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.8.1</version>
+                <version>${maven.info.report.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${pmd.version}</version>
+                <configuration>
+                    <skipEmptyReport>false</skipEmptyReport>
+                    <linkXRef>false</linkXRef>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <targetJdk>${jdk.version}</targetJdk>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

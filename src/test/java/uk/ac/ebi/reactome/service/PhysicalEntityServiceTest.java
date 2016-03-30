@@ -35,7 +35,7 @@ public class PhysicalEntityServiceTest {
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
 
-    private static final Long dbId = 53787L;
+    private static final Long dbId = 199420L;
     private static final String stId = "R-HSA-53787";
 
     @Autowired
