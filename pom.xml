@@ -145,24 +145,7 @@
             <version>${swagger.annotations.version}</version>
             <scope>compile</scope>
         </dependency>
-        <!-- Project report for the NEXUS repo -->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>${maven.info.report.version}</version>
-        </dependency>
-        <!-- Code analysis tool -->
-        <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>${pmd.version}</version>
-        </dependency>
 
-        <!--<dependency>-->
-        <!--<groupId>net.sourceforge.pmd</groupId>-->
-        <!--<artifactId>pmd</artifactId>-->
-        <!--<version>5.4.1</version>-->
-        <!--</dependency>-->
     </dependencies>
 
     <repositories>
@@ -313,6 +296,7 @@
     </distributionManagement>
     <!--This configuration is needed so that javadoc is included in maven site-->
     <reporting>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
