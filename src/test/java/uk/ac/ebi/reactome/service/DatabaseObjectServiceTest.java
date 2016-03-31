@@ -145,7 +145,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(participants.size(),22);
+        assertEquals(22,participants.size());
         logger.info("Finished");
     }
 
@@ -183,7 +183,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(participants.size(), 23);
+        assertEquals(23, participants.size());
         logger.info("Finished");
     }
 
@@ -202,7 +202,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(participants.size(), 22);
+        assertEquals(22, participants.size());
         logger.info("Finished");
     }
 
@@ -223,7 +223,7 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(labelsCounts.size(), 59);
+        assertEquals(58, labelsCounts.size());
         logger.info("Finished");
     }
 }

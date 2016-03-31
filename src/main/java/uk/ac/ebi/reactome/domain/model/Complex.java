@@ -41,9 +41,11 @@ public class Complex extends PhysicalEntity {
 
     public List<PhysicalEntity> getHasComponent(){
         List<PhysicalEntity> rtn = new ArrayList<>();
-        for (HasComponent component : this.hasComponent) {
-            for (int i = 0; i < component.getStoichiometry(); i++) {
-                rtn.add(component.getPhysicalEntity());
+        if (this.hasComponent != null) {
+            for (HasComponent component : this.hasComponent) {
+                for (int i = 0; i < component.getStoichiometry(); i++) {
+                    rtn.add(component.getPhysicalEntity());
+                }
             }
         }
         return rtn;

@@ -45,4 +45,7 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     @Query("MATCH (n) WHERE NOT (n:TopLevelPathway)  RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<LabelsCount> getLabelsCount();
 
+    @Query("Match (n:SimpleEntity)-[:referenceEntity]-(m:ReferenceEntity) RETURN Distinct(m)")
+    Collection<ReferenceEntity> getAllChemicals();
+
 }
