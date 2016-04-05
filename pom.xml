@@ -56,6 +56,7 @@
         <jackrabbit.version>2.10</jackrabbit.version>
         <pmd.version>3.6</pmd.version>
         <!--will be set as system properties during testing phase-->
+        <neo4j.host>empty</neo4j.host>
         <neo4j.user>empty</neo4j.user>
         <neo4j.password>empty</neo4j.password>
         <reactome.host>empty</reactome.host>
@@ -209,6 +210,7 @@
                 <version>${maven.surefire.version}</version>
                 <configuration>
                     <systemPropertyVariables>
+                        <neo4j.host>${neo4j.host}</neo4j.host>
                         <neo4j.user>${neo4j.user}</neo4j.user>
                         <neo4j.password>${neo4j.password}</neo4j.password>
                         <reactome.host>${reactome.host}</reactome.host>
@@ -253,7 +255,7 @@
                             <finalName>DatabaseImporter</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>uk.ac.ebi.reactome.dataimport.DataImportLauncher</mainClass>
+                                    <mainClass>org.reactome.server.tools.dataimport.DataImportLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -268,7 +270,7 @@
                             <finalName>QualityAssurance</finalName>
                             <archive>
                                 <manifest>
-                                    <mainClass>uk.ac.ebi.reactome.qa.QualityAssuranceLauncher</mainClass>
+                                    <mainClass>org.reactome.server.tools.qa.QualityAssuranceLauncher</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
