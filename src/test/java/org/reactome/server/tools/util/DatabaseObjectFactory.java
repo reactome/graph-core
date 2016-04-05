@@ -39,11 +39,11 @@ public class DatabaseObjectFactory {
      */
     static {
         try {
-            String host = System.getProperty("reactome.host");
-            String port = System.getProperty("reactome.port");
-            String database = System.getProperty("reactome.database");
-            String user = System.getProperty("reactome.user");
-            String password = System.getProperty("reactome.password");
+            String host = System.getProperty("database.host");
+            String port = System.getProperty("database.port");
+            String database = System.getProperty("database.name");
+            String user = System.getProperty("database.user");
+            String password = System.getProperty("database.password");
             dba = new MySQLAdaptor(host,database,user,password,Integer.parseInt(port));
             dba.setUseCache(false);
             logger.info("Established connection to Reactome database");

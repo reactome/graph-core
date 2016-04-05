@@ -59,11 +59,11 @@
         <neo4j.host>empty</neo4j.host>
         <neo4j.user>empty</neo4j.user>
         <neo4j.password>empty</neo4j.password>
-        <reactome.host>empty</reactome.host>
-        <reactome.port>empty</reactome.port>
-        <reactome.database>empty</reactome.database>
-        <reactome.user>empty</reactome.user>
-        <reactome.password>empty</reactome.password>
+        <database.host>empty</database.host>
+        <database.port>empty</database.port>
+        <database.name>empty</database.name>
+        <database.user>empty</database.user>
+        <database.password>empty</database.password>
     </properties>
 
     <dependencies>
@@ -213,11 +213,11 @@
                         <neo4j.host>${neo4j.host}</neo4j.host>
                         <neo4j.user>${neo4j.user}</neo4j.user>
                         <neo4j.password>${neo4j.password}</neo4j.password>
-                        <reactome.host>${reactome.host}</reactome.host>
-                        <reactome.port>${reactome.port}</reactome.port>
-                        <reactome.database>${reactome.database}</reactome.database>
-                        <reactome.user>${reactome.user}</reactome.user>
-                        <reactome.password>${reactome.password}</reactome.password>
+                        <database.host>${database.host}</database.host>
+                        <database.port>${database.port}</database.port>
+                        <database.name>${database.name}</database.name>
+                        <database.user>${database.user}</database.user>
+                        <database.password>${database.password}</database.password>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
