@@ -294,7 +294,8 @@ public class GenericServiceTest {
         logger.info("Started testing genericService.getEventHierarchy");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject eventHierarchy = genericService.getLocationsHierarchy("R-HSA-445133");
+//        DatabaseObject eventHierarchy = genericService.getLocationsHierarchy("R-HSA-445133");
+        genericService.getLocationsHierarchy();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

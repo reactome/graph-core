@@ -20,6 +20,8 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @ReactomeProperty
     private List<String> name;
     @ReactomeProperty
+    private String speciesName;
+    @ReactomeProperty
     private String systematicName;
 
     // List of CatalyzedEvents filled in service layer
@@ -144,6 +146,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     public void setSystematicName(String systematicName) {
         this.systematicName = systematicName;
+    }
+
+    public String getSpeciesName() {
+        return speciesName;
+    }
+
+    public void setSpeciesName(String speciesName) {
+        this.speciesName = speciesName;
     }
 
     public List<ReactionLikeEvent> getCatalyzedEvent() {

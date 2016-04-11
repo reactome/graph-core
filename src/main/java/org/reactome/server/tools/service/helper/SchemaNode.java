@@ -12,14 +12,14 @@ import java.util.TreeSet;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 09.02.16.
  */
-public class Node implements Comparable<Node>{
+public class SchemaNode implements Comparable<SchemaNode>{
 
     private final Class clazz;
 
-    private Set<Node> children;
+    private Set<SchemaNode> children;
     private Integer count;
 
-    public Node(Class clazz, Integer count) {
+    public SchemaNode(Class clazz, Integer count) {
         this.clazz = clazz;
         this.count = count;
         children = Collections.emptySet();
@@ -30,7 +30,7 @@ public class Node implements Comparable<Node>{
         return clazz;
     }
 
-    public Set<Node> getChildren() {
+    public Set<SchemaNode> getChildren() {
         return children;
     }
 
@@ -42,7 +42,7 @@ public class Node implements Comparable<Node>{
         this.count = count;
     }
 
-    public void addChild(Node node) {
+    public void addChild(SchemaNode node) {
         if (children.isEmpty()) {
             children = new TreeSet<>();
         }
@@ -51,20 +51,20 @@ public class Node implements Comparable<Node>{
 
     @SuppressWarnings("unused")
     public Integer findMaxPage(String className, Integer offset) {
-        Node node = iterateTree(this,className);
+        SchemaNode node = iterateTree(this,className);
         if (node != null) {
             return (int) Math.ceil(node.getCount() / (double) offset);
         }
         return 0;
     }
 
-    private Node iterateTree(Node node, String className) {
+    private SchemaNode iterateTree(SchemaNode node, String className) {
         if (node.clazz.getSimpleName().equals(className))
             return node;
-        Node result = null;
+        SchemaNode result = null;
         Iterator iterator = node.getChildren().iterator();
         while(result == null && iterator.hasNext()) {
-            result = iterateTree((Node) iterator.next(), className);
+            result = iterateTree((SchemaNode) iterator.next(), className);
         }
         return result;
     }
@@ -74,7 +74,7 @@ public class Node implements Comparable<Node>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Node node = (Node) o;
+        SchemaNode node = (SchemaNode) o;
 
         return !(clazz != null ? !clazz.equals(node.clazz) : node.clazz != null);
 
@@ -86,7 +86,7 @@ public class Node implements Comparable<Node>{
     }
 
     @Override
-    public int compareTo(@Nonnull Node node) {
+    public int compareTo(@Nonnull SchemaNode node) {
         return this.clazz.getSimpleName().compareTo(node.clazz.getSimpleName());
     }
 

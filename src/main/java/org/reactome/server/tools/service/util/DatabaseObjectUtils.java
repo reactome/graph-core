@@ -6,7 +6,7 @@ import org.reactome.server.tools.domain.result.LabelsCount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.reactome.server.tools.service.helper.AttributeProperties;
-import org.reactome.server.tools.service.helper.Node;
+import org.reactome.server.tools.service.helper.SchemaNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,10 +24,10 @@ public class DatabaseObjectUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectUtils.class);
 
-    private static Map<String,Node> map;
+    private static Map<String,SchemaNode> map;
 
     @SuppressWarnings("unused")
-    public static Node getGraphModelTree(Collection<LabelsCount> labelsCounts ) throws ClassNotFoundException {
+    public static SchemaNode getGraphModelTree(Collection<LabelsCount> labelsCounts ) throws ClassNotFoundException {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         for (LabelsCount labelsCount : labelsCounts) {
@@ -40,7 +40,7 @@ public class DatabaseObjectUtils {
             }
             recursion(lowestClass, null, labelsCount.getCount());
         }
-        Node n = map.get(DatabaseObject.class.getSimpleName());
+        SchemaNode n = map.get(DatabaseObject.class.getSimpleName());
         correctCounts(n);
         return n;
     }
@@ -112,14 +112,14 @@ public class DatabaseObjectUtils {
         return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
-    private static void recursion(Class clazz,Node oldNode, int count) {
+    private static void recursion(Class clazz, SchemaNode oldNode, int count) {
         if (!clazz.equals(Object.class)) {
-            Node node = new Node(clazz,count);
+            SchemaNode node = new SchemaNode(clazz,count);
             if (map.containsKey(clazz.getSimpleName())) {
                 if (oldNode != null) {
                     map.get(clazz.getSimpleName()).addChild(oldNode);
                 } else {
-                    Node existingNode = map.get(clazz.getSimpleName());
+                    SchemaNode existingNode = map.get(clazz.getSimpleName());
                     existingNode.setCount(existingNode.getCount() + count);
                 }
             } else {
@@ -132,9 +132,9 @@ public class DatabaseObjectUtils {
         }
     }
 
-    private static void correctCounts(Node node) {
+    private static void correctCounts(SchemaNode node) {
         if (node.getChildren()!=null) {
-            for (Node node1 : node.getChildren()) {
+            for (SchemaNode node1 : node.getChildren()) {
                 correctCounts(node1);
                 node.setCount(node.getCount() + node1.getCount());
             }

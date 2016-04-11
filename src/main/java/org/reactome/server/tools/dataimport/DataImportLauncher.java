@@ -20,7 +20,7 @@ public class DataImportLauncher {
                 new Parameter[]{
                         new FlaggedOption("host",     JSAP.STRING_PARSER, "localhost",  JSAP.NOT_REQUIRED, 'h', "host",     "The database host"),
                         new FlaggedOption("port",     JSAP.INTEGER_PARSER,"3306",       JSAP.NOT_REQUIRED, 's', "port",     "The reactome port"),
-                        new FlaggedOption("database", JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'd', "database", "The reactome database name to connect to"),
+                        new FlaggedOption("name",     JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'd', "name",     "The reactome database name to connect to"),
                         new FlaggedOption("user",     JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'u', "user",     "The database user"),
                         new FlaggedOption("password", JSAP.STRING_PARSER, "reactome",   JSAP.NOT_REQUIRED, 'p', "password", "The password to connect to the database"),
                         new FlaggedOption("neo4j",    JSAP.STRING_PARSER, "./target/graph.db",   JSAP.NOT_REQUIRED, 'n', "neo4j", "Path to the neo4j database ")
@@ -37,10 +37,10 @@ public class DataImportLauncher {
          */
         ReactomeBatchImporter batchImporter = new ReactomeBatchImporter(
                 config.getString("host"),
-                config.getString("database"),
+                config.getInt("port"),
+                config.getString("name"),
                 config.getString("user"),
                 config.getString("password"),
-                config.getInt("port"),
                 config.getString("neo4j"));
         batchImporter.importAll();
     }

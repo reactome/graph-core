@@ -1,5 +1,6 @@
 package org.reactome.server.tools.domain.relationship;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
@@ -15,11 +16,13 @@ import org.reactome.server.tools.domain.model.Event;
 @RelationshipEntity(type = "input")
 public class Input {
 
+    @JsonIgnore
     @GraphId
     private Long id;
 
     private Integer stoichiometry = 1;
 
+    @JsonIgnore
     @StartNode
     private Event event;
     @EndNode

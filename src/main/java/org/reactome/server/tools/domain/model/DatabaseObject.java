@@ -15,9 +15,12 @@ import java.io.Serializable;
 
 /**
  *  DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
+ *
+ *
+ *  DO NOT USE ObjectIdGenerators.PropertyGenerator !!!!! will cause memory pageing
  */
 @SuppressWarnings("unused")
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property = "@i")
 @NodeEntity
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 

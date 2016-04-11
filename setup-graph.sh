@@ -26,7 +26,7 @@ where:
     -t  Reactome database name. DEFAULT: reactome
     -u  Reactome database user. DEFAULT: reactome
     -v  Reactome database password. DEFAULT: reactome
-    -d  Neo4j directory of Db. DEFAULT: /var/lib/neo4j/dataimport/
+    -d  Neo4j directory of Db. DEFAULT: /var/lib/neo4j/data/
     -e  Neo4j name of graph Db. DEFAULT: graph.db
     -j  Import Reactome data. DEFAULT: false
     -i  Install neo4j. DEFAULT: false
@@ -37,7 +37,7 @@ _REACTOME_PORT=3306
 _REACTOME_DATABASE="reactome"
 _REACTOME_USER="reactome"
 _REACTOME_PASSWORD="reactome"
-_GRAPH_DIR="/var/lib/neo4j/dataimport/"
+_GRAPH_DIR="/var/lib/neo4j/data/"
 _GRAPH_NAME="graph.db"
 _IMPORT_DATA=false
 _INSTALL_NEO4J=false
@@ -108,7 +108,7 @@ fi
 
 echo "Checking if current directory is valid project"
 if ! mvn -q clean package -DskipTests; then
-    if [ ! -f /target/DatabaseImporter.jar ]; then
+    if [ ! -f /target/DatabaseImporter-jar-with-dependencies.jar ]; then
         echo "Cloning new repo from git"
         git clone https://fkorn@bitbucket.org/fabregatantonio/graph-reactome.git
         git -C ./graph-reactome/ fetch && git -C ./graph-reactome/  checkout master
@@ -146,7 +146,7 @@ if ${_IMPORT_DATA} = true; then
     fi
 
     echo "Started importing dataimport to the neo4j database"
-    if ! java -jar .${_PATH}/target/DatabaseImporter.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD}; then
+    if ! java -jar .${_PATH}/target/DatabaseImporter-jar-with-dependencies.jar -h ${_REACTOME_HOST} -s ${_REACTOME_PORT} -d ${_REACTOME_DATABASE} -u ${_REACTOME_USER} -p ${_REACTOME_PASSWORD} -n ${_GRAPH_DIR}${_GRAPH_NAME}; then
         echo "An error occurred during the dataimport import process"
         exit 1
     fi
@@ -173,7 +173,7 @@ else
     echo "All tests have successfully finished, detail can be found in ...."
 fi
 echo "Running quality assurance tests"
-if ! java -jar .${_PATH}/target/QualityAssurance.jar >/dev/null 2>&1; then
+if ! java -jar .${_PATH}/target/QualityAssurance-jar-with-dependencies.jar >/dev/null 2>&1; then
      echo "WARNING!: QA tests could not finish successfully !!!"
     (( _PROBLEMS += 1 ))
 else

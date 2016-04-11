@@ -87,6 +87,22 @@ public abstract class ReactionLikeEvent extends Event {
         this.entityOnOtherCell = entityOnOtherCell;
     }
 
+    public List<ReactionLikeEvent> getNormalReaction() {
+        return normalReaction;
+    }
+
+    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
+        this.normalReaction = normalReaction;
+    }
+
+    public Set<PhysicalEntity> getRequiredInputComponent() {
+        return requiredInputComponent;
+    }
+
+    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
+        this.requiredInputComponent = requiredInputComponent;
+    }
+
     public List<PhysicalEntity> getInput() {
         List<PhysicalEntity> rtn = new ArrayList<>();
         if(input!=null) {
@@ -117,13 +133,6 @@ public abstract class ReactionLikeEvent extends Event {
         this.input = new ArrayList<>(map.values());
     }
 
-    public List<ReactionLikeEvent> getNormalReaction() {
-        return normalReaction;
-    }
-
-    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
-        this.normalReaction = normalReaction;
-    }
 
     public List<PhysicalEntity> getOutput() {
         List<PhysicalEntity> rtn = new ArrayList<>();
@@ -155,11 +164,5 @@ public abstract class ReactionLikeEvent extends Event {
         this.output = new ArrayList<>(map.values());
     }
 
-    public Set<PhysicalEntity> getRequiredInputComponent() {
-        return requiredInputComponent;
-    }
 
-    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
-        this.requiredInputComponent = requiredInputComponent;
-    }
 }

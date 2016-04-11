@@ -144,7 +144,7 @@ public class GenericRepositoryImpl implements GenericRepository {
 
     //TODO
     public DatabaseObject getLocationsHierarchy(String stId) {
-        String query = "Match (n:DatabaseObject{dbId:199420})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return n,r,m";
+        String query = "Match (n:DatabaseObject{dbId:373624})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return n,r,m";
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifier", stId);
         Result result =  neo4jTemplate.query(query, map);
@@ -153,7 +153,19 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
-    //TODO
+//    TODO
+public Result getLocationsHierarchy() {
+    String query = "Match (n:DatabaseObject{stableIdentifier:\"R-HSA-445133\"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+//    Map<String,Object> map = new HashMap<>();
+//    map.put("stableIdentifier", stId);
+    Result result =  neo4jTemplate.query(query, Collections.<String,Object>emptyMap());
+
+    System.out.println();
+    return result;
+}
+
+
+    //TODOu
     public DatabaseObject getReferral(Long dbId, String relationshipName) {
 
         String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:" + relationshipName + "]-(m) Return n";
@@ -178,7 +190,8 @@ public class GenericRepositoryImpl implements GenericRepository {
         return referrers;
     }
 
-
+//    TODO
+//Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, endNode(rel).hasDiagram ]) as nodePairCollection
     //TODO
     //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, labels(endNode(rel))  ]) as nodePairCollection
 
