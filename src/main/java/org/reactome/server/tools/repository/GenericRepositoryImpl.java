@@ -131,7 +131,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
     //TODO
-    public Object getSomehierarchy(Long dbId) {
+    public Object getSomeHierarchy(Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:hasComponent|hasMember|input|output|hasEvent*]-(m) " +
                 "RETURN n.dbId,n.stableIdentifier,n.displayName, " +
                 "EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName]) as nodePairCollection";
@@ -153,19 +153,19 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
-//    TODO
-public Result getLocationsHierarchy() {
-    String query = "Match (n:DatabaseObject{stableIdentifier:\"R-HSA-445133\"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+    //TODO
+    public Result getLocationsHierarchy() {
+        String query = "Match (n:DatabaseObject{stableIdentifier:\"R-HSA-445133\"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
 //    Map<String,Object> map = new HashMap<>();
 //    map.put("stableIdentifier", stId);
-    Result result =  neo4jTemplate.query(query, Collections.<String,Object>emptyMap());
+        Result result =  neo4jTemplate.query(query, Collections.<String,Object>emptyMap());
 
-    System.out.println();
-    return result;
-}
+        System.out.println();
+        return result;
+    }
 
 
-    //TODOu
+    //TODO
     public DatabaseObject getReferral(Long dbId, String relationshipName) {
 
         String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:" + relationshipName + "]-(m) Return n";
@@ -189,9 +189,8 @@ public Result getLocationsHierarchy() {
         }
         return referrers;
     }
-
-//    TODO
-//Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, endNode(rel).hasDiagram ]) as nodePairCollection
+    //TODO
+    //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, endNode(rel).hasDiagram ]) as nodePairCollection
     //TODO
     //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, labels(endNode(rel))  ]) as nodePairCollection
 

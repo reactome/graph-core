@@ -1,9 +1,7 @@
 package org.reactome.server.tools.service;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.domain.model.Pathway;
-import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.domain.model.*;
 import org.reactome.server.tools.repository.GenericRepository;
 import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
@@ -88,9 +86,6 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.getLocationsHierarchy(stId);
     }
 
-
-
-
     public DatabaseObject getReferral(Long dbId, String relationshipName) {
         return genericRepository.getReferral(dbId,relationshipName);
     }
@@ -99,30 +94,35 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.getReferrals(dbId, relationshipName);
     }
 
+    public Set<PBNode> getLocationsInPathwayBrowser(DatabaseObject databaseObject) {
 
-    public void tree() {
-//        Collection<DatabaseObject> eventHierarchy = genericRepository.getReferrals(445133L,"hasMember");
-        genericRepository.getLocationsHierarchy();
-    }
-
-    private Map<String,PBNode> nodes = new HashMap<>();
-
-    @Override
-    public void getLocationsHierarchy()  {
-        Result result = genericRepository.getLocationsHierarchy();
         PBNode root = new PBNode();
-        root.setName("PTCH1");
-        root.setStId("R-HSA-445133");
-        root.setSpecies("Homo Sapiens");
-        root.setType("EntityWithAccessionedSequence");
+        root.setStId(databaseObject.getStableIdentifier());
+        root.setName(databaseObject.getDisplayName());
+        root.setType(databaseObject.getSchemaClass());
+
+        if (databaseObject instanceof Event) {
+            Event event = (Event) databaseObject;
+            root.setSpecies(event.getSpeciesName());
+        } else if (databaseObject instanceof PhysicalEntity) {
+            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
+            root.setSpecies(physicalEntity.getSpeciesName());
+        } else {
+//            logger.error
+            return null;
+        }
+
+        Map<String,PBNode> nodes = new HashMap<>();
+        Result result = genericRepository.getLocationsHierarchy();
         PBNode previous = root;
         nodes.put(root.getStId(),root);
+
         int previousSize = 0;
         for (Map<String, Object> stringObjectMap : result) {
-            ArrayList<Object>[] xx = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
-            int size = xx.length;
+            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
+            int size = nodePairCollections.length;
             if (size>=previousSize) {
-                ArrayList<Object> objects = xx[xx.length-1];
+                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
                 PBNode node;
                 if (nodes.containsKey(objects.get(0))) {
                     node = nodes.get(objects.get(0));
@@ -130,16 +130,14 @@ public class GenericServiceImpl implements GenericService {
                     node = createNode(objects);
                     nodes.put(node.getStId(),node);
                 }
-
-                previous.addChild(node);
-                node.addParent(previous);
+                if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
+                    previous.addChild(node);
+                    node.addParent(previous);
+                }
                 previous = node;
-
-
             } else {
                 previous = root;
-                for (ArrayList<Object> objects : xx) {
-
+                for (ArrayList<Object> objects : nodePairCollections) {
                     PBNode node;
                     if (nodes.containsKey(objects.get(0))) {
                         node = nodes.get(objects.get(0));
@@ -147,7 +145,6 @@ public class GenericServiceImpl implements GenericService {
                         node = createNode(objects);
                         nodes.put(node.getStId(),node);
                     }
-
                     if (previous.getChildren().contains(node)) {
                         for (PBNode pbNode : previous.getChildren()) {
                             if (pbNode.getStId().equals(node.getStId())) {
@@ -155,20 +152,21 @@ public class GenericServiceImpl implements GenericService {
                             }
                         }
                     } else {
-                        previous.addChild(node);
-                        node.addParent(previous);
+                        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
+                            previous.addChild(node);
+                            node.addParent(previous);
+                        }
                         previous = node;
                     }
                 }
-                System.out.println();
             }
             previousSize = size;
 
         }
         Set<PBNode> leaves = root.getLeaves();
-        Set<PBNode> bla = buildTreesFromLeaves(leaves);
-        System.out.println();
+        return  buildTreesFromLeaves(leaves) ;
     }
+
 
     private Set<PBNode> buildTreesFromLeaves(Set<PBNode> leaves) {
         Set<PBNode> topLvlTrees = new TreeSet<>();

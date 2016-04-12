@@ -276,45 +276,45 @@ public class GenericServiceTest {
     }
 
 
-    @Test
-    public void testGetEventHierarchy () {
-        logger.info("Started testing genericService.getEventHierarchy");
-        long start, time;
-        start = System.currentTimeMillis();
-        Pathway eventHierarchy = genericService.getEventHierarchy(dbId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(dbId,eventHierarchy.getDbId());
-        logger.info("Finished");
-    }
-
-    @Test
-    public void testGetLocationsHierarchy () {
-        logger.info("Started testing genericService.getEventHierarchy");
-        long start, time;
-        start = System.currentTimeMillis();
+//    @Test
+//    public void testGetEventHierarchy () {
+//        logger.info("Started testing genericService.getEventHierarchy");
+//        long start, time;
+//        start = System.currentTimeMillis();
+//        Pathway eventHierarchy = genericService.getEventHierarchy(dbId);
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GraphDb execution time: " + time + "ms");
+//
+//        assertEquals(dbId,eventHierarchy.getDbId());
+//        logger.info("Finished");
+//    }
+//
+//    @Test
+//    public void testGetLocationsHierarchy () {
+//        logger.info("Started testing genericService.getEventHierarchy");
+//        long start, time;
+//        start = System.currentTimeMillis();
 //        DatabaseObject eventHierarchy = genericService.getLocationsHierarchy("R-HSA-445133");
-        genericService.getLocationsHierarchy();
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
+//        genericService.getLocationsHierarchy();
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GraphDb execution time: " + time + "ms");
+//
+////        assertEquals(dbId,eventHierarchy.getDbId());
+//        logger.info("Finished");
+//    }
+//
+//    @Test
+//    public void testGetReferrer () {
+//        logger.info("Started testing genericService.getEventHierarchy");
+//        long start, time;
+//        start = System.currentTimeMillis();
+//        Collection<DatabaseObject> eventHierarchy = genericService.getReferrals(445133L,"hasMember");
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GraphDb execution time: " + time + "ms");
+//
 //        assertEquals(dbId,eventHierarchy.getDbId());
-        logger.info("Finished");
-    }
-
-    @Test
-    public void testGetReferrer () {
-        logger.info("Started testing genericService.getEventHierarchy");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<DatabaseObject> eventHierarchy = genericService.getReferrals(445133L,"hasMember");
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-//        assertEquals(dbId,eventHierarchy.getDbId());
-        logger.info("Finished");
-    }
+//        logger.info("Finished");
+//    }
 
 
 }

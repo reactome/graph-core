@@ -33,7 +33,7 @@
     <properties>
         <!--dependencies-->
         <reactome.version>1.2.4</reactome.version>
-        <sdn.version>4.1.0.RC1</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
+        <sdn.version>4.1.1.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
         <neo4j.kernel.version>2.3.2</neo4j.kernel.version>
         <aspectj.version>1.8.8</aspectj.version>
@@ -152,22 +152,22 @@
     <repositories>
         <!--TODO REMOVE ONE -->
         <!--Spring snapshot repository-->
-        <repository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>http://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/libs-snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
+        <!--<repository>-->
+            <!--<id>spring-milestones</id>-->
+            <!--<name>Spring Milestones</name>-->
+            <!--<url>http://repo.spring.io/milestone</url>-->
+            <!--<snapshots>-->
+                <!--<enabled>false</enabled>-->
+            <!--</snapshots>-->
+        <!--</repository>-->
+        <!--<repository>-->
+            <!--<id>spring-snapshots</id>-->
+            <!--<name>Spring Snapshots</name>-->
+            <!--<url>https://repo.spring.io/libs-snapshot</url>-->
+            <!--<snapshots>-->
+                <!--<enabled>true</enabled>-->
+            <!--</snapshots>-->
+        <!--</repository>-->
         <!--Reactome repository-->
         <repository>
             <id>nexus-ebi-repo</id>

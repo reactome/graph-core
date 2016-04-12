@@ -1,5 +1,7 @@
 package org.reactome.server.tools.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.tools.domain.annotations.ReactomeProperty;
@@ -133,7 +135,6 @@ public abstract class ReactionLikeEvent extends Event {
         this.input = new ArrayList<>(map.values());
     }
 
-
     public List<PhysicalEntity> getOutput() {
         List<PhysicalEntity> rtn = new ArrayList<>();
         if (output != null) {
@@ -163,6 +164,4 @@ public abstract class ReactionLikeEvent extends Event {
         }
         this.output = new ArrayList<>(map.values());
     }
-
-
 }

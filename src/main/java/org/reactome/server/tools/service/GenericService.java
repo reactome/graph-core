@@ -4,9 +4,11 @@ import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.service.helper.PBNode;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by:
@@ -33,8 +35,9 @@ public interface GenericService {
 
     Pathway getEventHierarchy(Long dbId);
     DatabaseObject getLocationsHierarchy(String stId);
-    void getLocationsHierarchy();
-    void tree();
+
+
+    Set<PBNode> getLocationsInPathwayBrowser(DatabaseObject databaseObject);
 
     DatabaseObject getReferral(Long dbId, String relationshipName);
     Collection<DatabaseObject> getReferrals(Long dbId, String relationshipName);

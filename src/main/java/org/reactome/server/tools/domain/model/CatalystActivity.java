@@ -1,5 +1,6 @@
 package org.reactome.server.tools.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.tools.domain.annotations.ReactomeTransient;
@@ -20,6 +21,10 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "activity", direction = Relationship.OUTGOING)
     private GO_MolecularFunction activity;
 
+    /**
+     * catalyzedEvent is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     private List<ReactionLikeEvent> catalyzedEvent;

@@ -41,7 +41,7 @@ public class DatabaseObjectServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
-    private static final Long dbId = 373624L;
+    private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
     private static Boolean checkedOnce = false;
@@ -145,8 +145,8 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(22,participants.size());
-//        logger.info("Finished");
+        assertEquals(22,participants.size());
+        logger.info("Finished");
     }
 
     /**
@@ -154,38 +154,38 @@ public class DatabaseObjectServiceTest {
      * possibly change when content is added to reactome. This method will provide all participating Ewases
      * of an Event and their ReferenceEntities dbIds and names.
      */
-//    @Test
-//    public void testGetParticipatingMolecules2() {
-//
-//        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(participants.size(), 23);
-//        logger.info("Finished");
-//    }
-
-    /**
-     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-     * possibly change when content is added to reactome. This method will provide all participating Ewases
-     * of an Event and their ReferenceEntities.
-     */
     @Test
-    public void testGetParticipatingMolecules3() {
+    public void testGetParticipatingMolecules2() {
 
-        logger.info("Started testing databaseObjectService.getParticipatingMolecules3");
+        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules3(dbId);
+        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
+        assertEquals(23, participants.size());
+        logger.info("Finished");
+    }
+
+//    /**
+//     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
+//     * possibly change when content is added to reactome. This method will provide all participating Ewases
+//     * of an Event and their ReferenceEntities.
+//     */
+//    @Test
+//    public void testGetParticipatingMolecules3() {
+//
+//        logger.info("Started testing databaseObjectService.getParticipatingMolecules3");
+//        long start, time;
+//        start = System.currentTimeMillis();
+//        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules3(dbId);
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GraphDb execution time: " + time + "ms");
+//
 //        assertEquals(23, participants.size());
 //        logger.info("Finished");
-    }
+//    }
 
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
@@ -193,17 +193,17 @@ public class DatabaseObjectServiceTest {
      * of an Event
      */
     @Test
-    public void testGetParticipatingMolecules4() {
+    public void testGetParticipatingMolecules3() {
 
         logger.info("Started testing databaseObjectService.getParticipatingMolecules4");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> participants = databaseObjectService.getParticipatingMolecules4(stId);
+        Collection<PhysicalEntity> participants = databaseObjectService.getParticipatingMolecules3(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-//        assertEquals(22, participants.size());
-//        logger.info("Finished");
+        assertEquals(22, participants.size());
+        logger.info("Finished");
     }
 
 

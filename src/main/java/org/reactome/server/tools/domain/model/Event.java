@@ -57,7 +57,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
 
-//    @JsonIgnore
+    /**
+     * eventOf is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
     private List<Event> eventOf;
@@ -68,7 +71,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
 
-//    @JsonIgnore
+    /**
+     * followingEvent is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
     private List<Event> followingEvent;
@@ -80,7 +86,6 @@ public abstract class Event extends DatabaseObject {
 //    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
 //    private Set<Event> inferredTo;
 
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private Set<Event> inferredFrom;
@@ -88,7 +93,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
-//    @JsonIgnore
+    /**
+     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<NegativeRegulation> negativelyRegulatedBy;
@@ -96,17 +104,23 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private Set<Event> orthologousEvent;
 
+    /**
+     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<PositiveRegulation> positivelyRegulatedBy;
 
-//    @JsonIgnore
     @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
     private List<Event> precedingEvent;
 
     @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
     private List<Species> relatedSpecies;
 
-//    @JsonIgnore
+    /**
+     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<Requirement> requirements;

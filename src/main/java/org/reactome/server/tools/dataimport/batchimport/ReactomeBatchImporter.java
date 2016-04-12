@@ -50,7 +50,6 @@ public class ReactomeBatchImporter {
     private static final Map<Long, Long> dbIds = new HashMap<>();
     private static final Map<Long, Long> reverseReactions = new HashMap<>();
     private static final Map<Long, Long> equivalentTo = new HashMap<>();
-    private static final Map<Long, Long> orthologousEvents = new HashMap<>();
 
     private static final Set<Long> topLevelPathways = new HashSet<>();
 
@@ -121,7 +120,7 @@ public class ReactomeBatchImporter {
     @SuppressWarnings("unchecked")
     private Long importGkInstance(GKInstance instance) throws ClassNotFoundException {
 
-        if (dbIds.size() % 100 == 0 ) {
+        if (dbIds.size()!= 0 && dbIds.size() % 100 == 0 ) {
             updateProgressBar(dbIds.size());
         }
 
@@ -139,40 +138,38 @@ public class ReactomeBatchImporter {
                     case "positivelyRegulatedBy":
                         saveRelationships(id, getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.regulatedEntity), "regulatedBy");
                         break;
-//                    case "orthologousEvent":
-//                        /**
-//                         * only one type of regulation is needed here, In the native dataimport only regulatedBy exists
-//                         * since the type of regulation is later determined by the Object Type we can only save one
-//                         * otherwise relationships will be duplicated
-//                         * if event will break otherwise (physical entity will fall to default
-//                         */
-////                        if (instance.getSchemaClass().isa(ReactomeJavaConstants.Event)) {
-//                        GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
-//
-//
-////                        if (species == null) continue;
-////                        if (species.getDBID().equals(48887L)) {
-////                            //TODO comment need to remove for now because of the fake tlps
-////                            Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
-////                            if (inferredFrom != null && !inferredFrom.isEmpty()) {
-////                                saveRelationships(id,inferredFrom,"inferredToReverse");
-////                                //TODO log
-////                            }
-////                            //TODO comment
-////                            Collection orthologousEvents = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
-////                            if (orthologousEvents != null && !orthologousEvents.isEmpty()) {
-////                                saveRelationships(id, orthologousEvents, "inferredTo");
-////                            } else {
-////                                Collection referrers = getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.orthologousEvent);
-////                                if (referrers != null && !referrers.isEmpty()) {
-////                                    saveRelationships(id, referrers, "inferredTo");
-////                                    errorLogger.error("Entry has referred orthologous but no attribute orthologous: " +
-////                                            instance.getDBID() + " " + instance.getDisplayName());
-////                                }
-////                            }
-////                        }
-//                        break;
-////                        }
+                    case "orthologousEvent":
+                        /**
+                         * only one type of regulation is needed here, In the native dataimport only regulatedBy exists
+                         * since the type of regulation is later determined by the Object Type we can only save one
+                         * otherwise relationships will be duplicated
+                         * if event will break otherwise (physical entity will fall to default
+                         */
+//                        if (instance.getSchemaClass().isa(ReactomeJavaConstants.Event)) {
+                        GKInstance species = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.species);
+                        if (species == null) continue;
+                        if (species.getDBID().equals(48887L)) {
+                            //TODO comment need to remove for now because of the fake tlps
+                            Collection inferredFrom = getCollectionFromGkInstance(instance, ReactomeJavaConstants.inferredFrom);
+                            if (inferredFrom != null && !inferredFrom.isEmpty()) {
+                                saveRelationships(id,inferredFrom,"inferredToReverse");
+                                //TODO log
+                            }
+                            //TODO comment
+                            Collection orthologousEvents = getCollectionFromGkInstance(instance, ReactomeJavaConstants.orthologousEvent);
+                            if (orthologousEvents != null && !orthologousEvents.isEmpty()) {
+                                saveRelationships(id, orthologousEvents, "inferredTo");
+                            } else {
+                                Collection referrers = getCollectionFromGkInstanceReferrals(instance, ReactomeJavaConstants.orthologousEvent);
+                                if (referrers != null && !referrers.isEmpty()) {
+                                    saveRelationships(id, referrers, "inferredTo");
+                                    errorLogger.error("Entry has referred orthologous but no attribute orthologous: " +
+                                            instance.getDBID() + " " + instance.getDisplayName());
+                                }
+                            }
+                        }
+                        break;
+//                        }
                     default:
                         if (isValidGkInstanceAttribute(instance, attribute)) {
                             saveRelationships(id, getCollectionFromGkInstance(instance, attribute), attribute);
@@ -361,21 +358,6 @@ public class ReactomeBatchImporter {
     private void saveRelationship(Long newId, Long oldId, RelationshipType relationshipType, Map<String, Object> properties) {
         String relationName = relationshipType.name();
         switch (relationName) {
-            case "orthologousEvent":
-                if (!(orthologousEvents.containsKey(oldId) && orthologousEvents.containsValue(newId)) &&
-                        !(orthologousEvents.containsKey(newId) && orthologousEvents.containsValue(oldId))) {
-                    batchInserter.createRelationship(oldId, newId, DynamicRelationshipType.withName("inferredTo"), properties);
-                    orthologousEvents.put(oldId, newId);
-                }
-                break;
-            case "inferredFrom":
-                if (!(orthologousEvents.containsKey(oldId) && orthologousEvents.containsValue(newId)) &&
-                        !(orthologousEvents.containsKey(newId) && orthologousEvents.containsValue(oldId))) {
-                    batchInserter.createRelationship(newId, oldId, DynamicRelationshipType.withName("inferredTo"), properties);
-                    orthologousEvents.put(oldId, newId);
-                }
-                break;
-
             case "reverseReaction":
                 if (!(reverseReactions.containsKey(oldId) && reverseReactions.containsValue(newId)) &&
                         !(reverseReactions.containsKey(newId) && reverseReactions.containsValue(oldId))) {
@@ -390,9 +372,9 @@ public class ReactomeBatchImporter {
                     equivalentTo.put(oldId, newId);
                 }
                 break;
-//            case "inferredToReverse":
-//                batchInserter.createRelationship(newId, oldId, DynamicRelationshipType.withName("inferredTo"), properties);
-//                break;
+            case "inferredToReverse":
+                batchInserter.createRelationship(newId, oldId, DynamicRelationshipType.withName("inferredTo"), properties);
+                break;
             case "author":
             case "authored":
             case "created":
@@ -477,16 +459,16 @@ public class ReactomeBatchImporter {
     private void updateProgressBar(int done) {
         String format = "\r%3d%% %s %c";
         char[] rotators = {'|', '/', '—', '\\'};
-        int percent = (++done ) / total;
+        double percent = (double) done / total;
         StringBuilder progress = new StringBuilder(width);
         progress.append('|');
         int i = 0;
-        for (; i < percent*width; i++)
+        for (; i < (int) (percent*width); i++)
             progress.append("=");
         for (; i < width; i++)
             progress.append(" ");
         progress.append('|');
-        System.out.printf(format, percent*100, progress, rotators[((done - 1) % (rotators.length * 100)) /100]);
+        System.out.printf(format, (int) (percent*100), progress, rotators[((done - 1) % (rotators.length * 100)) /100]);
     }
 
     /**

@@ -24,9 +24,8 @@ public interface DatabaseObjectService extends Service<DatabaseObject> {
     DatabaseObject findByStableIdentifier(String stableIdentifier);
 
     Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
-//    Collection<Participant> getParticipatingMolecules2(Long dbId);
-    Collection<Participant> getParticipatingMolecules3(Long dbId);
-    Collection<PhysicalEntity> getParticipatingMolecules4(String id);
+    Collection<Participant> getParticipatingMolecules2(Long dbId);
+    Collection<PhysicalEntity> getParticipatingMolecules3(String id);
 
     Collection<LabelsCount> getLabelsCount();
 }

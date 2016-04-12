@@ -30,17 +30,14 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity|activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
 
-//    @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity*]->(m)-[:activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) RETURN m.dbId AS ewasDbId, m.displayName AS ewasName, COLLECT(DISTINCT x.dbId) AS refEntitiesDbIds, COLLECT(DISTINCT x.displayName) AS refEntitiesNames")
-//    Collection<Participant> getParticipatingMolecules2(Long dbId);
-
     @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity*]->(m)-[:activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) RETURN m.dbId AS peDbId, m.displayName AS displayName, COLLECT(DISTINCT({dbId: x.dbId, name: x.displayName, identifier:x.identifier, url:x.url})) AS refEntities")
-    Collection<Participant> getParticipatingMolecules3(Long dbId);
+    Collection<Participant> getParticipatingMolecules2(Long dbId);
 
     @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) RETURN Distinct(m)")
-    Collection<PhysicalEntity> getParticipatingMolecules4(Long dbId);
+    Collection<PhysicalEntity> getParticipatingMolecules3(Long dbId);
 
     @Query("MATCH (n:Event{stableIdentifier:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) RETURN Distinct(m)")
-    Collection<PhysicalEntity> getParticipatingMolecules4(String stId);
+    Collection<PhysicalEntity> getParticipatingMolecules3(String stId);
 
     @Query("MATCH (n) WHERE NOT (n:TopLevelPathway)  RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<LabelsCount> getLabelsCount();

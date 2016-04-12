@@ -63,23 +63,18 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         return databaseObjectRepository.getParticipatingMolecules(dbId);
     }
 
-//    @Override
-//    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
-//        return databaseObjectRepository.getParticipatingMolecules2(dbId);
-//    }
-
     @Override
-    public Collection<Participant> getParticipatingMolecules3(Long dbId) {
-        return databaseObjectRepository.getParticipatingMolecules3(dbId);
+    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
+        return databaseObjectRepository.getParticipatingMolecules2(dbId);
     }
 
     @Override
-    public Collection<PhysicalEntity> getParticipatingMolecules4(String id) {
+    public Collection<PhysicalEntity> getParticipatingMolecules3(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return databaseObjectRepository.getParticipatingMolecules4(id);
+            return databaseObjectRepository.getParticipatingMolecules3(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return databaseObjectRepository.getParticipatingMolecules4(Long.parseLong(id));
+            return databaseObjectRepository.getParticipatingMolecules3(Long.parseLong(id));
         }
         return null;
     }

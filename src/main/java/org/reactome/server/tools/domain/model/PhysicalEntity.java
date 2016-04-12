@@ -1,5 +1,7 @@
 package org.reactome.server.tools.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.neo4j.ogm.annotation.Transient;
@@ -9,6 +11,7 @@ import org.reactome.server.tools.domain.relationship.HasComponent;
 import org.reactome.server.tools.domain.relationship.Input;
 import org.reactome.server.tools.domain.relationship.Output;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -40,9 +43,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Transient
     private List<DatabaseObject> requiredEvent;
 
+
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
 
+    /**
+     * catalystActivities is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
     private List<CatalystActivity> catalystActivities;
@@ -50,6 +58,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "compartment", direction = Relationship.OUTGOING)
     private List<EntityCompartment> compartment;
 
+    /**
+     * ComponentOf is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
     private List<HasComponent> componentOf;
@@ -80,6 +92,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
+    /**
+     * isRequired is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<Requirement> isRequired;
@@ -87,24 +103,26 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
-
-
-    //TODO
+    /**
+     * MemberOf is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasMember", direction = Relationship.INCOMING)
     private List<PhysicalEntity> memberOf;
-//    //TODO
-//    @ReactomeTransient
-//    @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
-//    private List<PhysicalEntity> componentOf;
 
-
-
-
+    /**
+     * negativelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
+    /**
+     * positivelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
@@ -228,10 +246,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.componentOf = componentOf;
     }
 
-    public List<Input> getConsumedByEvent() {
-        return consumedByEvent;
-    }
-
     public void setConsumedByEvent(List<Input> consumedByEvent) {
         this.consumedByEvent = consumedByEvent;
     }
@@ -324,10 +338,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.positivelyRegulates = positivelyRegulates;
     }
 
-    public List<Output> getProducedByEvent() {
-        return producedByEvent;
-    }
-
     public void setProducedByEvent(List<Output> producedByEvent) {
         this.producedByEvent = producedByEvent;
     }
@@ -357,15 +367,29 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
 
-//    public List<PhysicalEntity> getMemberOf() {
-//        return memberOf;
-//    }
-//
-//    public void setMemberOf(List<PhysicalEntity> memberOf) {
-//        this.memberOf = memberOf;
-//    }
-//
-//    public void setComponentOf(List<PhysicalEntity> componentOf) {
-//        this.componentOf = componentOf;
-//    }
+    public List<Event> getConsumedByEvent() {
+        List<Event> rtn = new ArrayList<>();
+        if(consumedByEvent!=null) {
+            for (Input aux : consumedByEvent) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
+                    rtn.add(aux.getEvent());
+                }
+            }
+            return rtn;
+        }
+        return null;
+    }
+
+    public List<Event> getProducedByEvent() {
+        List<Event> rtn = new ArrayList<>();
+        if(producedByEvent!=null) {
+            for (Output aux : producedByEvent) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
+                    rtn.add(aux.getEvent());
+                }
+            }
+            return rtn;
+        }
+        return null;
+    }
 }
