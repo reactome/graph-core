@@ -33,7 +33,7 @@ public interface GenericRepository {
 
     Pathway getEventHierarchy(Long dbId);
     DatabaseObject getLocationsHierarchy(String stId);
-    Result getLocationsHierarchy();
+    Result getLocationsInPathwayBrowser(String stId);
 
     DatabaseObject getReferral(Long dbId, String relationshipName);
     Collection<DatabaseObject> getReferrals(Long dbId, String relationshipName);

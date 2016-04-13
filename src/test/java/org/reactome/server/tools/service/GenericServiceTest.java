@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.util.DatabaseObjectFactory;
 import org.reactome.server.tools.util.JunitHelper;
 import org.slf4j.Logger;
@@ -276,19 +277,23 @@ public class GenericServiceTest {
     }
 
 
-//    @Test
-//    public void testGetEventHierarchy () {
-//        logger.info("Started testing genericService.getEventHierarchy");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Pathway eventHierarchy = genericService.getEventHierarchy(dbId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
+    @Test
+    public void testGetEventHierarchy () {
+        logger.info("Started testing genericService.getEventHierarchy");
+
+        DatabaseObject databaseObjectObserved = genericService.findByStableIdentifier(DatabaseObject.class, "R-HSA-199420", 1);
+        long start, time;
+        start = System.currentTimeMillis();
+
+
+        Set<PBNode> nodes = genericService.getLocationsInPathwayBrowser(databaseObjectObserved);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
 //        assertEquals(dbId,eventHierarchy.getDbId());
 //        logger.info("Finished");
-//    }
-//
+    }
+
 //    @Test
 //    public void testGetLocationsHierarchy () {
 //        logger.info("Started testing genericService.getEventHierarchy");

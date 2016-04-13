@@ -3,6 +3,7 @@ package org.reactome.server.tools.service.util;
 import org.apache.commons.lang.StringUtils;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.result.LabelsCount;
+import org.reactome.server.tools.service.helper.PBNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.reactome.server.tools.service.helper.AttributeProperties;
@@ -20,7 +21,7 @@ import java.util.*;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 22.02.16.
  */
-public class DatabaseObjectUtils {
+public abstract class DatabaseObjectUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectUtils.class);
 
@@ -86,6 +87,35 @@ public class DatabaseObjectUtils {
             }
         }
         return propertiesList;
+    }
+
+
+    /**
+     * If the entry is available in more the one species,
+     * we show all present species and then the user can choose
+     * them in a dropdown list.
+     * This method just prepare the species list where the HomoSapiens is the first
+     * and the following species sorted without the HomoSapiens.
+     */
+    @SuppressWarnings("unused")
+    public static List<String> getAvailableSpecies(Set<PBNode> graph) {
+        Set<String> availableSpecies = new TreeSet<>();
+        for (PBNode n : graph) {
+            availableSpecies.add(n.getSpecies());
+        }
+
+        final String DEFAULT_SPECIES = "Homo sapiens";
+        List<String> newAvailableSpecies = new ArrayList<>();
+        if (availableSpecies.contains(DEFAULT_SPECIES)) {
+            newAvailableSpecies.add(DEFAULT_SPECIES);
+            availableSpecies.remove(DEFAULT_SPECIES);
+        }
+
+        for (String species : availableSpecies) {
+            newAvailableSpecies.add(species);
+        }
+
+        return newAvailableSpecies;
     }
 
     public static String trimId(String id) {
@@ -160,4 +190,6 @@ public class DatabaseObjectUtils {
         }
         return properties;
     }
+
+
 }

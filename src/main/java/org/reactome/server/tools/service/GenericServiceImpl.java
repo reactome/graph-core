@@ -113,7 +113,7 @@ public class GenericServiceImpl implements GenericService {
         }
 
         Map<String,PBNode> nodes = new HashMap<>();
-        Result result = genericRepository.getLocationsHierarchy();
+        Result result = genericRepository.getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
         PBNode previous = root;
         nodes.put(root.getStId(),root);
 
@@ -121,51 +121,84 @@ public class GenericServiceImpl implements GenericService {
         for (Map<String, Object> stringObjectMap : result) {
             ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
             int size = nodePairCollections.length;
-            if (size>=previousSize) {
+            if (size>previousSize) {
                 ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
                 PBNode node;
                 if (nodes.containsKey(objects.get(0))) {
                     node = nodes.get(objects.get(0));
                 } else {
                     node = createNode(objects);
-                    nodes.put(node.getStId(),node);
                 }
                 if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
                     previous.addChild(node);
                     node.addParent(previous);
+                    previous = node;
+                    nodes.put(node.getStId(),node);
                 }
-                previous = node;
             } else {
+                //todo if [[199426], [2321904]] catalyst ... new node ...bad
                 previous = root;
                 for (ArrayList<Object> objects : nodePairCollections) {
-                    PBNode node;
-                    if (nodes.containsKey(objects.get(0))) {
-                        node = nodes.get(objects.get(0));
-                    } else {
-                        node = createNode(objects);
-                        nodes.put(node.getStId(),node);
+                    PBNode node = createNode(objects);
+                    if (node.getType().equals("CatalystActivity") || node.getType().contains("Regulation")) {
+                        continue;
                     }
-                    if (previous.getChildren().contains(node)) {
-                        for (PBNode pbNode : previous.getChildren()) {
-                            if (pbNode.getStId().equals(node.getStId())) {
-                                previous = pbNode;
-                            }
-                        }
-                    } else {
-                        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
-                            previous.addChild(node);
-                            node.addParent(previous);
-                        }
+                    if (nodes.containsKey(node.getStId())) {
                         previous = node;
+                        continue;
                     }
+                    previous.addChild(node);
+                    node.addParent(previous);
+                    previous = node;
+                    nodes.put(node.getStId(),node);
                 }
             }
             previousSize = size;
 
         }
+        root.print();
         Set<PBNode> leaves = root.getLeaves();
         return  buildTreesFromLeaves(leaves) ;
     }
+//
+//                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-2];
+//                if (nodes.containsKey(objects.get(0))) {
+//                    previous = nodes.get(objects.get(0));
+//                    continue;
+//                }
+//                objects = nodePairCollections[nodePairCollections.length-1];
+//                PBNode node = createNode(objects);
+//                nodes.put(node.getStId(),node);
+//
+//                previous = root;
+//
+//
+//                for (ArrayList<Object> objects : nodePairCollections) {
+//                    PBNode node;
+//
+//
+//                    if (nodes.containsKey(objects.get(0))) {
+//                        previous = nodes.get(objects.get(0));
+//                        continue;
+//                    } else {
+//                        node = createNode(objects);
+//                        nodes.put(node.getStId(),node);
+//                    }
+//                    if (previous.getChildren().contains(node)) {
+//                        for (PBNode pbNode : previous.getChildren()) {
+//                            if (pbNode.getStId().equals(node.getStId())) {
+//                                previous = pbNode;
+//                            }
+//                        }
+//                    } else {
+//                        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
+//                            previous.addChild(node);
+//                            node.addParent(previous);
+//                            previous = node;
+//                        }
+//                    }
+//                }
+
 
 
     private Set<PBNode> buildTreesFromLeaves(Set<PBNode> leaves) {
