@@ -129,22 +129,27 @@ public class GenericServiceImpl implements GenericService {
                 } else {
                     node = createNode(objects);
                 }
-                if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
+                if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")  ) { //&& !node.getType().equals("EntityFunctionalStatus")
                     previous.addChild(node);
                     node.addParent(previous);
                     previous = node;
                     nodes.put(node.getStId(),node);
                 }
             } else {
-                //todo if [[199426], [2321904]] catalyst ... new node ...bad
                 previous = root;
                 for (ArrayList<Object> objects : nodePairCollections) {
                     PBNode node = createNode(objects);
-                    if (node.getType().equals("CatalystActivity") || node.getType().contains("Regulation")) {
+                    if (node.getType().equals("CatalystActivity") || node.getType().contains("Regulation") || node.getType().equals("EntityFunctionalStatus")) {
                         continue;
                     }
+                    if (node.getStId()==null) {
+                        System.out.println();
+                    }
                     if (nodes.containsKey(node.getStId())) {
-                        previous = node;
+                        node = nodes.get(objects.get(0));
+                        previous.addChild(node);
+                        node.addParent(previous);
+                        previous = nodes.get(node);
                         continue;
                     }
                     previous.addChild(node);
