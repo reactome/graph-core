@@ -94,26 +94,16 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.getReferrals(dbId, relationshipName);
     }
 
-    public Set<PBNode> getLocationsInPathwayBrowser(DatabaseObject databaseObject) {
+    public Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject) {
+        return getLocationsInPathwayBrowserTree(databaseObject).getLeaves();
+    }
 
-        PBNode root = new PBNode();
-        root.setStId(databaseObject.getStableIdentifier());
-        root.setName(databaseObject.getDisplayName());
-        root.setType(databaseObject.getSchemaClass());
+    public PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject) {
 
-        if (databaseObject instanceof Event) {
-            Event event = (Event) databaseObject;
-            root.setSpecies(event.getSpeciesName());
-        } else if (databaseObject instanceof PhysicalEntity) {
-            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
-            root.setSpecies(physicalEntity.getSpeciesName());
-        } else {
-//            logger.error
-            return null;
-        }
-
-        Map<String,PBNode> nodes = new HashMap<>();
         Result result = genericRepository.getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
+
+        PBNode root = createNode(databaseObject);
+        Map<String,PBNode> nodes = new HashMap<>();
         PBNode previous = root;
         nodes.put(root.getStId(),root);
 
@@ -123,214 +113,58 @@ public class GenericServiceImpl implements GenericService {
             int size = nodePairCollections.length;
             if (size>previousSize) {
                 ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
-                PBNode node;
-                if (nodes.containsKey(objects.get(0))) {
-                    node = nodes.get(objects.get(0));
-                } else {
-                    node = createNode(objects);
-                }
-                if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")  ) { //&& !node.getType().equals("EntityFunctionalStatus")
-                    previous.addChild(node);
-                    node.addParent(previous);
-                    previous = node;
-                    nodes.put(node.getStId(),node);
-                }
+                previous = addNode(previous,nodes,objects);
             } else {
                 previous = root;
                 for (ArrayList<Object> objects : nodePairCollections) {
-                    PBNode node = createNode(objects);
-                    if (node.getType().equals("CatalystActivity") || node.getType().contains("Regulation") || node.getType().equals("EntityFunctionalStatus")) {
+                    if (objects.get(0) == null ){
                         continue;
                     }
-                    if (node.getStId()==null) {
-                        System.out.println();
-                    }
-                    if (nodes.containsKey(node.getStId())) {
-                        node = nodes.get(objects.get(0));
-                        previous.addChild(node);
-                        node.addParent(previous);
-                        previous = nodes.get(node);
-                        continue;
-                    }
-                    previous.addChild(node);
-                    node.addParent(previous);
-                    previous = node;
-                    nodes.put(node.getStId(),node);
+                    previous = addNode(previous,nodes,objects);
                 }
             }
             previousSize = size;
-
         }
-        root.print();
-        Set<PBNode> leaves = root.getLeaves();
-        return  buildTreesFromLeaves(leaves) ;
-    }
-//
-//                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-2];
-//                if (nodes.containsKey(objects.get(0))) {
-//                    previous = nodes.get(objects.get(0));
-//                    continue;
-//                }
-//                objects = nodePairCollections[nodePairCollections.length-1];
-//                PBNode node = createNode(objects);
-//                nodes.put(node.getStId(),node);
-//
-//                previous = root;
-//
-//
-//                for (ArrayList<Object> objects : nodePairCollections) {
-//                    PBNode node;
-//
-//
-//                    if (nodes.containsKey(objects.get(0))) {
-//                        previous = nodes.get(objects.get(0));
-//                        continue;
-//                    } else {
-//                        node = createNode(objects);
-//                        nodes.put(node.getStId(),node);
-//                    }
-//                    if (previous.getChildren().contains(node)) {
-//                        for (PBNode pbNode : previous.getChildren()) {
-//                            if (pbNode.getStId().equals(node.getStId())) {
-//                                previous = pbNode;
-//                            }
-//                        }
-//                    } else {
-//                        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation")) {
-//                            previous.addChild(node);
-//                            node.addParent(previous);
-//                            previous = node;
-//                        }
-//                    }
-//                }
-
-
-
-    private Set<PBNode> buildTreesFromLeaves(Set<PBNode> leaves) {
-        Set<PBNode> topLvlTrees = new TreeSet<>();
-        for (PBNode leaf : leaves) {
-            PBNode tree = getTreeFromGraphLeaf(leaf, "", "", "", "");
-            if (tree != null) {
-                topLvlTrees.add(tree);
-            } else {
-//                logger.error("Could no process tree for " + leaf.getName());
-            }
-        }
-
-        return topLvlTrees;
+        return  root ;
     }
 
-    private static final String PATHWAY_BROWSER_URL = "/PathwayBrowser/#/";
-    private static final String SEL = "&amp;SEL=";
-    private static final String PATH = "&amp;PATH=";
-
-    /**
-     * Generating individual Trees from a leaf
-     * Url linking to the Pathway browser will be set
-     * URL consists of 3 Attributes PATH, SEL, MAIN
-     * MAIN = main URL parameter (required)
-     *
-     * @param leaf                of the Graph represent the TopLevelPathways in Reactome
-     * @param sel                 URL parameter to select Reactions or Physical Entities (optional)
-     * @param path                URL parameter to identify a unique "Path" to this entry
-     * @param shortPath           URL parameter to identify a unique "Path" to this entry
-     * @param lastNodeWithDiagram saves STID of the Last Pathway in the Diagram
-     * @return generated Tree
-     */
-    private PBNode getTreeFromGraphLeaf(PBNode leaf, String sel, String path, String shortPath, String lastNodeWithDiagram) {
-        /* */
-        PBNode tree = new PBNode();
-        tree.setStId(leaf.getStId());
-        tree.setName(leaf.getName());
-        tree.setSpecies(leaf.getSpecies());
-        tree.setType(leaf.getType());
-
-        boolean isPathway = leaf.getType().equals("Pathway");
-        boolean hasDiagram = leaf.hasDiagram();
-        leaf.setUnique(false);
-
-        /*Setting main Url attributes*/
-        String main;
-        if (isPathway) {
-            main = leaf.getStId();
+    private PBNode addNode(PBNode previous, Map<String,PBNode> nodes, ArrayList<Object> objects) {
+        PBNode node;
+        if (nodes.containsKey(objects.get(0))) {
+            node = nodes.get(objects.get(0));
         } else {
-            sel = leaf.getStId();
-            main = lastNodeWithDiagram;
+            node = createNode(objects);
+            nodes.put(node.getStId(),node);
         }
+        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus")) {
+            previous.addChild(node);
+            node.addParent(previous);
 
-        /*Check if Pathway is a unique pathway*/
-        Set<PBNode> children = leaf.getChildren();
-        if (isPathway) {
-            if (children == null) {
-                leaf.setUnique(true);
-            } else if (children.size() == 1) {
-                if (children.iterator().next().isUnique()) {
-                    leaf.setUnique(true);
-                }
-            }
-        }
 
-        /*Building the Url for the current entry*/
-        StringBuilder url = new StringBuilder();
-        url.append(PATHWAY_BROWSER_URL);
-        if (leaf.isUnique()) {
-            url.append(leaf.getStId());
-        } else {
-            url.append(main);
-            if (!sel.isEmpty()) {
-                url.append(SEL);
-                url.append(sel);
-            }
-
-            if (isPathway) {
-                if (!path.isEmpty()) {
-                    url.append(PATH);
-                    url.append(path);
-                } else {
-                    url.append(path);
-                }
-            } else {
-                if (!shortPath.isEmpty()) {
-                    url.append(PATH);
-                    url.append(shortPath);
-                } else {
-                    url.append(shortPath);
-                }
-            }
+            previous = node;
         }
-        tree.setUrl(url.toString());
-
-        /*Building Path for next entry*/
-        if (isPathway) {
-            if (hasDiagram) {
-                if (shortPath.isEmpty()) {
-                    shortPath += lastNodeWithDiagram;
-                } else {
-                    shortPath += "," + lastNodeWithDiagram;
-                }
-            } else {
-                if (path.isEmpty()) {
-                    path += leaf.getStId();
-                } else {
-                    path += "," + leaf.getStId();
-                }
-            }
-        }
-        if (hasDiagram) {
-            lastNodeWithDiagram = leaf.getStId();
-        }
-
-        /*Continue in the recursion */
-        Set<PBNode> parents = leaf.getParent();
-        if (parents != null) {
-            for (PBNode node : parents) {
-                tree.addChild(getTreeFromGraphLeaf(node, sel, path, shortPath, lastNodeWithDiagram));
-            }
-        }
-        return tree;
+        return previous;
     }
 
-    //    private void
+    private PBNode createNode(DatabaseObject databaseObject) {
+        PBNode node = new PBNode();
+        node.setStId(databaseObject.getStableIdentifier());
+        node.setName(databaseObject.getDisplayName());
+        node.setType(databaseObject.getSchemaClass());
+
+        if (databaseObject instanceof Event) {
+            Event event = (Event) databaseObject;
+            node.setSpecies(event.getSpeciesName());
+        } else if (databaseObject instanceof PhysicalEntity) {
+            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
+            node.setSpecies(physicalEntity.getSpeciesName());
+        } else {
+//            logger.error
+            return null;
+        }
+        return node;
+    }
+
     private PBNode createNode(ArrayList<Object> nodePairCollection) {
         PBNode node = new PBNode();
         node.setStId((String) nodePairCollection.get(0));
@@ -348,9 +182,9 @@ public class GenericServiceImpl implements GenericService {
                 }
             } catch (ClassNotFoundException e) {
 //                e.printStackTrace();
+                //todo toplevel pathway!!
                 node.setType("Pathway");
             }
-
         }
         node.setType(lowestClass.getSimpleName());
         return node;

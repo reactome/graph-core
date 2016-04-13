@@ -48,17 +48,6 @@ public class PBNode implements Comparable<PBNode> {
         return leaves;
     }
 
-    public void print() {
-        System.out.println(this.stId);
-        if (this.children != null) {
-            for (PBNode child : this.children) {
-                child.print();
-            }
-        }
-    }
-
-
-
     public Boolean hasDiagram() {
         if (diagram ==null) {
             return false;

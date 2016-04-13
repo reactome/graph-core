@@ -37,7 +37,8 @@ public interface GenericService {
     DatabaseObject getLocationsHierarchy(String stId);
 
 
-    Set<PBNode> getLocationsInPathwayBrowser(DatabaseObject databaseObject);
+    PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject);
+    Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject);
 
     DatabaseObject getReferral(Long dbId, String relationshipName);
     Collection<DatabaseObject> getReferrals(Long dbId, String relationshipName);

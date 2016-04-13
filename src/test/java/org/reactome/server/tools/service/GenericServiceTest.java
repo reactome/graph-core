@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.tools.domain.model.DatabaseObject;
+import org.reactome.server.tools.domain.model.EntityWithAccessionedSequence;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
 import org.reactome.server.tools.service.helper.PBNode;
@@ -281,12 +282,16 @@ public class GenericServiceTest {
     public void testGetEventHierarchy () {
         logger.info("Started testing genericService.getEventHierarchy");
 
-        DatabaseObject databaseObjectObserved = genericService.findByStableIdentifier(DatabaseObject.class, "R-HSA-199420", 1);
+        DatabaseObject databaseObject = new EntityWithAccessionedSequence();
+        databaseObject.setStableIdentifier("R-ALL-113592");
+        databaseObject.setDisplayName("ATP");
+
+//        DatabaseObject databaseObjectObserved = genericService.findByStableId();
         long start, time;
         start = System.currentTimeMillis();
 
 
-        Set<PBNode> nodes = genericService.getLocationsInPathwayBrowser(databaseObjectObserved);
+        Set<PBNode> nodes = genericService.getLocationsInPathwayBrowserHierarchy(databaseObject);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
