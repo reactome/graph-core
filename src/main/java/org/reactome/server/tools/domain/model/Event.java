@@ -14,6 +14,7 @@ import java.util.Set;
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 
+
     @ReactomeProperty
     private Boolean _doRelease;
     @ReactomeProperty

@@ -8,4 +8,8 @@ public class Requirement extends PositiveRegulation {
 
     public Requirement() {}
 
+    @Override
+    public String getExplanation() {
+        return "A regulator that is required for an Event/CatalystActivity to happen";
+    }
 }

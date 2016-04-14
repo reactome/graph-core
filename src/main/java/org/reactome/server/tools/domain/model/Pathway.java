@@ -67,4 +67,9 @@ public class Pathway extends Event {
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
     }
+
+    @Override
+    public String getExplanation() {
+        return "A collection of related Events. These events can be ReactionlikeEvents or Pathways";
+    }
 }

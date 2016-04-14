@@ -10,6 +10,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class GenomeEncodedEntity extends PhysicalEntity {
 
+
     @Relationship(type = "species")
     private Taxon species;
 
@@ -21,5 +22,15 @@ public class GenomeEncodedEntity extends PhysicalEntity {
 
     public void setSpecies(Taxon species) {
         this.species = species;
+    }
+
+    @Override
+    public String getExplanation() {
+        return "A peptide or polynucleotide whose sequence is unknown and thus cannot be linked to external sequence databases or used for orthology inference";
+    }
+
+    @Override
+    public String getClassName() {
+        return "Genes and Transcripts";
     }
 }

@@ -97,4 +97,10 @@ public class Complex extends PhysicalEntity {
     public void setSpecies(List<Species> species) {
         this.species = species;
     }
+
+    @Override
+    public String getExplanation() {
+        return "An entity formed by the association of two or more component entities (these components can themselves be complexes). " +
+                "At least one component must be specified. Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components";
+    }
 }

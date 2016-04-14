@@ -11,4 +11,8 @@ public class DefinedSet extends EntitySet {
 
     public DefinedSet() {}
 
+    @Override
+    public String getExplanation() {
+        return "Two or more entities that are interchangeable in function";
+    }
 }

@@ -137,4 +137,14 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     public static DatabaseObject emptyObject() {
         return new Pathway();
     }
+
+    @JsonIgnore
+    public String getExplanation() {
+        return "Not available";
+    }
+
+    @JsonIgnore
+    public String getClassName() {
+        return getClass().getSimpleName().replaceAll("([A-Z])", " $1");
+    }
 }

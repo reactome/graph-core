@@ -47,4 +47,15 @@ public class EntitySet extends PhysicalEntity{
     public void setSpecies(List<Species> species) {
         this.species = species;
     }
+
+    @Override
+    public String getExplanation() {
+        return "Two or more entities grouped because of a shared molecular feature. " +
+                "The superclass for CandidateSet, DefinedSet, and OpenSet";
+    }
+
+    @Override
+    public String getClassName() {
+        return "Set";
+    }
 }

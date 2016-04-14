@@ -164,4 +164,10 @@ public abstract class ReactionLikeEvent extends Event {
         }
         this.output = new ArrayList<>(map.values());
     }
+
+    @Override
+    public String getClassName() {
+        return "Reaction";
+    }
+
 }

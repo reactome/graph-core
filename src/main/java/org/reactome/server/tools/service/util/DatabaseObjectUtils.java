@@ -51,10 +51,10 @@ public abstract class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
-            if (method.getName().startsWith("get") && !method.getName().equals("getClass") && !method.getName().equals("getId")) {
+            if (method.getName().startsWith("get") && !method.getName().equals("getClass") && !method.getName().equals("getId") && !method.getName().equals("getExplanation")) {
                 try {
                     Object object = method.invoke(databaseObject);
-                    if (object == null) continue;
+                    if (object == null || object.equals("")) continue;
                     map.put(method.getName().substring(3), object);
                 } catch (IllegalAccessException|InvocationTargetException e) {
                     logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method " + method.getName());

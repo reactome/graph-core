@@ -12,6 +12,13 @@ import java.util.List;
 @NodeEntity
 public class BlackBoxEvent extends ReactionLikeEvent {
 
+    @Override
+    public String getExplanation() {
+        return "Shortcut reactions that make the connection between input and output, but don't provide complete mechanistic detail. " +
+                "Used for reactions that do not balance, or complicated processes for which we either don't know all the details, or we choose not to represent every step. (e.g. degradation of a protein)";
+
+    }
+
     @Relationship(type = "hasEvent", direction = Relationship.OUTGOING)
     private List<Event> hasEvent;
 
