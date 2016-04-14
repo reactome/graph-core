@@ -10,6 +10,7 @@ import org.reactome.server.tools.domain.model.EntityWithAccessionedSequence;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
 import org.reactome.server.tools.service.helper.PBNode;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.util.DatabaseObjectFactory;
 import org.reactome.server.tools.util.JunitHelper;
 import org.slf4j.Logger;
@@ -69,6 +70,23 @@ public class GenericServiceTest {
         genericService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
+
+
+    @Test
+    public void findById2() {
+
+        logger.info("Started testing genericService.findById");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = genericService.findById(stId, RelationshipDirection.OUTGOING);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(dbId, databaseObjectObserved.getDbId());
+        logger.info("Finished");
+    }
+
+
 
     @Test
     public void findById() {

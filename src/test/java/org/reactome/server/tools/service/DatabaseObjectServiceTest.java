@@ -80,7 +80,7 @@ public class DatabaseObjectServiceTest {
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved =  databaseObjectService.findByDbId(dbId);
+        DatabaseObject databaseObjectObserved =  databaseObjectService.findByDbId(113592l);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

@@ -186,6 +186,10 @@ session required pam_limits.so
 * Neo4j requires clients to supply authentication credentials. The authentication data is stored under ```/var/lib/neo4j/data/dbms/auth```.
 * Authentication can also be changed in the Neo4j-Browser with the command: ```:server change-password```
 
+#### Neo4j Remote Access
+
+To allow remote access to neo4j enable ```org.neo4j.server.webserver.address=0.0.0.0``` and restart the server. This behavior can be changed in ```/conf/neo4j-server.properties```.
+
 #### Reactome data import
 
 Reactome data will be automatically be imported when running the ```setup-graph.sh``` script. 

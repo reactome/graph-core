@@ -4,6 +4,7 @@ import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.*;
 import org.reactome.server.tools.repository.GenericRepository;
 import org.reactome.server.tools.service.helper.PBNode;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,18 @@ public class GenericServiceImpl implements GenericService {
 
     @Autowired
     private GenericRepository genericRepository;
+
+
+    @Override
+    public DatabaseObject findById(String id, RelationshipDirection direction) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return genericRepository.findByStableIdentifier(id, direction);
+        } else if (DatabaseObjectUtils.isDbId(id)){
+            return genericRepository.findByDbId(Long.parseLong(id), direction);
+        }
+        return null;
+    }
 
     @Override
     public Object findByPropertyWithRelations (String property, Object value, String... relationships){

@@ -5,6 +5,7 @@ import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
 import org.reactome.server.tools.service.helper.PBNode;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,6 +19,8 @@ import java.util.Set;
  */
 @SuppressWarnings("SameParameterValue")
 public interface GenericService {
+
+    DatabaseObject findById(String id, RelationshipDirection direction);
 
     <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);

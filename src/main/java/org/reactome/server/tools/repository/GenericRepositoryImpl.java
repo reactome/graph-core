@@ -6,6 +6,7 @@ import org.neo4j.ogm.session.Session;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,41 @@ public class GenericRepositoryImpl implements GenericRepository {
 
     @Autowired
     private Neo4jOperations neo4jTemplate;
+
+//    Match (n:DatabaseObject{stableIdentifier:"R-ALL-113592"})-[r]->(m),(n)-[e:regulator|physicalEntity]-(l),(l)-[w:catalystActivity|regulatedBy]-(k) RETURN n,r,m,e,l,w,k
+
+    public DatabaseObject findByDbId(Long dbId, RelationshipDirection direction) {
+        String query;
+        if (direction.equals(RelationshipDirection.INCOMING)) {
+            query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r]-(m) RETURN n,r,m";
+        } else {
+            query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m) RETURN n,r,m";
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
+
+    public DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction) {
+        String query;
+        if (direction.equals(RelationshipDirection.INCOMING)) {
+            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})<-[r]-(m) RETURN n,r,m";
+        } else {
+            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})-[r]->(m) RETURN n,r,m";
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("stId", stId);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
+
 
     @Override
     public Object findByPropertyWithRelations (String property, Object value, String... relationships) {
