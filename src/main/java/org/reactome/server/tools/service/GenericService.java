@@ -20,14 +20,14 @@ import java.util.Set;
 @SuppressWarnings("SameParameterValue")
 public interface GenericService {
 
-    DatabaseObject findById(String id, RelationshipDirection direction);
+//    DatabaseObject findById(String id, RelationshipDirection direction);
 
     <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
     <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth);
 
-    <T> Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException;
+//    <T> Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException;
 
     Object findByPropertyWithRelations (String property, Object value, String... relationships);
     Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
@@ -40,8 +40,8 @@ public interface GenericService {
     DatabaseObject getLocationsHierarchy(String stId);
 
 
-    PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject);
-    Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject);
+//    PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject);
+//    Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject);
 
     DatabaseObject getReferral(Long dbId, String relationshipName);
     Collection<DatabaseObject> getReferrals(Long dbId, String relationshipName);

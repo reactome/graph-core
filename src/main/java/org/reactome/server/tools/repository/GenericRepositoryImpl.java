@@ -35,36 +35,36 @@ public class GenericRepositoryImpl implements GenericRepository {
 
 //    Match (n:DatabaseObject{stableIdentifier:"R-ALL-113592"})-[r]->(m),(n)-[e:regulator|physicalEntity]-(l),(l)-[w:catalystActivity|regulatedBy]-(k) RETURN n,r,m,e,l,w,k
 
-    public DatabaseObject findByDbId(Long dbId, RelationshipDirection direction) {
-        String query;
-        if (direction.equals(RelationshipDirection.INCOMING)) {
-            query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r]-(m) RETURN n,r,m";
-        } else {
-            query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m) RETURN n,r,m";
-        }
-        Map<String,Object> map = new HashMap<>();
-        map.put("dbId", dbId);
-        Result result =  neo4jTemplate.query(query, map);
-        if (result != null && result.iterator().hasNext())
-            return (DatabaseObject) result.iterator().next().get("n");
-        return null;
-    }
-
-
-    public DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction) {
-        String query;
-        if (direction.equals(RelationshipDirection.INCOMING)) {
-            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})<-[r]-(m) RETURN n,r,m";
-        } else {
-            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})-[r]->(m) RETURN n,r,m";
-        }
-        Map<String,Object> map = new HashMap<>();
-        map.put("stId", stId);
-        Result result =  neo4jTemplate.query(query, map);
-        if (result != null && result.iterator().hasNext())
-            return (DatabaseObject) result.iterator().next().get("n");
-        return null;
-    }
+//    public DatabaseObject findByDbId(Long dbId, RelationshipDirection direction) {
+//        String query;
+//        if (direction.equals(RelationshipDirection.INCOMING)) {
+//            query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r]-(m) RETURN n,r,m";
+//        } else {
+//            query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m) RETURN n,r,m";
+//        }
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        Result result =  neo4jTemplate.query(query, map);
+//        if (result != null && result.iterator().hasNext())
+//            return (DatabaseObject) result.iterator().next().get("n");
+//        return null;
+//    }
+//
+//
+//    public DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction) {
+//        String query;
+//        if (direction.equals(RelationshipDirection.INCOMING)) {
+//            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})<-[r]-(m) RETURN n,r,m";
+//        } else {
+//            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})-[r]->(m) RETURN n,r,m";
+//        }
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stId", stId);
+//        Result result =  neo4jTemplate.query(query, map);
+//        if (result != null && result.iterator().hasNext())
+//            return (DatabaseObject) result.iterator().next().get("n");
+//        return null;
+//    }
 
 
 
@@ -94,16 +94,16 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
-    public <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
-        String query = "MATCH (n:" +
-                clazz.getSimpleName() +
-                ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("limit", offset);
-        map.put("skip", (page-1) * offset);
-        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
-    }
+//    public <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
+//        String query = "MATCH (n:" +
+//                clazz.getSimpleName() +
+//                ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
+//
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("limit", offset);
+//        map.put("skip", (page-1) * offset);
+//        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
+//    }
 
     @Override
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
@@ -190,13 +190,13 @@ public class GenericRepositoryImpl implements GenericRepository {
     }
 
     //TODO
-    public Result getLocationsInPathwayBrowser(String stId) {
-        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifier", stId);
-        Result result =  neo4jTemplate.query(query, map);
-        return result;
-    }
+//    public Result getLocationsInPathwayBrowser(String stId) {
+//        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stableIdentifier", stId);
+//        Result result =  neo4jTemplate.query(query, map);
+//        return result;
+//    }
 
     //TODO
     public DatabaseObject getReferral(Long dbId, String relationshipName) {

@@ -1,9 +1,12 @@
 package org.reactome.server.tools.service.util;
 
+import org.reactome.server.tools.domain.model.TopLevelPathway;
 import org.reactome.server.tools.service.helper.PBNode;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
 
 /**
  * Created by:
@@ -30,6 +33,19 @@ public abstract class PathwayBrowserLocationsUtils {
 
         return topLvlTrees;
     }
+
+    public static Set<PBNode> removeOrphans(Set<PBNode> leaves) {
+        Iterator<PBNode> it = leaves.iterator();
+        while (it.hasNext()) {
+            PBNode node = it.next();
+            if (node.getType() == null || !node.getType().equals(TopLevelPathway.class.getSimpleName())) {
+                it.remove();
+            }
+        }
+        return leaves;
+    }
+
+
 
     /**
      * Generating individual Trees from a leaf

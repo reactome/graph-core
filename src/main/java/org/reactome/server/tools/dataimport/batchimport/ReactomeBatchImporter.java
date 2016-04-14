@@ -105,6 +105,10 @@ public class ReactomeBatchImporter {
         for (Object object : objects) {
             GKInstance instance = (GKInstance) object;
             topLevelPathways.add(instance.getDBID());
+            Collection<GKInstance> orthologousEvents = getCollectionFromGkInstance(instance,ReactomeJavaConstants.orthologousEvent);
+            for (GKInstance orthologousEvent : orthologousEvents) {
+                topLevelPathways.add(orthologousEvent.getDBID());
+            }
             tlps.add(instance);
         }
         return tlps;

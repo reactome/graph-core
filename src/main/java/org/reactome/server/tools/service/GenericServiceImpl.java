@@ -26,16 +26,16 @@ public class GenericServiceImpl implements GenericService {
     private GenericRepository genericRepository;
 
 
-    @Override
-    public DatabaseObject findById(String id, RelationshipDirection direction) {
-        id = DatabaseObjectUtils.trimId(id);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return genericRepository.findByStableIdentifier(id, direction);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return genericRepository.findByDbId(Long.parseLong(id), direction);
-        }
-        return null;
-    }
+//    @Override
+//    public DatabaseObject findById(String id, RelationshipDirection direction) {
+//        id = DatabaseObjectUtils.trimId(id);
+//        if (DatabaseObjectUtils.isStId(id)) {
+//            return genericRepository.findByStableIdentifier(id, direction);
+//        } else if (DatabaseObjectUtils.isDbId(id)){
+//            return genericRepository.findByDbId(Long.parseLong(id), direction);
+//        }
+//        return null;
+//    }
 
     @Override
     public Object findByPropertyWithRelations (String property, Object value, String... relationships){
@@ -48,11 +48,11 @@ public class GenericServiceImpl implements GenericService {
     }
 
     //    TODO fix warning
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T>Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
-        return genericRepository.getObjectsByClassName(DatabaseObjectUtils.getClassForName(className),page,offset);
-    }
+//    @SuppressWarnings("unchecked")
+//    @Override
+//    public <T>Collection<T> getObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
+//        return genericRepository.getObjectsByClassName(DatabaseObjectUtils.getClassForName(className),page,offset);
+//    }
 
     @Override
     public <T>T findByProperty(Class<T> clazz, String property, Object value, Integer depth){
@@ -107,101 +107,101 @@ public class GenericServiceImpl implements GenericService {
         return genericRepository.getReferrals(dbId, relationshipName);
     }
 
-    public Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject) {
-        return getLocationsInPathwayBrowserTree(databaseObject).getLeaves();
-    }
+//    public Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject) {
+//        return getLocationsInPathwayBrowserTree(databaseObject).getLeaves();
+//    }
+//
+//    public PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject) {
+//
+//        Result result = genericRepository.getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
+//
+//        PBNode root = createNode(databaseObject);
+//        Map<String,PBNode> nodes = new HashMap<>();
+//        PBNode previous = root;
+//        nodes.put(root.getStId(),root);
+//
+//        int previousSize = 0;
+//        for (Map<String, Object> stringObjectMap : result) {
+//            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
+//            int size = nodePairCollections.length;
+//            if (size>previousSize) {
+//                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
+//                previous = addNode(previous,nodes,objects);
+//            } else {
+//                previous = root;
+//                for (ArrayList<Object> objects : nodePairCollections) {
+//                    if (objects.get(0) == null ){
+//                        continue;
+//                    }
+//                    previous = addNode(previous,nodes,objects);
+//                }
+//            }
+//            previousSize = size;
+//        }
+//        return  root ;
+//    }
 
-    public PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject) {
-
-        Result result = genericRepository.getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
-
-        PBNode root = createNode(databaseObject);
-        Map<String,PBNode> nodes = new HashMap<>();
-        PBNode previous = root;
-        nodes.put(root.getStId(),root);
-
-        int previousSize = 0;
-        for (Map<String, Object> stringObjectMap : result) {
-            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
-            int size = nodePairCollections.length;
-            if (size>previousSize) {
-                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
-                previous = addNode(previous,nodes,objects);
-            } else {
-                previous = root;
-                for (ArrayList<Object> objects : nodePairCollections) {
-                    if (objects.get(0) == null ){
-                        continue;
-                    }
-                    previous = addNode(previous,nodes,objects);
-                }
-            }
-            previousSize = size;
-        }
-        return  root ;
-    }
-
-    private PBNode addNode(PBNode previous, Map<String,PBNode> nodes, ArrayList<Object> objects) {
-        PBNode node;
-        if (nodes.containsKey(objects.get(0))) {
-            node = nodes.get(objects.get(0));
-        } else {
-            node = createNode(objects);
-            nodes.put(node.getStId(),node);
-        }
-        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus")) {
-            previous.addChild(node);
-            node.addParent(previous);
-
-
-            previous = node;
-        }
-        return previous;
-    }
-
-    private PBNode createNode(DatabaseObject databaseObject) {
-        PBNode node = new PBNode();
-        node.setStId(databaseObject.getStableIdentifier());
-        node.setName(databaseObject.getDisplayName());
-        node.setType(databaseObject.getSchemaClass());
-
-        if (databaseObject instanceof Event) {
-            Event event = (Event) databaseObject;
-            node.setSpecies(event.getSpeciesName());
-        } else if (databaseObject instanceof PhysicalEntity) {
-            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
-            node.setSpecies(physicalEntity.getSpeciesName());
-        } else {
-//            logger.error
-            return null;
-        }
-        return node;
-    }
-
-    private PBNode createNode(ArrayList<Object> nodePairCollection) {
-        PBNode node = new PBNode();
-        node.setStId((String) nodePairCollection.get(0));
-        node.setName((String) nodePairCollection.get(1));
-        node.setDiagram((Boolean) nodePairCollection.get(2));
-        node.setSpecies((String) nodePairCollection.get(3));
-        List xx = (List) nodePairCollection.get(4);
-        Class<?> lowestClass = Object.class;
-
-        for (Object o1 : xx) {
-            try {
-                Class clazz = Class.forName("org.reactome.server.tools.domain.model." + o1.toString());
-                if (lowestClass.isAssignableFrom(clazz)) {
-                    lowestClass = clazz;
-                }
-            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-                //todo toplevel pathway!!
-                node.setType("Pathway");
-            }
-        }
-        node.setType(lowestClass.getSimpleName());
-        return node;
-    }
+//    private PBNode addNode(PBNode previous, Map<String,PBNode> nodes, ArrayList<Object> objects) {
+//        PBNode node;
+//
+//
+//        if (nodes.containsKey(objects.get(0))) {
+//            node = nodes.get(objects.get(0));
+//        } else {
+//            node = createNode(objects);
+//            nodes.put(node.getStId(),node);
+//        }
+//        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus")) {
+//            previous.addChild(node);
+//            node.addParent(previous);
+//            previous = node;
+//        }
+//        return previous;
+//    }
+//
+//    private PBNode createNode(DatabaseObject databaseObject) {
+//        PBNode node = new PBNode();
+//        node.setStId(databaseObject.getStableIdentifier());
+//        node.setName(databaseObject.getDisplayName());
+//        node.setType(databaseObject.getSchemaClass());
+//
+//        if (databaseObject instanceof Event) {
+//            Event event = (Event) databaseObject;
+//            node.setSpecies(event.getSpeciesName());
+//        } else if (databaseObject instanceof PhysicalEntity) {
+//            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
+//            node.setSpecies(physicalEntity.getSpeciesName());
+//        } else {
+////            logger.error
+//            return null;
+//        }
+//        return node;
+//    }
+//
+//    private PBNode createNode(ArrayList<Object> nodePairCollection) {
+//        PBNode node = new PBNode();
+//        node.setStId((String) nodePairCollection.get(0));
+//        node.setName((String) nodePairCollection.get(1));
+//        node.setDiagram((Boolean) nodePairCollection.get(2));
+//        node.setSpecies((String) nodePairCollection.get(3));
+//        List xx = (List) nodePairCollection.get(4);
+//        Class<?> lowestClass = Object.class;
+//
+//        for (Object o1 : xx) {
+//            try {
+//                Class clazz = Class.forName("org.reactome.server.tools.domain.model." + o1.toString());
+//                if (lowestClass.isAssignableFrom(clazz)) {
+//                    lowestClass = clazz;
+//                }
+//            } catch (ClassNotFoundException e) {
+////                e.printStackTrace();
+//                //todo toplevel pathway!!
+//                node.setType("Pathway");
+//            }
+//        }
+//        node.setType(lowestClass.getSimpleName());
+//        return node;
+//    }
 
 
     @Override

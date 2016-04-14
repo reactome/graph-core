@@ -19,13 +19,13 @@ import java.util.Map;
 @Repository
 public interface GenericRepository {
 
-    DatabaseObject findByDbId(Long dbId, RelationshipDirection direction);
-    DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction);
+//    DatabaseObject findByDbId(Long dbId, RelationshipDirection direction);
+//    DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction);
 
     Object findByPropertyWithRelations (String property, Object value, String... relationships);
     Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
 
-    <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset);
+//    <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset);
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
     <T> T findById(Class<T> clazz, Long id, Integer depth);
     <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth);
@@ -37,7 +37,7 @@ public interface GenericRepository {
 
     Pathway getEventHierarchy(Long dbId);
     DatabaseObject getLocationsHierarchy(String stId);
-    Result getLocationsInPathwayBrowser(String stId);
+//    Result getLocationsInPathwayBrowser(String stId);
 
     DatabaseObject getReferral(Long dbId, String relationshipName);
     Collection<DatabaseObject> getReferrals(Long dbId, String relationshipName);
