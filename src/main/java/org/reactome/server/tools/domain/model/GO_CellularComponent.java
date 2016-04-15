@@ -6,39 +6,8 @@ import org.reactome.server.tools.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
 @NodeEntity
-public class GO_CellularComponent extends DatabaseObject {
-
-    @ReactomeProperty
-    private String accession;
-    @ReactomeProperty
-    private String definition;
-
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
-    private ReferenceDatabase referenceDatabase;
+public class GO_CellularComponent extends GO_Term {
 
     public GO_CellularComponent() {}
 
-    public String getAccession() {
-        return accession;
-    }
-
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
-
-    public String getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
-    }
-
-    public ReferenceDatabase getReferenceDatabase() {
-        return referenceDatabase;
-    }
-
-    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
-        this.referenceDatabase = referenceDatabase;
-    }
 }

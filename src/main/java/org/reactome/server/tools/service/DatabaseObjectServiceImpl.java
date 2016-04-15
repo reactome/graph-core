@@ -84,4 +84,8 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
         return databaseObjectRepository.getLabelsCount();
     }
 
+    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId) {
+        return databaseObjectRepository.getOtherFormsOfThisMolecule(dbId);
+    }
+
 }

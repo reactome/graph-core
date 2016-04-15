@@ -80,7 +80,7 @@ public class DatabaseObjectServiceTest {
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved =  databaseObjectService.findByDbId(113592l);
+        DatabaseObject databaseObjectObserved =  databaseObjectService.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -223,7 +223,22 @@ public class DatabaseObjectServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(58, labelsCounts.size());
+        assertEquals(59, labelsCounts.size());
+        logger.info("Finished");
+    }
+
+
+
+    @Test
+    public void testOtherFormsOfThisMolecule() throws ClassNotFoundException {
+
+        logger.info("Started testing databaseObjectService.getLabelsCount");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = databaseObjectService.getOtherFormsOfThisMolecule(199420l);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
         logger.info("Finished");
     }
 }

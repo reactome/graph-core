@@ -39,10 +39,15 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     @Query("MATCH (n:Event{stableIdentifier:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) RETURN Distinct(m)")
     Collection<PhysicalEntity> getParticipatingMolecules3(String stId);
 
-    @Query("MATCH (n) WHERE NOT (n:TopLevelPathway)  RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
+    @Query("MATCH (n) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<LabelsCount> getLabelsCount();
 
     @Query("Match (n:SimpleEntity)-[:referenceEntity]-(m:ReferenceEntity) RETURN Distinct(m)")
     Collection<ReferenceEntity> getAllChemicals();
+
+
+    @Query("Match (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
+    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
+
 
 }

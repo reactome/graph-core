@@ -28,4 +28,7 @@ public interface DatabaseObjectService extends Service<DatabaseObject> {
     Collection<PhysicalEntity> getParticipatingMolecules3(String id);
 
     Collection<LabelsCount> getLabelsCount();
+
+
+    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
 }

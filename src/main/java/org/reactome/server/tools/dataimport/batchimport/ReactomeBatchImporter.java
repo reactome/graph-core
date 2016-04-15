@@ -259,6 +259,9 @@ public class ReactomeBatchImporter {
                             GKInstance referenceDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
                             if (referenceDatabase == null) continue;
                             identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
+                            if (identifier == null) {
+                                identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.accession);
+                            }
                             String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.accessUrl);
                             if (url == null || identifier == null) continue;
                             properties.put(attribute, url.replace("###ID###", identifier));

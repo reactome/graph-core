@@ -1,10 +1,9 @@
 package org.reactome.server.tools.service;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.domain.model.Event;
-import org.reactome.server.tools.domain.model.PhysicalEntity;
+import org.reactome.server.tools.domain.model.*;
 import org.reactome.server.tools.repository.DetailsRepository;
+import org.reactome.server.tools.repository.GenericRepository;
 import org.reactome.server.tools.service.helper.ContentDetails;
 import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
@@ -28,15 +27,30 @@ public class DetailsService {
     @Autowired
     private DetailsRepository detailsRepository;
 
+    @Autowired
+    private GenericRepository genericRepository;
+
+    @Autowired
+    private DatabaseObjectService databaseObjectService;
+
     @Transactional
     public ContentDetails contentDetails(String id) {
+        ContentDetails contentDetails = new ContentDetails();
 
         DatabaseObject databaseObject = findById(id, RelationshipDirection.OUTGOING);
         Set<PBNode> leafs = getLocationsInPathwayBrowserHierarchy(databaseObject);
         leafs = PathwayBrowserLocationsUtils.removeOrphans(leafs);
-        leafs = PathwayBrowserLocationsUtils.buildTreesFromLeaves(leafs);
+        contentDetails.setLeafs(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leafs));
 
-        return new ContentDetails(databaseObject,leafs);
+        if (databaseObject instanceof EntityWithAccessionedSequence || databaseObject instanceof SimpleEntity || databaseObject instanceof OpenSet) {
+            contentDetails.setOtherFormsOfThisMolecule(databaseObjectService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
+            if (databaseObject instanceof EntityWithAccessionedSequence) {
+                EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) databaseObject;
+                genericRepository.findByPropertyWithRelations("dbId",ewas.getReferenceEntity().getDbId(), "referenceGene", "referenceTranscript");
+
+            }
+        }
+        return contentDetails;
     }
 
     public DatabaseObject findById(String id, RelationshipDirection direction) {

@@ -6,16 +6,10 @@ import org.reactome.server.tools.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
 @NodeEntity
-public class GO_MolecularFunction extends DatabaseObject {
+public class GO_MolecularFunction extends GO_Term {
 
     @ReactomeProperty
-    private String accession;
-    @ReactomeProperty
-    private String definition;
-    @ReactomeProperty
     private String ecNumber;
-    @ReactomeProperty
-    private String name;
 
     @Relationship(type = "componentOf", direction = Relationship.OUTGOING)
     private DatabaseObject componentOf;
@@ -26,29 +20,11 @@ public class GO_MolecularFunction extends DatabaseObject {
     @Relationship(type = "positivelyRegulate", direction = Relationship.OUTGOING)
     private GO_MolecularFunction positivelyRegulate;
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
-    private ReferenceDatabase referenceDatabase;
-
     @Relationship(type = "regulate", direction = Relationship.OUTGOING)
     private GO_MolecularFunction regulate;
 
     public GO_MolecularFunction() {}
 
-    public String getAccession() {
-        return accession;
-    }
-
-    public void setAccession(String accession) {
-        this.accession = accession;
-    }
-
-    public String getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
-    }
 
     public String getEcNumber() {
         return ecNumber;
@@ -56,14 +32,6 @@ public class GO_MolecularFunction extends DatabaseObject {
 
     public void setEcNumber(String ecNumber) {
         this.ecNumber = ecNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public DatabaseObject getComponentOf() {
@@ -88,14 +56,6 @@ public class GO_MolecularFunction extends DatabaseObject {
 
     public void setPositivelyRegulate(GO_MolecularFunction positivelyRegulate) {
         this.positivelyRegulate = positivelyRegulate;
-    }
-
-    public ReferenceDatabase getReferenceDatabase() {
-        return referenceDatabase;
-    }
-
-    public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
-        this.referenceDatabase = referenceDatabase;
     }
 
     public GO_MolecularFunction getRegulate() {
