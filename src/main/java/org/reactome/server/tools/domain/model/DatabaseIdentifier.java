@@ -11,6 +11,8 @@ import java.util.List;
 public class DatabaseIdentifier extends DatabaseObject {
 
     @ReactomeProperty
+    private String databaseName;
+    @ReactomeProperty
     private String identifier;
     @ReactomeProperty
     private String url;
@@ -22,6 +24,14 @@ public class DatabaseIdentifier extends DatabaseObject {
     private ReferenceDatabase referenceDatabase;
 
     public DatabaseIdentifier() {}
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
 
     public String getIdentifier() {
         return identifier;

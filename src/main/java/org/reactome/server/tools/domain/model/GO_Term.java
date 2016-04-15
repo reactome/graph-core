@@ -17,6 +17,8 @@ public abstract class GO_Term extends DatabaseObject{
     @ReactomeProperty
     private String accession;
     @ReactomeProperty
+    private String databaseName;
+    @ReactomeProperty
     private String definition;
     @ReactomeProperty
     private String name;
@@ -32,6 +34,14 @@ public abstract class GO_Term extends DatabaseObject{
 
     public void setAccession(String accession) {
         this.accession = accession;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 
     public String getDefinition() {

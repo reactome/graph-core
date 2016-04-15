@@ -38,6 +38,8 @@ public class DetailsService {
         ContentDetails contentDetails = new ContentDetails();
 
         DatabaseObject databaseObject = findById(id, RelationshipDirection.OUTGOING);
+        contentDetails.setDatabaseObject(databaseObject);
+
         Set<PBNode> leafs = getLocationsInPathwayBrowserHierarchy(databaseObject);
         leafs = PathwayBrowserLocationsUtils.removeOrphans(leafs);
         contentDetails.setLeafs(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leafs));

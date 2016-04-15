@@ -11,6 +11,8 @@ import java.util.List;
 public class ReferenceEntity extends DatabaseObject {
 
     @ReactomeProperty
+    private String databaseName;
+    @ReactomeProperty
     private String identifier;
     @ReactomeProperty
     private List<String> name;
@@ -26,6 +28,14 @@ public class ReferenceEntity extends DatabaseObject {
     private ReferenceDatabase referenceDatabase;
 
     public ReferenceEntity() {}
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
 
     public String getIdentifier() {
         return identifier;
