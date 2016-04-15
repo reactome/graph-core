@@ -7,6 +7,8 @@ import org.reactome.server.tools.domain.annotations.ReactomeProperty;
 @NodeEntity
 public class LiteratureReference extends Publication {
 
+    private static final transient String PUBMED_URL = "http://www.ncbi.nlm.nih.gov/pubmed/";
+
     @ReactomeProperty
     private String journal;
     @ReactomeProperty
@@ -60,4 +62,10 @@ public class LiteratureReference extends Publication {
         this.year = year;
     }
 
+    public String getUrl() {
+        if (pubMedIdentifier != null) {
+            return PUBMED_URL + pubMedIdentifier;
+        }
+        return null;
+    }
 }
