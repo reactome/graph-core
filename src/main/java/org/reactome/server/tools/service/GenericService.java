@@ -4,12 +4,9 @@ import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
-import org.reactome.server.tools.service.helper.PBNode;
-import org.reactome.server.tools.service.helper.RelationshipDirection;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by:
@@ -55,4 +52,8 @@ public interface GenericService {
     boolean fitForService() ;
     void clearCache();
 
+
+
+
+    Collection<DatabaseObject> findCollectionByPropertyWithRelationships (String property, Collection<Object> values, String... relationships);
 }

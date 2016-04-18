@@ -124,24 +124,26 @@ fi
 
 if ${_IMPORT_DATA} = true; then
 
-    if sudo service neo4j-service status; then
-        echo "Shutting down Neo4j DB in order to prepare dataimport import"
-        if ! sudo service neo4j-service stop; then
-            echo "An error occurred while trying to shut down neo4j db"
-        exit 1
+    if [ "$_GRAPH_DIR" == "/var/lib/neo4j/data/" ]; then
+        if sudo service neo4j-service status; then
+            echo "Shutting down Neo4j DB in order to prepare dataimport import"
+            if ! sudo service neo4j-service stop; then
+                echo "An error occurred while trying to shut down neo4j db"
+            exit 1
+            fi
         fi
     fi
 
-    if [ ! -d /var/lib/neo4j/data/graph.db ]; then
+    if [ ! -d ${_GRAPH_DIR}${_GRAPH_NAME} ]; then
         echo "Creating new database folder"
-        if ! sudo mkdir /var/lib/neo4j/data/graph.db; then
+        if ! sudo mkdir ${_GRAPH_DIR}${_GRAPH_NAME}; then
             echo "An error occurred while trying to create a new database folder"
             exit 1
         fi
     fi
 
     echo "Changing permissions of neo4j graph"
-    if ! sudo chown -R ${USER} /var/lib/neo4j/data/graph.db; then
+    if ! sudo chown -R ${USER} ${_GRAPH_DIR}${_GRAPH_NAME}; then
         echo "An error occurred when trying to change permissions of the neo4j graph"
     fi
 
@@ -153,7 +155,7 @@ if ${_IMPORT_DATA} = true; then
     echo "DataImport finished successfully!"
 
     echo "Changing permissions of neo4j graph"
-    if ! sudo chown -R neo4j /var/lib/neo4j/data/graph.db; then
+    if ! sudo chown -R neo4j ${_GRAPH_DIR}${_GRAPH_NAME}; then
         echo "An error occurred when trying to change permissions of the neo4j graph"
         exit 1
     fi

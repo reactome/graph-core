@@ -1,6 +1,7 @@
 package org.reactome.server.tools.service;
 
 import org.reactome.server.tools.domain.model.DatabaseObject;
+import org.reactome.server.tools.domain.result.ComponentOf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
@@ -86,6 +87,12 @@ public class DatabaseObjectServiceImpl extends ServiceImpl<DatabaseObject> imple
 
     public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId) {
         return databaseObjectRepository.getOtherFormsOfThisMolecule(dbId);
+    }
+
+
+
+    public Collection<ComponentOf> getComponentsOf(String stableIdentifier) {
+        return databaseObjectRepository.getComponentsOf(stableIdentifier);
     }
 
 }

@@ -254,13 +254,6 @@ public class ReactomeBatchImporter {
                         GKInstance species = (GKInstance) speciesList.get(0);
                         properties.put(attribute, species.getDisplayName());
                         break;
-                    case "databaseName":
-                        GKInstance refDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
-                        if (refDatabase == null) continue;
-                        Collection<String> names = getCollectionFromGkInstance(instance, ReactomeJavaConstants.name);
-                        if (names == null || names.isEmpty()) continue;
-                        properties.put(attribute, names.iterator().next());
-                        break;
                     case "url":
                         if (! instance.getSchemClass().isa(ReactomeJavaConstants.ReferenceDatabase) && ! instance.getSchemClass().isa(ReactomeJavaConstants.Figure)) {
                             GKInstance referenceDatabase = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.referenceDatabase);
@@ -271,6 +264,7 @@ public class ReactomeBatchImporter {
                             }
                             String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.accessUrl);
                             if (url == null || identifier == null) continue;
+                            properties.put("databaseName", referenceDatabase.getDisplayName());
                             properties.put(attribute, url.replace("###ID###", identifier));
                             break;
                         }

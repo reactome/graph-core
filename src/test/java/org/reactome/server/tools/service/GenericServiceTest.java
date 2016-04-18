@@ -3,7 +3,7 @@
 //import org.junit.AfterClass;
 //import org.junit.Before;
 //import org.junit.BeforeClass;
-//import org.junit.Test;
+//import org.junit.ComponentOf;
 //import org.junit.runner.RunWith;
 //import org.reactome.server.tools.domain.model.DatabaseObject;
 //import org.reactome.server.tools.domain.model.EntityWithAccessionedSequence;
@@ -73,7 +73,7 @@
 //    }
 //
 //
-//    @Test
+//    @ComponentOf
 //    public void findById2() {
 //
 //        logger.info("Started testing genericService.findById");
@@ -89,7 +89,7 @@
 //
 //
 //
-//    @Test
+//    @ComponentOf
 //    public void findById() {
 //
 //        Long id = genericService.findByDbId(DatabaseObject.class, dbId, 0).getId();
@@ -104,7 +104,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testFindByProperty() throws InvocationTargetException, IllegalAccessException {
 //
 //        logger.info("Started testing genericService.findByProperty");
@@ -123,7 +123,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
 //
 //        logger.info("Started testing genericService.findByDbId");
@@ -142,7 +142,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testFindByStableIdentifier() throws InvocationTargetException, IllegalAccessException {
 //
 //        logger.info("Started testing genericService.findByStableIdentifier");
@@ -165,7 +165,7 @@
 //     * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
 //     * @throws ClassNotFoundException
 //     */
-//    @Test
+//    @ComponentOf
 //    public void testGetObjectsByClassName() throws ClassNotFoundException {
 //
 //        logger.info("Started testing genericService.getObjectsByClassName");
@@ -179,7 +179,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testFindByPropertyWithRelations() throws ClassNotFoundException {
 //
 //        logger.info("Started testing genericService.getObjectsByClassName");
@@ -193,7 +193,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testFindByPropertyWithoutRelations() throws ClassNotFoundException {
 //
 //        logger.info("Started testing genericService.getObjectsByClassName");
@@ -212,7 +212,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testGetTopLevelPathways() {
 //
 //        logger.info("Started testing genericService.getTopLevelPathways");
@@ -231,7 +231,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testGetTopLevelPathwaysWithId() {
 //
 //        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
@@ -245,7 +245,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testGetTopLevelPathwaysWithName() {
 //
 //        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
@@ -259,7 +259,7 @@
 //        logger.info("Finished");
 //    }
 //
-//    @Test
+//    @ComponentOf
 //    public void testGetSpecies() {
 //
 //        logger.info("Started testing genericService.getSpecies");
@@ -282,7 +282,7 @@
 //     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
 //     * change when content is added to reactome.
 //     */
-//    @Test
+//    @ComponentOf
 //    public void testCountEntries() {
 //
 //        logger.info("Started testing genericService.countEntries");
@@ -297,7 +297,7 @@
 //    }
 //
 //
-//    @Test
+//    @ComponentOf
 //    public void testGetEventHierarchy () {
 //        logger.info("Started testing genericService.getEventHierarchy");
 //
@@ -324,7 +324,7 @@
 ////        logger.info("Finished");
 //    }
 //
-////    @Test
+////    @ComponentOf
 ////    public void testGetLocationsHierarchy () {
 ////        logger.info("Started testing genericService.getEventHierarchy");
 ////        long start, time;
@@ -338,7 +338,7 @@
 ////        logger.info("Finished");
 ////    }
 ////
-////    @Test
+////    @ComponentOf
 ////    public void testGetReferrer () {
 ////        logger.info("Started testing genericService.getEventHierarchy");
 ////        long start, time;

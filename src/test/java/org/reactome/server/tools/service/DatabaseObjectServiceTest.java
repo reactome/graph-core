@@ -6,10 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.tools.config.MyConfiguration;
-import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.domain.model.Pathway;
-import org.reactome.server.tools.domain.model.PhysicalEntity;
-import org.reactome.server.tools.domain.model.ReferenceEntity;
+import org.reactome.server.tools.domain.model.*;
+import org.reactome.server.tools.domain.result.ComponentOf;
 import org.reactome.server.tools.domain.result.LabelsCount;
 import org.reactome.server.tools.domain.result.Participant;
 import org.reactome.server.tools.util.DatabaseObjectFactory;
@@ -173,7 +171,7 @@ public class DatabaseObjectServiceTest {
 //     * possibly change when content is added to reactome. This method will provide all participating Ewases
 //     * of an Event and their ReferenceEntities.
 //     */
-//    @Test
+//    @ComponentOf
 //    public void testGetParticipatingMolecules3() {
 //
 //        logger.info("Started testing databaseObjectService.getParticipatingMolecules3");
@@ -241,4 +239,23 @@ public class DatabaseObjectServiceTest {
 
         logger.info("Finished");
     }
+
+
+
+
+
+    @Test
+    public void testTests() throws ClassNotFoundException {
+
+        logger.info("Started testing databaseObjectService.getLabelsCount");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<ComponentOf> tests = databaseObjectService.getComponentsOf("R-HSA-162629");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        logger.info("Finished");
+    }
+
+
 }

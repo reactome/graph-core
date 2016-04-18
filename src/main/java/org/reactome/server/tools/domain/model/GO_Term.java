@@ -16,7 +16,7 @@ public abstract class GO_Term extends DatabaseObject{
 
     @ReactomeProperty
     private String accession;
-    @ReactomeProperty
+    // will be filled together with url
     private String databaseName;
     @ReactomeProperty
     private String definition;

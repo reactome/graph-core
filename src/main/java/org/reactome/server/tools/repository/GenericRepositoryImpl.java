@@ -66,8 +66,6 @@ public class GenericRepositoryImpl implements GenericRepository {
 //        return null;
 //    }
 
-
-
     @Override
     public Object findByPropertyWithRelations (String property, Object value, String... relationships) {
         String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r";
@@ -94,6 +92,10 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
+    public void load(Long id) {
+        neo4jTemplate.load(DatabaseObject.class,id);
+    }
+
 //    public <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
 //        String query = "MATCH (n:" +
 //                clazz.getSimpleName() +
@@ -104,6 +106,7 @@ public class GenericRepositoryImpl implements GenericRepository {
 //        map.put("skip", (page-1) * offset);
 //        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
 //    }
+
 
     @Override
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
@@ -222,6 +225,24 @@ public class GenericRepositoryImpl implements GenericRepository {
         }
         return referrers;
     }
+
+    public Collection<DatabaseObject> findCollectionByPropertyWithRelationships (String property, Collection<Object> values, String... relationships) {
+
+
+        String query = "Match (n:DatabaseObject)-[r" + getRelationshipAsString(relationships) + "]-(m) WHERE n." + property + " IN {values} RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put("values", values);
+        Result result = neo4jTemplate.query( query, map);
+        List<DatabaseObject> databaseObjects = new ArrayList<>();
+        for (Map<String, Object> stringObjectMap : result) {
+            databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
+        }
+        return databaseObjects;
+
+    }
+
+
+
     //TODO
     //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, endNode(rel).hasDiagram ]) as nodePairCollection
     //TODO

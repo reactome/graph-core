@@ -5,6 +5,7 @@ import org.reactome.server.tools.domain.model.PhysicalEntity;
 import org.reactome.server.tools.domain.result.LabelsCount;
 import org.reactome.server.tools.domain.model.ReferenceEntity;
 import org.reactome.server.tools.domain.result.Participant;
+import org.reactome.server.tools.domain.result.ComponentOf;
 
 import java.util.Collection;
 
@@ -31,4 +32,7 @@ public interface DatabaseObjectService extends Service<DatabaseObject> {
 
 
     Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
+
+
+    Collection<ComponentOf> getComponentsOf(String stableIdentifier);
 }

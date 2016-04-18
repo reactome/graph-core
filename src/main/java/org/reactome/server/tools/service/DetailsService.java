@@ -1,11 +1,10 @@
 package org.reactome.server.tools.service;
 
-import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.*;
+import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.repository.DetailsRepository;
 import org.reactome.server.tools.repository.GenericRepository;
 import org.reactome.server.tools.service.helper.ContentDetails;
-import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.reactome.server.tools.service.util.PathwayBrowserLocationsUtils;
@@ -13,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by:
@@ -40,16 +41,37 @@ public class DetailsService {
         DatabaseObject databaseObject = findById(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
-        Set<PBNode> leafs = getLocationsInPathwayBrowserHierarchy(databaseObject);
-        leafs = PathwayBrowserLocationsUtils.removeOrphans(leafs);
-        contentDetails.setLeafs(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leafs));
+
+        Set<PBNode> leaves = getLocationsInPathwayBrowserHierarchy(databaseObject);
+        leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
+        contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+
+
+        contentDetails.setComponentOf(databaseObjectService.getComponentsOf(databaseObject.getStableIdentifier()));
 
         if (databaseObject instanceof EntityWithAccessionedSequence || databaseObject instanceof SimpleEntity || databaseObject instanceof OpenSet) {
             contentDetails.setOtherFormsOfThisMolecule(databaseObjectService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
-            if (databaseObject instanceof EntityWithAccessionedSequence) {
-                EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) databaseObject;
-                genericRepository.findByPropertyWithRelations("dbId",ewas.getReferenceEntity().getDbId(), "referenceGene", "referenceTranscript");
 
+            if (databaseObject instanceof EntityWithAccessionedSequence) {
+
+                EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) databaseObject;
+//                genericRepository.load(ewas.getId());
+                genericRepository.findByPropertyWithRelations("dbId",ewas.getReferenceEntity().getDbId(), "referenceGene", "referenceTranscript", "crossReference");
+                if (ewas.getHasModifiedResidue() != null && !ewas.getHasModifiedResidue().isEmpty()) {
+                    Collection dbIds = new ArrayList<>();
+                    for (AbstractModifiedResidue abstractModifiedResidue : ewas.getHasModifiedResidue()) {
+                        dbIds.add(abstractModifiedResidue.getDbId());
+                    }
+                    genericRepository.findCollectionByPropertyWithRelationships("dbId", dbIds, "psiMod", "modification");
+                }
+                
+                genericRepository.findByPropertyWithRelations("dbId",ewas.getReferenceEntity().getDbId(), "referenceGene", "referenceTranscript", "crossReference");
+            } else if (databaseObject instanceof SimpleEntity) {
+                SimpleEntity simpleEntity = (SimpleEntity) databaseObject;
+                genericRepository.findByPropertyWithRelations("dbId",simpleEntity.getReferenceEntity().getDbId(), "crossReference");
+            } else if (databaseObject instanceof OpenSet) {
+                OpenSet openSet = (OpenSet) databaseObject;
+                genericRepository.findByPropertyWithRelations("dbId",openSet.getReferenceEntity().getDbId(), "crossReference");
             }
         }
         return contentDetails;
@@ -70,99 +92,14 @@ public class DetailsService {
     }
 
     public Set<PBNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject) {
-        return getLocationsInPathwayBrowserTree(databaseObject).getLeaves();
+        return detailsRepository.getLocationsInPathwayBrowserTree(databaseObject).getLeaves();
     }
 
-    public PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject) {
-
-        Result result = detailsRepository.getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
-
-        PBNode root = createNode(databaseObject);
-        Map<String,PBNode> nodes = new HashMap<>();
-        PBNode previous = root;
-        nodes.put(root.getStId(),root);
-
-        int previousSize = 0;
-        for (Map<String, Object> stringObjectMap : result) {
-            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
-            int size = nodePairCollections.length;
-            if (size>previousSize) {
-                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
-                previous = addNode(previous,nodes,objects);
-            } else {
-                previous = root;
-                for (ArrayList<Object> objects : nodePairCollections) {
-                    if (objects.get(0) == null ){
-                        continue;
-                    }
-                    previous = addNode(previous,nodes,objects);
-                }
-            }
-            previousSize = size;
-        }
-        return  root ;
+    public PBNode getLocationsInThePathwayBrowserTree(DatabaseObject databaseObject) {
+        return detailsRepository.getLocationsInPathwayBrowserTree(databaseObject);
     }
 
-    private PBNode addNode(PBNode previous, Map<String,PBNode> nodes, ArrayList<Object> objects) {
-        PBNode node;
 
 
-        if (nodes.containsKey(objects.get(0))) {
-            node = nodes.get(objects.get(0));
-        } else {
-            node = createNode(objects);
-            nodes.put(node.getStId(),node);
-        }
-        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus")) {
-            previous.addChild(node);
-            node.addParent(previous);
-            previous = node;
-        }
-        return previous;
-    }
-
-    private PBNode createNode(DatabaseObject databaseObject) {
-        PBNode node = new PBNode();
-        node.setStId(databaseObject.getStableIdentifier());
-        node.setName(databaseObject.getDisplayName());
-        node.setType(databaseObject.getSchemaClass());
-
-        if (databaseObject instanceof Event) {
-            Event event = (Event) databaseObject;
-            node.setSpecies(event.getSpeciesName());
-        } else if (databaseObject instanceof PhysicalEntity) {
-            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
-            node.setSpecies(physicalEntity.getSpeciesName());
-        } else {
-//            logger.error
-            return null;
-        }
-        return node;
-    }
-
-    private PBNode createNode(ArrayList<Object> nodePairCollection) {
-        PBNode node = new PBNode();
-        node.setStId((String) nodePairCollection.get(0));
-        node.setName((String) nodePairCollection.get(1));
-        node.setDiagram((Boolean) nodePairCollection.get(2));
-        node.setSpecies((String) nodePairCollection.get(3));
-        List xx = (List) nodePairCollection.get(4);
-        Class<?> lowestClass = Object.class;
-
-        for (Object o1 : xx) {
-            try {
-                Class clazz = Class.forName("org.reactome.server.tools.domain.model." + o1.toString());
-                if (lowestClass.isAssignableFrom(clazz)) {
-                    lowestClass = clazz;
-                }
-            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-                //todo toplevel pathway!!
-                node.setType("Pathway");
-            }
-        }
-        node.setType(lowestClass.getSimpleName());
-        return node;
-    }
 
 }

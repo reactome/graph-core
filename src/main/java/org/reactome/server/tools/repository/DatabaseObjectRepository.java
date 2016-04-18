@@ -5,6 +5,7 @@ import org.reactome.server.tools.domain.model.PhysicalEntity;
 import org.reactome.server.tools.domain.model.ReferenceEntity;
 import org.reactome.server.tools.domain.result.LabelsCount;
 import org.reactome.server.tools.domain.result.Participant;
+import org.reactome.server.tools.domain.result.ComponentOf;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
@@ -49,5 +50,8 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
     @Query("Match (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
 
+
+    @Query("Match (n:DatabaseObject{stableIdentifier:{0}})-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
+    Collection<ComponentOf> getComponentsOf(String stableIdentifier);
 
 }

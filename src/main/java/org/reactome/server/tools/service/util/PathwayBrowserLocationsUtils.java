@@ -6,7 +6,6 @@ import org.reactome.server.tools.service.helper.PBNode;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
 
 /**
  * Created by:

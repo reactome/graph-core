@@ -1,18 +1,16 @@
 package org.reactome.server.tools.repository;
 
 import org.neo4j.ogm.model.Result;
-import org.neo4j.ogm.session.Session;
 import org.reactome.server.tools.domain.model.DatabaseObject;
+import org.reactome.server.tools.domain.model.Event;
+import org.reactome.server.tools.domain.model.PhysicalEntity;
+import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by:
@@ -77,4 +75,115 @@ public class DetailsRepository {
         return result;
     }
 
+//    public Map<String, List<Pair<String, String>>> getComponentsOf(String stId) {
+//        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS name, Collect(m.stableIdentifier) AS stId";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stableIdentifier", stId);
+//        Result result =  neo4jTemplate.query(query, map);
+//        Map<String,List<Pair<String,String>>> componentOf = new TreeMap<>();
+//        for (Map<String, Object> stringObjectMap : result) {
+//            String[] names = (String[]) stringObjectMap.get("name");
+//            String[] stIds = (String[]) stringObjectMap.get("stId");
+//            for (int i = 0; i < stIds.length; i++) {
+//                Pair<String,String> pair = new Pair<>(names[i],stIds[i]);
+//                componentOf.computeIfAbsent((String) stringObjectMap.get("type"), l -> new ArrayList<>()).add(pair);
+//            }
+//        }
+//        return componentOf;
+//    }
+
+
+    public PBNode getLocationsInPathwayBrowserTree(DatabaseObject databaseObject) {
+
+        Result result = getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
+
+        PBNode root = createNode(databaseObject);
+        Map<String,PBNode> nodes = new HashMap<>();
+        PBNode previous = root;
+        nodes.put(root.getStId(),root);
+
+        int previousSize = 0;
+        for (Map<String, Object> stringObjectMap : result) {
+            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
+            int size = nodePairCollections.length;
+            if (size>previousSize) {
+                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
+                previous = addNode(previous,nodes,objects);
+            } else {
+                previous = root;
+                for (ArrayList<Object> objects : nodePairCollections) {
+                    if (objects.get(0) == null ){
+                        continue;
+                    }
+                    previous = addNode(previous,nodes,objects);
+                }
+            }
+            previousSize = size;
+        }
+        return  root ;
+    }
+
+
+
+    private PBNode addNode(PBNode previous, Map<String,PBNode> nodes, ArrayList<Object> objects) {
+        PBNode node;
+
+
+        if (nodes.containsKey(objects.get(0))) {
+            node = nodes.get(objects.get(0));
+        } else {
+            node = createNode(objects);
+            nodes.put(node.getStId(),node);
+        }
+        if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus")) {
+            previous.addChild(node);
+            node.addParent(previous);
+            previous = node;
+        }
+        return previous;
+    }
+
+    private PBNode createNode(DatabaseObject databaseObject) {
+        PBNode node = new PBNode();
+        node.setStId(databaseObject.getStableIdentifier());
+        node.setName(databaseObject.getDisplayName());
+        node.setType(databaseObject.getSchemaClass());
+
+        if (databaseObject instanceof Event) {
+            Event event = (Event) databaseObject;
+            node.setSpecies(event.getSpeciesName());
+        } else if (databaseObject instanceof PhysicalEntity) {
+            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
+            node.setSpecies(physicalEntity.getSpeciesName());
+        } else {
+//            logger.error
+            return null;
+        }
+        return node;
+    }
+
+    private PBNode createNode(ArrayList<Object> nodePairCollection) {
+        PBNode node = new PBNode();
+        node.setStId((String) nodePairCollection.get(0));
+        node.setName((String) nodePairCollection.get(1));
+        node.setDiagram((Boolean) nodePairCollection.get(2));
+        node.setSpecies((String) nodePairCollection.get(3));
+        List xx = (List) nodePairCollection.get(4);
+        Class<?> lowestClass = Object.class;
+
+        for (Object o1 : xx) {
+            try {
+                Class clazz = Class.forName("org.reactome.server.tools.domain.model." + o1.toString());
+                if (lowestClass.isAssignableFrom(clazz)) {
+                    lowestClass = clazz;
+                }
+            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+                //todo toplevel pathway!!
+                node.setType("Pathway");
+            }
+        }
+        node.setType(lowestClass.getSimpleName());
+        return node;
+    }
 }

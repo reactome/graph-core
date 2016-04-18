@@ -10,7 +10,7 @@ import java.util.List;
 @NodeEntity
 public class DatabaseIdentifier extends DatabaseObject {
 
-    @ReactomeProperty
+    // will be filled together with url
     private String databaseName;
     @ReactomeProperty
     private String identifier;

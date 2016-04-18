@@ -2,8 +2,11 @@ package org.reactome.server.tools.service.helper;
 
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.PhysicalEntity;
+import org.reactome.server.tools.domain.result.ComponentOf;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,15 +18,18 @@ import java.util.Set;
 public class ContentDetails {
 
     private DatabaseObject databaseObject;
-    private Set<PBNode> leafs;
+    private Set<PBNode> leaves;
+    private Collection<ComponentOf> componentOf;
     private Collection<PhysicalEntity> otherFormsOfThisMolecule;
 
     public ContentDetails() {}
 
-    public ContentDetails(DatabaseObject databaseObject, Set<PBNode> leafs, Set<PhysicalEntity> otherFormsOfThisMolecule) {
-        this.databaseObject = databaseObject;
-        this.leafs = leafs;
-        this.otherFormsOfThisMolecule = otherFormsOfThisMolecule;
+    public Collection<ComponentOf> getComponentOf() {
+        return componentOf;
+    }
+
+    public void setComponentOf(Collection<ComponentOf> componentOf) {
+        this.componentOf = componentOf;
     }
 
     public DatabaseObject getDatabaseObject() {
@@ -34,12 +40,12 @@ public class ContentDetails {
         this.databaseObject = databaseObject;
     }
 
-    public Set<PBNode> getLeafs() {
-        return leafs;
+    public Set<PBNode> getLeaves() {
+        return leaves;
     }
 
-    public void setLeafs(Set<PBNode> leafs) {
-        this.leafs = leafs;
+    public void setLeaves(Set<PBNode> leaves) {
+        this.leaves = leaves;
     }
 
     public Collection<PhysicalEntity> getOtherFormsOfThisMolecule() {

@@ -3,9 +3,6 @@ package org.reactome.server.tools.service;
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.*;
 import org.reactome.server.tools.repository.GenericRepository;
-import org.reactome.server.tools.service.helper.PBNode;
-import org.reactome.server.tools.service.helper.RelationshipDirection;
-import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -202,6 +199,14 @@ public class GenericServiceImpl implements GenericService {
 //        node.setType(lowestClass.getSimpleName());
 //        return node;
 //    }
+
+
+
+
+    public Collection<DatabaseObject> findCollectionByPropertyWithRelationships (String property, Collection<Object> values, String... relationships)  {
+        return genericRepository.findCollectionByPropertyWithRelationships(property, values, relationships);
+    }
+
 
 
     @Override

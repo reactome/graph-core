@@ -71,7 +71,7 @@ public class DetailsServiceTest {
         logger.info("Started testing eventService.findByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails cd = detailsService.contentDetails("R-HSA-199420");
+        ContentDetails cd = detailsService.contentDetails("R-HSA-162629");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 //

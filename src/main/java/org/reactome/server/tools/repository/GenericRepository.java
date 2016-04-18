@@ -8,6 +8,7 @@ import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +25,10 @@ public interface GenericRepository {
 
     Object findByPropertyWithRelations (String property, Object value, String... relationships);
     Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
+
+
+    void load(Long id);
+
 
 //    <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset);
     <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth);
@@ -49,4 +54,10 @@ public interface GenericRepository {
 
     boolean fitForService();
     void clearCache();
+
+
+
+
+
+    Collection<DatabaseObject> findCollectionByPropertyWithRelationships (String property, Collection<Object> values, String... relationships);
 }
