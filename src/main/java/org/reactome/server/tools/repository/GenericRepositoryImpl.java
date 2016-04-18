@@ -6,6 +6,7 @@ import org.neo4j.ogm.session.Session;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.repository.util.RepositoryUtils;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +70,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public Object findByPropertyWithRelations (String property, Object value, String... relationships) {
         String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r";
-        query += getRelationshipAsString(relationships);
+        query += RepositoryUtils.getRelationshipAsString(relationships);
         query += "]->(m) RETURN n,r,m";
         Map<String,Object> map = new HashMap<>();
         map.put(property,value);
@@ -82,7 +83,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public Object findByPropertyWithoutRelations (String property, Object value, String... relationships) {
         String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r]->(m) WHERE NOT (n)-[r";
-        query += getRelationshipAsString(relationships);
+        query += RepositoryUtils.getRelationshipAsString(relationships);
         query += "]->(m) RETURN n,r,m";
         Map<String,Object> map = new HashMap<>();
         map.put(property,value);
@@ -229,7 +230,7 @@ public class GenericRepositoryImpl implements GenericRepository {
     public Collection<DatabaseObject> findCollectionByPropertyWithRelationships (String property, Collection<Object> values, String... relationships) {
 
 
-        String query = "Match (n:DatabaseObject)-[r" + getRelationshipAsString(relationships) + "]-(m) WHERE n." + property + " IN {values} RETURN n,r,m";
+        String query = "Match (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) WHERE n." + property + " IN {values} RETURN n,r,m";
         Map<String,Object> map = new HashMap<>();
         map.put("values", values);
         Result result = neo4jTemplate.query( query, map);
@@ -280,17 +281,5 @@ public class GenericRepositoryImpl implements GenericRepository {
     @Override
     public void clearCache() {
         neo4jTemplate.clear();
-    }
-
-    private String getRelationshipAsString (String... relationships) {
-        String result = "";
-        if (relationships != null && relationships.length > 0) {
-            String pipe = ":";
-            for (String relationship : relationships) {
-                result += pipe + relationship;
-                pipe = "|";
-            }
-        }
-        return result;
     }
 }

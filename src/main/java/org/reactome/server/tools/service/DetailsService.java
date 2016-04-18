@@ -38,7 +38,7 @@ public class DetailsService {
     public ContentDetails contentDetails(String id) {
         ContentDetails contentDetails = new ContentDetails();
 
-        DatabaseObject databaseObject = findById(id, RelationshipDirection.OUTGOING);
+        DatabaseObject databaseObject = findReverseReactionOrPrecedingEvent(id, "reverseReaction", "precedingEvent");
         contentDetails.setDatabaseObject(databaseObject);
 
 
@@ -99,7 +99,9 @@ public class DetailsService {
         return detailsRepository.getLocationsInPathwayBrowserTree(databaseObject);
     }
 
-
+    public DatabaseObject findReverseReactionOrPrecedingEvent(String dbId, String... direction){
+        return detailsRepository.findGuiFirstMethod(dbId, direction);
+    }
 
 
 }

@@ -4,6 +4,7 @@ import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Event;
 import org.reactome.server.tools.domain.model.PhysicalEntity;
+import org.reactome.server.tools.repository.util.RepositoryUtils;
 import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,19 @@ public class DetailsRepository {
         }
         Map<String,Object> map = new HashMap<>();
         map.put("stId", stId);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
+    public DatabaseObject findGuiFirstMethod(String dbId, String... relationships) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m), (n)<-[l" +
+                            RepositoryUtils.getRelationshipAsString(relationships) +
+                         "]-(k) return n,r,m,l,k";
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
         Result result =  neo4jTemplate.query(query, map);
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("n");
