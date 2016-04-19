@@ -3,7 +3,7 @@ package org.reactome.server.tools.qa.tests;
 import org.apache.commons.lang.StringUtils;
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.qa.QualityAssurance;
-import org.reactome.server.tools.service.GenericService;
+import org.reactome.server.tools.service.GeneralService;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -40,7 +40,7 @@ public abstract class QualityAssuranceAbstract implements QualityAssurance {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void run(GenericService genericService) {
+    public void run(GeneralService genericService) {
         if(doTest()) {
             Result result = genericService.query(getQuery(), getMap());
             if (result == null || !result.iterator().hasNext()) return;

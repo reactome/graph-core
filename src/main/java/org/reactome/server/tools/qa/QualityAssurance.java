@@ -1,6 +1,6 @@
 package org.reactome.server.tools.qa;
 
-import org.reactome.server.tools.service.GenericService;
+import org.reactome.server.tools.service.GeneralService;
 
 /**
  * Created by:
@@ -10,5 +10,5 @@ import org.reactome.server.tools.service.GenericService;
  */
 public interface QualityAssurance {
 
-    void run(GenericService genericService);
+    void run(GeneralService genericService);
 }
