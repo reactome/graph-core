@@ -2,13 +2,12 @@ package org.reactome.server.tools.repository;
 
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.service.helper.RelationshipDirection;
-import org.springframework.stereotype.Repository;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,14 +17,13 @@ import java.util.Map;
  * @since 11.11.15.
  */
 @Repository
+@Deprecated
 public interface GenericRepository {
 
 //    DatabaseObject findByDbId(Long dbId, RelationshipDirection direction);
 //    DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction);
 
-    Object findByPropertyWithRelations (String property, Object value, String... relationships);
-    Object findByPropertyWithoutRelations (String property, Object value, String... relationships);
-
+    Object findByPropertyWithRelations (Long dbId, RelationshipDirection direction, String... relationships);
 
     void load(Long id);
 

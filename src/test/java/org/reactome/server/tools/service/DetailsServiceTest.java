@@ -6,7 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.tools.config.MyConfiguration;
-import org.reactome.server.tools.service.helper.ContentDetails;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,15 +64,35 @@ public class DetailsServiceTest {
     }
 
     @Test
-    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
+    public void testFindWithRelationship() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing eventService.findByDbId");
+        logger.info("Started testing detailsService.findReverseReactionOrPrecedingEvent");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails cd = detailsService.contentDetails("70486");
+//        detailsService.findReverseReactionOrPrecedingEvent("70486", "reverseReaction", "precedingEvent");
         time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
+        logger.info("findReverseReactionOrPrecedingEvent execution time: " + time + "ms");
+
+//        start = System.currentTimeMillis();
+//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GkInstance execution time: " + time + "ms");
 //
+//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+//        logger.info("Finished");
+    }
+
+    @Test
+    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing detailsService.findById");
+        long start, time;
+        start = System.currentTimeMillis();
+        detailsService.findById("70486", RelationshipDirection.OUTGOING);
+//        ContentDetails cd = detailsService.contentDetails("70486");
+        time = System.currentTimeMillis() - start;
+        logger.info("findById execution time: " + time + "ms");
+
 //        start = System.currentTimeMillis();
 //        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
 //        time = System.currentTimeMillis() - start;

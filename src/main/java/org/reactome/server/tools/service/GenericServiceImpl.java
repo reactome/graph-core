@@ -1,12 +1,14 @@
 package org.reactome.server.tools.service;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.tools.domain.model.*;
-import org.reactome.server.tools.repository.GenericRepository;
+import org.reactome.server.tools.domain.model.DatabaseObject;
+import org.reactome.server.tools.domain.model.Pathway;
+import org.reactome.server.tools.domain.model.Species;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by:
@@ -20,7 +22,7 @@ public class GenericServiceImpl implements GenericService {
 //    private static final Logger logger = LoggerFactory.getLogger(GenericServiceImpl.class);
 
     @Autowired
-    private GenericRepository genericRepository;
+    private GenericServiceImpl genericRepository;
 
 
 //    @Override

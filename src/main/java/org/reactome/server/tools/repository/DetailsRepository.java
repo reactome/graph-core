@@ -4,7 +4,6 @@ import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Event;
 import org.reactome.server.tools.domain.model.PhysicalEntity;
-import org.reactome.server.tools.repository.util.RepositoryUtils;
 import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,26 +43,20 @@ public class DetailsRepository {
 
     public DatabaseObject findByStableIdentifier(String stId, RelationshipDirection direction) {
         String query;
-        if (direction.equals(RelationshipDirection.INCOMING)) {
-            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})<-[r]-(m) RETURN n,r,m";
-        } else {
-            query = "Match (n:DatabaseObject{stableIdentifier:{stId}})-[r]->(m) RETURN n,r,m";
+
+        switch (direction) {
+            case OUTGOING:
+                query = "Match (n:DatabaseObject{stableIdentifier:{stId}})-[r]->(m) RETURN n,r,m";
+                break;
+            case INCOMING:
+                query = "Match (n:DatabaseObject{stableIdentifier:{stId}})<-[r]-(m) RETURN n,r,m";
+                break;
+            default: // UNDIRECTED
+                query = "Match (n:DatabaseObject{stableIdentifier:{stId}})-[r]-(m) RETURN n,r,m";
         }
+
         Map<String,Object> map = new HashMap<>();
         map.put("stId", stId);
-        Result result =  neo4jTemplate.query(query, map);
-        if (result != null && result.iterator().hasNext())
-            return (DatabaseObject) result.iterator().next().get("n");
-        return null;
-    }
-
-    public DatabaseObject findGuiFirstMethod(String dbId, String... relationships) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m), (n)<-[l";
-        query += RepositoryUtils.getRelationshipAsString(relationships);
-        query += "]-(k) return n,r,m,l,k";
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("dbId", dbId);
         Result result =  neo4jTemplate.query(query, map);
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("n");

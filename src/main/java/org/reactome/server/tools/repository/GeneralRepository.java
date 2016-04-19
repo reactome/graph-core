@@ -7,6 +7,7 @@ import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
 import org.reactome.server.tools.repository.util.RepositoryUtils;
+import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,9 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public class GenericRepositoryImpl implements GenericRepository {
+public class GeneralRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(GenericRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeneralRepository.class);
 
     @Autowired
     private Session session;
@@ -66,31 +67,53 @@ public class GenericRepositoryImpl implements GenericRepository {
 //        return null;
 //    }
 
-    @Override
-    public Object findByPropertyWithRelations (String property, Object value, String... relationships) {
-        String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r";
-        query += RepositoryUtils.getRelationshipAsString(relationships);
-        query += "]->(m) RETURN n,r,m";
+
+    public Object findByPropertyWithRelations (Long dbId, RelationshipDirection direction, String... relationships) {
+        String query;
+        switch (direction) {
+            case OUTGOING:
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) RETURN n,r,m";
+                break;
+            case INCOMING:
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN n,r,m";
+                break;
+            default: //UNDIRECTED
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN n,r,m";
+                break;
+        }
         Map<String,Object> map = new HashMap<>();
-        map.put(property,value);
+        map.put("dbId",dbId);
         Result result =  neo4jTemplate.query(query,map);
         if (result != null && result.iterator().hasNext())
             return result.iterator().next().get("n");
         return null;
     }
 
-    @Override
-    public Object findByPropertyWithoutRelations (String property, Object value, String... relationships) {
-        String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r]->(m) WHERE NOT (n)-[r";
-        query += RepositoryUtils.getRelationshipAsString(relationships);
-        query += "]->(m) RETURN n,r,m";
-        Map<String,Object> map = new HashMap<>();
-        map.put(property,value);
-        Result result =  neo4jTemplate.query(query,map);
-        if (result != null && result.iterator().hasNext())
-            return  result.iterator().next().get("n");
-        return null;
-    }
+//    @Override
+//    public Object findByPropertyWithRelations (String property, Object value, String... relationships) {
+//        String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r";
+//        query += RepositoryUtils.getRelationshipAsString(relationships);
+//        query += "]-(m) RETURN n,r,m";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put(property,value);
+//        Result result =  neo4jTemplate.query(query,map);
+//        if (result != null && result.iterator().hasNext())
+//            return result.iterator().next().get("n");
+//        return null;
+//    }
+//
+//    @Override
+//    public Object findByPropertyWithoutRelations (String property, Object value, String... relationships) {
+//        String query = "MATCH (n:DatabaseObject{" + property + ":{" + property + "}})-[r]-(m) WHERE NOT (n)-[r";
+//        query += RepositoryUtils.getRelationshipAsString(relationships);
+//        query += "]-(m) RETURN n,r,m";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put(property,value);
+//        Result result =  neo4jTemplate.query(query,map);
+//        if (result != null && result.iterator().hasNext())
+//            return  result.iterator().next().get("n");
+//        return null;
+//    }
 
     public void load(Long id) {
         neo4jTemplate.load(DatabaseObject.class,id);
@@ -108,17 +131,14 @@ public class GenericRepositoryImpl implements GenericRepository {
 //    }
 
 
-    @Override
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
         return neo4jTemplate.loadByProperty(clazz, property, value, depth);
     }
 
-    @Override
     public <T> T findById(Class<T> clazz, Long id, Integer depth) {
         return neo4jTemplate.load(clazz, id, depth);
     }
 
-    @Override
     public <T> T findByDbId(Class<T> clazz, Long dbId, Integer depth) {
         Collection<T> collection = session.loadAll(clazz, new Filter("dbId", dbId), depth);
         if (collection != null && !collection.isEmpty()) {
@@ -127,7 +147,6 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
-    @Override
     public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier, Integer depth) {
         Collection<T> collection = session.loadAll(clazz, new Filter("stableIdentifier", stableIdentifier), depth);
         if (collection != null && !collection.isEmpty()) {
@@ -136,13 +155,13 @@ public class GenericRepositoryImpl implements GenericRepository {
         return null;
     }
 
-    @Override
+
     public Collection<Pathway> getTopLevelPathways() {
         String query = "Match (n:TopLevelPathway) RETURN n";
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, Collections.<String,Object>emptyMap());
     }
 
-    @Override
+
     public Collection<Pathway> getTopLevelPathways(Long speciesId) {
         String query = "Match (n:TopLevelPathway)-[:species]-(s) Where s.dbId = {speciesId} RETURN n";
         Map<String,Object> map = new HashMap<>();
@@ -150,7 +169,7 @@ public class GenericRepositoryImpl implements GenericRepository {
         return (Collection<Pathway>) neo4jTemplate.queryForObjects(Pathway.class, query, map);
     }
 
-    @Override
+
     public Collection<Pathway> getTopLevelPathways(String speciesName) {
         String query = "Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {speciesName} RETURN n";
         Map<String,Object> map = new HashMap<>();
@@ -248,23 +267,23 @@ public class GenericRepositoryImpl implements GenericRepository {
     //TODO
     //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, labels(endNode(rel))  ]) as nodePairCollection
 
-    @Override
+
     public Collection<Species> getSpecies() {
         String query = "Match (n:Species) Return n";
         return (Collection<Species>) neo4jTemplate.queryForObjects(Species.class, query, Collections.<String,Object>emptyMap());
     }
 
-    @Override
+
     public Result query (String query, Map<String,Object> map) {
         return neo4jTemplate.query(query,map);
     }
 
-    @Override
+
     public Long countEntries(Class<?> clazz) {
         return neo4jTemplate.count(clazz);
     }
 
-    @Override
+
     public boolean fitForService() {
         String query = "Match (n) Return Count(n)>0 AS fitForService";
         try {
@@ -277,7 +296,7 @@ public class GenericRepositoryImpl implements GenericRepository {
         return false;
     }
 
-    @Override
+
     public void clearCache() {
         neo4jTemplate.clear();
     }

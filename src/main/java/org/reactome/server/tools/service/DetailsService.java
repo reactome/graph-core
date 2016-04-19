@@ -1,10 +1,9 @@
 package org.reactome.server.tools.service;
 
 import org.reactome.server.tools.domain.model.*;
-import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.repository.DetailsRepository;
-import org.reactome.server.tools.repository.GenericRepository;
 import org.reactome.server.tools.service.helper.ContentDetails;
+import org.reactome.server.tools.service.helper.PBNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.reactome.server.tools.service.util.PathwayBrowserLocationsUtils;
@@ -29,7 +28,7 @@ public class DetailsService {
     private DetailsRepository detailsRepository;
 
     @Autowired
-    private GenericRepository genericRepository;
+    private GenericServiceImpl genericRepository;
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -38,7 +37,7 @@ public class DetailsService {
     public ContentDetails contentDetails(String id) {
         ContentDetails contentDetails = new ContentDetails();
 
-        DatabaseObject databaseObject = findReverseReactionOrPrecedingEvent(id, "reverseReaction", "precedingEvent");
+        DatabaseObject databaseObject = findById(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
 
@@ -48,6 +47,10 @@ public class DetailsService {
 
 
         contentDetails.setComponentOf(databaseObjectService.getComponentsOf(databaseObject.getStableIdentifier()));
+
+        if (databaseObject instanceof Reaction) {
+            genericRepository.findByPropertyWithRelations("dbId",databaseObject.getDbId(), "reverseReaction");
+        }
 
         if (databaseObject instanceof EntityWithAccessionedSequence || databaseObject instanceof SimpleEntity || databaseObject instanceof OpenSet) {
             contentDetails.setOtherFormsOfThisMolecule(databaseObjectService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
@@ -98,10 +101,4 @@ public class DetailsService {
     public PBNode getLocationsInThePathwayBrowserTree(DatabaseObject databaseObject) {
         return detailsRepository.getLocationsInPathwayBrowserTree(databaseObject);
     }
-
-    public DatabaseObject findReverseReactionOrPrecedingEvent(String dbId, String... direction){
-        return detailsRepository.findGuiFirstMethod(dbId, direction);
-    }
-
-
 }
