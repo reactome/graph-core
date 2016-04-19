@@ -5,8 +5,6 @@ import org.reactome.server.tools.domain.model.PhysicalEntity;
 import org.reactome.server.tools.domain.result.ComponentOf;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,7 +16,7 @@ import java.util.Set;
 public class ContentDetails {
 
     private DatabaseObject databaseObject;
-    private Set<PBNode> leaves;
+    private Set<PathwayBrowserNode> leaves;
     private Collection<ComponentOf> componentOf;
     private Collection<PhysicalEntity> otherFormsOfThisMolecule;
 
@@ -40,11 +38,11 @@ public class ContentDetails {
         this.databaseObject = databaseObject;
     }
 
-    public Set<PBNode> getLeaves() {
+    public Set<PathwayBrowserNode> getLeaves() {
         return leaves;
     }
 
-    public void setLeaves(Set<PBNode> leaves) {
+    public void setLeaves(Set<PathwayBrowserNode> leaves) {
         this.leaves = leaves;
     }
 

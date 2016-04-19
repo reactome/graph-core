@@ -1,7 +1,7 @@
 package org.reactome.server.tools.service.util;
 
 import org.reactome.server.tools.domain.model.TopLevelPathway;
-import org.reactome.server.tools.service.helper.PBNode;
+import org.reactome.server.tools.service.helper.PathwayBrowserNode;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -19,10 +19,10 @@ public abstract class PathwayBrowserLocationsUtils {
     private static final String SEL = "&amp;SEL=";
     private static final String PATH = "&amp;PATH=";
 
-    public static Set<PBNode> buildTreesFromLeaves(Set<PBNode> leaves) {
-        Set<PBNode> topLvlTrees = new TreeSet<>();
-        for (PBNode leaf : leaves) {
-            PBNode tree = getTreeFromGraphLeaf(leaf, "", "", "", "");
+    public static Set<PathwayBrowserNode> buildTreesFromLeaves(Set<PathwayBrowserNode> leaves) {
+        Set<PathwayBrowserNode> topLvlTrees = new TreeSet<>();
+        for (PathwayBrowserNode leaf : leaves) {
+            PathwayBrowserNode tree = getTreeFromGraphLeaf(leaf, "", "", "", "");
             if (tree != null) {
                 topLvlTrees.add(tree);
             } else {
@@ -33,10 +33,10 @@ public abstract class PathwayBrowserLocationsUtils {
         return topLvlTrees;
     }
 
-    public static Set<PBNode> removeOrphans(Set<PBNode> leaves) {
-        Iterator<PBNode> it = leaves.iterator();
+    public static Set<PathwayBrowserNode> removeOrphans(Set<PathwayBrowserNode> leaves) {
+        Iterator<PathwayBrowserNode> it = leaves.iterator();
         while (it.hasNext()) {
-            PBNode node = it.next();
+            PathwayBrowserNode node = it.next();
             if (node.getType() == null || !node.getType().equals(TopLevelPathway.class.getSimpleName())) {
                 it.remove();
             }
@@ -59,9 +59,9 @@ public abstract class PathwayBrowserLocationsUtils {
      * @param lastNodeWithDiagram saves STID of the Last Pathway in the Diagram
      * @return generated Tree
      */
-    private static PBNode getTreeFromGraphLeaf(PBNode leaf, String sel, String path, String shortPath, String lastNodeWithDiagram) {
+    private static PathwayBrowserNode getTreeFromGraphLeaf(PathwayBrowserNode leaf, String sel, String path, String shortPath, String lastNodeWithDiagram) {
         /* */
-        PBNode tree = new PBNode();
+        PathwayBrowserNode tree = new PathwayBrowserNode();
         tree.setStId(leaf.getStId());
         tree.setName(leaf.getName());
         tree.setSpecies(leaf.getSpecies());
@@ -81,7 +81,7 @@ public abstract class PathwayBrowserLocationsUtils {
         }
 
         /*Check if Pathway is a unique pathway*/
-        Set<PBNode> children = leaf.getChildren();
+        Set<PathwayBrowserNode> children = leaf.getChildren();
         if (isPathway) {
             if (children == null) {
                 leaf.setUnique(true);
@@ -143,9 +143,9 @@ public abstract class PathwayBrowserLocationsUtils {
         }
 
         /*Continue in the recursion */
-        Set<PBNode> parents = leaf.getParent();
+        Set<PathwayBrowserNode> parents = leaf.getParent();
         if (parents != null) {
-            for (PBNode node : parents) {
+            for (PathwayBrowserNode node : parents) {
                 tree.addChild(getTreeFromGraphLeaf(node, sel, path, shortPath, lastNodeWithDiagram));
             }
         }

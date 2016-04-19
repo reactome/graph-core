@@ -2,8 +2,8 @@ package org.reactome.server.tools.service.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.domain.result.LabelsCount;
-import org.reactome.server.tools.service.helper.PBNode;
+import org.reactome.server.tools.domain.result.SchemaClassCount;
+import org.reactome.server.tools.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.reactome.server.tools.service.helper.AttributeProperties;
@@ -28,10 +28,10 @@ public abstract class DatabaseObjectUtils {
     private static Map<String,SchemaNode> map;
 
     @SuppressWarnings("unused")
-    public static SchemaNode getGraphModelTree(Collection<LabelsCount> labelsCounts ) throws ClassNotFoundException {
+    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> labelsCounts ) throws ClassNotFoundException {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
-        for (LabelsCount labelsCount : labelsCounts) {
+        for (SchemaClassCount labelsCount : labelsCounts) {
             Class<?> lowestClass = Object.class;
             for (String label : labelsCount.getLabels()) {
                 Class clazz = Class.forName(packageName + label);
@@ -98,9 +98,9 @@ public abstract class DatabaseObjectUtils {
      * and the following species sorted without the HomoSapiens.
      */
     @SuppressWarnings("unused")
-    public static List<String> getAvailableSpecies(Set<PBNode> graph) {
+    public static List<String> getAvailableSpecies(Set<PathwayBrowserNode> graph) {
         Set<String> availableSpecies = new TreeSet<>();
-        for (PBNode n : graph) {
+        for (PathwayBrowserNode n : graph) {
             availableSpecies.add(n.getSpecies());
         }
 

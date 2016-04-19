@@ -40,7 +40,7 @@ public class DetailsServiceTest {
     private DetailsService detailsService;
 
     @Autowired
-    private GenericService genericService;
+    private GeneralService generalService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -55,11 +55,11 @@ public class DetailsServiceTest {
     @Before
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = genericService.fitForService();
+            isFit = generalService.fitForService();
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        genericService.clearCache();
+        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 
@@ -69,6 +69,7 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.findReverseReactionOrPrecedingEvent");
         long start, time;
         start = System.currentTimeMillis();
+        detailsService.contentDetails("R-HSA-70486");
 //        detailsService.findReverseReactionOrPrecedingEvent("70486", "reverseReaction", "precedingEvent");
         time = System.currentTimeMillis() - start;
         logger.info("findReverseReactionOrPrecedingEvent execution time: " + time + "ms");
@@ -82,23 +83,5 @@ public class DetailsServiceTest {
 //        logger.info("Finished");
     }
 
-    @Test
-    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing detailsService.findById");
-        long start, time;
-        start = System.currentTimeMillis();
-        detailsService.findById("70486", RelationshipDirection.OUTGOING);
-//        ContentDetails cd = detailsService.contentDetails("70486");
-        time = System.currentTimeMillis() - start;
-        logger.info("findById execution time: " + time + "ms");
-
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-    }
 }

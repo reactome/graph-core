@@ -9,7 +9,7 @@
 //import org.reactome.server.tools.domain.model.EntityWithAccessionedSequence;
 //import org.reactome.server.tools.domain.model.Pathway;
 //import org.reactome.server.tools.domain.model.Species;
-//import org.reactome.server.tools.service.helper.PBNode;
+//import org.reactome.server.tools.service.helper.PathwayBrowserNode;
 //import org.reactome.server.tools.service.helper.RelationshipDirection;
 //import org.reactome.server.tools.service.util.PathwayBrowserLocationsUtils;
 //import org.reactome.server.tools.util.DatabaseObjectFactory;
@@ -310,9 +310,9 @@
 //        start = System.currentTimeMillis();
 //
 //
-//        Set<PBNode> nodes = genericService.getLocationsInPathwayBrowserHierarchy(databaseObject);
+//        Set<PathwayBrowserNode> nodes = genericService.getLocationsInPathwayBrowserHierarchy(databaseObject);
 //        nodes = PathwayBrowserLocationsUtils.removeOrphans(nodes);
-//        for (PBNode node : nodes) {
+//        for (PathwayBrowserNode node : nodes) {
 //            if (node.getSpecies().equals("Homo sapiens")) {
 //                System.out.println();
 //            }

@@ -1,38 +1,81 @@
 package org.reactome.server.tools.service;
 
 import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.domain.model.PhysicalEntity;
-import org.reactome.server.tools.domain.result.LabelsCount;
-import org.reactome.server.tools.domain.model.ReferenceEntity;
-import org.reactome.server.tools.domain.result.Participant;
-import org.reactome.server.tools.domain.result.ComponentOf;
-
-import java.util.Collection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.reactome.server.tools.repository.DatabaseObjectRepository;
+import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 
 /**
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 15.11.15.
+ * @since 10.11.15.
  */
-@SuppressWarnings("SameParameterValue")
-public interface DatabaseObjectService extends Service<DatabaseObject> {
+@Service
+public class DatabaseObjectService {
 
-    @SuppressWarnings("unused")
-    DatabaseObject findById(String id);
-    DatabaseObject findByDbId(Long dbId);
-    DatabaseObject findByDbIdNoRelations(Long dbId);
-    DatabaseObject findByStableIdentifier(String stableIdentifier);
+//    private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
 
-    Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
-    Collection<Participant> getParticipatingMolecules2(Long dbId);
-    Collection<PhysicalEntity> getParticipatingMolecules3(String id);
+    @Autowired
+    private DatabaseObjectRepository databaseObjectRepository;
 
-    Collection<LabelsCount> getLabelsCount();
+    public DatabaseObject findById(String id) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return databaseObjectRepository.findByStableIdentifier(id);
+        } else if (DatabaseObjectUtils.isDbId(id)){
+            return databaseObjectRepository.findByDbId(Long.parseLong(id));
+        }
+        return null;
+    }
 
+    public DatabaseObject findByDbId(Long dbId) {
+        return databaseObjectRepository.findByDbId(dbId);
+    }
 
-    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
+    public DatabaseObject findByStableIdentifier(String stableIdentifier) {
+        return databaseObjectRepository.findByStableIdentifier(stableIdentifier);
+    }
 
+    public DatabaseObject findByDbIdNoRelations(Long dbId) {
+        return databaseObjectRepository.findByDbIdNoRelations(dbId);
+    }
+//
+//    @Override
+//    public Collection<ReferenceEntity> getParticipatingMolecules(Long dbId) {
+//        return databaseObjectRepository.getParticipatingMolecules(dbId);
+//    }
+//
+//    @Override
+//    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
+//        return databaseObjectRepository.getParticipatingMolecules2(dbId);
+//    }
+//
+//    @Override
+//    public Collection<PhysicalEntity> getParticipatingMolecules3(String id) {
+//        id = DatabaseObjectUtils.trimId(id);
+//        if (DatabaseObjectUtils.isStId(id)) {
+//            return databaseObjectRepository.getParticipatingMolecules3(id);
+//        } else if (DatabaseObjectUtils.isDbId(id)){
+//            return databaseObjectRepository.getParticipatingMolecules3(Long.parseLong(id));
+//        }
+//        return null;
+//    }
+//
+//    @Override
+//    public Collection<SchemaClassCount> getLabelsCount() {
+//        return databaseObjectRepository.getLabelsCount();
+//    }
+//
+//    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId) {
+//        return databaseObjectRepository.getOtherFormsOfThisMolecule(dbId);
+//    }
+//
+//
+//
+//    public Collection<ComponentOf> getComponentsOf(String stableIdentifier) {
+//        return databaseObjectRepository.getComponentsOf(stableIdentifier);
+//    }
 
-    Collection<ComponentOf> getComponentsOf(String stableIdentifier);
 }

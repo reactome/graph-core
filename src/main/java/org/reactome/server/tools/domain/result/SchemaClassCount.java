@@ -15,7 +15,7 @@ import java.util.Collection;
  */
 @SuppressWarnings("unused")
 @QueryResult
-public class LabelsCount {
+public class SchemaClassCount {
 
     private int count;
     private Collection<String> labels;

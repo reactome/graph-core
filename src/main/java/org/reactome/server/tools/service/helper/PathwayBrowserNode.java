@@ -10,7 +10,7 @@ import java.util.TreeSet;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 06.04.16.
  */
-public class PBNode implements Comparable<PBNode> {
+public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     private String stId;
     private String name;
@@ -20,28 +20,28 @@ public class PBNode implements Comparable<PBNode> {
     private Boolean diagram;
     private Boolean unique;
 
-    private Set<PBNode> children;
-    private Set<PBNode> parent;
+    private Set<PathwayBrowserNode> children;
+    private Set<PathwayBrowserNode> parent;
 
-    public void addParent(PBNode node) {
+    public void addParent(PathwayBrowserNode node) {
         if (parent==null) {
             parent = new TreeSet<>();
         }
         parent.add(node);
     }
-    public void addChild(PBNode node) {
+    public void addChild(PathwayBrowserNode node) {
         if (children==null) {
             children = new TreeSet<>();
         }
         children.add(node);
     }
 
-    public Set<PBNode> getLeaves() {
-        Set<PBNode> leaves = new TreeSet<>();
+    public Set<PathwayBrowserNode> getLeaves() {
+        Set<PathwayBrowserNode> leaves = new TreeSet<>();
         if (this.children == null) {
             leaves.add(this);
         } else {
-            for (PBNode child : this.children) {
+            for (PathwayBrowserNode child : this.children) {
                 leaves.addAll(child.getLeaves());
             }
         }
@@ -56,7 +56,6 @@ public class PBNode implements Comparable<PBNode> {
         }
 
     }
-
 
     public Boolean isUnique() {
         return unique;
@@ -118,24 +117,24 @@ public class PBNode implements Comparable<PBNode> {
         this.unique = unique;
     }
 
-    public Set<PBNode> getChildren() {
+    public Set<PathwayBrowserNode> getChildren() {
         return children;
     }
 
-    public void setChildren(Set<PBNode> children) {
+    public void setChildren(Set<PathwayBrowserNode> children) {
         this.children = children;
     }
 
-    public Set<PBNode> getParent() {
+    public Set<PathwayBrowserNode> getParent() {
         return parent;
     }
 
-    public void setParent(Set<PBNode> parent) {
+    public void setParent(Set<PathwayBrowserNode> parent) {
         this.parent = parent;
     }
 
     @Override
-    public int compareTo(@Nonnull PBNode node) {
+    public int compareTo(@Nonnull PathwayBrowserNode node) {
         return this.stId.compareTo(node.stId);
     }
 

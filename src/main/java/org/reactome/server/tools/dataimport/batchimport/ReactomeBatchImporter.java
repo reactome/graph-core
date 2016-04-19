@@ -500,7 +500,7 @@ public class ReactomeBatchImporter {
     /**
      * Getting all SimpleNames as neo4j labels, for given class.
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
-     * @return Array of Neo4j LabelsCount
+     * @return Array of Neo4j SchemaClassCount
      */
     private Label[] getLabels(Class clazz) {
 
@@ -516,7 +516,7 @@ public class ReactomeBatchImporter {
     /**
      * Getting all SimpleNames as neo4j labels, for given class.
      * @param clazz Clazz of object that will result form converting the instance (eg Pathway, Reaction)
-     * @return Array of Neo4j LabelsCount
+     * @return Array of Neo4j SchemaClassCount
      */
     private Label[] getAllClassNames(Class clazz) {
         List<?> superClasses = ClassUtils.getAllSuperclasses(clazz);
