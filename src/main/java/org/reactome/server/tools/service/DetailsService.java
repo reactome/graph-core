@@ -33,7 +33,7 @@ public class DetailsService {
     private PhysicalEntityService physicalEntityService;
 
     @Transactional
-    public ContentDetails contentDetails(String id) {
+    public ContentDetails getContentDetails(String id) {
         ContentDetails contentDetails = new ContentDetails();
 
         DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);

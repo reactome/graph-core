@@ -6,6 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.tools.config.MyConfiguration;
+import org.reactome.server.tools.domain.model.DatabaseObject;
+import org.reactome.server.tools.service.helper.PathwayBrowserNode;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
@@ -15,7 +17,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -33,8 +38,7 @@ public class DetailsServiceTest {
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
 
-    private static final Long dbId = 70486l;
-    private static final String stId = "R-HSA-70486";
+    private static final String stId = "R-HSA-199420";
 
     @Autowired
     private DetailsService detailsService;
@@ -69,12 +73,44 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.findReverseReactionOrPrecedingEvent");
         long start, time;
         start = System.currentTimeMillis();
-        detailsService.contentDetails("R-HSA-70486");
+        detailsService.getContentDetails("R-HSA-70486");
         time = System.currentTimeMillis() - start;
-        logger.info("findReverseReactionOrPrecedingEvent execution time: " + time + "ms");
+        logger.info("GraphDb execution time: " + time + "ms");
 
-
+        //TODO test
+        logger.info("Finished");
     }
 
+    @Test
+    public void testGetLocationsInThePathwayBrowser() {
 
+        DatabaseObject databaseObject = generalService.find(stId, RelationshipDirection.OUTGOING);
+
+        logger.info("Started testing detailsService.testGetLocationsInThePathwayBrowser");
+        long start, time;
+        start = System.currentTimeMillis();
+        PathwayBrowserNode node = detailsService.getLocationsInThePathwayBrowser(databaseObject);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+//        //TODO test
+//        assertEquals(4, node.getChildren());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testGetLocationsInThePathwayBrowserHierarchy() {
+
+        DatabaseObject databaseObject = generalService.find(stId, RelationshipDirection.OUTGOING);
+
+        logger.info("Started testing detailsService.testGetLocationsInThePathwayBrowserHierarchy");
+        long start, time;
+        start = System.currentTimeMillis();
+        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInPathwayBrowserHierarchy(databaseObject);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(4, nodes.size());
+        logger.info("Finished");
+    }
 }

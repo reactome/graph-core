@@ -16,12 +16,12 @@ import java.util.Collection;
 @Repository
 public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathway> {
 
-    @Query("Match (n:TopLevelPathway) RETURN n")
+    @Query("Match (n:TopLevelPathway) WHERE n.isInferred = false RETURN n")
     Collection<TopLevelPathway> getTopLevelPathways();
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.dbId = {speciesId}  RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.dbId = {0}  RETURN n")
     Collection<TopLevelPathway> getTopLevelPathways(Long speciesId);
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {speciesName}  RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {0}  RETURN n")
     Collection<TopLevelPathway> getTopLevelPathways(String speciesName);
 }

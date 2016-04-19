@@ -46,6 +46,10 @@ public class PhysicalEntityService {
         return physicalEntityRepository.getOtherFormsOfThisMolecule(dbId);
     }
 
+    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stableIdentifier) {
+        return physicalEntityRepository.getOtherFormsOfThisMolecule(stableIdentifier);
+    }
+
     @Transactional
     public PhysicalEntity findByIdWithLegacyFields(String id) {
         PhysicalEntity physicalEntity = findById(id);

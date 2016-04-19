@@ -24,17 +24,7 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
     @Query("Match (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
 
-//    @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity|activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) RETURN DISTINCT m")
-//    Collection<ReferenceEntity> getParticipatingMolecules(Long dbId);
-//
-//    @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity*]->(m)-[:activeUnit|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) RETURN m.dbId AS peDbId, m.displayName AS displayName, COLLECT(DISTINCT({dbId: x.dbId, name: x.displayName, identifier:x.identifier, url:x.url})) AS refEntities")
-//    Collection<Participant> getParticipatingMolecules2(Long dbId);
-//
-//    @Query("MATCH (n:Event{dbId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) RETURN Distinct(m)")
-//    Collection<PhysicalEntity> getParticipatingMolecules3(Long dbId);
-//
-//    @Query("MATCH (n:Event{stableIdentifier:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) RETURN Distinct(m)")
-//    Collection<PhysicalEntity> getParticipatingMolecules3(String stId);
-
+    @Query("Match (n:PhysicalEntity{stableIdentifier:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
+    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stableIdentifier);
 
 }

@@ -4,15 +4,18 @@ import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.ReferenceEntity;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.domain.model.TopLevelPathway;
 import org.reactome.server.tools.domain.result.ComponentOf;
 import org.reactome.server.tools.domain.result.SchemaClassCount;
 import org.reactome.server.tools.repository.GeneralNeo4jOperationsRepository;
 import org.reactome.server.tools.repository.GeneralRepository;
+import org.reactome.server.tools.repository.TopLevelPathwayRepository;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,6 +36,9 @@ public class GeneralService {
 
     @Autowired
     public GeneralRepository generalRepository;
+
+    @Autowired
+    public TopLevelPathwayRepository topLevelPathwayRepository;
 
     public DatabaseObject find(String id, RelationshipDirection direction) {
         id = DatabaseObjectUtils.trimId(id);
@@ -94,8 +100,8 @@ public class GeneralService {
         return generalNeo4jOperationsRepository.findByProperty(clazz, property, value, depth);
     }
 
-    public <T> Collection<T> findByProperty(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
-        return generalNeo4jOperationsRepository.findByProperty(clazz, property, values, depth);
+    public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
+        return generalNeo4jOperationsRepository.findByProperties(clazz, property, values, depth);
     }
 
     public Collection<SchemaClassCount> getSchemaClassCounts() {
@@ -112,6 +118,22 @@ public class GeneralService {
 
     public Collection<ComponentOf> getComponentsOf(String stableIdentifier) {
         return generalRepository.getComponentsOf(stableIdentifier);
+    }
+
+    public Collection<ComponentOf> getComponentsOf(Long dbId) {
+        return generalRepository.getComponentsOf(dbId);
+    }
+
+    public Collection<TopLevelPathway> getTopLevelPathways() {
+        return topLevelPathwayRepository.getTopLevelPathways();
+    }
+
+    public Collection<TopLevelPathway> getTopLevelPathways(Long speciesId) {
+        return topLevelPathwayRepository.getTopLevelPathways(speciesId);
+    }
+
+    public Collection<TopLevelPathway> getTopLevelPathways(String speciesName) {
+        return topLevelPathwayRepository.getTopLevelPathways(speciesName);
     }
 
 

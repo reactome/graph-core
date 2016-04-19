@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -38,7 +39,7 @@ public class PhysicalEntityServiceTest {
     private static Boolean isFit = false;
 
     private static final Long dbId = 199420L;
-    private static final String stId = "R-HSA-53787";
+    private static final String stId = "R-HSA-199420";
 
     @Autowired
     private PhysicalEntityService physicalEntityService;
@@ -108,16 +109,30 @@ public class PhysicalEntityServiceTest {
     }
 
     @Test
-    public void testGetOtherFormsOfThisMolecule() throws InvocationTargetException, IllegalAccessException {
+    public void testGetOtherFormsOfThisMoleculeByDbId() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing physicalEntityService.findByStableIdentifier");
+        logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByDbId");
         long start, time;
         start = System.currentTimeMillis();
         Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOfThisMolecule(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        //TODO test
+        assertEquals(27, otherFormsOfThisMolecule.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testGetOtherFormsOfThisMoleculeByStId() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOfThisMolecule(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(27, otherFormsOfThisMolecule.size());
         logger.info("Finished");
     }
 

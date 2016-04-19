@@ -211,7 +211,7 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.loadByProperty(clazz,property, value, depth);
     }
 
-    public <T> Collection<T> findByProperty(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
+    public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
         return neo4jTemplate.loadAllByProperty(clazz,property, values, depth);
     }
 
