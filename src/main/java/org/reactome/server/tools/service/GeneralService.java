@@ -2,10 +2,12 @@ package org.reactome.server.tools.service;
 
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.reactome.server.tools.domain.model.Pathway;
+import org.reactome.server.tools.domain.model.ReferenceEntity;
 import org.reactome.server.tools.domain.model.Species;
+import org.reactome.server.tools.domain.result.ComponentOf;
+import org.reactome.server.tools.domain.result.SchemaClassCount;
+import org.reactome.server.tools.repository.GeneralNeo4jOperationsRepository;
 import org.reactome.server.tools.repository.GeneralRepository;
-import org.reactome.server.tools.repository.util.RepositoryUtils;
 import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
@@ -27,72 +29,90 @@ public class GeneralService {
     private static final Logger logger = LoggerFactory.getLogger(GeneralService.class);
 
     @Autowired
-    private GeneralRepository generalRepository;
+    private GeneralNeo4jOperationsRepository generalNeo4jOperationsRepository;
 
-    public DatabaseObject getById(String id, RelationshipDirection direction) {
+    @Autowired
+    public GeneralRepository generalRepository;
+
+    public DatabaseObject find(String id, RelationshipDirection direction) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return generalRepository.getByStableIdentifier(id, direction);
+            return generalNeo4jOperationsRepository.findByStableIdentifier(id, direction);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalRepository.getByDbId(Long.parseLong(id), direction);
+            return generalNeo4jOperationsRepository.findByDbId(Long.parseLong(id), direction);
         }
         return null;
     }
 
-    public DatabaseObject getById(String id, RelationshipDirection direction, String... relationships) {
+    public DatabaseObject find(String id, RelationshipDirection direction, String... relationships) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return generalRepository.getByStableIdentifier(id, direction, relationships);
+            return generalNeo4jOperationsRepository.findByStableIdentifier(id, direction, relationships);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalRepository.getByDbId(Long.parseLong(id), direction, relationships);
+            return generalNeo4jOperationsRepository.findByDbId(Long.parseLong(id), direction, relationships);
         }
         return null;
     }
 
-    public DatabaseObject getByDbId(Long dbId, RelationshipDirection direction) {
-        return generalRepository.getByDbId(dbId, direction);
+    public DatabaseObject findByDbId(Long dbId, RelationshipDirection direction) {
+        return generalNeo4jOperationsRepository.findByDbId(dbId, direction);
     }
 
-    public DatabaseObject getByStableIdentifier(String stableIdentifier, RelationshipDirection direction) {
-        return generalRepository.getByStableIdentifier(stableIdentifier, direction);
+    public DatabaseObject findByStableIdentifier(String stableIdentifier, RelationshipDirection direction) {
+        return generalNeo4jOperationsRepository.findByStableIdentifier(stableIdentifier, direction);
     }
 
-    public DatabaseObject getByDbId (Long dbId, RelationshipDirection direction, String... relationships) {
-        return generalRepository.getByDbId(dbId, direction, relationships);
+    public DatabaseObject findByDbId (Long dbId, RelationshipDirection direction, String... relationships) {
+        return generalNeo4jOperationsRepository.findByDbId(dbId, direction, relationships);
     }
 
-    public DatabaseObject getByStableIdentifier (String stableIdentifier, RelationshipDirection direction, String... relationships) {
-        return generalRepository.getByStableIdentifier(stableIdentifier, direction, relationships);
+    public DatabaseObject findByStableIdentifier (String stableIdentifier, RelationshipDirection direction, String... relationships) {
+        return generalNeo4jOperationsRepository.findByStableIdentifier(stableIdentifier, direction, relationships);
     }
 
-    public <T> Collection<T> findByProperty(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
-        return generalRepository.findByProperty(clazz, property, values, depth);
+    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
+        return generalNeo4jOperationsRepository.findByDbIds(dbIds, direction);
     }
 
-    public Collection<DatabaseObject> getByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
-        return generalRepository.getByDbIds(dbIds, direction);
+    public Collection<DatabaseObject> findByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction) {
+        return generalNeo4jOperationsRepository.findByStableIdentifiers(stableIdentifiers, direction);
     }
 
-    public Collection<DatabaseObject> getByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction) {
-        return generalRepository.getByStableIdentifiers(stableIdentifiers, direction);
+    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
+        return generalNeo4jOperationsRepository.findByDbIds(dbIds, direction, relationships);
     }
 
-    public Collection<DatabaseObject> getByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
-        return generalRepository.getByDbIds(dbIds, direction, relationships);
-    }
-
-    public Collection<DatabaseObject> getByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction, String... relationships) {
-        return generalRepository.getByStableIdentifiers(stableIdentifiers, direction, relationships);
+    public Collection<DatabaseObject> findByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction, String... relationships) {
+        return generalNeo4jOperationsRepository.findByStableIdentifiers(stableIdentifiers, direction, relationships);
     }
 
     public <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
-        return generalRepository.getObjectsByClassName(clazz, page, offset);
+        return generalNeo4jOperationsRepository.getObjectsByClassName(clazz, page, offset);
     }
 
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return generalRepository.findByProperty(clazz, property, value, depth);
+        return generalNeo4jOperationsRepository.findByProperty(clazz, property, value, depth);
     }
 
+    public <T> Collection<T> findByProperty(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
+        return generalNeo4jOperationsRepository.findByProperty(clazz, property, values, depth);
+    }
+
+    public Collection<SchemaClassCount> getSchemaClassCounts() {
+        return generalRepository.getSchemaClassCounts();
+    }
+
+    public Collection<Species> getAllSpecies() {
+        return generalRepository.getAllSpecies();
+    }
+
+    public Collection<ReferenceEntity> getAllChemicals() {
+        return generalRepository.getAllChemicals();
+    }
+
+    public Collection<ComponentOf> getComponentsOf(String stableIdentifier) {
+        return generalRepository.getComponentsOf(stableIdentifier);
+    }
 
 
 //
@@ -276,18 +296,18 @@ public class GeneralService {
 //    }
 
     public Result query (String query, Map<String,Object> map) {
-        return generalRepository.query(query,map);
+        return generalNeo4jOperationsRepository.query(query,map);
     }
 
     public Long countEntries(Class<?> clazz){
-        return generalRepository.countEntries(clazz);
+        return generalNeo4jOperationsRepository.countEntries(clazz);
     }
 
     public void clearCache() {
-        generalRepository.clearCache();
+        generalNeo4jOperationsRepository.clearCache();
     }
 
     public boolean fitForService()  {
-        return generalRepository.fitForService();
+        return generalNeo4jOperationsRepository.fitForService();
     }
 }

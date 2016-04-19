@@ -30,16 +30,13 @@ public class DetailsService {
     private GeneralService generalService;
 
     @Autowired
-    private ObjectService objectService;
-
-    @Autowired
     private PhysicalEntityService physicalEntityService;
 
     @Transactional
     public ContentDetails contentDetails(String id) {
         ContentDetails contentDetails = new ContentDetails();
 
-        DatabaseObject databaseObject = generalService.getById(id, RelationshipDirection.OUTGOING);
+        DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
 
@@ -48,30 +45,30 @@ public class DetailsService {
         contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
 
 
-        contentDetails.setComponentOf(objectService.getComponentsOf(databaseObject.getStableIdentifier()));
+        contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
 
         if (databaseObject instanceof Reaction) {
-            generalService.getByDbId(databaseObject.getDbId(), RelationshipDirection.UNDIRECTED, "reverseReaction");
+            generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.UNDIRECTED, "reverseReaction");
         }
         if (databaseObject instanceof EntityWithAccessionedSequence || databaseObject instanceof SimpleEntity || databaseObject instanceof OpenSet) {
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
             if (databaseObject instanceof EntityWithAccessionedSequence) {
                 EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) databaseObject;
-                generalService.getByDbId(ewas.getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
+                generalService.findByDbId(ewas.getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
                 if (ewas.getHasModifiedResidue() != null && !ewas.getHasModifiedResidue().isEmpty()) {
                     Collection dbIds = new ArrayList<>();
                     for (AbstractModifiedResidue abstractModifiedResidue : ewas.getHasModifiedResidue()) {
                         dbIds.add(abstractModifiedResidue.getDbId());
                     }
-                    generalService.getByDbIds(dbIds, RelationshipDirection.OUTGOING, "psiMod", "modification");
+                    generalService.findByDbIds(dbIds, RelationshipDirection.OUTGOING, "psiMod", "modification");
                 }
-                generalService.getByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
+                generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
             } else if (databaseObject instanceof SimpleEntity) {
                 SimpleEntity simpleEntity = (SimpleEntity) databaseObject;
-                generalService.getByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
+                generalService.findByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
             } else if (databaseObject instanceof OpenSet) {
                 OpenSet openSet = (OpenSet) databaseObject;
-                generalService.getByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
+                generalService.findByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
             }
         }
         return contentDetails;
