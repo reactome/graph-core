@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -56,7 +56,7 @@ public class DetailsService {
                 EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) databaseObject;
                 generalService.findByDbId(ewas.getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
                 if (ewas.getHasModifiedResidue() != null && !ewas.getHasModifiedResidue().isEmpty()) {
-                    Collection dbIds = new ArrayList<>();
+                    List<Long> dbIds = new ArrayList<>();
                     for (AbstractModifiedResidue abstractModifiedResidue : ewas.getHasModifiedResidue()) {
                         dbIds.add(abstractModifiedResidue.getDbId());
                     }
@@ -66,7 +66,7 @@ public class DetailsService {
             } else if (databaseObject instanceof SimpleEntity) {
                 SimpleEntity simpleEntity = (SimpleEntity) databaseObject;
                 generalService.findByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
-            } else if (databaseObject instanceof OpenSet) {
+            } else {
                 OpenSet openSet = (OpenSet) databaseObject;
                 generalService.findByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
             }

@@ -2,6 +2,8 @@ package org.reactome.server.tools.service.util;
 
 import org.reactome.server.tools.domain.model.TopLevelPathway;
 import org.reactome.server.tools.service.helper.PathwayBrowserNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -15,6 +17,8 @@ import java.util.TreeSet;
  */
 public abstract class PathwayBrowserLocationsUtils {
 
+    private static final Logger logger = LoggerFactory.getLogger(PathwayBrowserLocationsUtils.class);
+
     private static final String PATHWAY_BROWSER_URL = "/PathwayBrowser/#/";
     private static final String SEL = "&amp;SEL=";
     private static final String PATH = "&amp;PATH=";
@@ -26,7 +30,7 @@ public abstract class PathwayBrowserLocationsUtils {
             if (tree != null) {
                 topLvlTrees.add(tree);
             } else {
-//                logger.error("Could no process tree for " + leaf.getName());
+                logger.error("Could no process tree for " + leaf.getName());
             }
         }
 
@@ -43,8 +47,6 @@ public abstract class PathwayBrowserLocationsUtils {
         }
         return leaves;
     }
-
-
 
     /**
      * Generating individual Trees from a leaf

@@ -10,6 +10,7 @@ import java.util.List;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 18.04.16.
  */
+@SuppressWarnings("unused")
 @QueryResult
 public class ComponentOf {
 
@@ -17,8 +18,7 @@ public class ComponentOf {
     private List<String> names;
     private List<String> stIds;
 
-    public ComponentOf() {
-    }
+    public ComponentOf() {}
 
     public String getType() {
         return type;

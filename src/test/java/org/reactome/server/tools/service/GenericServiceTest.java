@@ -118,7 +118,7 @@ public class GenericServiceTest {
         logger.info("Started testing genericService.getObjectsByClassName");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = generalService.getObjectsByClassName(Pathway.class, 1, 25);
+        Collection<Pathway> pathways = generalService.findObjectsByClassName(Pathway.class, 1, 25);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -244,6 +244,57 @@ public class GenericServiceTest {
         assertEquals(24,observedTlps.size());
         logger.info("Finished");
     }
+
+//    @Test
+//    public void saveAndDelete() {
+//
+//        Pathway pathway = new Pathway();
+//        pathway.setDbId(111111111111L);
+//        pathway.setStableIdentifier("R-HSA-111111111111");
+//        pathway.setDisplayName("TestPathway");
+//
+//        long count = generalService.countEntries(Pathway.class);
+//        generalService.save(pathway);
+//        long countAfterSave = generalService.countEntries(Pathway.class);
+//        assertEquals(count + 1, countAfterSave);
+////        generalService.delete(generalService.find
+//        long countAfterDelete = generalService.countEntries(Pathway.class);
+//        assertEquals(count, countAfterDelete);
+//    }
+//
+//    @Test
+//    public void saveAndDeleteWithRelation() {
+//
+//        Pathway pathway = new Pathway();
+//        pathway.setDbId(111111111111L);
+//        pathway.setStableIdentifier("R-HSA-111111111111");
+//        pathway.setDisplayName("TestPathway");
+//
+//        Pathway pathway2 = new Pathway();
+//        pathway2.setDbId(111111111112L);
+//        pathway2.setStableIdentifier("R-HSA-111111111112");
+//        pathway2.setDisplayName("TestPathway2");
+//
+//        Pathway pathway3 = new Pathway();
+//        pathway3.setDbId(111111111113L);
+//        pathway3.setStableIdentifier("R-HSA-111111111113");
+//        pathway3.setDisplayName("TestPathway3");
+//
+//        List<Event> hasEvent = new ArrayList<>();
+//        hasEvent.add(pathway2);
+//        hasEvent.add(pathway3);
+//        pathway.setHasEvent(hasEvent);
+//
+//        long count = genericService.countEntries(Pathway.class);
+//        service.save(pathway,1);
+//        long countAfterSave = genericService.countEntries(Pathway.class);
+//        assertEquals(count + 3, countAfterSave);
+//        service.delete(genericService.findByDbId(Pathway.class,111111111111L,0).getId());
+//        service.delete(genericService.findByDbId(Pathway.class,111111111112L,0).getId());
+//        service.delete(genericService.findByDbId(Pathway.class,111111111113L,0).getId());
+//        long countAfterDelete = genericService.countEntries(Pathway.class);
+//        assertEquals(count, countAfterDelete);
+//    }
 
 
 //    @ComponentOf

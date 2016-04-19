@@ -1,15 +1,14 @@
 package org.reactome.server.tools.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Event;
 import org.reactome.server.tools.domain.model.NegativeRegulation;
 import org.reactome.server.tools.domain.model.PositiveRegulation;
 import org.reactome.server.tools.repository.EventRepository;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

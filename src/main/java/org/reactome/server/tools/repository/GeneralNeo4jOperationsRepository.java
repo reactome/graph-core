@@ -27,6 +27,78 @@ public class GeneralNeo4jOperationsRepository {
     @Autowired
     private Neo4jOperations neo4jTemplate;
 
+    // Find by property and depth
+
+    public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+        return neo4jTemplate.loadByProperty(clazz,property, value, depth);
+    }
+
+    public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
+        return neo4jTemplate.loadAllByProperty(clazz,property, values, depth);
+    }
+
+    // Default Finder Methods
+
+    public <T> T findByDbId(Class<T> clazz, Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        return neo4jTemplate.queryForObject(clazz, query, map);
+    }
+
+    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
+        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]-(m) RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put("stableIdentifier", stableIdentifier);
+        return neo4jTemplate.queryForObject(clazz, query, map);
+    }
+
+    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
+        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbIds", dbIds);
+        return neo4jTemplate.queryForObjects(clazz, query, map);
+    }
+
+    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
+        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+        Map<String,Object> map = new HashMap<>();
+        map.put("stableIdentifiers", stableIdentifiers);
+        return neo4jTemplate.queryForObjects(clazz, query, map);
+    }
+
+    // Finder Methods without Relationships
+
+    public <T> T findByDbIdNoRelation(Class<T> clazz, Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}}) RETURN n";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        return neo4jTemplate.queryForObject(clazz, query, map);
+    }
+
+    public <T> T findByStableIdentifierNoRelation(Class<T> clazz, String stableIdentifier) {
+        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}}) RETURN n";
+        Map<String,Object> map = new HashMap<>();
+        map.put("stableIdentifier", stableIdentifier);
+        return neo4jTemplate.queryForObject(clazz, query, map);
+    }
+
+    public <T> Iterable<T> findByDbIdsNoRelations(Class<T> clazz, Collection<Long> dbIds) {
+        String query = "Match (n:DatabaseObject) WHERE n.dbId IN {dbIds} RETURN n";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbIds", dbIds);
+        return neo4jTemplate.queryForObjects(clazz, query, map);
+    }
+
+    public <T> Iterable<T> findByStableIdentifiersNoRelations(Class<T> clazz, Collection<String> stableIdentifiers) {
+        String query = "Match (n:DatabaseObject) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n";
+        Map<String, Object> map = new HashMap<>();
+        map.put("stableIdentifiers", stableIdentifiers);
+        return neo4jTemplate.queryForObjects(clazz, query, map);
+    }
+
+    // Finder Methods with RelationshipDirection and Relationships
+
     public DatabaseObject findByDbId(Long dbId, RelationshipDirection direction) {
         String query;
         switch (direction) {
@@ -199,7 +271,9 @@ public class GeneralNeo4jOperationsRepository {
         return databaseObjects;
     }
 
-    public <T> Collection<T> getObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
+    // Find by Class Name
+
+    public <T> Collection<T> findObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("limit", offset);
@@ -207,21 +281,33 @@ public class GeneralNeo4jOperationsRepository {
         return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
     }
 
-    public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return neo4jTemplate.loadByProperty(clazz,property, value, depth);
+    // Save and Delete
+
+    public <T extends DatabaseObject> T save(T t) {
+        return neo4jTemplate.save(t);
     }
 
-    public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
-        return neo4jTemplate.loadAllByProperty(clazz,property, values, depth);
+    public <T extends DatabaseObject> T save(T t, int depth) {
+        return neo4jTemplate.save(t, depth);
     }
+
+    public void delete (Object o)  {
+        neo4jTemplate.delete(o);
+    }
+
+    // Method for querying without mapping to Objects
 
     public Result query (String query, Map<String,Object> map) {
         return neo4jTemplate.query(query,map);
     }
 
+    // Count entries of class
+
     public Long countEntries(Class<?> clazz) {
         return neo4jTemplate.count(clazz);
     }
+
+    // Utility Methods used in JUnit Tests
 
     public boolean fitForService() {
         String query = "Match (n) Return Count(n)>0 AS fitForService";

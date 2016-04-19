@@ -1,8 +1,6 @@
 package org.reactome.server.tools.repository;
 
 import org.reactome.server.tools.domain.model.PhysicalEntity;
-import org.reactome.server.tools.domain.model.ReferenceEntity;
-import org.reactome.server.tools.domain.result.Participant;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;

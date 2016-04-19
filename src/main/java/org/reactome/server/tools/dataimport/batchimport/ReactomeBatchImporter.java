@@ -105,9 +105,12 @@ public class ReactomeBatchImporter {
         for (Object object : objects) {
             GKInstance instance = (GKInstance) object;
             topLevelPathways.add(instance.getDBID());
-            Collection<GKInstance> orthologousEvents = getCollectionFromGkInstance(instance,ReactomeJavaConstants.orthologousEvent);
-            for (GKInstance orthologousEvent : orthologousEvents) {
-                topLevelPathways.add(orthologousEvent.getDBID());
+            Collection<?> orthologousEvents = getCollectionFromGkInstance(instance,ReactomeJavaConstants.orthologousEvent);
+            if (orthologousEvents != null && !orthologousEvents.isEmpty()) {
+                for (Object obj : orthologousEvents) {
+                    GKInstance orthologousEvent = (GKInstance) obj;
+                    topLevelPathways.add(orthologousEvent.getDBID());
+                }
             }
             tlps.add(instance);
         }
@@ -544,7 +547,7 @@ public class ReactomeBatchImporter {
      */
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
-            List<Field> fields = getAllFields(new ArrayList<Field>(), clazz);
+            List<Field> fields = getAllFields(new ArrayList<>(), clazz);
             for (Field field : fields) {
                 String fieldName = field.getName();
                 if (field.getAnnotation(Relationship.class)!= null) {

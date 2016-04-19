@@ -38,6 +38,7 @@ public class DetailsRepository {
         nodes.put(root.getStId(),root);
         int previousSize = 0;
         for (Map<String, Object> stringObjectMap : result) {
+            @SuppressWarnings("unchecked")
             ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
             int size = nodePairCollections.length;
             if (size>previousSize) {
@@ -67,7 +68,11 @@ public class DetailsRepository {
     private PathwayBrowserNode addNode(PathwayBrowserNode previous, Map<String,PathwayBrowserNode> nodes, ArrayList<Object> objects) {
         PathwayBrowserNode node;
 
+        //todo fixme
+        //noinspection SuspiciousMethodCalls
         if (nodes.containsKey(objects.get(0))) {
+            //todo fixme
+            //noinspection SuspiciousMethodCalls
             node = nodes.get(objects.get(0));
         } else {
             node = createNode(objects);

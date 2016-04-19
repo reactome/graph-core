@@ -6,6 +6,8 @@ import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 /**
  * Created by:
  *
@@ -18,6 +20,7 @@ public class DatabaseObjectService {
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
 
+    @SuppressWarnings("unused")
     public DatabaseObject findById(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
@@ -28,6 +31,7 @@ public class DatabaseObjectService {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public DatabaseObject findByIdNoRelations(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
@@ -52,6 +56,14 @@ public class DatabaseObjectService {
 
     public DatabaseObject findByStableIdentifierRelations(String stableIdentifier) {
         return databaseObjectRepository.findByStableIdentifierNoRelations(stableIdentifier);
+    }
+
+    public Collection<DatabaseObject> findByDbIdsNoRelations(Collection<Long> dbIds) {
+        return databaseObjectRepository.findByDbIdsNoRelations(dbIds);
+    }
+
+    public Collection<DatabaseObject> findByStableIdentifiersNoRelations(Collection<String> stableIdentifiers) {
+        return databaseObjectRepository.findByStableIdentifiersNoRelations(stableIdentifiers);
     }
 //
 //    @Override

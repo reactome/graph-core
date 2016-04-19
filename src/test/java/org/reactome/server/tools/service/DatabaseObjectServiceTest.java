@@ -19,7 +19,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
@@ -41,6 +43,9 @@ public class DatabaseObjectServiceTest {
 
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
+
+    private static final List<Long> dbIds = Arrays.asList(1640170l, 73886l, 1500620l);
+    private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-1500620");
 
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
@@ -109,6 +114,39 @@ public class DatabaseObjectServiceTest {
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
     }
+
+
+    @Test
+    public void testFindByDbIds() throws Exception {
+
+        logger.info("Started testing databaseObjectService.findByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+
+        Collection<DatabaseObject> databaseObjectsObserved =  databaseObjectService.findByDbIdsNoRelations(dbIds);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(3, databaseObjectsObserved.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testFindByStableIdentifiers() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing databaseObjectService.findByStableIdentifier");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByStableIdentifiersNoRelations(stIds);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(3, databaseObjectsObserved.size());
+        logger.info("Finished");
+    }
+
+
+
 
     @Test
     public void testFindByDbIdNoRelations() {

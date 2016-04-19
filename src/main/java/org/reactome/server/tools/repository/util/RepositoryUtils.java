@@ -1,9 +1,11 @@
 package org.reactome.server.tools.repository.util;
 
 /**
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * Created by:
+ *
+ * @author Florian Korninger (florian.korninger@ebi.ac.uk)
+ * @since 10.11.15.
  */
-
 public class RepositoryUtils {
 
     public static String getRelationshipAsString (String... relationships) {

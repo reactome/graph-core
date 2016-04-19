@@ -1,11 +1,9 @@
 package org.reactome.server.tools.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.reactome.server.tools.domain.relationship.HasComponent;
 import org.reactome.server.tools.domain.annotations.ReactomeProperty;
+import org.reactome.server.tools.domain.relationship.HasComponent;
 
 import java.util.*;
 

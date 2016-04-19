@@ -4,7 +4,6 @@ import org.reactome.server.tools.domain.model.*;
 import org.reactome.server.tools.repository.PhysicalEntityRepository;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

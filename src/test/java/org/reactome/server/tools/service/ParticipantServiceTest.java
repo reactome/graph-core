@@ -150,7 +150,7 @@ public class ParticipantServiceTest {
     @Test
     public void testGetParticipantsByDbId() {
 
-        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
+        logger.info("Started testing databaseObjectService.testGetParticipantsByDbId");
         long start, time;
         start = System.currentTimeMillis();
         Collection<Participant> participants = participantService.getParticipants(dbId);
@@ -169,7 +169,7 @@ public class ParticipantServiceTest {
     @Test
     public void testGetParticipantsByStId() {
 
-        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
+        logger.info("Started testing databaseObjectService.testGetParticipantsByStId");
         long start, time;
         start = System.currentTimeMillis();
         Collection<Participant> participants = participantService.getParticipants(stId);

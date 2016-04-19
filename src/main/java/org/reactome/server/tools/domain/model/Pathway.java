@@ -70,6 +70,6 @@ public class Pathway extends Event {
 
     @Override
     public String getExplanation() {
-        return "A collection of related Events. These events can be ReactionlikeEvents or Pathways";
+        return "A collection of related Events. These events can be ReactionLikeEvents or Pathways";
     }
 }
