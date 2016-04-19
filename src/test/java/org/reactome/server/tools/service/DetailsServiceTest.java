@@ -6,10 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.tools.config.MyConfiguration;
-import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.service.helper.ContentDetails;
 import org.reactome.server.tools.util.DatabaseObjectFactory;
-import org.reactome.server.tools.util.JunitHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +69,7 @@ public class DetailsServiceTest {
         logger.info("Started testing eventService.findByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails cd = detailsService.contentDetails("R-HSA-70486");
+        ContentDetails cd = detailsService.contentDetails("70486");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 //

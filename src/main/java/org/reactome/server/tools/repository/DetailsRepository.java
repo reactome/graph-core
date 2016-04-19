@@ -58,9 +58,9 @@ public class DetailsRepository {
     }
 
     public DatabaseObject findGuiFirstMethod(String dbId, String... relationships) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m), (n)<-[l" +
-                            RepositoryUtils.getRelationshipAsString(relationships) +
-                         "]-(k) return n,r,m,l,k";
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m), (n)<-[l";
+        query += RepositoryUtils.getRelationshipAsString(relationships);
+        query += "]-(k) return n,r,m,l,k";
 
         Map<String,Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -85,8 +85,7 @@ public class DetailsRepository {
         String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifier", stId);
-        Result result =  neo4jTemplate.query(query, map);
-        return result;
+        return neo4jTemplate.query(query, map);
     }
 
 //    public Map<String, List<Pair<String, String>>> getComponentsOf(String stId) {

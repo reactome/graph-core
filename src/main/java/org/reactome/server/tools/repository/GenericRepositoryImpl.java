@@ -7,7 +7,6 @@ import org.reactome.server.tools.domain.model.DatabaseObject;
 import org.reactome.server.tools.domain.model.Pathway;
 import org.reactome.server.tools.domain.model.Species;
 import org.reactome.server.tools.repository.util.RepositoryUtils;
-import org.reactome.server.tools.service.helper.RelationshipDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -273,7 +272,7 @@ public class GenericRepositoryImpl implements GenericRepository {
             if (result != null && result.iterator().hasNext())
                 return (boolean) result.iterator().next().get("fitForService");
         } catch (Exception e) {
-            logger.error("A connection with the Neo4j Graph could not be established. Tests will be skipped");
+            logger.error("A connection with the Neo4j Graph could not be established. Tests will be skipped", e);
         }
         return false;
     }
