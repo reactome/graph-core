@@ -1,13 +1,13 @@
 package org.reactome.server.tools.qa;
 
 import com.martiansoftware.jsap.*;
+import org.reactome.server.tools.config.MyConfiguration;
 import org.reactome.server.tools.qa.tests.QualityAssuranceAbstract;
+import org.reactome.server.tools.service.GeneralService;
 import org.reflections.Reflections;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.reactome.server.tools.config.MyConfiguration;
-import org.reactome.server.tools.service.GenericService;
 
 import java.util.Set;
 
@@ -37,7 +37,7 @@ public class QualityAssuranceLauncher {
         System.setProperty("neo4j.password", config.getString("password"));
 
         ApplicationContext context = new AnnotationConfigApplicationContext(MyConfiguration.class);
-        GenericService genericService = context.getBean(GenericService.class);
+        GeneralService genericService = context.getBean(GeneralService.class);
 
         Reflections reflections = new Reflections(QualityAssuranceAbstract.class.getPackage().getName());
         Set<Class<?>> tests = reflections.getTypesAnnotatedWith(QATest.class);
