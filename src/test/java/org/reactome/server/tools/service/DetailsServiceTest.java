@@ -33,8 +33,8 @@ public class DetailsServiceTest {
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
 
-    private static final Long dbId = 1912416L;
-    private static final String stId = "R-HSA-1912416";
+    private static final Long dbId = 70486l;
+    private static final String stId = "R-HSA-70486";
 
     @Autowired
     private DetailsService detailsService;
@@ -70,17 +70,10 @@ public class DetailsServiceTest {
         long start, time;
         start = System.currentTimeMillis();
         detailsService.contentDetails("R-HSA-70486");
-//        detailsService.findReverseReactionOrPrecedingEvent("70486", "reverseReaction", "precedingEvent");
         time = System.currentTimeMillis() - start;
         logger.info("findReverseReactionOrPrecedingEvent execution time: " + time + "ms");
 
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
+
     }
 
 

@@ -1,10 +1,10 @@
 package org.reactome.server.tools.service;
 
 import org.reactome.server.tools.domain.model.DatabaseObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.reactome.server.tools.repository.DatabaseObjectRepository;
 import org.reactome.server.tools.service.util.DatabaseObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by:
@@ -14,8 +14,6 @@ import org.reactome.server.tools.service.util.DatabaseObjectUtils;
  */
 @Service
 public class DatabaseObjectService {
-
-//    private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectServiceImpl.class);
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
@@ -30,6 +28,16 @@ public class DatabaseObjectService {
         return null;
     }
 
+    public DatabaseObject findByIdNoRelations(String id) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return databaseObjectRepository.findByStableIdentifierNoRelations(id);
+        } else if (DatabaseObjectUtils.isDbId(id)){
+            return databaseObjectRepository.findByDbIdNoRelations(Long.parseLong(id));
+        }
+        return null;
+    }
+
     public DatabaseObject findByDbId(Long dbId) {
         return databaseObjectRepository.findByDbId(dbId);
     }
@@ -40,6 +48,10 @@ public class DatabaseObjectService {
 
     public DatabaseObject findByDbIdNoRelations(Long dbId) {
         return databaseObjectRepository.findByDbIdNoRelations(dbId);
+    }
+
+    public DatabaseObject findByStableIdentifierRelations(String stableIdentifier) {
+        return databaseObjectRepository.findByStableIdentifierNoRelations(stableIdentifier);
     }
 //
 //    @Override
