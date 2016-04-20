@@ -312,7 +312,7 @@ public class GeneralNeo4jOperationsRepository {
     public boolean fitForService() {
         String query = "Match (n) Return Count(n)>0 AS fitForService";
         try {
-            Result result = neo4jTemplate.query(query, Collections.emptyMap());
+            Result result = neo4jTemplate.query(query, Collections.<String, Object>emptyMap());
             if (result != null && result.iterator().hasNext())
                 return (boolean) result.iterator().next().get("fitForService");
         } catch (Exception e) {

@@ -547,7 +547,7 @@ public class ReactomeBatchImporter {
      */
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
-            List<Field> fields = getAllFields(new ArrayList<>(), clazz);
+            List<Field> fields = getAllFields(new ArrayList<Field>(), clazz);
             for (Field field : fields) {
                 String fieldName = field.getName();
                 if (field.getAnnotation(Relationship.class)!= null) {
