@@ -49,47 +49,59 @@ public class PhysicalEntityService {
         return physicalEntityRepository.getOtherFormsOfThisMolecule(stableIdentifier);
     }
 
+    @Deprecated
     @Transactional
     public PhysicalEntity findByIdWithLegacyFields(String id) {
         PhysicalEntity physicalEntity = findById(id);
-        if (physicalEntity != null) {
-            if (physicalEntity.getCatalystActivities() != null) {
-                List<ReactionLikeEvent> catalyzedEvents = new ArrayList<>();
-                List<GO_MolecularFunction> goActivities = new ArrayList<>();
-                for (CatalystActivity catalystActivity : physicalEntity.getCatalystActivities()) {
-                    physicalEntityRepository.findOne(catalystActivity.getId());
-                    catalyzedEvents.addAll(catalystActivity.getCatalyzedEvent());
-                    goActivities.add(catalystActivity.getActivity());
-                }
-                physicalEntity.setCatalyzedEvent(catalyzedEvents);
-                physicalEntity.setGoActivity(goActivities);
+        physicalEntity = addRegulatedEvents(physicalEntity);
+        physicalEntity = addCatalyzedEvents(physicalEntity);
+        return physicalEntity;
+    }
+
+    @Deprecated
+    public PhysicalEntity addRegulatedEvents(PhysicalEntity physicalEntity) {
+        if (physicalEntity == null) return null;
+        if (physicalEntity.getIsRequired() != null) {
+            List<DatabaseObject> regulatedEntity = new ArrayList<>();
+            for (Requirement requirement : physicalEntity.getIsRequired()) {
+                physicalEntityRepository.findOne(requirement.getId());
+                regulatedEntity.add(requirement.getRegulatedEntity());
             }
-            if (physicalEntity.getIsRequired() != null) {
-                List<DatabaseObject> regulatedEntity = new ArrayList<>();
-                for (Requirement requirement : physicalEntity.getIsRequired()) {
-                    physicalEntityRepository.findOne(requirement.getId());
-                    regulatedEntity.add(requirement.getRegulatedEntity());
-                }
-                physicalEntity.setRequiredEvent(regulatedEntity);
-            }
-            if (physicalEntity.getPositivelyRegulates() != null) {
-                List<DatabaseObject> regulatedEntity = new ArrayList<>();
-                for (PositiveRegulation positiveRegulation : physicalEntity.getPositivelyRegulates()) {
-                    physicalEntityRepository.findOne(positiveRegulation.getId());
-                    regulatedEntity.add(positiveRegulation.getRegulatedEntity());
-                }
-                physicalEntity.setActivatedEvent(regulatedEntity);
-            }
-            if (physicalEntity.getNegativelyRegulates() != null) {
-                List<DatabaseObject> regulatedEntity = new ArrayList<>();
-                for (NegativeRegulation negativeRegulation : physicalEntity.getNegativelyRegulates()) {
-                    physicalEntityRepository.findOne(negativeRegulation.getId());
-                    regulatedEntity.add(negativeRegulation.getRegulatedEntity());
-                }
-                physicalEntity.setInhibitedEvent(regulatedEntity);
-            }
-            return physicalEntity;
+            physicalEntity.setRequiredEvent(regulatedEntity);
         }
-        return null;
+        if (physicalEntity.getPositivelyRegulates() != null) {
+            List<DatabaseObject> regulatedEntity = new ArrayList<>();
+            for (PositiveRegulation positiveRegulation : physicalEntity.getPositivelyRegulates()) {
+                physicalEntityRepository.findOne(positiveRegulation.getId());
+                regulatedEntity.add(positiveRegulation.getRegulatedEntity());
+            }
+            physicalEntity.setActivatedEvent(regulatedEntity);
+        }
+        if (physicalEntity.getNegativelyRegulates() != null) {
+            List<DatabaseObject> regulatedEntity = new ArrayList<>();
+            for (NegativeRegulation negativeRegulation : physicalEntity.getNegativelyRegulates()) {
+                physicalEntityRepository.findOne(negativeRegulation.getId());
+                regulatedEntity.add(negativeRegulation.getRegulatedEntity());
+            }
+            physicalEntity.setInhibitedEvent(regulatedEntity);
+        }
+        return physicalEntity;
+    }
+
+    @Deprecated
+    public PhysicalEntity addCatalyzedEvents(PhysicalEntity physicalEntity) {
+        if (physicalEntity == null) return null;
+        if (physicalEntity.getCatalystActivities() != null) {
+            List<ReactionLikeEvent> catalyzedEvents = new ArrayList<>();
+            List<GO_MolecularFunction> goActivities = new ArrayList<>();
+            for (CatalystActivity catalystActivity : physicalEntity.getCatalystActivities()) {
+                physicalEntityRepository.findOne(catalystActivity.getId());
+                catalyzedEvents.addAll(catalystActivity.getCatalyzedEvent());
+                goActivities.add(catalystActivity.getActivity());
+            }
+            physicalEntity.setCatalyzedEvent(catalyzedEvents);
+            physicalEntity.setGoActivity(goActivities);
+        }
+        return physicalEntity;
     }
 }

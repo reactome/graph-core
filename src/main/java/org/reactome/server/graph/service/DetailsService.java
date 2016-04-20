@@ -32,24 +32,41 @@ public class DetailsService {
     @Autowired
     private PhysicalEntityService physicalEntityService;
 
+    @Autowired
+    private EventService eventService;
+
+
+
     @Transactional
     public ContentDetails getContentDetails(String id) {
+
         ContentDetails contentDetails = new ContentDetails();
 
         DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
-
         Set<PathwayBrowserNode> leaves = getLocationsInPathwayBrowserHierarchy(databaseObject);
         leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
         contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
 
-
         contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
 
-        if (databaseObject instanceof Reaction) {
-            generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.UNDIRECTED, "reverseReaction");
+
+        if (databaseObject instanceof Event) {
+            Event event = (Event) databaseObject;
+            event = eventService.addRegulators(event);
+            if (event instanceof Reaction) {
+                generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.UNDIRECTED, "reverseReaction");
+            }
+
+        } else if (databaseObject instanceof PhysicalEntity) {
+
+        } else {
+
         }
+
+
+
         if (databaseObject instanceof EntityWithAccessionedSequence || databaseObject instanceof SimpleEntity || databaseObject instanceof OpenSet) {
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
             if (databaseObject instanceof EntityWithAccessionedSequence) {

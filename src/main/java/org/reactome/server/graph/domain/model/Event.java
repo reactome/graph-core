@@ -38,8 +38,10 @@ public abstract class Event extends DatabaseObject {
      * graph contains only relationships to Regulation
      * positive and negativeRegulators have to be filled in service
      */
+    @Deprecated
     @Transient
     private List<DatabaseObject> negativeRegulators;
+    @Deprecated
     @Transient
     private List<DatabaseObject> positiveRegulators;
 

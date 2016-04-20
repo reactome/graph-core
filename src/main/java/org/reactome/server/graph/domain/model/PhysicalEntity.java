@@ -27,18 +27,23 @@ public abstract class PhysicalEntity extends DatabaseObject {
     private String systematicName;
 
     // List of CatalyzedEvents filled in service layer
+    @Deprecated
     @Transient
     private List<ReactionLikeEvent> catalyzedEvent;
 
     // List of GO_MolecularFunctions filled in service layer
+    @Deprecated
     @Transient
     private List<GO_MolecularFunction> goActivity;
 
     // List of regulated Events filled in service layer
+    @Deprecated
     @Transient
     private List<DatabaseObject> activatedEvent;
+    @Deprecated
     @Transient
     private List<DatabaseObject> inhibitedEvent;
+    @Deprecated
     @Transient
     private List<DatabaseObject> requiredEvent;
 

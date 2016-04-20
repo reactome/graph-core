@@ -43,9 +43,16 @@ public class EventService {
         return eventRepository.findByStableIdentifier(stableIdentifier);
     }
 
+    @Deprecated
     @Transactional
     public Event findByIdWithLegacyFields(String id) {
         Event event = findById(id);
+        event = addRegulators(event);
+        return event;
+    }
+
+    @Deprecated
+    public Event addRegulators (Event event) {
         if (event == null) return null;
         if (event.getNegativelyRegulatedBy() != null) {
             List<DatabaseObject> regulator = new ArrayList<>();
