@@ -164,7 +164,8 @@ public class GeneralService {
 
     // Find by Class Name
 
-    public <T> Collection<T> findObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
+    public <T> Collection<T> findObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
+        Class clazz = DatabaseObjectUtils.getClassForName(className);
         return generalNeo4jOperationsRepository.findObjectsByClassName(clazz, page, offset);
     }
 

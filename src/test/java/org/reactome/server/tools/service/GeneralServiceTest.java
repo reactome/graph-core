@@ -35,7 +35,7 @@ import static org.junit.Assume.assumeTrue;
  */
 @ContextConfiguration(classes = { MyConfiguration.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class GenericServiceTest {
+public class GeneralServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
@@ -113,12 +113,12 @@ public class GenericServiceTest {
      * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
      */
     @Test
-    public void testGetObjectsByClassName() {
+    public void testGetObjectsByClassName() throws ClassNotFoundException {
 
         logger.info("Started testing genericService.getObjectsByClassName");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = generalService.findObjectsByClassName(Pathway.class, 1, 25);
+        Collection<Pathway> pathways = generalService.findObjectsByClassName("Pathway", 1, 25);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
