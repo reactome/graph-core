@@ -54,7 +54,8 @@ public class DetailsService {
 
         if (databaseObject instanceof Event) {
             Event event = (Event) databaseObject;
-            event = eventService.addRegulators(event);
+
+
             if (event instanceof Reaction) {
                 generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.UNDIRECTED, "reverseReaction");
             }
