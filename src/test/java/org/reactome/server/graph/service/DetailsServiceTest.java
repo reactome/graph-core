@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.MyConfiguration;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
@@ -73,7 +74,7 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.findReverseReactionOrPrecedingEvent");
         long start, time;
         start = System.currentTimeMillis();
-        detailsService.getContentDetails("R-HSA-70486");
+        ContentDetails databaseObject = detailsService.getContentDetails(stId); //"R-HSA-70486"
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

@@ -7,6 +7,7 @@ import org.neo4j.ogm.annotation.Transient;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -404,5 +405,16 @@ public abstract class Event extends DatabaseObject {
 
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
+    }
+
+    public List<Regulation> getRegulations() {
+        List<Regulation> regulations = new ArrayList<>();
+        if (this.getPositivelyRegulatedBy() != null && !this.getPositivelyRegulatedBy().isEmpty()) {
+            regulations.addAll(this.getPositivelyRegulatedBy());
+        }
+        if (this.getNegativelyRegulatedBy() != null && !this.getNegativelyRegulatedBy().isEmpty()) {
+            regulations.addAll(this.getNegativelyRegulatedBy());
+        }
+        return regulations;
     }
 }

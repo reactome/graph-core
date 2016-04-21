@@ -1,10 +1,8 @@
 package org.reactome.server.graph.service;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.model.NegativeRegulation;
-import org.reactome.server.graph.domain.model.PositiveRegulation;
+import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.repository.EventRepository;
+import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,9 @@ public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private GeneralService generalService;
 
     public Event findById(String id) {
         id = DatabaseObjectUtils.trimId(id);
@@ -52,6 +53,18 @@ public class EventService {
     }
 
     @Deprecated
+    public ReactionLikeEvent loadCatalysts (ReactionLikeEvent reactionLikeEvent) {
+
+        if (reactionLikeEvent == null) return null;
+        if (reactionLikeEvent.getCatalystActivity() != null ) {
+            for (CatalystActivity catalystActivity : reactionLikeEvent.getCatalystActivity()) {
+                eventRepository.findOne(catalystActivity.getId());
+            }
+        }
+        return reactionLikeEvent;
+    }
+
+    @Deprecated
     public Event addRegulators (Event event) {
         if (event == null) return null;
         if (event.getNegativelyRegulatedBy() != null) {
@@ -72,4 +85,34 @@ public class EventService {
         }
         return event;
     }
+
+//    @Deprecated
+//    public Event addOnlyRegulators (Event event) {
+//
+//        if (event == null) return null;
+//        List<Regulation> regulations = event.getRegulations();
+//        if (regulations != null && !regulations.isEmpty()) {
+//            List<Long> dbIds = new ArrayList<>();
+//            for (Regulation regulation : regulations) {
+//                dbIds.add(regulation.getDbId());
+//            }
+//            generalService.findByDbIds(dbIds, RelationshipDirection.OUTGOING, "regulator");
+//
+//            List<DatabaseObject> regulator = new ArrayList<>();
+//            if (event.getNegativelyRegulatedBy() != null) {
+//                for (NegativeRegulation negativeRegulation : event.getNegativelyRegulatedBy()) {
+//                    regulator.add(negativeRegulation.getRegulator());
+//                }
+//                event.setNegativeRegulators(regulator);
+//            }
+//            if (event.getPositivelyRegulatedBy() != null) {
+//                for (PositiveRegulation positiveRegulation : event.getPositivelyRegulatedBy()) {
+//                    regulator.add(positiveRegulation.getRegulator());
+//                }
+//                event.setPositiveRegulators(regulator);
+//            }
+//        }
+//        return event;
+//    }
+
 }

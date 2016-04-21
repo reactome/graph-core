@@ -112,9 +112,16 @@ public class EventServiceTest {
     public void findByIdWithLegacyFields() throws InvocationTargetException, IllegalAccessException {
 
         logger.info("Started testing eventService.findByIdWithLegacyFields");
-
+        long start, time;
+        start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = eventService.findByIdWithLegacyFields(dbId.toString());
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
 
         JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");

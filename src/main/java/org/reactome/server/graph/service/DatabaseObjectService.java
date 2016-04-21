@@ -65,41 +65,5 @@ public class DatabaseObjectService {
     public Collection<DatabaseObject> findByStableIdentifiersNoRelations(Collection<String> stableIdentifiers) {
         return databaseObjectRepository.findByStableIdentifiersNoRelations(stableIdentifiers);
     }
-//
-//    @Override
-//    public Collection<ReferenceEntity> getParticipatingMolecules(Long dbId) {
-//        return databaseObjectRepository.getParticipatingMolecules(dbId);
-//    }
-//
-//    @Override
-//    public Collection<Participant> getParticipatingMolecules2(Long dbId) {
-//        return databaseObjectRepository.getParticipatingMolecules2(dbId);
-//    }
-//
-//    @Override
-//    public Collection<PhysicalEntity> getParticipatingMolecules3(String id) {
-//        id = DatabaseObjectUtils.trimId(id);
-//        if (DatabaseObjectUtils.isStId(id)) {
-//            return databaseObjectRepository.getParticipatingMolecules3(id);
-//        } else if (DatabaseObjectUtils.isDbId(id)){
-//            return databaseObjectRepository.getParticipatingMolecules3(Long.parseLong(id));
-//        }
-//        return null;
-//    }
-//
-//    @Override
-//    public Collection<SchemaClassCount> getLabelsCount() {
-//        return databaseObjectRepository.getLabelsCount();
-//    }
-//
-//    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId) {
-//        return databaseObjectRepository.getOtherFormsOfThisMolecule(dbId);
-//    }
-//
-//
-//
-//    public Collection<ComponentOf> getComponentsOf(String stableIdentifier) {
-//        return databaseObjectRepository.getComponentsOf(stableIdentifier);
-//    }
 
 }
