@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service.util;
 
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
@@ -69,7 +70,7 @@ public abstract class PathwayBrowserLocationsUtils {
         tree.setSpecies(leaf.getSpecies());
         tree.setType(leaf.getType());
 
-        boolean isPathway = leaf.getType().equals("Pathway");
+        boolean isPathway = leaf.getType().equals(Pathway.class.getSimpleName()) || leaf.getType().equals(TopLevelPathway.class.getSimpleName());
         boolean hasDiagram = leaf.hasDiagram();
         leaf.setUnique(false);
 
