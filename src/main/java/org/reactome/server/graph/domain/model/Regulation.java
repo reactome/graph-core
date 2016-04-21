@@ -12,7 +12,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @NodeEntity
-public class Regulation extends DatabaseObject {
+public abstract class Regulation extends DatabaseObject {
 
     @ReactomeProperty
     private String releaseDate;

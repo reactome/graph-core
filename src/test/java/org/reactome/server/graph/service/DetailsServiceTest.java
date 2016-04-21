@@ -107,7 +107,7 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.testGetLocationsInThePathwayBrowserHierarchy");
         long start, time;
         start = System.currentTimeMillis();
-        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInPathwayBrowserHierarchy(databaseObject);
+        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInThePathwayBrowserHierarchy(databaseObject);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

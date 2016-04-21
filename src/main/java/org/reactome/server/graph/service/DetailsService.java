@@ -24,20 +24,17 @@ import java.util.Set;
 @Service
 public class DetailsService {
 
+
     @Autowired
     private DetailsRepository detailsRepository;
-
     @Autowired
     private GeneralService generalService;
-
     @Autowired
     private PhysicalEntityService physicalEntityService;
-
     @Autowired
     private EventService eventService;
 
-    @Autowired
-    private DatabaseObjectRepository repository;
+
 
 
     @Transactional
@@ -48,9 +45,13 @@ public class DetailsService {
         DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
-        Set<PathwayBrowserNode> leaves = getLocationsInPathwayBrowserHierarchy(databaseObject);
-        leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
-        contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+
+            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject);
+            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
+            contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+
+
+
 
         contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
 
@@ -86,8 +87,10 @@ public class DetailsService {
                     generalService.findByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
                 }
             }
+        } else if (databaseObject instanceof Regulation) {
+            generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.INCOMING, "regulatedBy");
         } else {
-
+             //todo log error
         }
 
 
@@ -97,11 +100,41 @@ public class DetailsService {
     }
 
     public PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject) {
-        return detailsRepository.getLocationsInPathwayBrowser(databaseObject);
+        PathwayBrowserNode node = detailsRepository.getLocationsInPathwayBrowser(databaseObject);
+
+        if (databaseObject instanceof Regulation) {
+            DatabaseObject regulator;
+            if (databaseObject instanceof PositiveRegulation) {
+                PositiveRegulation positiveRegulation = (PositiveRegulation) databaseObject;
+                regulator = positiveRegulation.getRegulator();
+            } else  {
+                NegativeRegulation negativeRegulation = (NegativeRegulation) databaseObject;
+                regulator = negativeRegulation.getRegulator();
+            }
+            node.setName(regulator.getDisplayName());
+            node.setStId(regulator.getStableIdentifier());
+            node.setType(regulator.getSchemaClass());
+            if (regulator instanceof Event) {
+                Event event = (Event) regulator;
+                node.setSpecies(event.getSpeciesName());
+                if (event instanceof Pathway) {
+                    Pathway pathway = (Pathway) event;
+                    node.setDiagram(pathway.getHasDiagram());
+                }
+            } else if (regulator instanceof PhysicalEntity) {
+                PhysicalEntity physicalEntity = (PhysicalEntity) regulator;
+                node.setSpecies(physicalEntity.getSpeciesName());
+            } else {
+//               todo logger.error("Creating a node that is not an Event or PhysicalEntity");
+            }
+
+        }
+        return node;
     }
 
-    public Set<PathwayBrowserNode> getLocationsInPathwayBrowserHierarchy(DatabaseObject databaseObject) {
-        return detailsRepository.getLocationsInPathwayBrowser(databaseObject).getLeaves();
+    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject) {
+        return getLocationsInThePathwayBrowser(databaseObject).getLeaves();
+
     }
 
 }

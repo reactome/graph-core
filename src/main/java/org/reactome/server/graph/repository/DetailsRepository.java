@@ -3,6 +3,7 @@ package org.reactome.server.graph.repository;
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
@@ -94,6 +95,10 @@ public class DetailsRepository {
         if (databaseObject instanceof Event) {
             Event event = (Event) databaseObject;
             node.setSpecies(event.getSpeciesName());
+            if (event instanceof Pathway) {
+                Pathway pathway = (Pathway) event;
+                node.setDiagram(pathway.getHasDiagram());
+            }
         } else if (databaseObject instanceof PhysicalEntity) {
             PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
             node.setSpecies(physicalEntity.getSpeciesName());
