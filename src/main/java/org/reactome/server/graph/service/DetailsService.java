@@ -55,6 +55,8 @@ public class DetailsService {
 
         contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
 
+        generalService.findByDbId(databaseObject.getDbId(),RelationshipDirection.INCOMING, "inferredTo");
+
         if (databaseObject instanceof Event) {
             Event event = (Event) databaseObject;
             eventService.addRegulators(event);
@@ -64,6 +66,7 @@ public class DetailsService {
             }
         } else if (databaseObject instanceof PhysicalEntity) {
             PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
+            generalService.findByDbId(physicalEntity.getDbId(),RelationshipDirection.INCOMING, "regulator");
             physicalEntityService.addCatalyzedEvents(physicalEntity);
             physicalEntityService.addRegulatedEvents(physicalEntity);
             if (physicalEntity instanceof EntityWithAccessionedSequence || physicalEntity instanceof SimpleEntity || physicalEntity instanceof OpenSet) {
