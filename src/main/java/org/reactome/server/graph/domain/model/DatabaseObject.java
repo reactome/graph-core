@@ -17,7 +17,10 @@ import java.io.Serializable;
  *  DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
  *
  *
- *  DO NOT USE ObjectIdGenerators.PropertyGenerator !!!!! will cause memory paging
+ *  For the JsonIdentityInfo, when assigning generator as ObjectIdGenerators.PropertyGenerator could
+ *  slow down the json serialisation due to a paging problem. Right now the @JsonIgnore annotations
+ *  have been added to avoid serialising the not necessary attributes, but in case those are removed
+ *  the best thing is to remove the mentioned property
  */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
