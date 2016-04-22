@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.MyConfiguration;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
+import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -239,6 +241,19 @@ public class GeneralServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(24,observedTlps.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getPathwaysForTest(){
+        logger.info("Started testing genericService.getPathwaysForTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> pathways = generalService.getPathwaysFor("R-ALL-113592", 48887L);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592)", pathways.size() >= 429);
         logger.info("Finished");
     }
 

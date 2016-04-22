@@ -7,6 +7,7 @@ import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
+import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.repository.GeneralNeo4jOperationsRepository;
 import org.reactome.server.graph.repository.GeneralRepository;
 import org.reactome.server.graph.repository.TopLevelPathwayRepository;
@@ -241,5 +242,9 @@ public class GeneralService {
 
     public Collection<TopLevelPathway> getTopLevelPathways(String speciesName) {
         return topLevelPathwayRepository.getTopLevelPathways(speciesName);
+    }
+
+    public Collection<SimpleDatabaseObject> getPathwaysFor(String stableIdentifier, Long speciesId){
+        return generalRepository.getPathwaysFor(stableIdentifier, speciesId);
     }
 }

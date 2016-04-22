@@ -3,11 +3,11 @@ package org.reactome.server.graph.service.util;
 import org.apache.commons.lang.StringUtils;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
+import org.reactome.server.graph.service.helper.AttributeProperties;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
+import org.reactome.server.graph.service.helper.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.reactome.server.graph.service.helper.AttributeProperties;
-import org.reactome.server.graph.service.helper.SchemaNode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -133,6 +133,17 @@ public abstract class DatabaseObjectUtils {
     public static Class getClassForName(String className) throws ClassNotFoundException {
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         return Class.forName(packageName + className);
+    }
+
+    public static String getSchemaClass(Collection<String> labels) throws ClassNotFoundException {
+        Class<?> lowestClass = Object.class;
+        for (String label : labels) {
+            Class clazz = getClassForName(label);
+            if (lowestClass.isAssignableFrom(clazz)) {
+                lowestClass = clazz;
+            }
+        }
+        return lowestClass.getSimpleName();
     }
 
     public static String lowerFirst(String str) {
