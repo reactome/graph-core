@@ -6,7 +6,10 @@ import org.reactome.server.graph.repository.DetailsRepository;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
+import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,7 @@ import java.util.Set;
 @Service
 public class DetailsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(DetailsService.class);
 
     @Autowired
     private DetailsRepository detailsRepository;
@@ -34,89 +38,54 @@ public class DetailsService {
     @Autowired
     private EventService eventService;
 
-
-
-
     @Transactional
     public ContentDetails getContentDetails(String id) {
 
         ContentDetails contentDetails = new ContentDetails();
-
         DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
+        if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
 
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject);
             leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
             contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+            contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
+            generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.INCOMING, "inferredTo");
+            if (databaseObject instanceof Event) {
+                Event event = (Event) databaseObject;
+                loadEventProperties(event);
+            } else if (databaseObject instanceof PhysicalEntity) {
+                PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
+                loadPhysicalEntityProperties(physicalEntity, contentDetails);
 
-
-
-
-        contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
-
-        generalService.findByDbId(databaseObject.getDbId(),RelationshipDirection.INCOMING, "inferredTo");
-
-        if (databaseObject instanceof Event) {
-            Event event = (Event) databaseObject;
-            eventService.addRegulators(event);
-            if (event instanceof ReactionLikeEvent) {
-                ReactionLikeEvent reactionLikeEvent = (ReactionLikeEvent) event;
-                eventService.loadCatalysts(reactionLikeEvent);
+            } else if (databaseObject instanceof Regulation) {
+                generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.INCOMING, "regulatedBy");
+            } else {
+                logger.error("This method is retrieving the data for the details method and should be used for Events, PhysicalEntities and Regulations only");
             }
-        } else if (databaseObject instanceof PhysicalEntity) {
-            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
-            generalService.findByDbId(physicalEntity.getDbId(),RelationshipDirection.INCOMING, "regulator");
-            physicalEntityService.addCatalyzedEvents(physicalEntity);
-            physicalEntityService.addRegulatedEvents(physicalEntity);
-            if (physicalEntity instanceof EntityWithAccessionedSequence || physicalEntity instanceof SimpleEntity || physicalEntity instanceof OpenSet) {
-                contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(physicalEntity.getDbId()));
-                if (physicalEntity instanceof EntityWithAccessionedSequence) {
-                    EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) physicalEntity;
-                    generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
-                    if (ewas.getHasModifiedResidue() != null && !ewas.getHasModifiedResidue().isEmpty()) {
-                        List<Long> dbIds = new ArrayList<>();
-                        for (AbstractModifiedResidue abstractModifiedResidue : ewas.getHasModifiedResidue()) {
-                            dbIds.add(abstractModifiedResidue.getDbId());
-                        }
-                        generalService.findByDbIds(dbIds, RelationshipDirection.OUTGOING, "psiMod", "modification");
-                    }
-                    generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
-                } else if (databaseObject instanceof SimpleEntity) {
-                    SimpleEntity simpleEntity = (SimpleEntity) databaseObject;
-                    generalService.findByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
-                } else {
-                    OpenSet openSet = (OpenSet) databaseObject;
-                    generalService.findByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
-                }
-            }
-        } else if (databaseObject instanceof Regulation) {
-            generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.INCOMING, "regulatedBy");
-        } else {
-             //todo log error
         }
-
-
-
-
         return contentDetails;
     }
 
+    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject) {
+        return getLocationsInThePathwayBrowser(databaseObject).getLeaves();
+    }
+
+    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(String id) {
+        return getLocationsInThePathwayBrowser(id).getLeaves();
+    }
+
     public PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject) {
+        if (databaseObject == null) return null;
         PathwayBrowserNode node = detailsRepository.getLocationsInPathwayBrowser(databaseObject);
 
         if (databaseObject instanceof Regulation) {
-            DatabaseObject regulator;
-            if (databaseObject instanceof PositiveRegulation) {
-                PositiveRegulation positiveRegulation = (PositiveRegulation) databaseObject;
-                regulator = positiveRegulation.getRegulator();
-            } else  {
-                NegativeRegulation negativeRegulation = (NegativeRegulation) databaseObject;
-                regulator = negativeRegulation.getRegulator();
-            }
+            DatabaseObject regulator = ((Regulation) databaseObject).getRegulator();
             node.setName(regulator.getDisplayName());
             node.setStId(regulator.getStableIdentifier());
             node.setType(regulator.getSchemaClass());
+
             if (regulator instanceof Event) {
                 Event event = (Event) regulator;
                 node.setSpecies(event.getSpeciesName());
@@ -127,17 +96,59 @@ public class DetailsService {
             } else if (regulator instanceof PhysicalEntity) {
                 PhysicalEntity physicalEntity = (PhysicalEntity) regulator;
                 node.setSpecies(physicalEntity.getSpeciesName());
-            } else {
-//               todo logger.error("Creating a node that is not an Event or PhysicalEntity");
             }
-
+            else {
+                logger.error("Regulator must be eather an Event or PhysicalEntity");
+            }
         }
         return node;
     }
 
-    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject) {
-        return getLocationsInThePathwayBrowser(databaseObject).getLeaves();
-
+    public PathwayBrowserNode getLocationsInThePathwayBrowser(String id) {
+        id = DatabaseObjectUtils.trimId(id);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return getLocationsInThePathwayBrowser(generalService.findByStableIdentifierNoRelation(DatabaseObject.class, id));
+        } else if (DatabaseObjectUtils.isDbId(id)){
+            return getLocationsInThePathwayBrowser(generalService.findByDbIdNoRelation(DatabaseObject.class, Long.valueOf(id)));
+        }
+        return null;
     }
+
+    private void loadEventProperties(Event event) {
+        eventService.addRegulators(event);
+        if (event instanceof ReactionLikeEvent) {
+            ReactionLikeEvent reactionLikeEvent = (ReactionLikeEvent) event;
+            eventService.loadCatalysts(reactionLikeEvent);
+        }
+    }
+
+    private void loadPhysicalEntityProperties(PhysicalEntity physicalEntity, ContentDetails contentDetails) {
+
+        if(physicalEntity instanceof EntityWithAccessionedSequence||physicalEntity instanceof SimpleEntity||physicalEntity instanceof OpenSet) {
+            contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(physicalEntity.getDbId()));
+        }
+        generalService.findByDbId(physicalEntity.getDbId(),RelationshipDirection.INCOMING,"regulator");
+        physicalEntityService.addCatalyzedEvents(physicalEntity);
+        physicalEntityService.addRegulatedEvents(physicalEntity);
+        if (physicalEntity instanceof EntityWithAccessionedSequence) {
+            EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) physicalEntity;
+            generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
+            if (ewas.getHasModifiedResidue() != null && !ewas.getHasModifiedResidue().isEmpty()) {
+                List<Long> dbIds = new ArrayList<>();
+                for (AbstractModifiedResidue abstractModifiedResidue : ewas.getHasModifiedResidue()) {
+                    dbIds.add(abstractModifiedResidue.getDbId());
+                }
+                generalService.findByDbIds(dbIds, RelationshipDirection.OUTGOING, "psiMod", "modification");
+            }
+            generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
+        } else if (physicalEntity instanceof SimpleEntity) {
+            SimpleEntity simpleEntity = (SimpleEntity) physicalEntity;
+            generalService.findByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
+        } else {
+            OpenSet openSet = (OpenSet) physicalEntity;
+            generalService.findByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
+        }
+    }
+
 
 }

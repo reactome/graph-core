@@ -28,18 +28,18 @@ public abstract class DatabaseObjectUtils {
     private static Map<String,SchemaNode> map;
 
     @SuppressWarnings("unused")
-    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> labelsCounts ) throws ClassNotFoundException {
+    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts ) throws ClassNotFoundException {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
-        for (SchemaClassCount labelsCount : labelsCounts) {
+        for (SchemaClassCount schemaClassCount : schemaClassCounts) {
             Class<?> lowestClass = Object.class;
-            for (String label : labelsCount.getLabels()) {
+            for (String label : schemaClassCount.getLabels()) {
                 Class clazz = Class.forName(packageName + label);
                 if (lowestClass.isAssignableFrom(clazz)) {
                     lowestClass = clazz;
                 }
             }
-            recursion(lowestClass, null, labelsCount.getCount());
+            recursion(lowestClass, null, schemaClassCount.getCount());
         }
         SchemaNode n = map.get(DatabaseObject.class.getSimpleName());
         correctCounts(n);
@@ -89,7 +89,6 @@ public abstract class DatabaseObjectUtils {
         return propertiesList;
     }
 
-
     /**
      * If the entry is available in more the one species,
      * we show all present species and then the user can choose
@@ -135,12 +134,16 @@ public abstract class DatabaseObjectUtils {
         return Class.forName(packageName + className);
     }
 
-    public static String getSchemaClass(Collection<String> labels) throws ClassNotFoundException {
+    public static String getSchemaClass(Collection<String> labels) {
         Class<?> lowestClass = Object.class;
         for (String label : labels) {
-            Class clazz = getClassForName(label);
-            if (lowestClass.isAssignableFrom(clazz)) {
-                lowestClass = clazz;
+            try {
+                Class clazz = getClassForName(label);
+                if (lowestClass.isAssignableFrom(clazz)) {
+                    lowestClass = clazz;
+                }
+            } catch (ClassNotFoundException e) {
+                logger.error("Class given has not been found in the model", e);
             }
         }
         return lowestClass.getSimpleName();

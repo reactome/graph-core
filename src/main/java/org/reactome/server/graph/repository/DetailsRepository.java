@@ -6,16 +6,14 @@ import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
+import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by:
@@ -32,7 +30,13 @@ public class DetailsRepository {
     private Neo4jOperations neo4jTemplate;
 
     public PathwayBrowserNode getLocationsInPathwayBrowser(DatabaseObject databaseObject) {
-        Result result = getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
+
+        Result result;
+        if (databaseObject.getStableIdentifier() != null) {
+            result = getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
+        } else {
+            result = getLocationsInPathwayBrowser(databaseObject.getDbId());
+        }
         PathwayBrowserNode root = createNode(databaseObject);
         Map<String,PathwayBrowserNode> nodes = new HashMap<>();
         PathwayBrowserNode previous = root;
@@ -63,6 +67,13 @@ public class DetailsRepository {
         String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifier", stId);
+        return neo4jTemplate.query(query, map);
+    }
+
+    private Result getLocationsInPathwayBrowser(Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
     }
 
@@ -114,19 +125,79 @@ public class DetailsRepository {
         node.setName((String) nodePairCollection.get(1));
         node.setDiagram((Boolean) nodePairCollection.get(2));
         node.setSpecies((String) nodePairCollection.get(3));
-        List labels = (List) nodePairCollection.get(4);
-        Class<?> lowestClass = Object.class;
-        for (Object label : labels) {
-            try {
-                Class clazz = Class.forName("org.reactome.server.graph.domain.model." + label.toString());
-                if (lowestClass.isAssignableFrom(clazz)) {
-                    lowestClass = clazz;
-                }
-            } catch (ClassNotFoundException e) {
-                logger.error("Class specified could not be found", e);
-            }
-        }
-        node.setType(lowestClass.getSimpleName());
+        node.setType(DatabaseObjectUtils.getSchemaClass((Collection<String>) nodePairCollection.get(4)));
         return node;
     }
 }
+
+
+    //    private Result getLocationInThePathwayBrowser2(Long dbId) {
+////        String query = "Match (n:DatabaseObject{dbId:199420})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return n.stableIdentifier AS stId, n.displayName as name, n.hasDiagram AS diagram, n.speciesName AS species, labels(n) AS labels, Collect (EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as locationsTree";
+//
+//        String query = "Match(n:DatabaseObject{stableIdentifier:'R-ALL-113592'})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return n.stableIdentifier AS stId, n.displayName as name, n.hasDiagram AS diagram, n.speciesName AS species, labels(n) AS labels, Collect (EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as locationsTree";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        return neo4jTemplate.query(query, map);
+//    }
+//
+//    public PathwayBrowserNode getLocationsInPathwayBrowser2(Long dbId) {
+//        logger.info("Started testing detailsService.findReverseReactionOrPrecedingEvent");
+//        long start, time;
+//        start = System.currentTimeMillis();
+//
+//
+//        Result result = getLocationInThePathwayBrowser2(dbId);
+//
+//        time = System.currentTimeMillis() - start;
+//
+//        if (result != null && result.iterator().hasNext()) {
+//
+//            Map<String, Object> stringObjectMap = result.iterator().next();
+//
+//            PathwayBrowserNode root = createNode(stringObjectMap);
+////            if (!root.getType().equals("CatalystActivity") && !root.getType().contains("Regulation") && !root.getType().equals("EntityFunctionalStatus")) {
+//
+//            Map<String, PathwayBrowserNode> nodes = new HashMap<>();
+//            PathwayBrowserNode previous = root;
+//            nodes.put(root.getStId(), root);
+//
+//            ArrayList<Object>[] locationsTree = (ArrayList<Object>[]) stringObjectMap.get("locationsTree");
+//            int previousSize = 0;
+//            for (ArrayList<Object> location : locationsTree) {
+//                int size = location.size();
+//                if (size > previousSize) {
+//                    ArrayList<Object> entry = (ArrayList<Object>) location.get(location.size() - 1);
+//                    previous = addNode(previous, nodes, entry);
+//                } else {
+//                    previous = root;
+//                    for (Object object : location) {
+//                        ArrayList<Object> entry = (ArrayList<Object>) object;
+//                        if (entry.get(0) == null) {
+//                            continue;
+//                        }
+//                        previous = addNode(previous, nodes, entry);
+//                    }
+//                }
+//                previousSize = size;
+//            }
+//
+//
+//            return root;
+//        }
+//        return null;
+//    }
+//    private PathwayBrowserNode createNode(Map<String, Object> stringObjectMap) {
+//        PathwayBrowserNode node = new PathwayBrowserNode();
+//        node.setStId((String) stringObjectMap.get("stId"));
+//        node.setName((String) stringObjectMap.get("name"));
+//        node.setDiagram((Boolean) stringObjectMap.get("diagram"));
+//        node.setSpecies((String) stringObjectMap.get("species"));
+//        try {
+//
+//            String[] labels = (String[]) stringObjectMap.get("labels");
+//            node.setType(DatabaseObjectUtils.getSchemaClass(Arrays.asList(labels)));
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        return node;
+//    }
