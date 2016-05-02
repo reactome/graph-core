@@ -43,22 +43,23 @@ public class GeneralService {
 
     // Find methods
 
-    public <T> T find(Class<T> clazz, String id) {
-        id = DatabaseObjectUtils.trimId(id);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return generalNeo4jOperationsRepository.findByStableIdentifier(clazz, id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalNeo4jOperationsRepository.findByDbId(clazz, Long.parseLong(id));
-        }
-        return null;
-    }
+//    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    public <T> T find(Class<T> clazz, String id) {
+//        id = DatabaseObjectUtils.trimId(id);
+//        if (DatabaseObjectUtils.isStId(id)) {
+//            return generalNeo4jOperationsRepository.findByStableIdentifier(clazz, id);
+//        } else if (DatabaseObjectUtils.isDbId(id)){
+//            return generalNeo4jOperationsRepository.findByDbId(clazz, Long.parseLong(id));
+//        }
+//        return null;
+//    }
 
     public <T> T findNoRelation(Class<T> clazz, String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return generalNeo4jOperationsRepository.findByStableIdentifierNoRelation(clazz, id);
+            return generalNeo4jOperationsRepository.findByStableIdentifierNoRelations(clazz, id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalNeo4jOperationsRepository.findByDbIdNoRelation(clazz, Long.parseLong(id));
+            return generalNeo4jOperationsRepository.findByDbIdNoRelations(clazz, Long.parseLong(id));
         }
         return null;
     }
@@ -89,36 +90,46 @@ public class GeneralService {
         return generalNeo4jOperationsRepository.findByProperty(clazz, property, value, depth);
     }
 
+    //    todo Method is currently broken report to SDN
+    @Deprecated
     public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
         return generalNeo4jOperationsRepository.findByProperties(clazz, property, values, depth);
     }
 
     // Default Finder Methods
 
-    public <T> T findByDbId(Class<T> clazz, Long dbId) {
-        return generalNeo4jOperationsRepository.findByDbId(clazz, dbId);
+//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> T findByDbId(Class<T> clazz, Long dbId) {
+//        return generalNeo4jOperationsRepository.findByDbId(clazz, dbId);
+//    }
+//
+//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
+//        return generalNeo4jOperationsRepository.findByStableIdentifier(clazz, stableIdentifier);
+//    }
+//
+//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
+//        return generalNeo4jOperationsRepository.findByDbIds(clazz, dbIds);
+//    }
+//
+//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
+//        return generalNeo4jOperationsRepository.findByStableIdentifiers(clazz, stableIdentifiers);
+//    }
+
+//    // Finder Methods without Relationships
+
+    public <T> T findByDbIdNoRelations(Class<T> clazz, Long dbId) {
+        return generalNeo4jOperationsRepository.findByDbIdNoRelations(clazz, dbId);
     }
 
-    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
-        return generalNeo4jOperationsRepository.findByStableIdentifier(clazz, stableIdentifier);
-    }
-
-    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
-        return generalNeo4jOperationsRepository.findByDbIds(clazz, dbIds);
-    }
-
-    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
-        return generalNeo4jOperationsRepository.findByStableIdentifiers(clazz, stableIdentifiers);
-    }
-
-    // Finder Methods without Relationships
-
-    public <T> T findByDbIdNoRelation(Class<T> clazz, Long dbId) {
-        return generalNeo4jOperationsRepository.findByDbIdNoRelation(clazz, dbId);
-    }
-
-    public <T> T findByStableIdentifierNoRelation(Class<T> clazz, String stableIdentifier) {
-        return generalNeo4jOperationsRepository.findByStableIdentifierNoRelation(clazz, stableIdentifier);
+    public <T> T findByStableIdentifierNoRelations(Class<T> clazz, String stableIdentifier) {
+        return generalNeo4jOperationsRepository.findByStableIdentifierNoRelations(clazz, stableIdentifier);
     }
 
     public <T> Iterable<T> findByDbIdsNoRelations(Class<T> clazz, Collection<Long> dbIds) {
@@ -182,6 +193,14 @@ public class GeneralService {
 
     public void delete (Object o)  {
         generalNeo4jOperationsRepository.delete(o);
+    }
+
+    public void delete(Long dbId) {
+        generalNeo4jOperationsRepository.delete(dbId);
+    }
+
+    public void delete(String stableIdentifier) {
+        generalNeo4jOperationsRepository.delete(stableIdentifier);
     }
 
     // Method for querying without mapping to Objects

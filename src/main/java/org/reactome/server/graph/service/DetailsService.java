@@ -1,7 +1,6 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.*;
-import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.repository.DetailsRepository;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
@@ -104,12 +103,13 @@ public class DetailsService {
         return node;
     }
 
+    //todo find other method
     public PathwayBrowserNode getLocationsInThePathwayBrowser(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return getLocationsInThePathwayBrowser(generalService.findByStableIdentifierNoRelation(DatabaseObject.class, id));
+            return getLocationsInThePathwayBrowser(generalService.findByStableIdentifierNoRelations(DatabaseObject.class, id));
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return getLocationsInThePathwayBrowser(generalService.findByDbIdNoRelation(DatabaseObject.class, Long.valueOf(id)));
+            return getLocationsInThePathwayBrowser(generalService.findByDbIdNoRelations(DatabaseObject.class, Long.valueOf(id)));
         }
         return null;
     }

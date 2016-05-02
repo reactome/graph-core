@@ -33,50 +33,60 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.loadByProperty(clazz,property, value, depth);
     }
 
+//    todo Method is currently broken report to SDN
+    @Deprecated
     public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
         return neo4jTemplate.loadAllByProperty(clazz,property, values, depth);
     }
 
     // Default Finder Methods
 
-    public <T> T findByDbId(Class<T> clazz, Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m";
-        Map<String,Object> map = new HashMap<>();
-        map.put("dbId", dbId);
-        return neo4jTemplate.queryForObject(clazz, query, map);
-    }
-
-    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
-        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]-(m) RETURN n,r,m";
-        Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifier", stableIdentifier);
-        return neo4jTemplate.queryForObject(clazz, query, map);
-    }
-
-    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
-        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n,r,m";
-        Map<String,Object> map = new HashMap<>();
-        map.put("dbIds", dbIds);
-        return neo4jTemplate.queryForObjects(clazz, query, map);
-    }
-
-    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
-        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
-        Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifiers", stableIdentifiers);
-        return neo4jTemplate.queryForObjects(clazz, query, map);
-    }
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> T findByDbId(Class<T> clazz, Long dbId) {
+//        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        return neo4jTemplate.queryForObject(clazz, query, map);
+//    }
+//
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
+//        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]-(m) RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stableIdentifier", stableIdentifier);
+//        return neo4jTemplate.queryForObject(clazz, query, map);
+//    }
+//
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
+//        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbIds", dbIds);
+//        return neo4jTemplate.queryForObjects(clazz, query, map);
+//    }
+//
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
+//        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stableIdentifiers", stableIdentifiers);
+//        return neo4jTemplate.queryForObjects(clazz, query, map);
+//    }
 
     // Finder Methods without Relationships
 
-    public <T> T findByDbIdNoRelation(Class<T> clazz, Long dbId) {
+    public <T> T findByDbIdNoRelations(Class<T> clazz, Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}}) RETURN n";
         Map<String,Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.queryForObject(clazz, query, map);
     }
 
-    public <T> T findByStableIdentifierNoRelation(Class<T> clazz, String stableIdentifier) {
+    public <T> T findByStableIdentifierNoRelations(Class<T> clazz, String stableIdentifier) {
         String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}}) RETURN n";
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifier", stableIdentifier);
@@ -196,7 +206,7 @@ public class GeneralNeo4jOperationsRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("dbIds", dbIds);
         Result result =  neo4jTemplate.query(query, map);
-        List<DatabaseObject> databaseObjects = new ArrayList<>();
+        Set<DatabaseObject> databaseObjects = new HashSet<>();
         for (Map<String, Object> stringObjectMap : result) {
             databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
         }
@@ -218,7 +228,7 @@ public class GeneralNeo4jOperationsRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifiers", stableIdentifiers);
         Result result =  neo4jTemplate.query(query, map);
-        List<DatabaseObject> databaseObjects = new ArrayList<>();
+        Set<DatabaseObject> databaseObjects = new HashSet<>();
         for (Map<String, Object> stringObjectMap : result) {
             databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
         }
@@ -241,7 +251,7 @@ public class GeneralNeo4jOperationsRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("dbIds", dbIds);
         Result result =  neo4jTemplate.query(query, map);
-        List<DatabaseObject> databaseObjects = new ArrayList<>();
+        Set<DatabaseObject> databaseObjects = new HashSet<>();
         for (Map<String, Object> stringObjectMap : result) {
             databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
         }
@@ -264,7 +274,7 @@ public class GeneralNeo4jOperationsRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifiers", stableIdentifiers);
         Result result =  neo4jTemplate.query(query, map);
-        List<DatabaseObject> databaseObjects = new ArrayList<>();
+        Set<DatabaseObject> databaseObjects = new HashSet<>();
         for (Map<String, Object> stringObjectMap : result) {
             databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
         }
@@ -291,8 +301,22 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.save(t, depth);
     }
 
-    public void delete (Object o)  {
+    public void delete(Object o)  {
         neo4jTemplate.delete(o);
+    }
+
+    public void delete(Long dbId) {
+        String query = "MATCH (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        neo4jTemplate.query(query, map);
+    }
+
+    public void delete(String stableIdentifier) {
+        String query = "MATCH (n:DatabaseObject{stableIdentifier:{stableIdentifier}}) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
+        Map<String,Object> map = new HashMap<>();
+        map.put("stableIdentifier", stableIdentifier);
+        neo4jTemplate.query(query, map);
     }
 
     // Method for querying without mapping to Objects
