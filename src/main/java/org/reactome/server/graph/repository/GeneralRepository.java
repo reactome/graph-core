@@ -30,7 +30,7 @@ public interface GeneralRepository extends GraphRepository<DatabaseObject> {
     @Query("Match (n:SimpleEntity)-[:referenceEntity]-(m:ReferenceEntity) RETURN Distinct(m)")
     Collection<ReferenceEntity> getAllChemicals();
 
-    @Query("Match (n:DatabaseObject{stableIdentifier:{0}})-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
+    @Query("Match (n:DatabaseObject{stableIdentifier:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
     Collection<ComponentOf> getComponentsOf(String stableIdentifier);
 
     @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")

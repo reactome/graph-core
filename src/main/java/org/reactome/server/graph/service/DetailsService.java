@@ -100,6 +100,29 @@ public class DetailsService {
                 logger.error("Regulator must be eather an Event or PhysicalEntity");
             }
         }
+
+        if (databaseObject instanceof CatalystActivity) {
+            PhysicalEntity physicalEntity = ((CatalystActivity) databaseObject).getPhysicalEntity();
+            node.setName(physicalEntity.getDisplayName());
+            node.setStId(physicalEntity.getStableIdentifier());
+            node.setType(physicalEntity.getSchemaClass());
+
+//            if (regulator instanceof Event) {
+//                Event event = (Event) regulator;
+//                node.setSpecies(event.getSpeciesName());
+//                if (event instanceof Pathway) {
+//                    Pathway pathway = (Pathway) event;
+//                    node.setDiagram(pathway.getHasDiagram());
+//                }
+//            } else if (regulator instanceof PhysicalEntity) {
+//                PhysicalEntity physicalEntity = (PhysicalEntity) regulator;
+//                node.setSpecies(physicalEntity.getSpeciesName());
+//            }
+//            else {
+//                logger.error("Regulator must be eather an Event or PhysicalEntity");
+//            }
+        }
+
         return node;
     }
 
@@ -124,9 +147,9 @@ public class DetailsService {
 
     private void loadPhysicalEntityProperties(PhysicalEntity physicalEntity, ContentDetails contentDetails) {
 
-        if(physicalEntity instanceof EntityWithAccessionedSequence||physicalEntity instanceof SimpleEntity||physicalEntity instanceof OpenSet) {
+        //if(physicalEntity instanceof EntityWithAccessionedSequence||physicalEntity instanceof SimpleEntity||physicalEntity instanceof OpenSet) {
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(physicalEntity.getDbId()));
-        }
+        //}
         generalService.findByDbId(physicalEntity.getDbId(),RelationshipDirection.INCOMING,"regulator");
         physicalEntityService.addCatalyzedEvents(physicalEntity);
         physicalEntityService.addRegulatedEvents(physicalEntity);
@@ -144,7 +167,7 @@ public class DetailsService {
         } else if (physicalEntity instanceof SimpleEntity) {
             SimpleEntity simpleEntity = (SimpleEntity) physicalEntity;
             generalService.findByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
-        } else {
+        } else if (physicalEntity instanceof OpenSet) {
             OpenSet openSet = (OpenSet) physicalEntity;
             generalService.findByDbId(openSet.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
         }
