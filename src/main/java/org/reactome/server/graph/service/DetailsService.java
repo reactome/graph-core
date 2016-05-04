@@ -97,7 +97,7 @@ public class DetailsService {
                 node.setSpecies(physicalEntity.getSpeciesName());
             }
             else {
-                logger.error("Regulator must be eather an Event or PhysicalEntity");
+                logger.error("Regulator must be either an Event or PhysicalEntity");
             }
         }
 
@@ -106,21 +106,6 @@ public class DetailsService {
             node.setName(physicalEntity.getDisplayName());
             node.setStId(physicalEntity.getStableIdentifier());
             node.setType(physicalEntity.getSchemaClass());
-
-//            if (regulator instanceof Event) {
-//                Event event = (Event) regulator;
-//                node.setSpecies(event.getSpeciesName());
-//                if (event instanceof Pathway) {
-//                    Pathway pathway = (Pathway) event;
-//                    node.setDiagram(pathway.getHasDiagram());
-//                }
-//            } else if (regulator instanceof PhysicalEntity) {
-//                PhysicalEntity physicalEntity = (PhysicalEntity) regulator;
-//                node.setSpecies(physicalEntity.getSpeciesName());
-//            }
-//            else {
-//                logger.error("Regulator must be eather an Event or PhysicalEntity");
-//            }
         }
 
         return node;
