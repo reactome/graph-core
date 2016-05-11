@@ -1,10 +1,12 @@
 package org.reactome.server.graph.config;
 
 import org.neo4j.ogm.config.Configuration;
+import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -21,12 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableNeo4jRepositories(basePackages = "org.reactome.server.graph.repository")
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
-public class MyConfiguration extends Neo4jConfiguration {
-
-//    private @Value("${neo4j.host}") String neo4jHost;
-
-//    private static final String NEO4J_HOST = "http://localhost:7474";
-//    private static final int    NEO4J_PORT = ;
+public class Neo4jConfig extends Neo4jConfiguration {
 
     @Bean
     public Configuration getConfiguration() {
@@ -40,4 +37,11 @@ public class MyConfiguration extends Neo4jConfiguration {
     public SessionFactory getSessionFactory() {
         return new SessionFactory(getConfiguration(), "org.reactome.server.graph.domain" );
     }
+
+    @Bean
+    @Scope(value = "prototype")
+    public Session getSession() throws Exception {
+        return super.getSession();
+    }
+
 }

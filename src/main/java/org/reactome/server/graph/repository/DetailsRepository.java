@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by:
@@ -75,6 +78,22 @@ public class DetailsRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
+    }
+
+    public DatabaseObject detailsPageQuery(String stId) {
+        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]->(m)" +
+                       "OPTIONAL MATCH (n)<-[e:inferredTo]-(l)" +
+                       "OPTIONAL MATCH (m:Regulation)-[x:regulator|regulatedBy]-(y)" +
+                       "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
+                       "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
+                       "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity]-(p)" +
+                       "Return n,r,m,l,e,x,y,t,z,u,i,o,p";
+        Map<String,Object> map = new HashMap<>();
+        map.put("stableIdentifier", stId);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
     }
 
     private PathwayBrowserNode addNode(PathwayBrowserNode previous, Map<String,PathwayBrowserNode> nodes, ArrayList<Object> objects) {

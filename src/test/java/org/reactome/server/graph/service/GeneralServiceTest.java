@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.MyConfiguration;
+import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
@@ -32,7 +32,7 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 25.01.16.
  */
-@ContextConfiguration(classes = { MyConfiguration.class })
+@ContextConfiguration(classes = { Neo4jConfig.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class GeneralServiceTest {
 

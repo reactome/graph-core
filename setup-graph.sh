@@ -37,7 +37,7 @@ _REACTOME_PORT=3306
 _REACTOME_DATABASE="reactome"
 _REACTOME_USER="reactome"
 _REACTOME_PASSWORD="reactome"
-_GRAPH_DIR="/var/lib/neo4j/data/"
+_GRAPH_DIR="/var/lib/neo4j/data/databases"
 _GRAPH_NAME="graph.db"
 _IMPORT_DATA=false
 _INSTALL_NEO4J=false
@@ -80,10 +80,11 @@ shift $((OPTIND - 1))
 
 if ${_INSTALL_NEO4J} = true; then
     echo "start installing neo4j"
-    sudo sh -c "wget -O - https://debian.neo4j.org/neotechnology.gpg.key| apt-key add -" >/dev/null 2>&1
-    sudo sh -c "echo 'deb http://debian.neo4j.org/repo stable/' > /etc/apt/sources.list.d/neo4j.list" >/dev/null 2>&1
-    sudo aptitude update -q >/dev/null 2>&1
-    sudo aptitude install neo4j 
+    sudo sh -c "wget -O - https://debian.neo4j.org/neotechnology.gpg.key | sudo apt-key add -" >/dev/null 2>&1
+    sudo sh -c "echo 'deb http://debian.neo4j.org/repo stable/' >/tmp/neo4j.list" >/dev/null 2>&1
+    sudo mv /tmp/neo4j.list /etc/apt/sources.list.d
+    sudo apt-get update
+    sudo apt-get install neo4j
     echo "installing neo4j finished"
     if [ ! -z "$_NEO4J_PASSWORD" ]; then 
 	echo "removing old authentication"

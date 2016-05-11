@@ -5,13 +5,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.MyConfiguration;
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.config.Neo4jConfig;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -32,8 +28,9 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 14.04.16.
  */
-@ContextConfiguration(classes = {MyConfiguration.class})
+@ContextConfiguration(classes = {Neo4jConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
+//@WebAppConfiguration
 public class DetailsServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
@@ -42,6 +39,8 @@ public class DetailsServiceTest {
     private static Boolean isFit = false;
 
     private static final String stId = "R-HSA-199420";
+
+//    @Autowired WebApplicationContext wac;
 
     @Autowired
     private DetailsService detailsService;
@@ -77,6 +76,11 @@ public class DetailsServiceTest {
         long start, time;
         start = System.currentTimeMillis();
         ContentDetails contentDetails = detailsService.getContentDetails(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        ContentDetails contentDetails2 = detailsService.getContentDetails2(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

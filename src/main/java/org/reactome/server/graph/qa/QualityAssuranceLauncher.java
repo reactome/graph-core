@@ -1,7 +1,7 @@
 package org.reactome.server.graph.qa;
 
 import com.martiansoftware.jsap.*;
-import org.reactome.server.graph.config.MyConfiguration;
+import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.qa.tests.QualityAssuranceAbstract;
 import org.reactome.server.graph.service.GeneralService;
 import org.reflections.Reflections;
@@ -36,7 +36,7 @@ public class QualityAssuranceLauncher {
         System.setProperty("neo4j.user", config.getString("user"));
         System.setProperty("neo4j.password", config.getString("password"));
 
-        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfiguration.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(Neo4jConfig.class);
         GeneralService genericService = context.getBean(GeneralService.class);
 
         Reflections reflections = new Reflections(QualityAssuranceAbstract.class.getPackage().getName());

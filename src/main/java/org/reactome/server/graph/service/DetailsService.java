@@ -38,9 +38,27 @@ public class DetailsService {
     private EventService eventService;
 
     @Transactional
+    public ContentDetails getContentDetails2(String id) {
+
+        ContentDetails contentDetails = new ContentDetails();
+        DatabaseObject databaseObject = detailsRepository.detailsPageQuery(id);
+        contentDetails.setDatabaseObject(databaseObject);
+        if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
+            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject);
+            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
+            contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+            contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
+            contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
+        }
+        return contentDetails;
+    }
+
+    @Transactional
     public ContentDetails getContentDetails(String id) {
 
         ContentDetails contentDetails = new ContentDetails();
+
+
         DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
 
@@ -148,7 +166,6 @@ public class DetailsService {
                 }
                 generalService.findByDbIds(dbIds, RelationshipDirection.OUTGOING, "psiMod", "modification");
             }
-            generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
         } else if (physicalEntity instanceof SimpleEntity) {
             SimpleEntity simpleEntity = (SimpleEntity) physicalEntity;
             generalService.findByDbId(simpleEntity.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "crossReference");
