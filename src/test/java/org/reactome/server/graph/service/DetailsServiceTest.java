@@ -77,12 +77,12 @@ public class DetailsServiceTest {
         start = System.currentTimeMillis();
         ContentDetails contentDetails = detailsService.getContentDetails(stId);
         time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
+        logger.info("getContentDetails execution time: " + time + "ms");
 
         start = System.currentTimeMillis();
         ContentDetails contentDetails2 = detailsService.getContentDetails2(stId);
         time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
+        logger.info("getContentDetails2 execution time: " + time + "ms");
 
         assertEquals(1, contentDetails.getComponentOf().size());
         assertEquals(27, contentDetails.getOtherFormsOfThisMolecule().size());

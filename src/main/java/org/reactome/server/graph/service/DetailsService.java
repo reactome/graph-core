@@ -37,6 +37,7 @@ public class DetailsService {
     @Autowired
     private EventService eventService;
 
+//    Todo rename
     @Transactional
     public ContentDetails getContentDetails2(String id) {
 
@@ -53,11 +54,12 @@ public class DetailsService {
         return contentDetails;
     }
 
+//    Todo remove
+    @Deprecated
     @Transactional
     public ContentDetails getContentDetails(String id) {
 
         ContentDetails contentDetails = new ContentDetails();
-
 
         DatabaseObject databaseObject = generalService.find(id, RelationshipDirection.OUTGOING);
         contentDetails.setDatabaseObject(databaseObject);
@@ -75,7 +77,6 @@ public class DetailsService {
             } else if (databaseObject instanceof PhysicalEntity) {
                 PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
                 loadPhysicalEntityProperties(physicalEntity, contentDetails);
-
             } else if (databaseObject instanceof Regulation) {
                 generalService.findByDbId(databaseObject.getDbId(), RelationshipDirection.INCOMING, "regulatedBy");
             } else {
