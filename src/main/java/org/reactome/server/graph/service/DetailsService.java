@@ -159,6 +159,7 @@ public class DetailsService {
         physicalEntityService.addRegulatedEvents(physicalEntity);
         if (physicalEntity instanceof EntityWithAccessionedSequence) {
             EntityWithAccessionedSequence ewas = (EntityWithAccessionedSequence) physicalEntity;
+//            generalService.findByProperty()
             generalService.findByDbId(ewas.getReferenceEntity().getDbId(), RelationshipDirection.OUTGOING, "referenceGene", "referenceTranscript", "crossReference");
             if (ewas.getHasModifiedResidue() != null && !ewas.getHasModifiedResidue().isEmpty()) {
                 List<Long> dbIds = new ArrayList<>();

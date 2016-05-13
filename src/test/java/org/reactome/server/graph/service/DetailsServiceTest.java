@@ -74,15 +74,15 @@ public class DetailsServiceTest {
 
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
-//        start = System.currentTimeMillis();
-//        ContentDetails contentDetails = detailsService.getContentDetails("R-HSA-60557");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("getContentDetails execution time: " + time + "ms");
-
         start = System.currentTimeMillis();
-        ContentDetails contentDetails2 = detailsService.getContentDetails2("R-HSA-60557");
+        ContentDetails contentDetails = detailsService.getContentDetails("R-HSA-1302721");
         time = System.currentTimeMillis() - start;
-        logger.info("getContentDetails2 execution time: " + time + "ms");
+        logger.info("getContentDetails execution time: " + time + "ms");
+
+//        start = System.currentTimeMillis();
+//        ContentDetails contentDetails2 = detailsService.getContentDetails2("R-HSA-60557");
+//        time = System.currentTimeMillis() - start;
+//        logger.info("getContentDetails2 execution time: " + time + "ms");
 
 //        assertEquals(1, contentDetails2.getComponentOf().size());
 //        assertEquals(27, contentDetails2.getOtherFormsOfThisMolecule().size());

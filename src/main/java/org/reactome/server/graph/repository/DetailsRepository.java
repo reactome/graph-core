@@ -82,12 +82,12 @@ public class DetailsRepository {
 
     public DatabaseObject detailsPageQuery(String stId) {
         String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]->(m)" +
-                       "OPTIONAL MATCH (n)<-[e:inferredTo]-(l)" +
-                       "OPTIONAL MATCH (m:Regulation)-[x:regulator|regulatedBy]-(y)" +
+                       "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
+//                       "OPTIONAL MATCH (m:Regulation)-[x:regulator|regulatedBy]-(y)" +
                        "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
                        "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
-                       "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity]-(p)" +
-                       "Return n,r,m,l,e,x,y,t,z,u,i,o,p";
+                       "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
+                       "Return n,r,m,l,e,t,z,u,i,o,p";
         Map<String,Object> map = new HashMap<>();
         map.put("stableIdentifier", stId);
         Result result =  neo4jTemplate.query(query, map);
