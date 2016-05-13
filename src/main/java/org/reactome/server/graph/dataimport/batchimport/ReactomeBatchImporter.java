@@ -78,6 +78,9 @@ public class ReactomeBatchImporter {
             List<GKInstance> tlps = getTopLevelPathways();
             importLogger.info("Started importing " + tlps.size() + " top level pathways");
             System.out.println("Started importing " + tlps.size() + " top level pathways");
+
+            batchInserter.createNode(Collections.singletonMap("version", (Object) dba.getReleaseNumber()), DynamicLabel.label("ReleaseVersion"));
+
             for (GKInstance instance : tlps) {
                 long start = System.currentTimeMillis();
                 if (!dbIds.containsKey(instance.getDBID())) {
@@ -266,7 +269,11 @@ public class ReactomeBatchImporter {
                             if (instance.getSchemClass().isa(ReactomeJavaConstants.GO_BiologicalProcess) || instance.getSchemClass().isa(ReactomeJavaConstants.GO_MolecularFunction) || instance.getSchemClass().isa(ReactomeJavaConstants.GO_CellularComponent)) {
                                 identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.accession);
                             } else {
-                                identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
+                                if (instance.getSchemClass().isa(ReactomeJavaConstants.ReferenceIsoform)) {
+                                    identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.variantIdentifier);
+                                } else {
+                                    identifier = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.identifier);
+                                }
                             }
                             String url = (String) getObjectFromGkInstance(referenceDatabase, ReactomeJavaConstants.accessUrl);
                             if (url == null || identifier == null) continue;

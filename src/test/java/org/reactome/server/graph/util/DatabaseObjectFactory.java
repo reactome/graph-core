@@ -4,11 +4,11 @@ import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
 import org.gk.schema.SchemaClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.sql.SQLException;
@@ -50,6 +50,10 @@ public class DatabaseObjectFactory {
         } catch (SQLException e) {
             logger.error("An error occurred while connection to the Reactome database", e);
         }
+    }
+
+    public static Integer getReleaseVersion() throws Exception {
+        return dba.getReleaseNumber();
     }
 
     /**

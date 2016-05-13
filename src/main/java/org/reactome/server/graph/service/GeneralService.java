@@ -266,4 +266,10 @@ public class GeneralService {
     public Collection<SimpleDatabaseObject> getPathwaysFor(String stableIdentifier, Long speciesId){
         return generalRepository.getPathwaysFor(stableIdentifier, speciesId);
     }
+
+    // Gets release version
+
+    public Integer getReleaseVersion() {
+        return generalRepository.getReleaseVersion();
+    }
 }

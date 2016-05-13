@@ -481,6 +481,24 @@ public class GeneralServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592)", pathways.size() >= 429);
+
+    }
+
+    @Test
+    public void getReleaseVersionTest() throws Exception {
+        logger.info("Started testing genericService.getReleaseVersion");
+        long start, time;
+        start = System.currentTimeMillis();
+        Integer releaseVersionObserved = generalService.getReleaseVersion();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        Integer releaseVersionExpected = DatabaseObjectFactory.getReleaseVersion();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(releaseVersionExpected, releaseVersionObserved);
         logger.info("Finished");
     }
 }

@@ -35,7 +35,7 @@
         <reactome.version>1.2.4</reactome.version>
         <sdn.version>4.1.1.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
-        <neo4j.kernel.version>2.3.2</neo4j.kernel.version>
+        <neo4j.version>2.3.2</neo4j.version>
         <aspectj.version>1.8.8</aspectj.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
@@ -87,8 +87,6 @@
             <scope>test</scope>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm-core</artifactId>
@@ -105,12 +103,12 @@
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
-            <version>${neo4j.kernel.version}</version>
+            <version>${neo4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-lucene-index</artifactId>
-            <version>${neo4j.kernel.version}</version>
+            <version>${neo4j.version}</version>
         </dependency>
         <!--Aspectj AOP -->
         <dependency>
