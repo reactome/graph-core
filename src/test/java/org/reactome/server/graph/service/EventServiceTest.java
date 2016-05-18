@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.MyConfiguration;
+import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
@@ -25,7 +25,7 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 03.03.16.
  */
-@ContextConfiguration(classes = {MyConfiguration.class})
+@ContextConfiguration(classes = {Neo4jConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 public class EventServiceTest {
 

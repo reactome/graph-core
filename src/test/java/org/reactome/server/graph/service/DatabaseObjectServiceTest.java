@@ -5,8 +5,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.MyConfiguration;
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.config.Neo4jConfig;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import static org.junit.Assume.assumeTrue;
  * 507868 Will test wrong. Difference is that duplications are removed in the graph
  *
  */
-@ContextConfiguration(classes = { MyConfiguration.class })
+@ContextConfiguration(classes = { Neo4jConfig.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class DatabaseObjectServiceTest {
 

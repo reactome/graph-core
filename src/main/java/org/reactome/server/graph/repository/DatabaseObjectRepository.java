@@ -30,4 +30,6 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
 
     @Query("MATCH (n:DatabaseObject) WHERE n.stableIdentifier IN {0} RETURN n")
     Collection<DatabaseObject> findByStableIdentifiersNoRelations(Collection<String> stableIdentifiers);
+
+
 }

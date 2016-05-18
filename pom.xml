@@ -35,7 +35,7 @@
         <reactome.version>1.2.4</reactome.version>
         <sdn.version>4.1.1.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
-        <neo4j.kernel.version>2.3.2</neo4j.kernel.version>
+        <neo4j.version>2.3.2</neo4j.version>
         <aspectj.version>1.8.8</aspectj.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
@@ -86,16 +86,29 @@
             <version>${spring.test.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-core</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency> <!-- If you're using the HTTP driver -->
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-http-driver</artifactId>
+            <version>2.0.2-SNAPSHOT</version>
+        </dependency>
+
         <!--&lt;!&ndash;TODO remove: Neo4j kernel and index for batch import (had to added since SDN.4.1.0 &ndash;&gt;-->
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
-            <version>${neo4j.kernel.version}</version>
+            <version>${neo4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-lucene-index</artifactId>
-            <version>${neo4j.kernel.version}</version>
+            <version>${neo4j.version}</version>
         </dependency>
         <!--Aspectj AOP -->
         <dependency>
@@ -150,6 +163,15 @@
     </dependencies>
 
     <repositories>
+
+        <repository>
+            <id>neo4j-snapshots</id>
+            <url>http://m2.neo4j.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
         <!--TODO REMOVE ONE -->
         <!--Spring snapshot repository-->
         <!--<repository>-->
@@ -184,15 +206,15 @@
 
     <build>
         <finalName>${project.name}</finalName>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
+        <testResources>
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+            <!--</resource>-->
+            <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
-            </resource>
-        </resources>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -233,6 +255,16 @@
                         <version>${jackrabbit.version}</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/logback.xml</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <!--Assembles executable jar files with dependencies for Importing and QualityAssurance-->
             <plugin>

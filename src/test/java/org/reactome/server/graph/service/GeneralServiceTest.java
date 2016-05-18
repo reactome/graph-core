@@ -1,14 +1,16 @@
 package org.reactome.server.graph.service;
 
+import com.google.common.collect.Iterables;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.MyConfiguration;
+import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
+import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.slf4j.Logger;
@@ -18,9 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -32,7 +32,7 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 25.01.16.
  */
-@ContextConfiguration(classes = { MyConfiguration.class })
+@ContextConfiguration(classes = { Neo4jConfig.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class GeneralServiceTest {
 
@@ -42,7 +42,9 @@ public class GeneralServiceTest {
     private static Boolean isFit = false;
 
     private static final Long dbId = 5205685L;
+    private static final Long dbId2 = 199420L;
     private static final String stId = "R-HSA-5205685";
+    private static final String stId2 = "R-HSA-199420";
 
     @Autowired
     private GeneralService generalService;
@@ -68,51 +70,235 @@ public class GeneralServiceTest {
         DatabaseObjectFactory.clearCache();
     }
 
+    // Find by property and depth
+
+    @Test
+    public void findByPropertyTest() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing genericService.findByProperty");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = generalService.findByProperty(DatabaseObject.class, "stableIdentifier", stId, 1);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
 //    @Test
-//    public void testFindByDbId () {
-////        return generalNeo4jOperationsRepository.findByDbId(dbId, direction);
-//    }
-//
-//    @Test
-//    public void testFindByStableIdentifier () {
-////        return generalNeo4jOperationsRepository.findByStableIdentifier(stableIdentifier, direction);
-//    }
-//
-//    @Test
-//    public void testFindByDbId () {
-////        return generalNeo4jOperationsRepository.findByDbId(dbId, direction, relationships);
-//    }
-//
-//    @Test
-//    public void testFindByStableIdentifier () {
-//        return generalNeo4jOperationsRepository.findByStableIdentifier(stableIdentifier, direction, relationships);
-//    }
-//
-//    @Test
-//    public void testFindByDbIds () {
-//        return generalNeo4jOperationsRepository.findByDbIds(dbIds, direction);
-//    }
-//
-//    @Test
-//    public void testFindByStableIdentifiers() {
-//        return generalNeo4jOperationsRepository.findByStableIdentifiers(stableIdentifiers, direction);
-//    }
-//
-//    @Test
-//    public void testFindByDbIds() {
-//        return generalNeo4jOperationsRepository.findByDbIds(dbIds, direction, relationships);
-//    }
-//
-//    @Test
-//    public void testFindByStableIdentifiers() {
-//        return generalNeo4jOperationsRepository.findByStableIdentifiers(stableIdentifiers, direction, relationships);
-//    }
-//
+//    todo Method is currently broken report to SDN
+    public void findByPropertiesTest() {
+
+        logger.info("Started testing genericService.findByProperties");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectsObserved = generalService.findByProperties(DatabaseObject.class, "stableIdentifier", Arrays.<Object>asList(stId, stId2), 0);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, databaseObjectsObserved.size());
+        logger.info("Finished");
+    }
+
+    // Default Finder Methods
+
+    @Test
+    public void findByDbIdWithClassTest() throws InvocationTargetException, IllegalAccessException {
+        logger.info("Started testing genericService.findByDbIdWithClass");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = generalService.findByDbIdNoRelations(DatabaseObject.class, dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
+        assertEquals(databaseObjectExpected.getStableIdentifier(), databaseObjectObserved.getStableIdentifier());
+        assertEquals(databaseObjectExpected.getDisplayName(), databaseObjectObserved.getDisplayName());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByStableIdentifierWithClassTest() throws InvocationTargetException, IllegalAccessException {
+        logger.info("Started testing genericService.findByStableIdentifierWithClass");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = generalService.findByStableIdentifierNoRelations(DatabaseObject.class, stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected.getDbId(), databaseObjectObserved.getDbId());
+        assertEquals(databaseObjectExpected.getStableIdentifier(), databaseObjectObserved.getStableIdentifier());
+        assertEquals(databaseObjectExpected.getDisplayName(), databaseObjectObserved.getDisplayName());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByDbIdsWithClassTest() {
+
+        logger.info("Started testing genericService.findByDbIdsWithClass");
+        long start, time;
+        start = System.currentTimeMillis();
+        Iterable<DatabaseObject> databaseObjectsObserved = generalService.findByDbIdsNoRelations(DatabaseObject.class, Arrays.<Long>asList(dbId, dbId2));
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, Iterables.size(databaseObjectsObserved));
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByStableIdentifiersWithClassTest() {
+
+        logger.info("Started testing genericService.findByStableIdentifiersWithClass");
+        long start, time;
+        start = System.currentTimeMillis();
+        Iterable<DatabaseObject> databaseObjectsObserved = generalService.findByStableIdentifiersNoRelations(DatabaseObject.class, Arrays.<String>asList(stId, stId2));
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, Iterables.size(databaseObjectsObserved));
+        logger.info("Finished");
+    }
+
+    // Undirected will load all relationships todo: modify test
+    @Test
+    public void findByDbIdWithRelationshipDirectionTest() throws InvocationTargetException, IllegalAccessException {
+        logger.info("Started testing genericService.findByDbIdWithRelationshipDirection");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = generalService.findByDbId(dbId, RelationshipDirection.UNDIRECTED);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    // Undirected will load all relationships todo: modify test
+    @Test
+    public void findByStableIdentifierWithRelationshipDirectionTest() throws InvocationTargetException, IllegalAccessException {
+        logger.info("Started testing genericService.findByStableIdentifierWithRelationshipDirection");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = generalService.findByStableIdentifier(stId, RelationshipDirection.UNDIRECTED);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByDbIdsWithRelationshipDirectionTest() {
+        logger.info("Started testing genericService.findByDbIdWithRelationshipDirectionAndRelationships");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectObserved = generalService.findByDbIds(Arrays.<Long>asList(dbId, dbId2), RelationshipDirection.OUTGOING);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, databaseObjectObserved.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByStableIdentifiersWithRelationshipDirectionTest() {
+        logger.info("Started testing genericService.findByStableIdentifierWithRelationshipDirectionAndRelationships");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectObserved = generalService.findByStableIdentifiers(Arrays.<String>asList(stId, stId2), RelationshipDirection.OUTGOING);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, databaseObjectObserved.size());
+        logger.info("Finished");
+    }
+
+    // Undirected will load all relationships todo: modify test
+    @Test
+    public void findByDbIdWithRelationshipDirectionAndRelationshipsTest() {
+        logger.info("Started testing genericService.findByDbIdWithRelationshipDirectionAndRelationships");
+        long start, time;
+        start = System.currentTimeMillis();
+        Pathway databaseObjectObserved = (Pathway) generalService.findByDbId(dbId, RelationshipDirection.OUTGOING, "hasEvent");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(8, databaseObjectObserved.getHasEvent().size());
+        logger.info("Finished");
+    }
+
+    // Undirected will load all relationships todo: modify test
+    @Test
+    public void findByStableIdentifierWithRelationshipDirectionAndRelationshipsTest() {
+        logger.info("Started testing genericService.findByStableIdentifierWithRelationshipDirectionAndRelationships");
+        long start, time;
+        start = System.currentTimeMillis();
+        Pathway databaseObjectObserved = (Pathway) generalService.findByStableIdentifier(stId, RelationshipDirection.OUTGOING, "hasEvent");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(8, databaseObjectObserved.getHasEvent().size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByDbIdsWithRelationshipDirectionAndRelationshipsTest() {
+        logger.info("Started testing genericService.findByDbIdsWithRelationshipDirectionAndRelationships");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectObserved = generalService.findByDbIds(Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, databaseObjectObserved.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByStableIdentifiersWithRelationshipDirectionAndRelationshipsTest() {
+        logger.info("Started testing genericService.findByDbIdsWithRelationshipDirectionAndRelationships");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectObserved = generalService.findByStableIdentifiers(Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, databaseObjectObserved.size());
+        logger.info("Finished");
+    }
+
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
      */
     @Test
-    public void testGetObjectsByClassName() throws ClassNotFoundException {
+    public void getObjectsByClassNameTest() throws ClassNotFoundException {
 
         logger.info("Started testing genericService.getObjectsByClassName");
         long start, time;
@@ -126,27 +312,68 @@ public class GeneralServiceTest {
     }
 
     @Test
-    public void testFindByProperty() throws InvocationTargetException, IllegalAccessException {
-        logger.info("Started testing genericService.findByProperty");
+    public void saveAndDeleteTest() {
+        Pathway pathway = new Pathway();
+        pathway.setDbId(111111111111L);
+        pathway.setStableIdentifier("R-HSA-111111111111");
+        pathway.setDisplayName("TestPathway");
+
+        long count = generalService.countEntries(Pathway.class);
+        generalService.save(pathway);
+        long countAfterSave = generalService.countEntries(Pathway.class);
+        assertEquals(count + 1, countAfterSave);
+
+        generalService.delete(111111111111l);
+
+        long countAfterDelete = generalService.countEntries(Pathway.class);
+        assertEquals(count, countAfterDelete);
+    }
+
+    @Test
+    public void saveAndDeleteWithDepthTest() {
+        Pathway pathway = new Pathway();
+        pathway.setDbId(111111111111L);
+        pathway.setStableIdentifier("R-HSA-111111111111");
+        pathway.setDisplayName("TestPathway");
+
+        Pathway pathway2 = new Pathway();
+        pathway2.setDbId(111111111112L);
+        pathway2.setStableIdentifier("R-HSA-111111111112");
+        pathway2.setDisplayName("TestPathway2");
+
+        Pathway pathway3 = new Pathway();
+        pathway3.setDbId(111111111113L);
+        pathway3.setStableIdentifier("R-HSA-111111111113");
+        pathway3.setDisplayName("TestPathway3");
+
+        List<Event> hasEvent = new ArrayList<>();
+        hasEvent.add(pathway2);
+        hasEvent.add(pathway3);
+        pathway.setHasEvent(hasEvent);
+
+        long count = generalService.countEntries(Pathway.class);
+        generalService.save(pathway,1);
+        long countAfterSave = generalService.countEntries(Pathway.class);
+        assertEquals(count + 3, countAfterSave);
+        // delete will delete all relationships, nethertheless the other Nodes will still be present
+        generalService.delete(111111111111L);
+        generalService.delete(111111111112L);
+        generalService.delete(111111111113L);
+        long countAfterDelete = generalService.countEntries(Pathway.class);
+        assertEquals(count, countAfterDelete);
+    }
+
+    @Test
+    public void countEntriesTest() {
+        logger.info("Started testing databaseObjectService.countEntries");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = generalService.findByProperty(DatabaseObject.class, "dbId", dbId, 1);
+        long count = generalService.countEntries(Pathway.class);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-
-        start = System.currentTimeMillis();
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-        time = System.currentTimeMillis() - start;
-        logger.info("GkInstance execution time: " + time + "ms");
-
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        assertEquals(21191l, count);
         logger.info("Finished");
     }
-//
-//    @Test
-//    public void testFindByProperty() {
-//        return generalNeo4jOperationsRepository.findByProperty(clazz, property, values, depth);
-//    }
 
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
@@ -254,332 +481,24 @@ public class GeneralServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592)", pathways.size() >= 429);
-        logger.info("Finished");
+
     }
 
-//    @Test
-//    public void saveAndDelete() {
-//
-//        Pathway pathway = new Pathway();
-//        pathway.setDbId(111111111111L);
-//        pathway.setStableIdentifier("R-HSA-111111111111");
-//        pathway.setDisplayName("TestPathway");
-//
-//        long count = generalService.countEntries(Pathway.class);
-//        generalService.save(pathway);
-//        long countAfterSave = generalService.countEntries(Pathway.class);
-//        assertEquals(count + 1, countAfterSave);
-////        generalService.delete(generalService.find
-//        long countAfterDelete = generalService.countEntries(Pathway.class);
-//        assertEquals(count, countAfterDelete);
-//    }
-//
-//    @Test
-//    public void saveAndDeleteWithRelation() {
-//
-//        Pathway pathway = new Pathway();
-//        pathway.setDbId(111111111111L);
-//        pathway.setStableIdentifier("R-HSA-111111111111");
-//        pathway.setDisplayName("TestPathway");
-//
-//        Pathway pathway2 = new Pathway();
-//        pathway2.setDbId(111111111112L);
-//        pathway2.setStableIdentifier("R-HSA-111111111112");
-//        pathway2.setDisplayName("TestPathway2");
-//
-//        Pathway pathway3 = new Pathway();
-//        pathway3.setDbId(111111111113L);
-//        pathway3.setStableIdentifier("R-HSA-111111111113");
-//        pathway3.setDisplayName("TestPathway3");
-//
-//        List<Event> hasEvent = new ArrayList<>();
-//        hasEvent.add(pathway2);
-//        hasEvent.add(pathway3);
-//        pathway.setHasEvent(hasEvent);
-//
-//        long count = genericService.countEntries(Pathway.class);
-//        service.save(pathway,1);
-//        long countAfterSave = genericService.countEntries(Pathway.class);
-//        assertEquals(count + 3, countAfterSave);
-//        service.delete(genericService.findByDbId(Pathway.class,111111111111L,0).getId());
-//        service.delete(genericService.findByDbId(Pathway.class,111111111112L,0).getId());
-//        service.delete(genericService.findByDbId(Pathway.class,111111111113L,0).getId());
-//        long countAfterDelete = genericService.countEntries(Pathway.class);
-//        assertEquals(count, countAfterDelete);
-//    }
+    @Test
+    public void getReleaseVersionTest() throws Exception {
+        logger.info("Started testing genericService.getReleaseVersion");
+        long start, time;
+        start = System.currentTimeMillis();
+        Integer releaseVersionObserved = generalService.getReleaseVersion();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
 
+        start = System.currentTimeMillis();
+        Integer releaseVersionExpected = DatabaseObjectFactory.getReleaseVersion();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
 
-//    @ComponentOf
-//    public void testGetTopLevelPathwaysWithId() {
-//
-//        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<Pathway> observedTlps = genericService.getTopLevelPathways(48887L);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(24,observedTlps.size());
-//        logger.info("Finished");
-//    }
-//
-//    @ComponentOf
-//    public void testGetTopLevelPathwaysWithName() {
-//
-//        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<Pathway> observedTlps = genericService.getTopLevelPathways("Homo sapiens");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(24,observedTlps.size());
-//        logger.info("Finished");
-
-//    @Test
-//    public void testGetComponentsOf() {
-//        return generalRepository.getComponentsOf(stId);
-//    }
-//
-//    @Test
-//    public void testGetComponentsOf() {
-//        return generalRepository.getComponentsOf(dbId);
-//    }
-
-//    public void findById2() {
-//
-//        logger.info("Started testing genericService.findById");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = genericService.findById(stId, RelationshipDirection.OUTGOING);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(dbId, databaseObjectObserved.getDbId());
-//        logger.info("Finished");
-//    }
-//
-//
-//
-//    @ComponentOf
-//    public void findById() {
-//
-//        Long id = genericService.findByDbId(DatabaseObject.class, dbId, 0).getId();
-//        logger.info("Started testing genericService.findById");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = genericService.findById(DatabaseObject.class, id, 0);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(dbId, databaseObjectObserved.getDbId());
-//        logger.info("Finished");
-//    }
-//
-//    @ComponentOf
-//    public void testFindByProperty() throws InvocationTargetException, IllegalAccessException {
-//
-//        logger.info("Started testing genericService.findByProperty");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = genericService.findByProperty(DatabaseObject.class, "dbId", dbId, 1);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-//    }
-//
-//    @ComponentOf
-//    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
-//
-//        logger.info("Started testing genericService.findByDbId");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = genericService.findByDbId(DatabaseObject.class, dbId, 1);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-//    }
-//
-//    @ComponentOf
-//    public void testFindByStableIdentifier() throws InvocationTargetException, IllegalAccessException {
-//
-//        logger.info("Started testing genericService.findByStableIdentifier");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = genericService.findByStableIdentifier(DatabaseObject.class, stId, 1);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-//    }
-
-//    @ComponentOf
-//    public void testFindByPropertyWithRelations() throws ClassNotFoundException {
-//
-//        logger.info("Started testing genericService.getObjectsByClassName");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Pathway pathway = (Pathway) genericService.findByPropertyWithRelations("dbId",dbId,"hasEvent");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertNotNull(pathway.getHasEvent());
-//        logger.info("Finished");
-//    }
-//
-//    @ComponentOf
-//    public void testFindByPropertyWithoutRelations() throws ClassNotFoundException {
-//
-//        logger.info("Started testing genericService.getObjectsByClassName");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Pathway pathway = (Pathway) genericService.findByPropertyWithoutRelations("dbId",dbId,"authored","created","edited","modified","revised","reviewed");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertNull(pathway.getAuthored());
-//        assertNull(pathway.getCreated());
-//        assertNull(pathway.getEdited());
-//        assertNull(pathway.getModified());
-//        assertNull(pathway.getRevised());
-//        assertNull(pathway.getReviewed());
-//        logger.info("Finished");
-//    }
-//
-
-
-//    }
-//
-//    @ComponentOf
-//    public void testGetSpecies() {
-//
-//        logger.info("Started testing genericService.getSpecies");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Set<Species> observedSpecies = new HashSet<>(genericService.getSpecies());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        start = System.currentTimeMillis();
-//        Set<Species> expectedSpecies = new HashSet<>(DatabaseObjectFactory.getSpecies());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        assertEquals(expectedSpecies, observedSpecies);
-//        logger.info("Finished");
-//    }
-//
-//    /**
-//     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-//     * change when content is added to reactome.
-//     */
-//    @ComponentOf
-//    public void testCountEntries() {
-//
-//        logger.info("Started testing genericService.countEntries");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        long count = genericService.countEntries(Pathway.class);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        DatabaseObject databaseObject = new EntityWithAccessionedSequence();
-//        databaseObject.setStableIdentifier("R-ALL-113592");
-//        databaseObject.setDisplayName("ATP");
-//
-////        DatabaseObject databaseObjectObserved = genericService.findByStableId();
-//        long start, time;
-//        start = System.currentTimeMillis();
-//
-//
-//        Set<PathwayBrowserNode> nodes = genericService.getLocationsInPathwayBrowserHierarchy(databaseObject);
-//        nodes = PathwayBrowserLocationsUtils.removeOrphans(nodes);
-//        for (PathwayBrowserNode node : nodes) {
-//            if (node.getSpecies().equals("Homo sapiens")) {
-//                System.out.println();
-//            }
-//        }
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(21191L,count);
-//        logger.info("Finished");
-//    }
-//
-//
-//    @ComponentOf
-//    public void testGetEventHierarchy () {
-//        logger.info("Started testing genericService.getEventHierarchy");
-//
-//        DatabaseObject databaseObject = new EntityWithAccessionedSequence();
-//        databaseObject.setStableIdentifier("R-ALL-113592");
-//        databaseObject.setDisplayName("ATP");
-//
-////        DatabaseObject databaseObjectObserved = genericService.findByStableId();
-//        long start, time;
-//        start = System.currentTimeMillis();
-//
-//
-//        Set<PathwayBrowserNode> nodes = genericService.getLocationsInPathwayBrowserHierarchy(databaseObject);
-//        nodes = PathwayBrowserLocationsUtils.removeOrphans(nodes);
-//        for (PathwayBrowserNode node : nodes) {
-//            if (node.getSpecies().equals("Homo sapiens")) {
-//                System.out.println();
-//            }
-//        }
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-////        assertEquals(dbId,eventHierarchy.getDbId());
-////        logger.info("Finished");
-//    }
-
-//    @ComponentOf
-//    public void testGetLocationsHierarchy () {
-//        logger.info("Started testing genericService.getEventHierarchy");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject eventHierarchy = genericService.getLocationsHierarchy("R-HSA-445133");
-//        genericService.getLocationsHierarchy();
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-////        assertEquals(dbId,eventHierarchy.getDbId());
-//        logger.info("Finished");
-//    }
-//
-//    @ComponentOf
-//    public void testGetReferrer () {
-//        logger.info("Started testing genericService.getEventHierarchy");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<DatabaseObject> eventHierarchy = genericService.getReferrals(445133L,"hasMember");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(dbId,eventHierarchy.getDbId());
-//        logger.info("Finished");
-//    }
-
-
+        assertEquals(releaseVersionExpected, releaseVersionObserved);
+        logger.info("Finished");
+    }
 }

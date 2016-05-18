@@ -30,13 +30,17 @@ public interface GeneralRepository extends GraphRepository<DatabaseObject> {
     @Query("Match (n:SimpleEntity)-[:referenceEntity]-(m:ReferenceEntity) RETURN Distinct(m)")
     Collection<ReferenceEntity> getAllChemicals();
 
-    @Query("Match (n:DatabaseObject{stableIdentifier:{0}})-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
+    @Query("Match (n:DatabaseObject{stableIdentifier:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
     Collection<ComponentOf> getComponentsOf(String stableIdentifier);
 
-    @Query("Match (n:DatabaseObject{dbId:{0}})-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
+    @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stableIdentifier) AS stIds")
     Collection<ComponentOf> getComponentsOf(Long dbId);
 
     @Query("MATCH (n:DatabaseObject{stableIdentifier:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-()<-[:hasEvent]-(m:Pathway), (m)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(m.dbId) as dbId, m.stableIdentifier as stableIdentifier, m.displayName as displayName, labels(m) as labels UNION MATCH(n:ReactionLikeEvent{stableIdentifier:{0}})<-[:hasEvent]-(m:Pathway), (m)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(m.dbId) as dbId, m.stableIdentifier as stableIdentifier, m.displayName as displayName, labels(m) as labels UNION MATCH(p:Pathway{stableIdentifier:{0}}), (p)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(p.dbId) as dbId, p.stableIdentifier as stableIdentifier, p.displayName as displayName, labels(p) as labels")
 //    @Query("MATCH (n:DatabaseObject{stableIdentifier:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-()<-[:hasEvent]-(m:Pathway) RETURN Distinct(m.dbId) as dbId, m.stableIdentifier as stableIdentifier, m.displayName as displayName")
     Collection<SimpleDatabaseObject> getPathwaysFor(String stableIdentifier, Long speciesId);
+
+    @Query("Match (n:ReleaseVersion) RETURN n.version LIMIT 1")
+    Integer getReleaseVersion();
+
 }

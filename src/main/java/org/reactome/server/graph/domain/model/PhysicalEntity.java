@@ -19,6 +19,9 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     @ReactomeProperty
     private String definition;
+    //A simple flag to indicate if this PhysicalEntity object is a disease
+    @ReactomeProperty
+    private Boolean isInDisease;
     @ReactomeProperty
     private List<String> name;
     @ReactomeProperty

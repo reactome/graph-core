@@ -51,10 +51,6 @@ public class SimpleDatabaseObject {
     }
 
     public void setLabels(Collection<String> labels) {
-        try {
-            this.schemaClass = DatabaseObjectUtils.getSchemaClass(labels);
-        } catch (ClassNotFoundException e) {
-            //Nothing here
-        }
+        this.schemaClass = DatabaseObjectUtils.getSchemaClass(labels);
     }
 }

@@ -38,8 +38,8 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     private DatabaseObject regulatedEntity;
 
-    @Relationship(type = "regulationType", direction = Relationship.OUTGOING)
-    private RegulationType regulationType;
+//    @Relationship(type = "regulationType", direction = Relationship.OUTGOING)
+//    private RegulationType regulationType;
 
     @Relationship(type = "regulator", direction = Relationship.OUTGOING)
     private DatabaseObject regulator;
@@ -119,13 +119,13 @@ public abstract class Regulation extends DatabaseObject {
         this.regulatedEntity = regulatedEntity;
     }
 
-    public RegulationType getRegulationType() {
-        return regulationType;
-    }
-
-    public void setRegulationType(RegulationType regulationType) {
-        this.regulationType = regulationType;
-    }
+//    public RegulationType getRegulationType() {
+//        return regulationType;
+//    }
+//
+//    public void setRegulationType(RegulationType regulationType) {
+//        this.regulationType = regulationType;
+//    }
 
     public DatabaseObject getRegulator() {
         return regulator;

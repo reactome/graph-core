@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @NodeEntity
-public class EntitySet extends PhysicalEntity{
+public abstract class EntitySet extends PhysicalEntity{
 
     @ReactomeProperty
     private Boolean isOrdered;
