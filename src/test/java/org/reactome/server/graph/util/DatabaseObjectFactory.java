@@ -52,10 +52,13 @@ public class DatabaseObjectFactory {
         }
     }
 
-    public static Integer getReleaseVersion() throws Exception {
+    public static Integer getDBVersion() throws Exception {
         return dba.getReleaseNumber();
     }
 
+    public static String getDBName() {
+        return dba.getDBName();
+    }
     /**
      * Method used for loading all Reactome top level pathways.
      * @return List of DatabaseObject (list of top level pathways)

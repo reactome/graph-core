@@ -79,7 +79,7 @@ public class ReactomeBatchImporter {
             importLogger.info("Started importing " + tlps.size() + " top level pathways");
             System.out.println("Started importing " + tlps.size() + " top level pathways");
 
-            batchInserter.createNode(Collections.singletonMap("version", (Object) dba.getReleaseNumber()), DynamicLabel.label("ReleaseVersion"));
+            addDbInfo();
 
             for (GKInstance instance : tlps) {
                 long start = System.currentTimeMillis();
@@ -98,6 +98,13 @@ public class ReactomeBatchImporter {
             e.printStackTrace();
         }
         batchInserter.shutdown();
+    }
+
+    private void addDbInfo() throws Exception {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("name", dba.getDBName());
+        properties.put("version", dba.getReleaseNumber());
+        batchInserter.createNode(properties, DynamicLabel.label("DBInfo"));
     }
 
     private List<GKInstance> getTopLevelPathways() throws Exception {

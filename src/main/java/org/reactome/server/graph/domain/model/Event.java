@@ -407,12 +407,19 @@ public abstract class Event extends DatabaseObject {
         this.summation = summation;
     }
 
+    // Null values will not be propagated to json, empty lists will. Thus I rather return null here.
     public List<Regulation> getRegulations() {
-        List<Regulation> regulations = new ArrayList<>();
+        List<Regulation> regulations = null;
         if (this.getPositivelyRegulatedBy() != null && !this.getPositivelyRegulatedBy().isEmpty()) {
+            if (regulations == null) {
+                regulations = new ArrayList<>();
+            }
             regulations.addAll(this.getPositivelyRegulatedBy());
         }
         if (this.getNegativelyRegulatedBy() != null && !this.getNegativelyRegulatedBy().isEmpty()) {
+            if (regulations == null) {
+                regulations = new ArrayList<>();
+            }
             regulations.addAll(this.getNegativelyRegulatedBy());
         }
         return regulations;

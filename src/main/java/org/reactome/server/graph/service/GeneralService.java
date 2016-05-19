@@ -1,16 +1,12 @@
 package org.reactome.server.graph.service;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.ReferenceEntity;
-import org.reactome.server.graph.domain.model.Species;
-import org.reactome.server.graph.domain.model.TopLevelPathway;
+import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.repository.GeneralNeo4jOperationsRepository;
 import org.reactome.server.graph.repository.GeneralRepository;
-import org.reactome.server.graph.repository.TopLevelPathwayRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
@@ -19,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -35,8 +32,7 @@ public class GeneralService {
     @Autowired
     private GeneralNeo4jOperationsRepository generalNeo4jOperationsRepository;
 
-    @Autowired
-    public TopLevelPathwayRepository topLevelPathwayRepository;
+
 
     @Autowired
     public GeneralRepository generalRepository;
@@ -90,6 +86,10 @@ public class GeneralService {
         return generalNeo4jOperationsRepository.findByProperty(clazz, property, value, depth);
     }
 
+    public <T> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+        return generalNeo4jOperationsRepository.findAllByProperty(clazz, property, value, depth);
+    }
+
     //    todo Method is currently broken report to SDN
     @Deprecated
     public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
@@ -119,7 +119,7 @@ public class GeneralService {
 //    //    todo could also be solved in GeneralRepository, Will not contain any relationships
 //    @Deprecated
 //    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
-//        return generalNeo4jOperationsRepository.findByStableIdentifiers(clazz, stableIdentifiers);
+//        return generalNeo4jOperationsRepository.+findByStableIdentifiers(clazz, stableIdentifiers);
 //    }
 
 //    // Finder Methods without Relationships
@@ -176,10 +176,30 @@ public class GeneralService {
 
     // Find by Class Name
 
-    public <T> Collection<T> findObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
-        Class clazz = DatabaseObjectUtils.getClassForName(className);
-        return generalNeo4jOperationsRepository.findObjectsByClassName(clazz, page, offset);
+    public <T> Collection<T> findObjectsByClassName(String className) {
+        try {
+            Class clazz = DatabaseObjectUtils.getClassForName(className);
+            return generalNeo4jOperationsRepository.findObjectsByClassName(clazz);
+        } catch (ClassNotFoundException e) {
+            logger.warn("Class name " + className + " was not found in the DataModel");
+        }
+        return Collections.emptyList();
     }
+
+    public <T> Collection<T> findObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
+        try {
+            Class clazz = DatabaseObjectUtils.getClassForName(className);
+            return generalNeo4jOperationsRepository.findObjectsByClassName(clazz, page, offset);
+        } catch (ClassNotFoundException e) {
+            logger.warn("Class name " + className + " was not found in the DataModel");
+        }
+        return Collections.emptyList();
+    }
+
+    public Collection<String> findSimpleReferencesByClassName(String className) {
+        return generalNeo4jOperationsRepository.findSimpleReferencesByClassName(className);
+    }
+
 
     // Save and Delete
 
@@ -249,27 +269,37 @@ public class GeneralService {
         return generalRepository.getComponentsOf(dbId);
     }
 
-    // Gets top level pathways
 
-    public Collection<TopLevelPathway> getTopLevelPathways() {
-        return topLevelPathwayRepository.getTopLevelPathways();
-    }
-
-    public Collection<TopLevelPathway> getTopLevelPathways(Long speciesId) {
-        return topLevelPathwayRepository.getTopLevelPathways(speciesId);
-    }
-
-    public Collection<TopLevelPathway> getTopLevelPathways(String speciesName) {
-        return topLevelPathwayRepository.getTopLevelPathways(speciesName);
-    }
 
     public Collection<SimpleDatabaseObject> getPathwaysFor(String stableIdentifier, Long speciesId){
         return generalRepository.getPathwaysFor(stableIdentifier, speciesId);
     }
 
+    // Get Person
+
+//    equals person name
+    public Collection<Person> findPersonByName(String name) {
+        name = "(?i)" + name;
+        return generalRepository.findPersonByName(name);
+    }
+
+//    contains person name
+    public Collection<Person> queryPersonByName(String name) {
+        name = ".*(?i)" + name + ".*";
+        return generalRepository.findPersonByName(name);
+    }
+
+    public Collection<Pathway> findAuthoredPathways(Long dbId) {
+        return generalRepository.findAuthoredPathways(dbId);
+    }
+
     // Gets release version
 
-    public Integer getReleaseVersion() {
-        return generalRepository.getReleaseVersion();
+    public Integer getDBVersion() {
+        return generalRepository.getDBVersion();
+    }
+
+    public String getDBName() {
+        return generalRepository.getDBName();
     }
 }

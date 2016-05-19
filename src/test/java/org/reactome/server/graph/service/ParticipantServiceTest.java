@@ -36,14 +36,13 @@ public class ParticipantServiceTest {
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
 
-    private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
     @Autowired
-    private ParticipantService participantService;
+    private GeneralService generalService;
 
     @Autowired
-    private GeneralService generalService;
+    private ParticipantService participantService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -64,25 +63,6 @@ public class ParticipantServiceTest {
         assumeTrue(isFit);
         generalService.clearCache();
         DatabaseObjectFactory.clearCache();
-    }
-
-
-    /**
-     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-     * possibly change when content is added to reactome. This method will provide all participating ReferenceEntities
-     * (even if the tests participatingMolecules 2 and 3 will provide 23, in this casee 22 is the correct number)
-     */
-    @Test
-    public void testGetParticipatingReferenceEntitiesByDbId() {
-        logger.info("Started testing databaseObjectService.testGetParticipatingReferenceEntities");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<ReferenceEntity> participants = participantService.getParticipatingReferenceEntities(dbId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(22,participants.size());
-        logger.info("Finished");
     }
 
     /**
@@ -109,24 +89,6 @@ public class ParticipantServiceTest {
      * of an Event
      */
     @Test
-    public void testGetParticipatingPhysicalEntitiesByDbId() {
-        logger.info("Started testing databaseObjectService.testGetParticipatingPhysicalEntitiesByDbId");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(dbId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(22, participants.size());
-        logger.info("Finished");
-    }
-
-    /**
-     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-     * possibly change when content is added to reactome. This method will provide all participating PhysicalEntities
-     * of an Event
-     */
-    @Test
     public void testGetParticipatingPhysicalEntitiesByStId() {
         logger.info("Started testing databaseObjectService.testGetParticipatingPhysicalEntitiesByStId");
         long start, time;
@@ -136,25 +98,6 @@ public class ParticipantServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(22, participants.size());
-        logger.info("Finished");
-    }
-
-    /**
-     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-     * possibly change when content is added to reactome. This method will provide all participating Ewases
-     * of an Event and their ReferenceEntities dbIds and names.
-     */
-    @Test
-    public void testGetParticipantsByDbId() {
-
-        logger.info("Started testing databaseObjectService.testGetParticipantsByDbId");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<Participant> participants = participantService.getParticipants(dbId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(23, participants.size());
         logger.info("Finished");
     }
 

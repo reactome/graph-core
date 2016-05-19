@@ -91,6 +91,20 @@ public class GeneralServiceTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void findAllByPropertyTest() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing genericService.findAllByProperty");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectObserved = generalService.findAllByProperty(DatabaseObject.class, "stableIdentifier", stId, 1);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(1, databaseObjectObserved.size());
+    }
+
+
 //    @Test
 //    todo Method is currently broken report to SDN
     public void findByPropertiesTest() {
@@ -303,11 +317,42 @@ public class GeneralServiceTest {
         logger.info("Started testing genericService.getObjectsByClassName");
         long start, time;
         start = System.currentTimeMillis();
+        Collection<Disease> diseases = generalService.findObjectsByClassName("Disease");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(281, diseases.size());
+        logger.info("Finished");
+    }
+
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
+     */
+    @Test
+    public void getObjectsByClassNameWithPagingTest() throws ClassNotFoundException {
+
+        logger.info("Started testing genericService.getObjectsByClassNameWithPaging");
+        long start, time;
+        start = System.currentTimeMillis();
         Collection<Pathway> pathways = generalService.findObjectsByClassName("Pathway", 1, 25);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(25, pathways.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findSimpleReferencesByClassNameTest() {
+
+        logger.info("Started testing genericService.findSimpleReferencesByClassName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<String> diseases = generalService.findSimpleReferencesByClassName("Disease");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(281, diseases.size());
         logger.info("Finished");
     }
 
@@ -381,7 +426,7 @@ public class GeneralServiceTest {
      * graph paired with the numbers of entries belonging to these labels.
      */
     @Test
-    public void testGetSchemaClassCounts() {
+    public void testGetSchemaClassCountsTest() {
 
         logger.info("Started testing databaseObjectService.getLabelsCount");
         long start, time;
@@ -390,12 +435,12 @@ public class GeneralServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(59, schemaClassCounts.size());
+        assertEquals(60, schemaClassCounts.size());
         logger.info("Finished");
     }
 
     @Test
-    public void testGetAllSpecies() {
+    public void testGetAllSpeciesTest() {
 
         logger.info("Started testing genericService.getSpecies");
         long start, time;
@@ -414,7 +459,7 @@ public class GeneralServiceTest {
     }
 
     @Test
-    public void testGetAllChemicals() {
+    public void testGetAllChemicalsTest() {
 
         logger.info("Started testing genericService.getSpecies");
         long start, time;
@@ -427,49 +472,7 @@ public class GeneralServiceTest {
         logger.info("Finished");
     }
 
-    @Test
-    public void testGetTopLevelPathways() {
-        logger.info("Started testing genericService.getTopLevelPathways");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = generalService.getTopLevelPathways();
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
 
-        start = System.currentTimeMillis();
-        Collection<DatabaseObject> expectedTlps = DatabaseObjectFactory.loadFrontPageItems();
-        time = System.currentTimeMillis() - start;
-        logger.info("GkInstance execution time: " + time + "ms");
-
-        assertEquals(expectedTlps.size(), observedTlps.size());
-        logger.info("Finished");
-    }
-
-    @Test
-    public void getTopLevelPathwaysWithId() {
-        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = generalService.getTopLevelPathways(48887L);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(24,observedTlps.size());
-        logger.info("Finished");
-    }
-
-    @Test
-    public void getTopLevelPathwaysWithName() {
-        logger.info("Started testing genericService.getTopLevelPathwaysWithName");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = generalService.getTopLevelPathways("Homo sapiens");
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(24,observedTlps.size());
-        logger.info("Finished");
-    }
 
     @Test
     public void getPathwaysForTest(){
@@ -482,23 +485,80 @@ public class GeneralServiceTest {
 
         assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592)", pathways.size() >= 429);
 
+  }
+
+    @Test
+    public void findPersonByNameTest() {
+        logger.info("Started testing genericService.findPersonByName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Person> persons = generalService.findPersonByName("steve");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(14,persons.size());
+        logger.info("Finished");
     }
 
     @Test
-    public void getReleaseVersionTest() throws Exception {
+    public void queryPersonByNameTest() {
+        logger.info("Started testing genericService.queryPersonByName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Person> persons = generalService.queryPersonByName("steve");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(185,persons.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findAuthoredPathwaysTest() {
+        logger.info("Started testing genericService.findAuthoredPathways");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> pathways = generalService.findAuthoredPathways(1226097l);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(106,pathways.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getDBVersionTest() throws Exception {
         logger.info("Started testing genericService.getReleaseVersion");
         long start, time;
         start = System.currentTimeMillis();
-        Integer releaseVersionObserved = generalService.getReleaseVersion();
+        Integer dBVersionObserved = generalService.getDBVersion();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         start = System.currentTimeMillis();
-        Integer releaseVersionExpected = DatabaseObjectFactory.getReleaseVersion();
+        Integer dBVersionExpected = DatabaseObjectFactory.getDBVersion();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(releaseVersionExpected, releaseVersionObserved);
+        assertEquals(dBVersionExpected, dBVersionObserved);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getDBNameTest() throws Exception {
+        logger.info("Started testing genericService.getReleaseVersion");
+        long start, time;
+        start = System.currentTimeMillis();
+        String dBNameObserved = generalService.getDBName();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        String dBNameExpected = DatabaseObjectFactory.getDBName();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(dBNameExpected, dBNameObserved);
         logger.info("Finished");
     }
 }

@@ -34,6 +34,7 @@ public abstract class DatabaseObjectUtils {
         for (SchemaClassCount schemaClassCount : schemaClassCounts) {
             Class<?> lowestClass = Object.class;
             for (String label : schemaClassCount.getLabels()) {
+                if (label.equals("DBInfo")) continue;
                 Class clazz = Class.forName(packageName + label);
                 if (lowestClass.isAssignableFrom(clazz)) {
                     lowestClass = clazz;

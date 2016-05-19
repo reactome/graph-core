@@ -33,6 +33,10 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.loadByProperty(clazz,property, value, depth);
     }
 
+    public <T> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+        return neo4jTemplate.loadAllByProperty(clazz, property, value, depth);
+    }
+
 //    todo Method is currently broken report to SDN
     @Deprecated
     public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
@@ -283,12 +287,29 @@ public class GeneralNeo4jOperationsRepository {
 
     // Find by Class Name
 
+    public <T> Collection<T> findObjectsByClassName(Class<T> clazz) {
+        String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
+        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, Collections.<String, Object>emptyMap());
+    }
+
     public <T> Collection<T> findObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("limit", offset);
         map.put("skip", (page-1) * offset);
         return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, map);
+    }
+
+    // Find Simple ReferenceObjects
+
+    public Collection<String> findSimpleReferencesByClassName(String className) {
+        String query = "Match (n:" + className + ") RETURN n.dbId AS dbId, n.databaseName AS databaseName, n.identifier AS identifier ";
+        Result result = neo4jTemplate.query(query, Collections.<String, Object>emptyMap());
+        Collection<String> simpleRefs = new ArrayList<>();
+        for (Map<String, Object> stringObjectMap : result) {
+            simpleRefs.add(stringObjectMap.get("dbId") + "\t" + stringObjectMap.get("databaseName") + ":" + stringObjectMap.get("identifier"));
+        }
+        return simpleRefs;
     }
 
     // Save and Delete
