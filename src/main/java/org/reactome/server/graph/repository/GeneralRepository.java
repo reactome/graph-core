@@ -1,8 +1,6 @@
 package org.reactome.server.graph.repository;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.ReferenceEntity;
-import org.reactome.server.graph.domain.model.Species;
+import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
