@@ -39,13 +39,13 @@ public class DetailsService {
 
 //    Todo rename
     @Transactional
-    public ContentDetails getContentDetails2(String id) {
+    public ContentDetails getContentDetails(String id, boolean interactors) {
 
         ContentDetails contentDetails = new ContentDetails();
         DatabaseObject databaseObject = detailsRepository.detailsPageQuery(id);
         contentDetails.setDatabaseObject(databaseObject);
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
-            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject);
+            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, interactors);
             leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
             contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
             contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
@@ -57,7 +57,7 @@ public class DetailsService {
 //    Todo remove
     @Deprecated
     @Transactional
-    public ContentDetails getContentDetails(String id) {
+    public ContentDetails getContentDetails2(String id, boolean interactors) {
 
         ContentDetails contentDetails = new ContentDetails();
 
@@ -66,7 +66,7 @@ public class DetailsService {
 
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
 
-            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject);
+            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, interactors);
             leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
             contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
             contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStableIdentifier()));
@@ -86,17 +86,23 @@ public class DetailsService {
         return contentDetails;
     }
 
-    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject) {
-        return getLocationsInThePathwayBrowser(databaseObject).getLeaves();
+    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean interactors) {
+        return getLocationsInThePathwayBrowser(databaseObject, interactors).getLeaves();
     }
 
-    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(String id) {
-        return getLocationsInThePathwayBrowser(id).getLeaves();
+    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(String id, boolean interactors) {
+        return getLocationsInThePathwayBrowser(id, interactors).getLeaves();
     }
 
-    public PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject) {
+    public PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject, boolean interactors) {
         if (databaseObject == null) return null;
-        PathwayBrowserNode node = detailsRepository.getLocationsInPathwayBrowser(databaseObject);
+
+        PathwayBrowserNode node;
+        if (interactors) {
+            node = detailsRepository.getLocationsInPathwayBrowserForInteractors(databaseObject);
+        } else {
+            node = detailsRepository.getLocationsInPathwayBrowser(databaseObject);
+        }
 
         if (databaseObject instanceof Regulation) {
             DatabaseObject regulator = ((Regulation) databaseObject).getRegulator();
@@ -131,12 +137,12 @@ public class DetailsService {
     }
 
     //todo find other method
-    public PathwayBrowserNode getLocationsInThePathwayBrowser(String id) {
+    public PathwayBrowserNode getLocationsInThePathwayBrowser(String id, boolean interactors) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return getLocationsInThePathwayBrowser(generalService.findByStableIdentifierNoRelations(DatabaseObject.class, id));
+            return getLocationsInThePathwayBrowser(generalService.findByStableIdentifierNoRelations(DatabaseObject.class, id), interactors);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return getLocationsInThePathwayBrowser(generalService.findByDbIdNoRelations(DatabaseObject.class, Long.valueOf(id)));
+            return getLocationsInThePathwayBrowser(generalService.findByDbIdNoRelations(DatabaseObject.class, Long.valueOf(id)), interactors);
         }
         return null;
     }

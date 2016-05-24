@@ -32,6 +32,65 @@ public class DetailsRepository {
     @Autowired
     private Neo4jOperations neo4jTemplate;
 
+
+    /**
+     * Build Locations in the Pathway Browser of a given query Result.
+     *
+     * @param databaseObject the one where querying for
+     * @param result the cypher query result
+     *
+     * @return PathwayBrowserNode having parents and children
+     */
+    private PathwayBrowserNode getLocationsInPathwayBrowserResult(DatabaseObject databaseObject, Result result) {
+        PathwayBrowserNode root = createRoot(databaseObject);
+        Map<String, PathwayBrowserNode> nodes = new HashMap<>();
+        PathwayBrowserNode previous = root;
+        nodes.put(root.getStId(), root);
+        int previousSize = 0;
+        for (Map<String, Object> stringObjectMap : result) {
+            @SuppressWarnings("unchecked")
+            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[]) stringObjectMap.get("nodePairCollection"));
+            int size = nodePairCollections.length;
+            if (size > previousSize) {
+                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length - 1];
+                previous = addNode(previous, nodes, objects);
+            } else {
+                previous = root;
+                for (ArrayList<Object> objects : nodePairCollections) {
+                    if (objects.get(0) == null) {
+                        continue;
+                    }
+                    previous = addNode(previous, nodes, objects);
+                }
+            }
+            previousSize = size;
+        }
+        return root;
+    }
+
+    /**
+     * Get locations in the Pathway Browser based on Interactor. It has a different query than the normal flow.
+     *
+     * @return a PathwayBrowserNode.
+     */
+    public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(DatabaseObject databaseObject) {
+
+        Result result;
+        if (databaseObject.getStableIdentifier() != null) {
+            result = getLocationsInPathwayBrowserForInteractor(databaseObject.getStableIdentifier());
+        } else {
+            result = getLocationsInPathwayBrowserForInteractor(databaseObject.getDbId());
+        }
+
+        return getLocationsInPathwayBrowserResult(databaseObject, result);
+
+    }
+
+    /**
+     * Get locations in the Pathway Browser in the normal search flow.
+     *
+     * @return a PathwayBrowserNode.
+     */
     public PathwayBrowserNode getLocationsInPathwayBrowser(DatabaseObject databaseObject) {
 
         Result result;
@@ -40,63 +99,90 @@ public class DetailsRepository {
         } else {
             result = getLocationsInPathwayBrowser(databaseObject.getDbId());
         }
-        PathwayBrowserNode root = createNode(databaseObject);
-        Map<String,PathwayBrowserNode> nodes = new HashMap<>();
-        PathwayBrowserNode previous = root;
-        nodes.put(root.getStId(),root);
-        int previousSize = 0;
-        for (Map<String, Object> stringObjectMap : result) {
-            @SuppressWarnings("unchecked")
-            ArrayList<Object>[] nodePairCollections = ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"));
-            int size = nodePairCollections.length;
-            if (size>previousSize) {
-                ArrayList<Object> objects = nodePairCollections[nodePairCollections.length-1];
-                previous = addNode(previous,nodes,objects);
-            } else {
-                previous = root;
-                for (ArrayList<Object> objects : nodePairCollections) {
-                    if (objects.get(0) == null ){
-                        continue;
-                    }
-                    previous = addNode(previous,nodes,objects);
-                }
-            }
-            previousSize = size;
-        }
-        return  root ;
+
+        return getLocationsInPathwayBrowserResult(databaseObject, result);
+
     }
 
+    /**
+     * This cypher query retrieves all the information needed to build the Locations in the PWB Tree.
+     * [StableIdentifier, _displayName, hasDiagram, [labels e.g DatabaseObject, Event, ReactionLikeEvent, Reactions]]
+     *
+     * @param stId, tree for the given StId
+     * @return nodePairCollection
+     */
     private Result getLocationsInPathwayBrowser(String stId) {
         String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("stableIdentifier", stId);
         return neo4jTemplate.query(query, map);
     }
 
+    /**
+     * This cypher query retrieves all the information needed to build the Locations in the PWB Tree
+     * [StableIdentifier, _displayName, hasDiagram, [labels e.g DatabaseObject, Event, ReactionLikeEvent, Reactions]]
+     *
+     * @param dbId, tree for the given dbId
+     * @return nodePairCollection
+     */
     private Result getLocationsInPathwayBrowser(Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        return neo4jTemplate.query(query, map);
+    }
+
+    /**
+     * This cypher query retrieves all the information needed to build the Locations in the PWB Tree based on the Interactors.
+     * It means, we are filtering the tree to show only Proteins directly associate to a Reaction, then when the user clicks on it
+     * He will see the protein in the Diagram.
+     * <p>
+     * [StableIdentifier, _displayName, hasDiagram, [labels e.g DatabaseObject, Event, ReactionLikeEvent, Reactions]]
+     *
+     * @param stId, tree for the given stId
+     * @return nodePairCollection
+     */
+    private Result getLocationsInPathwayBrowserForInteractor(String stId) {
+        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        Map<String, Object> map = new HashMap<>();
+        map.put("stableIdentifier", stId);
+        return neo4jTemplate.query(query, map);
+    }
+
+    /**
+     * This cypher query retrieves all the information needed to build the Locations in the PWB Tree based on the Interactors.
+     * It means, we are filtering the tree to show only Proteins directly associate to a Reaction, then when the user clicks on it
+     * He will see the protein in the Diagram.
+     * <p>
+     * [StableIdentifier, _displayName, hasDiagram, [labels e.g DatabaseObject, Event, ReactionLikeEvent, Reactions]]
+     *
+     * @param dbId, tree for the given dbId
+     * @return nodePairCollection
+     */
+    private Result getLocationsInPathwayBrowserForInteractor(Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
     }
 
     public DatabaseObject detailsPageQuery(String stId) {
         String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]->(m)" +
-                       "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
+                "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
 //                       "OPTIONAL MATCH (m:Regulation)-[x:regulator|regulatedBy]-(y)" +
-                       "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
-                       "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
-                       "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
-                       "Return n,r,m,l,e,t,z,u,i,o,p";
-        Map<String,Object> map = new HashMap<>();
+                "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
+                "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
+                "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
+                "Return n,r,m,l,e,t,z,u,i,o,p";
+        Map<String, Object> map = new HashMap<>();
         map.put("stableIdentifier", stId);
-        Result result =  neo4jTemplate.query(query, map);
+        Result result = neo4jTemplate.query(query, map);
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("n");
         return null;
     }
 
-    private PathwayBrowserNode addNode(PathwayBrowserNode previous, Map<String,PathwayBrowserNode> nodes, ArrayList<Object> objects) {
+    private PathwayBrowserNode addNode(PathwayBrowserNode previous, Map<String, PathwayBrowserNode> nodes, ArrayList<Object> objects) {
         PathwayBrowserNode node;
 
         //todo fixme
@@ -107,8 +193,12 @@ public class DetailsRepository {
             node = nodes.get(objects.get(0));
         } else {
             node = createNode(objects);
-            nodes.put(node.getStId(),node);
+            nodes.put(node.getStId(), node);
         }
+
+        /**
+         * We do not link them in the Tree.
+         */
         if (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus")) {
             previous.addChild(node);
             node.addParent(previous);
@@ -117,7 +207,10 @@ public class DetailsRepository {
         return previous;
     }
 
-    private PathwayBrowserNode createNode(DatabaseObject databaseObject) {
+    /**
+     * Create the root item for the Tree. This is the item we have searched.
+     */
+    private PathwayBrowserNode createRoot(DatabaseObject databaseObject) {
         PathwayBrowserNode node = new PathwayBrowserNode();
         node.setStId(databaseObject.getStableIdentifier());
         node.setName(databaseObject.getDisplayName());
@@ -138,6 +231,11 @@ public class DetailsRepository {
         return node;
     }
 
+    /**
+     * Create a node based on the query Result
+     *
+     * @param nodePairCollection, the query result
+     */
     private PathwayBrowserNode createNode(ArrayList<Object> nodePairCollection) {
         PathwayBrowserNode node = new PathwayBrowserNode();
         node.setStId((String) nodePairCollection.get(0));
@@ -150,7 +248,7 @@ public class DetailsRepository {
 }
 
 
-    //    private Result getLocationInThePathwayBrowser2(Long dbId) {
+//    private Result getLocationInThePathwayBrowser2(Long dbId) {
 ////        String query = "Match (n:DatabaseObject{dbId:199420})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return n.stableIdentifier AS stId, n.displayName as name, n.hasDiagram AS diagram, n.speciesName AS species, labels(n) AS labels, Collect (EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as locationsTree";
 //
 //        String query = "Match(n:DatabaseObject{stableIdentifier:'R-ALL-113592'})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return n.stableIdentifier AS stId, n.displayName as name, n.hasDiagram AS diagram, n.speciesName AS species, labels(n) AS labels, Collect (EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as locationsTree";
