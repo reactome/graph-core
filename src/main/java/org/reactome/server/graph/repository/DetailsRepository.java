@@ -65,6 +65,12 @@ public class DetailsRepository {
             }
             previousSize = size;
         }
+
+//        Set<PathwayBrowserNode> g = root.getChildren();
+//        for(PathwayBrowserNode p : g) {
+//            p.setHighlighted(true);
+//            p.setClickable(true);
+//        }
         return root;
     }
 

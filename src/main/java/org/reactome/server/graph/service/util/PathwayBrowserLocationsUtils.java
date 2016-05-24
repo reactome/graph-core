@@ -11,7 +11,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Created by:
+ * Please bear in mind here that we are building the Locations in the Pathway Browser tree from the LEAVES.
+ * In the graph query we get the TREE from EWAS (root) to TOPLevelPathway (leaves). In this class we are
+ * rotating the tree and building the links from Leaves to Root.
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 13.04.16.
@@ -27,6 +29,7 @@ public abstract class PathwayBrowserLocationsUtils {
     public static Set<PathwayBrowserNode> buildTreesFromLeaves(Set<PathwayBrowserNode> leaves) {
         Set<PathwayBrowserNode> topLvlTrees = new TreeSet<>();
         for (PathwayBrowserNode leaf : leaves) {
+            leaf.setClickable(true);
             PathwayBrowserNode tree = getTreeFromGraphLeaf(leaf, "", "", "", "");
             if (tree != null) {
                 topLvlTrees.add(tree);
@@ -151,6 +154,14 @@ public abstract class PathwayBrowserLocationsUtils {
             for (PathwayBrowserNode node : parents) {
                 tree.addChild(getTreeFromGraphLeaf(node, sel, path, shortPath, lastNodeWithDiagram));
             }
+        } else {
+            Set<PathwayBrowserNode> highlightedChildren = leaf.getChildren();
+            for (PathwayBrowserNode child : highlightedChildren) {
+                child.setClickable(true);
+                child.setHighlighted(true);
+            }
+            leaf.setClickable(true);
+            leaf.setHighlighted(true);
         }
         return tree;
     }

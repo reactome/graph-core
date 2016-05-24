@@ -75,7 +75,7 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails("R-HSA-1302721", false);
+        ContentDetails contentDetails = detailsService.getContentDetails(stId, false);
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 

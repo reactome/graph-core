@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service.helper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.TreeSet;
@@ -22,6 +24,12 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     private Set<PathwayBrowserNode> children;
     private Set<PathwayBrowserNode> parent;
+
+    @JsonIgnore
+    private boolean highlighted = false;
+
+    @JsonIgnore
+    private boolean clickable = false;
 
     public void addParent(PathwayBrowserNode node) {
         if (parent==null) {
@@ -131,6 +139,22 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     public void setParent(Set<PathwayBrowserNode> parent) {
         this.parent = parent;
+    }
+
+    public boolean getHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
+
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
     }
 
     @Override
