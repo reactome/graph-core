@@ -25,14 +25,14 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     @JsonIgnore
     private Boolean unique;
 
+    @JsonIgnore
+    private boolean highlighted ;
+    @JsonIgnore
+    private boolean clickable;
+
     private Set<PathwayBrowserNode> children;
     private Set<PathwayBrowserNode> parent;
 
-    @JsonIgnore
-    private boolean highlighted = false;
-
-    @JsonIgnore
-    private boolean clickable = false;
 
     public void addParent(PathwayBrowserNode node) {
         if (parent==null) {
