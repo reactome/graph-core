@@ -1,8 +1,6 @@
 package org.reactome.server.graph.service.helper;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.annotation.Nonnull;
 import java.util.Set;

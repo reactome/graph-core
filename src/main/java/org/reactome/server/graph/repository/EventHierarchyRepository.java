@@ -1,7 +1,9 @@
 package org.reactome.server.graph.repository;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Pathway;
+import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
