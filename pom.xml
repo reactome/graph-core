@@ -35,7 +35,7 @@
         <reactome.version>1.2.4</reactome.version>
         <sdn.version>4.1.1.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
         <spring.test.version>4.2.4.RELEASE</spring.test.version>
-        <neo4j.version>2.3.2</neo4j.version>
+        <neo4j.version>3.0.1</neo4j.version>
         <aspectj.version>1.8.8</aspectj.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
@@ -43,7 +43,7 @@
         <reflection.version>0.9.9-RC2</reflection.version>
         <swagger.annotations.version>1.5.6</swagger.annotations.version>
         <!--build-->
-        <jdk.version>1.7</jdk.version>
+        <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.locations.enabled>false</dependency.locations.enabled>
         <!--maven build and plugins-->
@@ -87,17 +87,19 @@
             <scope>test</scope>
         </dependency>
 
+
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm-core</artifactId>
-            <version>2.0.2-SNAPSHOT</version>
+            <version>2.0.3-SNAPSHOT</version>
         </dependency>
 
         <dependency> <!-- If you're using the HTTP driver -->
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm-http-driver</artifactId>
-            <version>2.0.2-SNAPSHOT</version>
+            <version>2.0.3-SNAPSHOT</version>
         </dependency>
+
 
         <!--&lt;!&ndash;TODO remove: Neo4j kernel and index for batch import (had to added since SDN.4.1.0 &ndash;&gt;-->
         <dependency>

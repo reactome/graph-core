@@ -104,7 +104,7 @@ public class ReactomeBatchImporter {
         Map<String, Object> properties = new HashMap<>();
         properties.put("name", dba.getDBName());
         properties.put("version", dba.getReleaseNumber());
-        batchInserter.createNode(properties, DynamicLabel.label("DBInfo"));
+        batchInserter.createNode(properties, Label.label("DBInfo"));
     }
 
     private List<GKInstance> getTopLevelPathways() throws Exception {
@@ -213,7 +213,7 @@ public class ReactomeBatchImporter {
         Label[] labels = getLabels(clazz);
         if (topLevelPathways.contains(instance.getDBID())) {
             Label[] newLabels = Arrays.copyOf(labels, labels.length +1);
-            newLabels[labels.length] = DynamicLabel.label("TopLevelPathway");
+            newLabels[labels.length] = Label.label("TopLevelPathway");
             labels = newLabels;
         }
 
@@ -378,7 +378,7 @@ public class ReactomeBatchImporter {
             }
             Map<String, Object> properties = new HashMap<>();
             properties.put(STOICHIOMETRY,stoichiometryMap.get(dbId).getCount());
-            RelationshipType relationshipType = DynamicRelationshipType.withName(relationName);
+            RelationshipType relationshipType = RelationshipType.withName(relationName);
             saveRelationship(newId,oldId,relationshipType,properties);
         }
     }
@@ -401,7 +401,7 @@ public class ReactomeBatchImporter {
                 }
                 break;
             case "inferredToReverse":
-                batchInserter.createRelationship(newId, oldId, DynamicRelationshipType.withName("inferredTo"), properties);
+                batchInserter.createRelationship(newId, oldId, RelationshipType.withName("inferredTo"), properties);
                 break;
             case "author":
             case "authored":
@@ -434,37 +434,37 @@ public class ReactomeBatchImporter {
      */
     private void createConstraints() {
 
-        createSchemaConstraint(DynamicLabel.label(DatabaseObject.class.getSimpleName()), DBID);
-        createSchemaConstraint(DynamicLabel.label(DatabaseObject.class.getSimpleName()), STID);
+        createSchemaConstraint(Label.label(DatabaseObject.class.getSimpleName()), DBID);
+        createSchemaConstraint(Label.label(DatabaseObject.class.getSimpleName()), STID);
 
-        createSchemaConstraint(DynamicLabel.label(Event.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(Event.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(Event.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(Event.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(Pathway.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(Pathway.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(Pathway.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(Pathway.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(ReactionLikeEvent.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(ReactionLikeEvent.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(ReactionLikeEvent.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(ReactionLikeEvent.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(Reaction.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(Reaction.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(Reaction.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(Reaction.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(PhysicalEntity.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(PhysicalEntity.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(PhysicalEntity.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(PhysicalEntity.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(Complex.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(Complex.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(Complex.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(Complex.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(EntitySet.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(EntitySet.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(EntitySet.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(EntitySet.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(GenomeEncodedEntity.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(GenomeEncodedEntity.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(GenomeEncodedEntity.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(GenomeEncodedEntity.class.getSimpleName()),STID);
 
-        createSchemaConstraint(DynamicLabel.label(ReferenceEntity.class.getSimpleName()),DBID);
-        createSchemaConstraint(DynamicLabel.label(ReferenceEntity.class.getSimpleName()),STID);
+        createSchemaConstraint(Label.label(ReferenceEntity.class.getSimpleName()),DBID);
+        createSchemaConstraint(Label.label(ReferenceEntity.class.getSimpleName()),STID);
 
-        batchInserter.createDeferredSchemaIndex(DynamicLabel.label(ReferenceEntity.class.getSimpleName())).on(ACCESSION);
+        batchInserter.createDeferredSchemaIndex(Label.label(ReferenceEntity.class.getSimpleName())).on(ACCESSION);
     }
 
     /**
@@ -541,11 +541,11 @@ public class ReactomeBatchImporter {
     private Label[] getAllClassNames(Class clazz) {
         List<?> superClasses = ClassUtils.getAllSuperclasses(clazz);
         List<Label> labels = new ArrayList<>();
-        labels.add(DynamicLabel.label(clazz.getSimpleName()));
+        labels.add(Label.label(clazz.getSimpleName()));
         for (Object object : superClasses) {
             Class superClass = (Class) object;
             if(!superClass.equals(Object.class)) {
-                labels.add(DynamicLabel.label(superClass.getSimpleName()));
+                labels.add(Label.label(superClass.getSimpleName()));
             }
         }
         return labels.toArray(new Label[labels.size()]);
@@ -564,7 +564,7 @@ public class ReactomeBatchImporter {
      */
     private void setUpMethods(Class clazz) {
         if(!relationAttributesMap.containsKey(clazz) && !primitiveAttributesMap.containsKey(clazz)) {
-            List<Field> fields = getAllFields(new ArrayList<Field>(), clazz);
+            List<Field> fields = getAllFields(new ArrayList<>(), clazz);
             for (Field field : fields) {
                 String fieldName = field.getName();
                 if (field.getAnnotation(Relationship.class)!= null) {
