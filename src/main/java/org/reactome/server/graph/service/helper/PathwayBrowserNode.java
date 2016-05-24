@@ -1,5 +1,9 @@
 package org.reactome.server.graph.service.helper;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.TreeSet;
@@ -10,14 +14,17 @@ import java.util.TreeSet;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 06.04.16.
  */
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="stId")
 public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     private String stId;
     private String name;
     private String species;
+    @JsonIgnore
     private String url;
     private String type;
     private Boolean diagram;
+    @JsonIgnore
     private Boolean unique;
 
     private Set<PathwayBrowserNode> children;
@@ -36,6 +43,7 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
         children.add(node);
     }
 
+    @JsonIgnore
     public Set<PathwayBrowserNode> getLeaves() {
         Set<PathwayBrowserNode> leaves = new TreeSet<>();
         if (this.children == null) {
