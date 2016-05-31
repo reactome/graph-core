@@ -29,7 +29,7 @@ public class EventService {
     public Event findById(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return eventRepository.findByStableIdentifier(id);
+            return eventRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return eventRepository.findByDbId(Long.parseLong(id));
         }
@@ -40,8 +40,8 @@ public class EventService {
         return eventRepository.findByDbId(dbId);
     }
 
-    public Event findByStableIdentifier(String stableIdentifier) {
-        return eventRepository.findByStableIdentifier(stableIdentifier);
+    public Event findByStId(String stId) {
+        return eventRepository.findByStId(stId);
     }
 
     @Deprecated

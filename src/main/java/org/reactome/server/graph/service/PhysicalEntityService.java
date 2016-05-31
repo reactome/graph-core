@@ -26,7 +26,7 @@ public class PhysicalEntityService {
     public PhysicalEntity findById(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.findByStableIdentifier(id);
+            return physicalEntityRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return physicalEntityRepository.findByDbId(Long.parseLong(id));
         }
@@ -37,16 +37,16 @@ public class PhysicalEntityService {
         return physicalEntityRepository.findByDbId(dbId);
     }
 
-    public PhysicalEntity findByStableIdentifier(String stableIdentifier) {
-        return physicalEntityRepository.findByStableIdentifier(stableIdentifier);
+    public PhysicalEntity findByStId(String stId) {
+        return physicalEntityRepository.findByStId(stId);
     }
 
     public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId) {
         return physicalEntityRepository.getOtherFormsOfThisMolecule(dbId);
     }
 
-    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stableIdentifier) {
-        return physicalEntityRepository.getOtherFormsOfThisMolecule(stableIdentifier);
+    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stId) {
+        return physicalEntityRepository.getOtherFormsOfThisMolecule(stId);
     }
 
     @Deprecated

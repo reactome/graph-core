@@ -17,6 +17,8 @@ public class Person extends DatabaseObject {
     @ReactomeProperty
     private String initial;
     @ReactomeProperty
+    private String orcidId;
+    @ReactomeProperty
     private String project;
     @ReactomeProperty
     private String surname;
@@ -24,6 +26,7 @@ public class Person extends DatabaseObject {
     @Relationship(type = "affiliation", direction = Relationship.OUTGOING)
     private List<Affiliation> affiliation;
 
+    @Deprecated
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
 
@@ -53,6 +56,14 @@ public class Person extends DatabaseObject {
         this.initial = initial;
     }
 
+    public String getOrcidId() {
+        return orcidId;
+    }
+
+    public void setOrcidId(String orcidId) {
+        this.orcidId = orcidId;
+    }
+
     public String getProject() {
         return project;
     }
@@ -77,10 +88,12 @@ public class Person extends DatabaseObject {
         this.affiliation = affiliation;
     }
 
+    @Deprecated
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
     }
 
+    @Deprecated
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }

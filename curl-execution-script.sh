@@ -34,7 +34,7 @@ echo $((GkTotal/k))
 
 
 #    START=$(($(date +%s%N)/1000000))
-#    curl  --write-out "%{http_code}\n" --silent --output /dev/null  -H "Content-Type: application/json" --user neo4j:reactome --data "{\"statements\" : [ { \"statement\" : \"MATCH (n:DatabaseObject{stableIdentifier:'"${line}"'})-[r]-(m) RETURN n,r,m\"}]}" http://localhost:7474/db/data/transaction/commit
+#    curl  --write-out "%{http_code}\n" --silent --output /dev/null  -H "Content-Type: application/json" --user neo4j:reactome --data "{\"statements\" : [ { \"statement\" : \"MATCH (n:DatabaseObject{stId:'"${line}"'})-[r]-(m) RETURN n,r,m\"}]}" http://localhost:7474/db/data/transaction/commit
 #
 #    END=$(($(date +%s%N)/1000000))
 #    DIFF=$((END-START))

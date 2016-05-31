@@ -24,7 +24,7 @@ import static org.junit.Assume.assumeTrue;
  */
 @ContextConfiguration(classes = {Neo4jConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-public class EventHierarchyServiceTest {
+public class HierarchyServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
@@ -32,7 +32,7 @@ public class EventHierarchyServiceTest {
     private static Boolean isFit = false;
 
     @Autowired
-    private EventHierarchyService eventHierarchyService;
+    private HierarchyService hierarchyService;
 
     @Autowired
     private GeneralService generalService;
@@ -63,11 +63,24 @@ public class EventHierarchyServiceTest {
         logger.info("Started testing eventService.findByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PathwayBrowserNode> eventHierarchy = eventHierarchyService.getEventHierarchy("Homo sapiens");
+        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy("Homo sapiens");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(24, eventHierarchy.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getSubHierarchyTest() {
+        logger.info("Started testing eventService.findByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+        PathwayBrowserNode subHierarchy = hierarchyService.getSubHierarchy("R-HSA-109581");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+//        assertEquals(24, eventHierarchy.size());
         logger.info("Finished");
     }
 }

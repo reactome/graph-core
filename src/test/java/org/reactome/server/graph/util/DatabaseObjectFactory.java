@@ -237,7 +237,7 @@ public class DatabaseObjectFactory {
                 try {
                     GKInstance stableIdentifier = (GKInstance) instance.getAttributeValue(ReactomeJavaConstants.stableIdentifier);
                     if (stableIdentifier != null) {
-                        databaseObject.setStableIdentifier((String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier));
+                        databaseObject.setStId((String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier));
                     }
                 }
                 catch (Exception e) {

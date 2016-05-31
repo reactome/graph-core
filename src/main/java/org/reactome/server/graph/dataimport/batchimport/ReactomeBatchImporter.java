@@ -38,7 +38,7 @@ public class ReactomeBatchImporter {
     private static String DATA_DIR;
 
     private static final String DBID = "dbId";
-    private static final String STID = "stableIdentifier";
+    private static final String STID = "stId";
     private static final String ACCESSION = "identifier";
     private static final String NAME = "displayName";
 
@@ -222,7 +222,17 @@ public class ReactomeBatchImporter {
         Map<String, Object> properties = new HashMap<>();
         properties.put(DBID, instance.getDBID());
         if (instance.getDisplayName() != null) {
-            properties.put(NAME, instance.getDisplayName());
+            // TO fix Different Styles in Person display Name (example Jupe, Steven or Jupe, S)
+            // todo find nice styple
+            if (instance.getSchemClass().isa(ReactomeJavaConstants.Person)) {
+                String firstName = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.firstname);
+                String surName = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.surname);
+                String inital = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.initial);
+
+                properties.put(NAME, surName + ", " + firstName);
+            } else {
+                properties.put(NAME, instance.getDisplayName());
+            }
         } else {
             errorLogger.error("Found an entry without display name! dbId: " + instance.getDBID());
         }
@@ -231,11 +241,25 @@ public class ReactomeBatchImporter {
             for (String attribute : primitiveAttributesMap.get(clazz)) {
                 switch (attribute) {
                     case STID:
-                        GKInstance stableIdentifier = (GKInstance) getObjectFromGkInstance(instance, attribute);
+                        GKInstance stableIdentifier = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.stableIdentifier);
                         if (stableIdentifier == null) continue;
                         String id = (String) getObjectFromGkInstance(stableIdentifier, ReactomeJavaConstants.identifier);
                         if (id == null) continue;
                         properties.put(attribute, id);
+                        break;
+                    case "orcidId":
+                        GKInstance orcid = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.crossReference);
+                        if (orcid == null) continue;
+                        String orcidId = (String) getObjectFromGkInstance(orcid, ReactomeJavaConstants.identifier);
+                        if (orcidId == null) continue;
+                        properties.put(attribute, orcidId);
+                        break;
+                    case "taxId":
+                        GKInstance taxon = (GKInstance) getObjectFromGkInstance(instance,ReactomeJavaConstants.crossReference);
+                        if (taxon == null) continue;
+                        String taxId = (String) getObjectFromGkInstance(taxon, ReactomeJavaConstants.identifier);
+                        if (taxId == null) continue;
+                        properties.put(attribute, taxId);
                         break;
                     case "hasDiagram":
                         if (instance.getDbAdaptor() instanceof MySQLAdaptor) {
@@ -466,6 +490,16 @@ public class ReactomeBatchImporter {
         createSchemaConstraint(Label.label(ReferenceEntity.class.getSimpleName()),DBID);
         createSchemaConstraint(Label.label(ReferenceEntity.class.getSimpleName()),STID);
 
+
+        createSchemaConstraint(Label.label(Taxon.class.getSimpleName()),"taxId");
+        createSchemaConstraint(Label.label(Species.class.getSimpleName()),"taxId");
+
+//        todo should be constraint but currently database has entries that violate that constraint
+//        createSchemaConstraint(Label.label(Person.class.getSimpleName()), "orcidId");
+        batchInserter.createDeferredSchemaIndex(Label.label(Person.class.getSimpleName())).on("orcidId");
+
+//        todo should be constraint, currentry voilate constraint
+        batchInserter.createDeferredSchemaIndex(Label.label(LiteratureReference.class.getSimpleName())).on("pubMedIdentifier");
         batchInserter.createDeferredSchemaIndex(Label.label(ReferenceEntity.class.getSimpleName())).on(ACCESSION);
     }
 

@@ -89,12 +89,12 @@ public class PhysicalEntityServiceTest {
     }
 
     @Test
-    public void testFindByStId() throws InvocationTargetException, IllegalAccessException {
+    public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing physicalEntityService.findByStableIdentifier");
+        logger.info("Started testing physicalEntityService.findByStId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = physicalEntityService.findByStableIdentifier(stId);
+        DatabaseObject databaseObjectObserved = physicalEntityService.findByStId(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

@@ -18,7 +18,6 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     private String stId;
     private String name;
     private String species;
-    @JsonIgnore
     private String url;
     private String type;
     private Boolean diagram;
@@ -31,6 +30,7 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     private boolean clickable;
 
     private Set<PathwayBrowserNode> children;
+    @JsonIgnore
     private Set<PathwayBrowserNode> parent;
 
 

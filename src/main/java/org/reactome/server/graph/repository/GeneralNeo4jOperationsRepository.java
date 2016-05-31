@@ -90,10 +90,10 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.queryForObject(clazz, query, map);
     }
 
-    public <T> T findByStableIdentifierNoRelations(Class<T> clazz, String stableIdentifier) {
-        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}}) RETURN n";
+    public <T> T findByStIdNoRelations(Class<T> clazz, String stId) {
+        String query = "Match (n:DatabaseObject{stId:{stId}}) RETURN n";
         Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifier", stableIdentifier);
+        map.put("stId", stId);
         return neo4jTemplate.queryForObject(clazz, query, map);
     }
 
@@ -104,10 +104,10 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.queryForObjects(clazz, query, map);
     }
 
-    public <T> Iterable<T> findByStableIdentifiersNoRelations(Class<T> clazz, Collection<String> stableIdentifiers) {
-        String query = "Match (n:DatabaseObject) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n";
+    public <T> Iterable<T> findByStIdsNoRelations(Class<T> clazz, Collection<String> stId) {
+        String query = "Match (n:DatabaseObject) WHERE n.stId IN {stId} RETURN n";
         Map<String, Object> map = new HashMap<>();
-        map.put("stableIdentifiers", stableIdentifiers);
+        map.put("stId", stId);
         return neo4jTemplate.queryForObjects(clazz, query, map);
     }
 
@@ -133,20 +133,20 @@ public class GeneralNeo4jOperationsRepository {
         return null;
     }
 
-    public DatabaseObject findByStableIdentifier(String stableIdentifier, RelationshipDirection direction) {
+    public DatabaseObject findByStId(String stId, RelationshipDirection direction) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]->(m) RETURN n,r,m";
+                query = "Match (n:DatabaseObject{stId:{stId}})-[r]->(m) RETURN n,r,m";
                 break;
             case INCOMING:
-                query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r]-(m) RETURN n,r,m";
+                query = "Match (n:DatabaseObject{stId:{stId}})<-[r]-(m) RETURN n,r,m";
                 break;
             default: // UNDIRECTED
-                query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]-(m) RETURN n,r,m";
+                query = "Match (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m";
         }
         Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifier", stableIdentifier);
+        map.put("stId", stId);
         Result result =  neo4jTemplate.query(query, map);
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("n");
@@ -174,21 +174,21 @@ public class GeneralNeo4jOperationsRepository {
         return null;
     }
 
-    public DatabaseObject findByStableIdentifier (String stableIdentifier, RelationshipDirection direction, String... relationships) {
+    public DatabaseObject findByStId (String stId, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) RETURN n,r,m";
+                query = "MATCH (n:DatabaseObject{stId:{stId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) RETURN n,r,m";
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN n,r,m";
+                query = "MATCH (n:DatabaseObject{stId:{stId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN n,r,m";
                 break;
             default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN n,r,m";
+                query = "MATCH (n:DatabaseObject{stId:{stId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN n,r,m";
                 break;
         }
         Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifier",stableIdentifier);
+        map.put("stId",stId);
         Result result =  neo4jTemplate.query(query,map);
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("n");
@@ -217,20 +217,20 @@ public class GeneralNeo4jOperationsRepository {
         return databaseObjects;
     }
 
-    public Collection<DatabaseObject> findByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction) {
+    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "Match (n:DatabaseObject)-[r]->(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+                query = "Match (n:DatabaseObject)-[r]->(m) WHERE n.stId IN {stIds} RETURN n,r,m";
                 break;
             case INCOMING:
-                query = "Match (n:DatabaseObject)<-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+                query = "Match (n:DatabaseObject)<-[r]-(m) WHERE n.stId IN {stIds} RETURN n,r,m";
                 break;
             default: // UNDIRECTED
-                query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+                query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stId IN {stIds} RETURN n,r,m";
         }
         Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifiers", stableIdentifiers);
+        map.put("stIds", stIds);
         Result result =  neo4jTemplate.query(query, map);
         Set<DatabaseObject> databaseObjects = new HashSet<>();
         for (Map<String, Object> stringObjectMap : result) {
@@ -262,21 +262,21 @@ public class GeneralNeo4jOperationsRepository {
         return databaseObjects;
     }
 
-    public Collection<DatabaseObject> findByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) WHERE n.stId IN {stIds} RETURN n,r,m";
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+                query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) WHERE n.stId IN {stIds} RETURN n,r,m";
                 break;
             default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n,r,m";
+                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) WHERE n.stId IN {stIds} RETURN n,r,m";
                 break;
         }
         Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifiers", stableIdentifiers);
+        map.put("stIds", stIds);
         Result result =  neo4jTemplate.query(query, map);
         Set<DatabaseObject> databaseObjects = new HashSet<>();
         for (Map<String, Object> stringObjectMap : result) {
@@ -312,6 +312,8 @@ public class GeneralNeo4jOperationsRepository {
         return simpleRefs;
     }
 
+
+
     // Save and Delete
 
     public <T extends DatabaseObject> T save(T t) {
@@ -333,10 +335,10 @@ public class GeneralNeo4jOperationsRepository {
         neo4jTemplate.query(query, map);
     }
 
-    public void delete(String stableIdentifier) {
-        String query = "MATCH (n:DatabaseObject{stableIdentifier:{stableIdentifier}}) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
+    public void delete(String stId) {
+        String query = "MATCH (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
         Map<String,Object> map = new HashMap<>();
-        map.put("stableIdentifier", stableIdentifier);
+        map.put("stId", stId);
         neo4jTemplate.query(query, map);
     }
 

@@ -6,6 +6,7 @@ import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -25,6 +26,7 @@ public abstract class PathwayBrowserLocationsUtils {
     private static final String PATHWAY_BROWSER_URL = "/PathwayBrowser/#/";
     private static final String SEL = "&amp;SEL=";
     private static final String PATH = "&amp;PATH=";
+
 
     public static Set<PathwayBrowserNode> buildTreesFromLeaves(Set<PathwayBrowserNode> leaves) {
         Set<PathwayBrowserNode> topLvlTrees = new TreeSet<>();
@@ -51,6 +53,37 @@ public abstract class PathwayBrowserLocationsUtils {
         }
         return leaves;
     }
+
+
+//    todo decide to remove
+//    private static Set<PathwayBrowserNode> visited;
+//
+//    public static Set<PathwayBrowserNode> convertParentsToChildren(Set<PathwayBrowserNode> roots) {
+//        visited = new HashSet<>();
+//        for (PathwayBrowserNode root : roots) {
+//            convertParentsToChildren(root);
+//            root.setChildren(root.getParent());
+//            root.setParent(null);
+//            System.out.println();
+//        }
+//        return roots;
+//    }
+//
+//    private static void convertParentsToChildren (PathwayBrowserNode x) {
+//        if (x.getParent() != null && !x.getParent().isEmpty()) {
+//            for (PathwayBrowserNode pathwayBrowserNode : x.getParent()) {
+//                if (visited.contains(pathwayBrowserNode)) continue;
+//                convertParentsToChildren(pathwayBrowserNode);
+//                visited.add(pathwayBrowserNode);
+//                if (pathwayBrowserNode.getParent()!= null) {
+//                    pathwayBrowserNode.setChildren(pathwayBrowserNode.getParent());
+//                    pathwayBrowserNode.setParent(null);
+//                }
+//            }
+//        }
+//    }
+
+
 
     /**
      * Generating individual Trees from a leaf

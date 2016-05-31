@@ -14,6 +14,6 @@ import org.reactome.server.graph.domain.model.Event;
 public interface EventRepository extends GraphRepository<Event> {
 
     Event findByDbId(Long dbId);
-    Event findByStableIdentifier(String stableIdentifier);
+    Event findByStId(String stId);
 
 }

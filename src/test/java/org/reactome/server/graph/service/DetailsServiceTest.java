@@ -10,6 +10,7 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
+import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +133,7 @@ public class DetailsServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1, node.getChildren().size());
+        assertEquals(3, node.getChildren().size());
         logger.info("Finished");
     }
 

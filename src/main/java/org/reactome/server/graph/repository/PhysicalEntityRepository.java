@@ -17,12 +17,12 @@ import java.util.Collection;
 public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity> {
 
     PhysicalEntity findByDbId(Long dbId);
-    PhysicalEntity findByStableIdentifier(String stableIdentifier);
+    PhysicalEntity findByStId(String stId);
 
     @Query("Match (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
 
-    @Query("Match (n:PhysicalEntity{stableIdentifier:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
-    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stableIdentifier);
+    @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
+    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stId);
 
 }

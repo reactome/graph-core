@@ -94,12 +94,12 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void testFindByStableIdentifier() throws InvocationTargetException, IllegalAccessException {
+    public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing databaseObjectService.findByStableIdentifier");
+        logger.info("Started testing databaseObjectService.findByStId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findByStableIdentifier(stId);
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByStId(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -129,12 +129,12 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void testFindByStableIdentifiers() throws InvocationTargetException, IllegalAccessException {
+    public void findByStIdsTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing databaseObjectService.findByStableIdentifier");
+        logger.info("Started testing databaseObjectService.findByStIds");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByStableIdentifiersNoRelations(stIds);
+        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByStIdsNoRelations(stIds);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -165,12 +165,12 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void testFindByStableIdentifierRelations() {
+    public void findByStIdRelationsTest() {
 
-        logger.info("Started testing databaseObjectService.findByStableIdentifierRelations");
+        logger.info("Started testing databaseObjectService.findByStIdRelations");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findByStableIdentifierRelations(stId);
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByStIdRelations(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

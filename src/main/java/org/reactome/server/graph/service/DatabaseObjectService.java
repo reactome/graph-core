@@ -24,7 +24,7 @@ public class DatabaseObjectService {
     public DatabaseObject findById(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return databaseObjectRepository.findByStableIdentifier(id);
+            return databaseObjectRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return databaseObjectRepository.findByDbId(Long.parseLong(id));
         }
@@ -35,7 +35,7 @@ public class DatabaseObjectService {
     public DatabaseObject findByIdNoRelations(String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return databaseObjectRepository.findByStableIdentifierNoRelations(id);
+            return databaseObjectRepository.findByStIdNoRelations(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return databaseObjectRepository.findByDbIdNoRelations(Long.parseLong(id));
         }
@@ -46,24 +46,24 @@ public class DatabaseObjectService {
         return databaseObjectRepository.findByDbId(dbId);
     }
 
-    public DatabaseObject findByStableIdentifier(String stableIdentifier) {
-        return databaseObjectRepository.findByStableIdentifier(stableIdentifier);
+    public DatabaseObject findByStId(String stId) {
+        return databaseObjectRepository.findByStId(stId);
     }
 
     public DatabaseObject findByDbIdNoRelations(Long dbId) {
         return databaseObjectRepository.findByDbIdNoRelations(dbId);
     }
 
-    public DatabaseObject findByStableIdentifierRelations(String stableIdentifier) {
-        return databaseObjectRepository.findByStableIdentifierNoRelations(stableIdentifier);
+    public DatabaseObject findByStIdRelations(String stId) {
+        return databaseObjectRepository.findByStIdNoRelations(stId);
     }
 
     public Collection<DatabaseObject> findByDbIdsNoRelations(Collection<Long> dbIds) {
         return databaseObjectRepository.findByDbIdsNoRelations(dbIds);
     }
 
-    public Collection<DatabaseObject> findByStableIdentifiersNoRelations(Collection<String> stableIdentifiers) {
-        return databaseObjectRepository.findByStableIdentifiersNoRelations(stableIdentifiers);
+    public Collection<DatabaseObject> findByStIdsNoRelations(Collection<String> stIds) {
+        return databaseObjectRepository.findByStIdsNoRelations(stIds);
     }
 
 }

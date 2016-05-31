@@ -42,7 +42,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     @ApiModelProperty(value = "This is the main external identifier of a Reactome entry")
     @ReactomeProperty
-    private String stableIdentifier;
+    private String stId;
 
     @ApiModelProperty(value = "Instance that created this entry")
     @Relationship(type = "created", direction = Relationship.INCOMING)
@@ -78,12 +78,12 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.displayName = displayName;
     }
 
-    public String getStableIdentifier() {
-        return stableIdentifier;
+    public String getStId() {
+        return stId;
     }
 
-    public void setStableIdentifier(String stableIdentifier) {
-        this.stableIdentifier = stableIdentifier;
+    public void setStId(String stId) {
+        this.stId = stId;
     }
 
     public InstanceEdit getCreated() {
@@ -105,8 +105,8 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
-                (stableIdentifier == null ? "dbId=" + dbId : "") +
-                (stableIdentifier != null ? ", stableIdentifier='" + stableIdentifier + '\'' : "") +
+                (stId == null ? "dbId=" + dbId : "") +
+                (stId != null ? ", stId='" + stId + '\'' : "") +
                 ", displayName='" + displayName + '\'' +
                 '}';
     }
@@ -117,13 +117,13 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         if (o == null || getClass() != o.getClass()) return false;
 
         DatabaseObject that = (DatabaseObject) o;
-        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stableIdentifier != null ? stableIdentifier.equals(that.stableIdentifier) : that.stableIdentifier == null && !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null));
+        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stId != null ? stId.equals(that.stId) : that.stId == null && !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null));
     }
 
     @Override
     public int hashCode() {
         int result = dbId != null ? dbId.hashCode() : 0;
-        result = 31 * result + (stableIdentifier != null ? stableIdentifier.hashCode() : 0);
+        result = 31 * result + (stId != null ? stId.hashCode() : 0);
         result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
         return result;
     }

@@ -82,8 +82,8 @@ public class DetailsRepository {
     public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(DatabaseObject databaseObject) {
 
         Result result;
-        if (databaseObject.getStableIdentifier() != null) {
-            result = getLocationsInPathwayBrowserForInteractor(databaseObject.getStableIdentifier());
+        if (databaseObject.getStId() != null) {
+            result = getLocationsInPathwayBrowserForInteractor(databaseObject.getStId());
         } else {
             result = getLocationsInPathwayBrowserForInteractor(databaseObject.getDbId());
         }
@@ -100,8 +100,8 @@ public class DetailsRepository {
     public PathwayBrowserNode getLocationsInPathwayBrowser(DatabaseObject databaseObject) {
 
         Result result;
-        if (databaseObject.getStableIdentifier() != null) {
-            result = getLocationsInPathwayBrowser(databaseObject.getStableIdentifier());
+        if (databaseObject.getStId() != null) {
+            result = getLocationsInPathwayBrowser(databaseObject.getStId());
         } else {
             result = getLocationsInPathwayBrowser(databaseObject.getDbId());
         }
@@ -118,9 +118,9 @@ public class DetailsRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowser(String stId) {
-        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
-        map.put("stableIdentifier", stId);
+        map.put("stId", stId);
         return neo4jTemplate.query(query, map);
     }
 
@@ -132,7 +132,7 @@ public class DetailsRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowser(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) Return  EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
@@ -149,9 +149,9 @@ public class DetailsRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserForInteractor(String stId) {
-        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
-        map.put("stableIdentifier", stId);
+        map.put("stId", stId);
         return neo4jTemplate.query(query, map);
     }
 
@@ -166,22 +166,36 @@ public class DetailsRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserForInteractor(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [startNode(rel).stableIdentifier, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ]) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
     }
 
     public DatabaseObject detailsPageQuery(String stId) {
-        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]->(m)" +
+        String query = "Match (n:DatabaseObject{stId:{stId}})-[r]->(m)" +
                 "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
-//                       "OPTIONAL MATCH (m:Regulation)-[x:regulator|regulatedBy]-(y)" +
                 "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
                 "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
                 "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
                 "Return n,r,m,l,e,t,z,u,i,o,p";
         Map<String, Object> map = new HashMap<>();
-        map.put("stableIdentifier", stId);
+        map.put("stId", stId);
+        Result result = neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
+    public DatabaseObject detailsPageQuery(Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m)" +
+                "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
+                "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
+                "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
+                "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
+                "Return n,r,m,l,e,t,z,u,i,o,p";
+        Map<String, Object> map = new HashMap<>();
+        map.put("dbId", dbId);
         Result result = neo4jTemplate.query(query, map);
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("n");
@@ -218,7 +232,7 @@ public class DetailsRepository {
      */
     private PathwayBrowserNode createRoot(DatabaseObject databaseObject) {
         PathwayBrowserNode node = new PathwayBrowserNode();
-        node.setStId(databaseObject.getStableIdentifier());
+        node.setStId(databaseObject.getStId());
         node.setName(databaseObject.getDisplayName());
         node.setType(databaseObject.getSchemaClass());
         if (databaseObject instanceof Event) {
