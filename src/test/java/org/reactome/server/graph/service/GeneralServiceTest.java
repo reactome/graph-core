@@ -473,19 +473,27 @@ public class GeneralServiceTest {
     }
 
 
-
     @Test
     public void getPathwaysForTest(){
         logger.info("Started testing genericService.getPathwaysForTest");
-        long start, time;
-        start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         Collection<SimpleDatabaseObject> pathways = generalService.getPathwaysFor("R-ALL-113592", 48887L);
-        time = System.currentTimeMillis() - start;
+        long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592)", pathways.size() >= 429);
+        assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592) in human", pathways.size() >= 429);
+    }
 
-  }
+    @Test
+    public void getPathwaysForAllFormsOfTest(){
+        logger.info("Started testing genericService.getPathwaysForAllFormsOfTest");
+        long start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> pathways = generalService.getPathwaysForAllFormsOf("R-ALL-113592", 48887L);
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be 591 or more pathways for all forms of ATP (R-ALL-113592) in human", pathways.size() >= 591);
+    }
 
     @Test
     public void findPersonByNameTest() {

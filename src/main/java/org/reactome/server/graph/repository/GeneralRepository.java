@@ -35,8 +35,10 @@ public interface GeneralRepository extends GraphRepository<DatabaseObject> {
     Collection<ComponentOf> getComponentsOf(Long dbId);
 
     @Query("MATCH (n:DatabaseObject{stableIdentifier:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-()<-[:hasEvent]-(m:Pathway), (m)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(m.dbId) as dbId, m.stableIdentifier as stableIdentifier, m.displayName as displayName, labels(m) as labels UNION MATCH(n:ReactionLikeEvent{stableIdentifier:{0}})<-[:hasEvent]-(m:Pathway), (m)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(m.dbId) as dbId, m.stableIdentifier as stableIdentifier, m.displayName as displayName, labels(m) as labels UNION MATCH(p:Pathway{stableIdentifier:{0}}), (p)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(p.dbId) as dbId, p.stableIdentifier as stableIdentifier, p.displayName as displayName, labels(p) as labels")
-//    @Query("MATCH (n:DatabaseObject{stableIdentifier:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-()<-[:hasEvent]-(m:Pathway) RETURN Distinct(m.dbId) as dbId, m.stableIdentifier as stableIdentifier, m.displayName as displayName")
     Collection<SimpleDatabaseObject> getPathwaysFor(String stableIdentifier, Long speciesId);
+
+    @Query("MATCH (:PhysicalEntity{stableIdentifier:{0}})-[:referenceEntity]->(re:ReferenceEntity) WITH re MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway), (p)-[:species]->(s:Species{dbId:48887}) RETURN Distinct(p.dbId) as dbId, p.stableIdentifier as stableIdentifier, p.displayName as displayName, labels(p) as labels")
+    Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String stableIdentifier, Long speciesId);
 
     @Query("Match (n:Person) Where n.surname =~ {0} OR n.firstname =~ {0} RETURN n")
     Collection<Person> findPersonByName(String name);

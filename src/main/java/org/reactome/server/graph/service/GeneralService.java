@@ -275,6 +275,10 @@ public class GeneralService {
         return generalRepository.getPathwaysFor(stableIdentifier, speciesId);
     }
 
+    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String stableIdentifier, Long speciesId){
+        return generalRepository.getPathwaysForAllFormsOf(stableIdentifier, speciesId);
+    }
+
     // Get Person
 
 //    equals person name
