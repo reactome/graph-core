@@ -1,9 +1,11 @@
 package org.reactome.server.graph.repository;
 
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.Person;
+import org.reactome.server.graph.domain.model.ReferenceEntity;
+import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
-import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
@@ -33,12 +35,6 @@ public interface GeneralRepository extends GraphRepository<DatabaseObject> {
 
     @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(Long dbId);
-
-    @Query("MATCH (n:DatabaseObject{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-()<-[:hasEvent]-(m:Pathway), (m)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(m.dbId) as dbId, m.stId as stId, m.displayName as displayName, labels(m) as labels UNION MATCH(n:ReactionLikeEvent{stId:{0}})<-[:hasEvent]-(m:Pathway), (m)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(m.dbId) as dbId, m.stId as stId, m.displayName as displayName, labels(m) as labels UNION MATCH(p:Pathway{stId:{0}}), (p)-[:species]->(s:Species{dbId:{1}}) RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
-    Collection<SimpleDatabaseObject> getPathwaysFor(String stId, Long speciesId);
-
-    @Query("MATCH (:PhysicalEntity{stId:{0}})-[:referenceEntity]->(re:ReferenceEntity) WITH re MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway), (p)-[:species]->(s:Species{dbId:48887}) RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
-    Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String stId, Long speciesId);
 
     @Query("Match (n:Person) Where n.surname =~ {0} OR n.firstname =~ {0} RETURN n")
     Collection<Person> findPersonByName(String name);

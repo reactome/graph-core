@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
-import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
@@ -23,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -471,30 +469,6 @@ public class GeneralServiceTest {
         assertEquals(1662, observedChemicals.size());
         logger.info("Finished");
     }
-
-
-    @Test
-    public void getPathwaysForTest(){
-        logger.info("Started testing genericService.getPathwaysForTest");
-        long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = generalService.getPathwaysFor("R-ALL-113592", 48887L);
-        long time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592) in human", pathways.size() >= 429);
-    }
-
-    @Test
-    public void getPathwaysForAllFormsOfTest(){
-        logger.info("Started testing genericService.getPathwaysForAllFormsOfTest");
-        long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = generalService.getPathwaysForAllFormsOf("R-ALL-113592", 48887L);
-        long time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertTrue("There should be 591 or more pathways for all forms of ATP (R-ALL-113592) in human", pathways.size() >= 591);
-    }
-
 
 
     @Test

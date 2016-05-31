@@ -1,10 +1,11 @@
 package org.reactome.server.graph.service;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.ReferenceEntity;
+import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
-import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.repository.GeneralNeo4jOperationsRepository;
 import org.reactome.server.graph.repository.GeneralRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
@@ -267,14 +268,6 @@ public class GeneralService {
 
     public Collection<ComponentOf> getComponentsOf(Long dbId) {
         return generalRepository.getComponentsOf(dbId);
-    }
-
-    public Collection<SimpleDatabaseObject> getPathwaysFor(String stId, Long speciesId){
-        return generalRepository.getPathwaysFor(stId, speciesId);
-    }
-
-    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String stId, Long speciesId){
-        return generalRepository.getPathwaysForAllFormsOf(stId, speciesId);
     }
 
     // Gets release version
