@@ -84,12 +84,12 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testFindByStId() throws InvocationTargetException, IllegalAccessException {
+    public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing eventService.findByStableIdentifier");
+        logger.info("Started testing eventService.findByStId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = eventService.findByStableIdentifier(stId);
+        DatabaseObject databaseObjectObserved = eventService.findByStId(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

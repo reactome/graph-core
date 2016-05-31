@@ -17,19 +17,20 @@ import java.util.Collection;
 public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject>{
 
     DatabaseObject findByDbId(Long dbId);
-    DatabaseObject findByStableIdentifier(String stableIdentifier);
+    DatabaseObject findByStId(String stId);
 
     @Query("MATCH (n:DatabaseObject{dbId:{0}}) RETURN n")
     DatabaseObject findByDbIdNoRelations(Long dbId);
 
-    @Query("MATCH (n:DatabaseObject{stableIdentifier:{0}}) RETURN n")
-    DatabaseObject findByStableIdentifierNoRelations(String stableIdentifier);
+    @Query("MATCH (n:DatabaseObject{stId:{0}}) RETURN n")
+    DatabaseObject findByStIdNoRelations(String stId);
 
     @Query("MATCH (n:DatabaseObject) WHERE n.dbId IN {0} RETURN n")
     Collection<DatabaseObject> findByDbIdsNoRelations(Collection<Long> dbIds);
 
-    @Query("MATCH (n:DatabaseObject) WHERE n.stableIdentifier IN {0} RETURN n")
-    Collection<DatabaseObject> findByStableIdentifiersNoRelations(Collection<String> stableIdentifiers);
+    @Query("MATCH (n:DatabaseObject) WHERE n.stId IN {0} RETURN n")
+    Collection<DatabaseObject> findByStIdsNoRelations(Collection<String> stId);
+
 
 
 }

@@ -10,6 +10,7 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
+import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails("R-HSA-1302721");
+        ContentDetails contentDetails = detailsService.getContentDetails(stId, false);
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 
@@ -98,7 +99,7 @@ public class DetailsServiceTest {
 
         long start, time;
         start = System.currentTimeMillis();
-        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInThePathwayBrowserHierarchy(databaseObject);
+        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInThePathwayBrowserHierarchy(databaseObject, false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -112,7 +113,7 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowserHierarchyById");
         long start, time;
         start = System.currentTimeMillis();
-        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInThePathwayBrowserHierarchy(stId);
+        Set<PathwayBrowserNode> nodes = detailsService.getLocationsInThePathwayBrowserHierarchy(stId, false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -124,15 +125,15 @@ public class DetailsServiceTest {
     public void getLocationsInThePathwayBrowserTest() {
 
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowser");
-        DatabaseObject databaseObject = generalService.find(stId, RelationshipDirection.OUTGOING);
+        DatabaseObject databaseObject = generalService.find("R-HSA-5205630", RelationshipDirection.OUTGOING);
 
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = detailsService.getLocationsInThePathwayBrowser(databaseObject);
+        PathwayBrowserNode node = detailsService.getLocationsInThePathwayBrowser(databaseObject, false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1, node.getChildren().size());
+        assertEquals(3, node.getChildren().size());
         logger.info("Finished");
     }
 
@@ -142,11 +143,28 @@ public class DetailsServiceTest {
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowserById");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = detailsService.getLocationsInThePathwayBrowser(stId);
+        PathwayBrowserNode node = detailsService.getLocationsInThePathwayBrowser(stId, false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(1, node.getChildren().size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getLocationsInThePathwayBrowserForInteractorsTest() {
+
+        logger.info("Started testing detailsService.getLocationsInThePathwayBrowserForInteractorsTest");
+        // R-HSA-5205630 interacts with FUND1
+        DatabaseObject databaseObject = generalService.find("R-HSA-5205630", RelationshipDirection.OUTGOING);
+
+        long start, time;
+        start = System.currentTimeMillis();
+        PathwayBrowserNode node = detailsService.getLocationsInThePathwayBrowser(databaseObject, true);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, node.getChildren().size());
         logger.info("Finished");
     }
 }

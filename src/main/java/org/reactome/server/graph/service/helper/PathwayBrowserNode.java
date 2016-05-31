@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service.helper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.TreeSet;
@@ -10,6 +12,7 @@ import java.util.TreeSet;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 06.04.16.
  */
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="stId")
 public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     private String stId;
@@ -18,10 +21,18 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     private String url;
     private String type;
     private Boolean diagram;
+    @JsonIgnore
     private Boolean unique;
 
+    @JsonIgnore
+    private boolean highlighted ;
+    @JsonIgnore
+    private boolean clickable;
+
     private Set<PathwayBrowserNode> children;
+    @JsonIgnore
     private Set<PathwayBrowserNode> parent;
+
 
     public void addParent(PathwayBrowserNode node) {
         if (parent==null) {
@@ -36,6 +47,7 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
         children.add(node);
     }
 
+    @JsonIgnore
     public Set<PathwayBrowserNode> getLeaves() {
         Set<PathwayBrowserNode> leaves = new TreeSet<>();
         if (this.children == null) {
@@ -131,6 +143,22 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     public void setParent(Set<PathwayBrowserNode> parent) {
         this.parent = parent;
+    }
+
+    public boolean getHighlighted() {
+        return highlighted;
+    }
+
+    public void setHighlighted(boolean highlighted) {
+        this.highlighted = highlighted;
+    }
+
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
     }
 
     @Override

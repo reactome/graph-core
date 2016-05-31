@@ -12,7 +12,10 @@ public class Taxon extends DatabaseObject {
 
     @ReactomeProperty
     private List<String> name;
+    @ReactomeProperty
+    private String taxId;
 
+    @Deprecated
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
 
@@ -29,10 +32,20 @@ public class Taxon extends DatabaseObject {
         this.name = name;
     }
 
+    public String getTaxId() {
+        return taxId;
+    }
+
+    public void setTaxId(String taxId) {
+        this.taxId = taxId;
+    }
+
+    @Deprecated
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
     }
 
+    @Deprecated
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }

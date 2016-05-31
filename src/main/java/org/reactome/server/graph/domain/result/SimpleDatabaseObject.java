@@ -14,7 +14,7 @@ public class SimpleDatabaseObject {
 
     private Long dbId;
 
-    private String stableIdentifier;
+    private String stId;
 
     private String displayName;
 
@@ -30,12 +30,12 @@ public class SimpleDatabaseObject {
         this.dbId = dbId;
     }
 
-    public String getStableIdentifier() {
-        return stableIdentifier;
+    public String getStId() {
+        return stId;
     }
 
-    public void setStableIdentifier(String stableIdentifier) {
-        this.stableIdentifier = stableIdentifier;
+    public void setStId(String stId) {
+        this.stId = stId;
     }
 
     public String getDisplayName() {

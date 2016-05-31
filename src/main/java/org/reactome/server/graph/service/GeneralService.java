@@ -53,7 +53,7 @@ public class GeneralService {
     public <T> T findNoRelation(Class<T> clazz, String id) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return generalNeo4jOperationsRepository.findByStableIdentifierNoRelations(clazz, id);
+            return generalNeo4jOperationsRepository.findByStIdNoRelations(clazz, id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return generalNeo4jOperationsRepository.findByDbIdNoRelations(clazz, Long.parseLong(id));
         }
@@ -63,7 +63,7 @@ public class GeneralService {
     public DatabaseObject find(String id, RelationshipDirection direction) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return generalNeo4jOperationsRepository.findByStableIdentifier(id, direction);
+            return generalNeo4jOperationsRepository.findByStId(id, direction);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return generalNeo4jOperationsRepository.findByDbId(Long.parseLong(id), direction);
         }
@@ -73,7 +73,7 @@ public class GeneralService {
     public DatabaseObject find(String id, RelationshipDirection direction, String... relationships) {
         id = DatabaseObjectUtils.trimId(id);
         if (DatabaseObjectUtils.isStId(id)) {
-            return generalNeo4jOperationsRepository.findByStableIdentifier(id, direction, relationships);
+            return generalNeo4jOperationsRepository.findByStId(id, direction, relationships);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return generalNeo4jOperationsRepository.findByDbId(Long.parseLong(id), direction, relationships);
         }
@@ -128,16 +128,16 @@ public class GeneralService {
         return generalNeo4jOperationsRepository.findByDbIdNoRelations(clazz, dbId);
     }
 
-    public <T> T findByStableIdentifierNoRelations(Class<T> clazz, String stableIdentifier) {
-        return generalNeo4jOperationsRepository.findByStableIdentifierNoRelations(clazz, stableIdentifier);
+    public <T> T findByStIdNoRelations(Class<T> clazz, String stId) {
+        return generalNeo4jOperationsRepository.findByStIdNoRelations(clazz, stId);
     }
 
     public <T> Iterable<T> findByDbIdsNoRelations(Class<T> clazz, Collection<Long> dbIds) {
         return generalNeo4jOperationsRepository.findByDbIdsNoRelations(clazz, dbIds);
     }
 
-    public <T> Iterable<T> findByStableIdentifiersNoRelations(Class<T> clazz, Collection<String> stableIdentifiers) {
-        return generalNeo4jOperationsRepository.findByStableIdentifiersNoRelations(clazz, stableIdentifiers);
+    public <T> Iterable<T> findByStIdsNoRelations(Class<T> clazz, Collection<String> stIds) {
+        return generalNeo4jOperationsRepository.findByStIdsNoRelations(clazz, stIds);
     }
 
     // Finder Methods with RelationshipDirection and Relationships
@@ -146,32 +146,32 @@ public class GeneralService {
         return generalNeo4jOperationsRepository.findByDbId(dbId, direction);
     }
 
-    public DatabaseObject findByStableIdentifier(String stableIdentifier, RelationshipDirection direction) {
-        return generalNeo4jOperationsRepository.findByStableIdentifier(stableIdentifier, direction);
+    public DatabaseObject findByStId(String stId, RelationshipDirection direction) {
+        return generalNeo4jOperationsRepository.findByStId(stId, direction);
     }
 
     public DatabaseObject findByDbId (Long dbId, RelationshipDirection direction, String... relationships) {
         return generalNeo4jOperationsRepository.findByDbId(dbId, direction, relationships);
     }
 
-    public DatabaseObject findByStableIdentifier (String stableIdentifier, RelationshipDirection direction, String... relationships) {
-        return generalNeo4jOperationsRepository.findByStableIdentifier(stableIdentifier, direction, relationships);
+    public DatabaseObject findByStId (String stId, RelationshipDirection direction, String... relationships) {
+        return generalNeo4jOperationsRepository.findByStId(stId, direction, relationships);
     }
 
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
         return generalNeo4jOperationsRepository.findByDbIds(dbIds, direction);
     }
 
-    public Collection<DatabaseObject> findByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction) {
-        return generalNeo4jOperationsRepository.findByStableIdentifiers(stableIdentifiers, direction);
+    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction) {
+        return generalNeo4jOperationsRepository.findByStIds(stIds, direction);
     }
 
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
         return generalNeo4jOperationsRepository.findByDbIds(dbIds, direction, relationships);
     }
 
-    public Collection<DatabaseObject> findByStableIdentifiers(Collection<String> stableIdentifiers, RelationshipDirection direction, String... relationships) {
-        return generalNeo4jOperationsRepository.findByStableIdentifiers(stableIdentifiers, direction, relationships);
+    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
+        return generalNeo4jOperationsRepository.findByStIds(stIds, direction, relationships);
     }
 
     // Find by Class Name
@@ -219,8 +219,8 @@ public class GeneralService {
         generalNeo4jOperationsRepository.delete(dbId);
     }
 
-    public void delete(String stableIdentifier) {
-        generalNeo4jOperationsRepository.delete(stableIdentifier);
+    public void delete(String stId) {
+        generalNeo4jOperationsRepository.delete(stId);
     }
 
     // Method for querying without mapping to Objects
@@ -261,40 +261,20 @@ public class GeneralService {
 
     // Gets componentsOf relation (hasEvent, input, output, ...)
 
-    public Collection<ComponentOf> getComponentsOf(String stableIdentifier) {
-        return generalRepository.getComponentsOf(stableIdentifier);
+    public Collection<ComponentOf> getComponentsOf(String stId) {
+        return generalRepository.getComponentsOf(stId);
     }
 
     public Collection<ComponentOf> getComponentsOf(Long dbId) {
         return generalRepository.getComponentsOf(dbId);
     }
 
-
-
-    public Collection<SimpleDatabaseObject> getPathwaysFor(String stableIdentifier, Long speciesId){
-        return generalRepository.getPathwaysFor(stableIdentifier, speciesId);
+    public Collection<SimpleDatabaseObject> getPathwaysFor(String stId, Long speciesId){
+        return generalRepository.getPathwaysFor(stId, speciesId);
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String stableIdentifier, Long speciesId){
-        return generalRepository.getPathwaysForAllFormsOf(stableIdentifier, speciesId);
-    }
-
-    // Get Person
-
-//    equals person name
-    public Collection<Person> findPersonByName(String name) {
-        name = "(?i)" + name;
-        return generalRepository.findPersonByName(name);
-    }
-
-//    contains person name
-    public Collection<Person> queryPersonByName(String name) {
-        name = ".*(?i)" + name + ".*";
-        return generalRepository.findPersonByName(name);
-    }
-
-    public Collection<Pathway> findAuthoredPathways(Long dbId) {
-        return generalRepository.findAuthoredPathways(dbId);
+    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String stId, Long speciesId){
+        return generalRepository.getPathwaysForAllFormsOf(stId, speciesId);
     }
 
     // Gets release version
