@@ -66,11 +66,6 @@ public class DetailsRepository {
             previousSize = size;
         }
 
-//        Set<PathwayBrowserNode> g = root.getChildren();
-//        for(PathwayBrowserNode p : g) {
-//            p.setHighlighted(true);
-//            p.setClickable(true);
-//        }
         return root;
     }
 
@@ -89,7 +84,6 @@ public class DetailsRepository {
         }
 
         return getLocationsInPathwayBrowserResult(databaseObject, result);
-
     }
 
     /**
@@ -235,6 +229,11 @@ public class DetailsRepository {
         node.setStId(databaseObject.getStId());
         node.setName(databaseObject.getDisplayName());
         node.setType(databaseObject.getSchemaClass());
+
+        /** Root by default is clickable and highlighted **/
+        node.setClickable(true);
+        node.setHighlighted(true);
+
         if (databaseObject instanceof Event) {
             Event event = (Event) databaseObject;
             node.setSpecies(event.getSpeciesName());
@@ -263,7 +262,22 @@ public class DetailsRepository {
         node.setDiagram((Boolean) nodePairCollection.get(2));
         node.setSpecies((String) nodePairCollection.get(3));
         node.setType(DatabaseObjectUtils.getSchemaClass((Collection<String>) nodePairCollection.get(4)));
+
+        doHighlighting(node);
+
         return node;
+    }
+
+    private void doHighlighting(PathwayBrowserNode node) {
+        if (node.getType().equals("ToplevelPathway")) {
+            node.setClickable(true);
+            node.setHighlighted(false);
+        }
+
+        if (node.getType().contains("Reaction") || node.getType().equals("BlackBoxEvent") || node.getType().contains("Polymerisation")) {
+            node.setClickable(true);
+            node.setHighlighted(true);
+        }
     }
 }
 

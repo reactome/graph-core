@@ -105,6 +105,8 @@ public abstract class PathwayBrowserLocationsUtils {
         tree.setName(leaf.getName());
         tree.setSpecies(leaf.getSpecies());
         tree.setType(leaf.getType());
+        tree.setClickable(leaf.isClickable());
+        tree.setHighlighted(leaf.getHighlighted());
 
         boolean isPathway = leaf.getType().equals(Pathway.class.getSimpleName()) || leaf.getType().equals(TopLevelPathway.class.getSimpleName());
         boolean hasDiagram = leaf.hasDiagram();
@@ -187,15 +189,8 @@ public abstract class PathwayBrowserLocationsUtils {
             for (PathwayBrowserNode node : parents) {
                 tree.addChild(getTreeFromGraphLeaf(node, sel, path, shortPath, lastNodeWithDiagram));
             }
-        } else {
-            Set<PathwayBrowserNode> highlightedChildren = leaf.getChildren();
-            for (PathwayBrowserNode child : highlightedChildren) {
-                child.setClickable(true);
-                child.setHighlighted(true);
-            }
-            leaf.setClickable(true);
-            leaf.setHighlighted(true);
         }
+
         return tree;
     }
 }
