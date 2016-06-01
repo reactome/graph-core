@@ -122,12 +122,21 @@ public abstract class DatabaseObjectUtils {
         return id.trim().split("\\.")[0];
     }
 
+    public static String getIdentifier(Object id){
+        if (id instanceof String) {
+            return trimId((String) id);
+        } else if (id instanceof Number && !(id instanceof Double)) {
+            return id.toString();
+        }
+        return null;
+    }
+
     public static boolean isStId(String id) {
-        return id.startsWith("R");
+        return id != null && id.startsWith("R");
     }
 
     public static boolean isDbId(String id) {
-        return StringUtils.isNumeric(id);
+        return id != null && StringUtils.isNumeric(id);
     }
 
     public static Class getClassForName(String className) throws ClassNotFoundException {
