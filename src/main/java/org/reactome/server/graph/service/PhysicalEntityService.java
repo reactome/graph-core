@@ -23,22 +23,14 @@ public class PhysicalEntityService {
     @Autowired
     private PhysicalEntityRepository physicalEntityRepository;
 
-    public PhysicalEntity findById(String id) {
-        id = DatabaseObjectUtils.trimId(id);
+    public PhysicalEntity findById(Object identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return physicalEntityRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return physicalEntityRepository.findByDbId(Long.parseLong(id));
         }
         return null;
-    }
-
-    public PhysicalEntity findByDbId(Long dbId) {
-        return physicalEntityRepository.findByDbId(dbId);
-    }
-
-    public PhysicalEntity findByStId(String stId) {
-        return physicalEntityRepository.findByStId(stId);
     }
 
     public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId) {

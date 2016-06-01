@@ -74,7 +74,7 @@ public class PhysicalEntityServiceTest {
         logger.info("Started testing physicalEntityService.findByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = physicalEntityService.findByDbId(dbId);
+        DatabaseObject databaseObjectObserved = physicalEntityService.findById(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -94,7 +94,7 @@ public class PhysicalEntityServiceTest {
         logger.info("Started testing physicalEntityService.findByStId");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = physicalEntityService.findByStId(stId);
+        DatabaseObject databaseObjectObserved = physicalEntityService.findById(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
