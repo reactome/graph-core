@@ -25,7 +25,7 @@ public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathw
     @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {0}  RETURN n")
     Collection<TopLevelPathway> getTopLevelPathways(String speciesName);
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s)-[:crossReference]-(c:DatabaseIdentifier) WHERE c.identifier={0} RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(s:{taxId:{0}}) RETURN n")
     Collection<TopLevelPathway> getTopLevelPathwaysByTaxId(String taxId);
 
     @Query("Match (n:TopLevelPathway) Where n.isInferred = false  RETURN n")

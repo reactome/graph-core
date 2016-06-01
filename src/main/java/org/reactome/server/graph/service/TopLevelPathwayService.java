@@ -25,11 +25,11 @@ public class TopLevelPathwayService {
         return topLevelPathwayRepository.getTopLevelPathways();
     }
 
-    public Collection<TopLevelPathway> getTopLevelPathways(Long speciesId) {
+    public Collection<TopLevelPathway> getTopLevelPathwaysById(Long speciesId) {
         return topLevelPathwayRepository.getTopLevelPathways(speciesId);
     }
 
-    public Collection<TopLevelPathway> getTopLevelPathways(String speciesName) {
+    public Collection<TopLevelPathway> getTopLevelPathwaysByName(String speciesName) {
         return topLevelPathwayRepository.getTopLevelPathways(speciesName);
     }
 
@@ -41,11 +41,11 @@ public class TopLevelPathwayService {
         return topLevelPathwayRepository.getCuratedTopLevelPathways();
     }
 
-    public Collection<TopLevelPathway> getCuratedTopLevelPathways(Long speciesId) {
+    public Collection<TopLevelPathway> getCuratedTopLevelPathwaysById(Long speciesId) {
         return topLevelPathwayRepository.getCuratedTopLevelPathways(speciesId);
     }
 
-    public Collection<TopLevelPathway> getCuratedTopLevelPathways(String speciesName) {
+    public Collection<TopLevelPathway> getCuratedTopLevelPathwaysByName(String speciesName) {
         return topLevelPathwayRepository.getCuratedTopLevelPathways(speciesName);
     }
 

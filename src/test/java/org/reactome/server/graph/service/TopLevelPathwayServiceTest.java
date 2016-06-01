@@ -64,7 +64,7 @@ public class TopLevelPathwayServiceTest {
 
     @Test
     public void testGetTopLevelPathwaysTest() {
-        logger.info("Started testing genericService.getTopLevelPathways");
+        logger.info("Started testing genericService.testGetTopLevelPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
         Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getTopLevelPathways();
@@ -81,11 +81,11 @@ public class TopLevelPathwayServiceTest {
     }
 
     @Test
-    public void getTopLevelPathwaysWithNameTest() {
-        logger.info("Started testing genericService.getTopLevelPathwaysWithName");
+    public void getTopLevelPathwaysByNameTest() {
+        logger.info("Started testing genericService.getTopLevelPathwaysByNameTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getTopLevelPathways("Homo sapiens");
+        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getTopLevelPathwaysByName("Homo sapiens");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -94,11 +94,11 @@ public class TopLevelPathwayServiceTest {
     }
 
     @Test
-    public void getTopLevelPathwaysWithIdTest() {
-        logger.info("Started testing genericService.getTopLevelPathwaysWithId");
+    public void getTopLevelPathwaysByIdTest() {
+        logger.info("Started testing genericService.getTopLevelPathwaysByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getTopLevelPathways(48887L);
+        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getTopLevelPathwaysById(48887L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -121,7 +121,7 @@ public class TopLevelPathwayServiceTest {
 
     @Test
     public void getCuratedTopLevelPathwaysTest() {
-        logger.info("Started testing genericService.getCuratedTopLevelPathways");
+        logger.info("Started testing genericService.getCuratedTopLevelPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
         Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getCuratedTopLevelPathways();
@@ -133,11 +133,11 @@ public class TopLevelPathwayServiceTest {
     }
 
     @Test
-    public void getCuratedTopLevelPathwaysWithNameTest() {
-        logger.info("Started testing genericService.getCuratedTopLevelPathwaysWithName");
+    public void getCuratedTopLevelPathwaysByNameTest() {
+        logger.info("Started testing genericService.getCuratedTopLevelPathwaysByNameTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getCuratedTopLevelPathways("Homo sapiens");
+        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getCuratedTopLevelPathwaysByName("Homo sapiens");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -146,11 +146,11 @@ public class TopLevelPathwayServiceTest {
     }
 
     @Test
-    public void getCuratedTopLevelPathwaysWithIdTest() {
-        logger.info("Started testing genericService.getCuratedTopLevelPathwaysWithId");
+    public void getCuratedTopLevelPathwaysByIdTest() {
+        logger.info("Started testing genericService.getCuratedTopLevelPathwaysByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getCuratedTopLevelPathways(48887L);
+        Collection<TopLevelPathway> observedTlps = topLevelPathwayService.getCuratedTopLevelPathwaysById(48887L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
