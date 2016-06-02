@@ -81,7 +81,7 @@ public class PersonServiceTest {
         logger.info("Started testing genericService.queryPersonByName");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Person> persons = personService.queryPersonByName("steve");
+        Collection<Person> persons = personService.queryPersonByName("steve jupe");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

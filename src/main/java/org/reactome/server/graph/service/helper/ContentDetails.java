@@ -16,7 +16,7 @@ import java.util.Set;
 public class ContentDetails {
 
     private DatabaseObject databaseObject;
-    private Set<PathwayBrowserNode> leaves;
+    private Set<PathwayBrowserNode> nodes;
     private Collection<ComponentOf> componentOf;
     private Collection<PhysicalEntity> otherFormsOfThisMolecule;
 
@@ -38,12 +38,12 @@ public class ContentDetails {
         this.databaseObject = databaseObject;
     }
 
-    public Set<PathwayBrowserNode> getLeaves() {
-        return leaves;
+    public Set<PathwayBrowserNode> getNodes() {
+        return nodes;
     }
 
-    public void setLeaves(Set<PathwayBrowserNode> leaves) {
-        this.leaves = leaves;
+    public void setNodes(Set<PathwayBrowserNode> nodes) {
+        this.nodes = nodes;
     }
 
     public Collection<PhysicalEntity> getOtherFormsOfThisMolecule() {

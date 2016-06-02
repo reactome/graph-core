@@ -14,6 +14,7 @@ import java.util.Collection;
  * @since 18.05.16.
  */
 @Service
+@SuppressWarnings("WeakerAccess")
 public class TopLevelPathwayService {
 
     @Autowired
@@ -26,11 +27,11 @@ public class TopLevelPathwayService {
     }
 
     public Collection<TopLevelPathway> getTopLevelPathwaysById(Long speciesId) {
-        return topLevelPathwayRepository.getTopLevelPathways(speciesId);
+        return topLevelPathwayRepository.getTopLevelPathwaysById(speciesId);
     }
 
     public Collection<TopLevelPathway> getTopLevelPathwaysByName(String speciesName) {
-        return topLevelPathwayRepository.getTopLevelPathways(speciesName);
+        return topLevelPathwayRepository.getTopLevelPathwaysByName(speciesName);
     }
 
     public Collection<TopLevelPathway> getTopLevelPathwaysByTaxId(String taxId) {
@@ -42,11 +43,11 @@ public class TopLevelPathwayService {
     }
 
     public Collection<TopLevelPathway> getCuratedTopLevelPathwaysById(Long speciesId) {
-        return topLevelPathwayRepository.getCuratedTopLevelPathways(speciesId);
+        return topLevelPathwayRepository.getCuratedTopLevelPathwaysById(speciesId);
     }
 
     public Collection<TopLevelPathway> getCuratedTopLevelPathwaysByName(String speciesName) {
-        return topLevelPathwayRepository.getCuratedTopLevelPathways(speciesName);
+        return topLevelPathwayRepository.getCuratedTopLevelPathwaysByName(speciesName);
     }
 
     public Collection<TopLevelPathway> getCuratedTopLevelPathwaysByTaxId(String taxId){

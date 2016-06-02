@@ -68,7 +68,7 @@ public class ParticipantServiceTest {
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
      * possibly change when content is added to reactome. This method will provide all participating ReferenceEntities
-     * (even if the tests participatingMolecules 2 and 3 will provide 23, in this casee 22 is the correct number)
+     * (even if the tests participatingMolecules 2 and 3 will provide 23, in this case 22 is the correct number)
      */
     @Test
     public void testGetParticipatingReferenceEntitiesByStId() {
@@ -103,7 +103,7 @@ public class ParticipantServiceTest {
 
     /**
      * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-     * possibly change when content is added to reactome. This method will provide all participating Ewases
+     * possibly change when content is added to reactome. This method will provide all participating Ewas
      * of an Event and their ReferenceEntities dbIds and names.
      */
     @Test

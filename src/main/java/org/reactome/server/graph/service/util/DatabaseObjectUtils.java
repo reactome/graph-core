@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by:
@@ -94,15 +95,12 @@ public abstract class DatabaseObjectUtils {
      * If the entry is available in more the one species,
      * we show all present species and then the user can choose
      * them in a dropdown list.
-     * This method just prepare the species list where the HomoSapiens is the first
-     * and the following species sorted without the HomoSapiens.
+     * This method just prepare the species list where the Homo sapiens is the first
+     * and the following species sorted without the Homo sapiens.
      */
     @SuppressWarnings("unused")
     public static List<String> getAvailableSpecies(Set<PathwayBrowserNode> graph) {
-        Set<String> availableSpecies = new TreeSet<>();
-        for (PathwayBrowserNode n : graph) {
-            availableSpecies.add(n.getSpecies());
-        }
+        Set<String> availableSpecies = graph.stream().map(PathwayBrowserNode::getSpecies).collect(Collectors.toCollection(TreeSet::new));
 
         final String DEFAULT_SPECIES = "Homo sapiens";
         List<String> newAvailableSpecies = new ArrayList<>();
@@ -111,15 +109,9 @@ public abstract class DatabaseObjectUtils {
             availableSpecies.remove(DEFAULT_SPECIES);
         }
 
-        for (String species : availableSpecies) {
-            newAvailableSpecies.add(species);
-        }
+        newAvailableSpecies.addAll(availableSpecies);
 
         return newAvailableSpecies;
-    }
-
-    public static String trimId(String id) {
-        return id.trim().split("\\.")[0];
     }
 
     public static String getIdentifier(Object id){
@@ -164,6 +156,10 @@ public abstract class DatabaseObjectUtils {
             return str;
         }
         return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    private static String trimId(String id) {
+        return id.trim().split("\\.")[0];
     }
 
     private static void recursion(Class clazz, SchemaNode oldNode, int count) {

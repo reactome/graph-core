@@ -15,8 +15,8 @@ import java.util.Collection;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 31.05.16.
  */
-@SuppressWarnings("WeakerAccess")
 @Service
+@SuppressWarnings("WeakerAccess")
 public class PersonService {
 
     @Autowired

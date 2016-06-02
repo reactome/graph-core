@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 06.04.16.
  */
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="stId")
+@SuppressWarnings("unused")
 public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     private String stId;

@@ -20,14 +20,14 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public class GeneralNeo4jOperationsRepository {
+public class GeneralTemplateRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(GeneralNeo4jOperationsRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeneralTemplateRepository.class);
 
     @Autowired
     private Neo4jOperations neo4jTemplate;
 
-    // Find by property and depth
+    // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
     public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
         return neo4jTemplate.loadByProperty(clazz,property, value, depth);
@@ -37,83 +37,31 @@ public class GeneralNeo4jOperationsRepository {
         return neo4jTemplate.loadAllByProperty(clazz, property, value, depth);
     }
 
-//    todo Method is currently broken report to SDN
-    @Deprecated
-    public <T> Collection<T> findByProperties(Class<T> clazz, String property, Collection<Object> values, Integer depth) {
-        return neo4jTemplate.loadAllByProperty(clazz,property, values, depth);
-    }
+    // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
-    // Default Finder Methods
-
-////    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> T findByDbId(Class<T> clazz, Long dbId) {
-//        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("dbId", dbId);
-//        return neo4jTemplate.queryForObject(clazz, query, map);
-//    }
-//
-////    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
-//        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]-(m) RETURN n";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("stableIdentifier", stableIdentifier);
-//        return neo4jTemplate.queryForObject(clazz, query, map);
-//    }
-//
-////    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
-//        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("dbIds", dbIds);
-//        return neo4jTemplate.queryForObjects(clazz, query, map);
-//    }
-//
-////    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
-//        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("stableIdentifiers", stableIdentifiers);
-//        return neo4jTemplate.queryForObjects(clazz, query, map);
-//    }
-
-    // Finder Methods without Relationships
-
-    public <T> T findByDbIdNoRelations(Class<T> clazz, Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}}) RETURN n";
+    public DatabaseObject findEnhancedObjectById(Long dbId) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity]-(o) RETURN n,r1,m,r2,o";
         Map<String,Object> map = new HashMap<>();
         map.put("dbId", dbId);
-        return neo4jTemplate.queryForObject(clazz, query, map);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
     }
 
-    public <T> T findByStIdNoRelations(Class<T> clazz, String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}}) RETURN n";
+    public DatabaseObject findEnhancedObjectById(String stId) {
+        String query = "Match (n:DatabaseObject{stId:{stId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity]-(o) RETURN n,r1,m,r2,o";
         Map<String,Object> map = new HashMap<>();
         map.put("stId", stId);
-        return neo4jTemplate.queryForObject(clazz, query, map);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
     }
 
-    public <T> Iterable<T> findByDbIdsNoRelations(Class<T> clazz, Collection<Long> dbIds) {
-        String query = "Match (n:DatabaseObject) WHERE n.dbId IN {dbIds} RETURN n";
-        Map<String,Object> map = new HashMap<>();
-        map.put("dbIds", dbIds);
-        return neo4jTemplate.queryForObjects(clazz, query, map);
-    }
+    // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
-    public <T> Iterable<T> findByStIdsNoRelations(Class<T> clazz, Collection<String> stId) {
-        String query = "Match (n:DatabaseObject) WHERE n.stId IN {stId} RETURN n";
-        Map<String, Object> map = new HashMap<>();
-        map.put("stId", stId);
-        return neo4jTemplate.queryForObjects(clazz, query, map);
-    }
-
-    // Finder Methods with RelationshipDirection and Relationships
-
-    public DatabaseObject findByDbId(Long dbId, RelationshipDirection direction) {
+    public DatabaseObject findById(Long dbId, RelationshipDirection direction) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -133,7 +81,7 @@ public class GeneralNeo4jOperationsRepository {
         return null;
     }
 
-    public DatabaseObject findByStId(String stId, RelationshipDirection direction) {
+    public DatabaseObject findById(String stId, RelationshipDirection direction) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -153,7 +101,7 @@ public class GeneralNeo4jOperationsRepository {
         return null;
     }
 
-    public DatabaseObject findByDbId (Long dbId, RelationshipDirection direction, String... relationships) {
+    public DatabaseObject findById (Long dbId, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -174,7 +122,7 @@ public class GeneralNeo4jOperationsRepository {
         return null;
     }
 
-    public DatabaseObject findByStId (String stId, RelationshipDirection direction, String... relationships) {
+    public DatabaseObject findById (String stId, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -285,11 +233,13 @@ public class GeneralNeo4jOperationsRepository {
         return databaseObjects;
     }
 
+    // ---------------------------------------- Class Level Operations -------------------------------------------------
+
     // Find by Class Name
 
     public <T> Collection<T> findObjectsByClassName(Class<T> clazz) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
-        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, Collections.<String, Object>emptyMap());
+        return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, Collections.emptyMap());
     }
 
     public <T> Collection<T> findObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
@@ -304,7 +254,7 @@ public class GeneralNeo4jOperationsRepository {
 
     public Collection<String> findSimpleReferencesByClassName(String className) {
         String query = "Match (n:" + className + ") RETURN n.dbId AS dbId, n.databaseName AS databaseName, n.identifier AS identifier ";
-        Result result = neo4jTemplate.query(query, Collections.<String, Object>emptyMap());
+        Result result = neo4jTemplate.query(query, Collections.emptyMap());
         Collection<String> simpleRefs = new ArrayList<>();
         for (Map<String, Object> stringObjectMap : result) {
             simpleRefs.add(stringObjectMap.get("dbId") + "\t" + stringObjectMap.get("databaseName") + ":" + stringObjectMap.get("identifier"));
@@ -312,9 +262,18 @@ public class GeneralNeo4jOperationsRepository {
         return simpleRefs;
     }
 
+    public Long countEntries(Class<?> clazz) {
+        return neo4jTemplate.count(clazz);
+    }
 
 
-    // Save and Delete
+    // --------------------------------------.. Generic Query Methods --------------------------------------------------
+
+    public Result query (String query, Map<String,Object> map) {
+        return neo4jTemplate.query(query,map);
+    }
+
+    // ------------------------------------------- Save and Delete -----------------------------------------------------
 
     public <T extends DatabaseObject> T save(T t) {
         return neo4jTemplate.save(t);
@@ -342,24 +301,12 @@ public class GeneralNeo4jOperationsRepository {
         neo4jTemplate.query(query, map);
     }
 
-    // Method for querying without mapping to Objects
-
-    public Result query (String query, Map<String,Object> map) {
-        return neo4jTemplate.query(query,map);
-    }
-
-    // Count entries of class
-
-    public Long countEntries(Class<?> clazz) {
-        return neo4jTemplate.count(clazz);
-    }
-
-    // Utility Methods used in JUnit Tests
+    // ------------------------------------ Utility Methods for JUnit Tests --------------------------------------------
 
     public boolean fitForService() {
         String query = "Match (n) Return Count(n)>0 AS fitForService";
         try {
-            Result result = neo4jTemplate.query(query, Collections.<String, Object>emptyMap());
+            Result result = neo4jTemplate.query(query, Collections.emptyMap());
             if (result != null && result.iterator().hasNext())
                 return (boolean) result.iterator().next().get("fitForService");
         } catch (Exception e) {
@@ -372,93 +319,106 @@ public class GeneralNeo4jOperationsRepository {
         neo4jTemplate.clear();
     }
 
-
-
-//    //TODO
-//    public Pathway getEventHierarchy(Long dbId) {
-//        String query = "Match (n:Event{dbId:{dbId}})-[r:hasEvent*]->(m:Event) return n,r,m";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("dbId", dbId);
-//        Result result =  neo4jTemplate.query(query, map);
-//        if (result != null && result.iterator().hasNext())
-//            return (Pathway) result.iterator().next().get("n");
-//        return null;
-//    }
-//
-//    //TODO
-//    public Object getSomeHierarchy(Long dbId) {
-//        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:hasComponent|hasMember|input|output|hasEvent*]-(m) " +
-//                "RETURN n.dbId,n.stableIdentifier,n.displayName, " +
-//                "EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName]) as nodePairCollection";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("dbId", dbId);
-//        Result result =  neo4jTemplate.query(query, map);
-//        return null;
-//    }
-//
-//
-//    //TODO
-//    public DatabaseObject getLocationsHierarchy(String stId) {
-//        String query = "Match (n:DatabaseObject{dbId:373624})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return n,r,m";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("stableIdentifier", stId);
-//        Result result =  neo4jTemplate.query(query, map);
-//        if (result != null && result.iterator().hasNext())
-//            return (DatabaseObject) result.iterator().next().get("n");
-//        return null;
-//    }
-
-
-
-//    //TODO
-//    public DatabaseObject getReferral(Long dbId, String relationshipName) {
-//
-//        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:" + relationshipName + "]-(m) Return n";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("dbId", dbId);
-//        Result result =  neo4jTemplate.query(query, map);
-//        if (result != null && result.iterator().hasNext())
-//            return (DatabaseObject) result.iterator().next().get("n");
-//        return null;
-//    }
-//    //TODO
-//    public Collection<DatabaseObject> getReferrals(Long dbId, String relationshipName) {
-//
-//        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:" + relationshipName + "]-(m) Return n";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("dbId", dbId);
-//        Result result =  neo4jTemplate.query(query, map);
-//        List<DatabaseObject> referrers = new ArrayList<>();
-//        for (Map<String, Object> stringObjectMap : result) {
-//            referrers.add((DatabaseObject) stringObjectMap.get("n"));
-//        }
-//        return referrers;
-//    }
-//
-//    public Collection<DatabaseObject> findCollectionByPropertyWithRelationships (String property, Collection<Object> values, String... relationships) {
-//
-//
-//        String query = "Match (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) WHERE n." + property + " IN {values} RETURN n,r,m";
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("values", values);
-//        Result result = neo4jTemplate.query( query, map);
-//        List<DatabaseObject> databaseObjects = new ArrayList<>();
-//        for (Map<String, Object> stringObjectMap : result) {
-//            databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
-//        }
-//        return databaseObjects;
-//
-//    }
-
-
-
-    //TODO
-    //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, endNode(rel).hasDiagram ]) as nodePairCollection
-    //TODO
-    //Match (n:DatabaseObject{stableIdentifier:"R-HSA-445133"})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|hasMember|hasComponent|input|output|hasEvent*]-(m) Return EXTRACT(rel IN r | [endNode(rel).dbId, endNode(rel).stableIdentifier, endNode(rel).displayName, labels(endNode(rel))  ]) as nodePairCollection
-
-
-
-
-
 }
+
+
+
+// Default Finder Methods
+
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> T findByDbId(Class<T> clazz, Long dbId) {
+//        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        return neo4jTemplate.queryForObject(clazz, query, map);
+//    }
+//
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
+//        String query = "Match (n:DatabaseObject{stableIdentifier:{stableIdentifier}})-[r]-(m) RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stableIdentifier", stableIdentifier);
+//        return neo4jTemplate.queryForObject(clazz, query, map);
+//    }
+//
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
+//        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbIds", dbIds);
+//        return neo4jTemplate.queryForObjects(clazz, query, map);
+//    }
+//
+////    todo could also be solved in GeneralRepository, Will not contain any relationships
+//    @Deprecated
+//    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
+//        String query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stableIdentifier IN {stableIdentifiers} RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stableIdentifiers", stableIdentifiers);
+//        return neo4jTemplate.queryForObjects(clazz, query, map);
+//    }
+
+
+
+
+
+//    TOO DANGEROUS works if you specify the "right" relationships
+//    public DatabaseObject test (Long dbId, String... relationships) {
+//        String query = "Match (n:DatabaseObject{dbId:51925})-[r1]-(m) OPTIONAL MATCH (n)-[" +
+//                RepositoryUtils.getRelationshipAsString(relationships) +
+//                "]-()-[r2]-(l) RETURN n,r,m,r2,l";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        Result result =  neo4jTemplate.query(query, map);
+//        if (result != null && result.iterator().hasNext())
+//            return (DatabaseObject) result.iterator().next().get("n");
+//        return null;
+//    }
+//
+//
+//    public DatabaseObject test (String stId, String... relationships) {
+//        String query = "Match (n:DatabaseObject{stId:51925})-[r1]-(m) OPTIONAL MATCH (n)-[" +
+//                RepositoryUtils.getRelationshipAsString(relationships) +
+//                "]-()-[r2]-(l) RETURN n,r1,m,r2,l";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stId", stId);
+//        Result result =  neo4jTemplate.query(query, map);
+//        if (result != null && result.iterator().hasNext())
+//            return (DatabaseObject) result.iterator().next().get("n");
+//        return null;
+//    }
+
+
+// Finder Methods without Relationships
+//    todo these can be found in DatabaseObjectRepository
+
+//    public <T> T findByDbIdNoRelations(Class<T> clazz, Long dbId) {
+//        String query = "Match (n:DatabaseObject{dbId:{dbId}}) RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        return neo4jTemplate.queryForObject(clazz, query, map);
+//    }
+//
+//    public <T> T findByStIdNoRelations(Class<T> clazz, String stId) {
+//        String query = "Match (n:DatabaseObject{stId:{stId}}) RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("stId", stId);
+//        return neo4jTemplate.queryForObject(clazz, query, map);
+//    }
+//
+//    public <T> Iterable<T> findByDbIdsNoRelations(Class<T> clazz, Collection<Long> dbIds) {
+//        String query = "Match (n:DatabaseObject) WHERE n.dbId IN {dbIds} RETURN n";
+//        Map<String,Object> map = new HashMap<>();
+//        map.put("dbIds", dbIds);
+//        return neo4jTemplate.queryForObjects(clazz, query, map);
+//    }
+//
+//    public <T> Iterable<T> findByStIdsNoRelations(Class<T> clazz, Collection<String> stId) {
+//        String query = "Match (n:DatabaseObject) WHERE n.stId IN {stId} RETURN n";
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("stId", stId);
+//        return neo4jTemplate.queryForObjects(clazz, query, map);
+//    }

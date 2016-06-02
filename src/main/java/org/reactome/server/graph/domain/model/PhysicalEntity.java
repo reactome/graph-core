@@ -3,7 +3,6 @@ package org.reactome.server.graph.domain.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.Transient;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.HasComponent;
@@ -28,28 +27,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
     private String speciesName;
     @ReactomeProperty
     private String systematicName;
-
-    // List of CatalyzedEvents filled in service layer
-    @Deprecated
-    @Transient
-    private List<ReactionLikeEvent> catalyzedEvent;
-
-    // List of GO_MolecularFunctions filled in service layer
-    @Deprecated
-    @Transient
-    private List<GO_MolecularFunction> goActivity;
-
-    // List of regulated Events filled in service layer
-    @Deprecated
-    @Transient
-    private List<DatabaseObject> activatedEvent;
-    @Deprecated
-    @Transient
-    private List<DatabaseObject> inhibitedEvent;
-    @Deprecated
-    @Transient
-    private List<DatabaseObject> requiredEvent;
-
 
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
@@ -179,46 +156,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     public void setSpeciesName(String speciesName) {
         this.speciesName = speciesName;
-    }
-
-    public List<ReactionLikeEvent> getCatalyzedEvent() {
-        return catalyzedEvent;
-    }
-
-    public void setCatalyzedEvent(List<ReactionLikeEvent> catalyzedEvent) {
-        this.catalyzedEvent = catalyzedEvent;
-    }
-
-    public List<GO_MolecularFunction> getGoActivity() {
-        return goActivity;
-    }
-
-    public void setGoActivity(List<GO_MolecularFunction> goActivity) {
-        this.goActivity = goActivity;
-    }
-
-    public List<DatabaseObject> getActivatedEvent() {
-        return activatedEvent;
-    }
-
-    public void setActivatedEvent(List<DatabaseObject> activatedEvent) {
-        this.activatedEvent = activatedEvent;
-    }
-
-    public List<DatabaseObject> getInhibitedEvent() {
-        return inhibitedEvent;
-    }
-
-    public void setInhibitedEvent(List<DatabaseObject> inhibitedEvent) {
-        this.inhibitedEvent = inhibitedEvent;
-    }
-
-    public List<DatabaseObject> getRequiredEvent() {
-        return requiredEvent;
-    }
-
-    public void setRequiredEvent(List<DatabaseObject> requiredEvent) {
-        this.requiredEvent = requiredEvent;
     }
 
     public InstanceEdit getAuthored() {

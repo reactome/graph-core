@@ -41,7 +41,7 @@ public class DatabaseObjectServiceTest {
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
-    private static final List<Long> dbIds = Arrays.asList(1640170l, 73886l, 1500620l);
+    private static final List<Long> dbIds = Arrays.asList(1640170L, 73886L, 1500620L);
     private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-1500620");
 
     private static Boolean checkedOnce = false;
@@ -75,12 +75,12 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void testFindByDbId() throws Exception {
+    public void findByDbIdTest() throws Exception {
 
-        logger.info("Started testing databaseObjectService.findByDbId");
+        logger.info("Started testing databaseObjectService.findByDbIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved =  databaseObjectService.findByDbId(dbId);
+        DatabaseObject databaseObjectObserved =  databaseObjectService.findById(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -96,10 +96,10 @@ public class DatabaseObjectServiceTest {
     @Test
     public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing databaseObjectService.findByStId");
+        logger.info("Started testing databaseObjectService.findByStIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findByStId(stId);
+        DatabaseObject databaseObjectObserved = databaseObjectService.findById(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -112,6 +112,43 @@ public class DatabaseObjectServiceTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void findByDbIdNoRelationsTest() {
+
+        logger.info("Started testing databaseObjectService.findByDbIdNoRelationsTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByIdNoRelations(dbId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByStIdRelationsTest() {
+
+        logger.info("Started testing databaseObjectService.findByStIdRelationsTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByIdNoRelations(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
+    }
 
     @Test
     public void testFindByDbIds() throws Exception {
@@ -129,7 +166,7 @@ public class DatabaseObjectServiceTest {
     }
 
     @Test
-    public void findByStIdsTest() throws InvocationTargetException, IllegalAccessException {
+    public void findByStIdsTest() {
 
         logger.info("Started testing databaseObjectService.findByStIds");
         long start, time;
@@ -141,177 +178,4 @@ public class DatabaseObjectServiceTest {
         assertEquals(3, databaseObjectsObserved.size());
         logger.info("Finished");
     }
-
-
-
-
-    @Test
-    public void testFindByDbIdNoRelations() {
-
-        logger.info("Started testing databaseObjectService.findByDbIdNoRelations");
-        long start, time;
-        start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findByDbIdNoRelations(dbId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        start = System.currentTimeMillis();
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-        time = System.currentTimeMillis() - start;
-        logger.info("GkInstance execution time: " + time + "ms");
-
-        assertEquals(databaseObjectExpected, databaseObjectObserved);
-        logger.info("Finished");
-    }
-
-    @Test
-    public void findByStIdRelationsTest() {
-
-        logger.info("Started testing databaseObjectService.findByStIdRelations");
-        long start, time;
-        start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findByStIdRelations(stId);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        start = System.currentTimeMillis();
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-        time = System.currentTimeMillis() - start;
-        logger.info("GkInstance execution time: " + time + "ms");
-
-        assertEquals(databaseObjectExpected, databaseObjectObserved);
-        logger.info("Finished");
-    }
-
-
-//    /**
-//     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-//     * possibly change when content is added to reactome. This method will provide all participating ReferenceEntities
-//     * (even if the tests participatingMolecules 2 and 3 will provide 23, in this casee 22 is the correct number)
-//     */
-//    @Test
-//    public void testGetParticipatingMolecules() {
-//
-//        logger.info("Started testing databaseObjectService.getParticipatingMolecules");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<ReferenceEntity> participants = databaseObjectService.getParticipatingMolecules(dbId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(22,participants.size());
-//        logger.info("Finished");
-//    }
-//
-//    /**
-//     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-//     * possibly change when content is added to reactome. This method will provide all participating Ewases
-//     * of an Event and their ReferenceEntities dbIds and names.
-//     */
-//    @Test
-//    public void testGetParticipatingMolecules2() {
-//
-//        logger.info("Started testing databaseObjectService.getParticipatingMolecules2");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules2(dbId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(23, participants.size());
-//        logger.info("Finished");
-//    }
-//
-////    /**
-////     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-////     * possibly change when content is added to reactome. This method will provide all participating Ewases
-////     * of an Event and their ReferenceEntities.
-////     */
-////    @ComponentOf
-////    public void testGetParticipatingMolecules3() {
-////
-////        logger.info("Started testing databaseObjectService.getParticipatingMolecules3");
-////        long start, time;
-////        start = System.currentTimeMillis();
-////        Collection<Participant> participants = databaseObjectService.getParticipatingMolecules3(dbId);
-////        time = System.currentTimeMillis() - start;
-////        logger.info("GraphDb execution time: " + time + "ms");
-////
-////        assertEquals(23, participants.size());
-////        logger.info("Finished");
-////    }
-//
-//    /**
-//     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-//     * possibly change when content is added to reactome. This method will provide all participating PhysicalEntities
-//     * of an Event
-//     */
-//    @Test
-//    public void testGetParticipatingMolecules3() {
-//
-//        logger.info("Started testing databaseObjectService.getParticipatingMolecules4");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<PhysicalEntity> participants = databaseObjectService.getParticipatingMolecules3(stId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(22, participants.size());
-//        logger.info("Finished");
-//    }
-//
-//
-//    /**
-//     * This method can hardly be tested. GkInstance does not provide any comparison and the static number will
-//     * possibly change when content is added to reactome. This method provides all different labels used in the
-//     * graph paired with the numbers of entries belonging to these labels.
-//     * @throws ClassNotFoundException
-//     */
-//    @Test
-//    public void testGetLabelsCount() throws ClassNotFoundException {
-//
-//        logger.info("Started testing databaseObjectService.getLabelsCount");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<SchemaClassCount> labelsCounts = databaseObjectService.getLabelsCount();
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(59, labelsCounts.size());
-//        logger.info("Finished");
-//    }
-//
-//
-//
-//    @Test
-//    public void testOtherFormsOfThisMolecule() throws ClassNotFoundException {
-//
-//        logger.info("Started testing databaseObjectService.getLabelsCount");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<PhysicalEntity> otherFormsOfThisMolecule = databaseObjectService.getOtherFormsOfThisMolecule(199420l);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        logger.info("Finished");
-//    }
-//
-//
-//
-//
-//
-//    @Test
-//    public void testTests() throws ClassNotFoundException {
-//
-//        logger.info("Started testing databaseObjectService.getLabelsCount");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<ComponentOf> tests = databaseObjectService.getComponentsOf("R-HSA-162629");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        logger.info("Finished");
-//    }
-
-
 }

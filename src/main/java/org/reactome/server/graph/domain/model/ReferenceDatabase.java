@@ -5,7 +5,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 
 import java.util.List;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 @NodeEntity
 public class ReferenceDatabase extends DatabaseObject {
 
@@ -22,8 +22,8 @@ public class ReferenceDatabase extends DatabaseObject {
         return accessUrl;
     }
 
-    public void setAccessUrl(String accessurl) {
-        this.accessUrl = accessurl;
+    public void setAccessUrl(String accessUrl) {
+        this.accessUrl = accessUrl;
     }
 
     public List<String> getName() {

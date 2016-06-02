@@ -15,14 +15,15 @@ import java.util.Collection;
  * @since 10.11.15.
  */
 @Service
+@SuppressWarnings("WeakerAccess")
 public class DatabaseObjectService {
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
 
-    @SuppressWarnings("unused")
-    public DatabaseObject findById(String id) {
-        id = DatabaseObjectUtils.trimId(id);
+    public DatabaseObject findById(Object identifier) {
+
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return databaseObjectRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
@@ -31,31 +32,15 @@ public class DatabaseObjectService {
         return null;
     }
 
-    @SuppressWarnings("unused")
-    public DatabaseObject findByIdNoRelations(String id) {
-        id = DatabaseObjectUtils.trimId(id);
+    public DatabaseObject findByIdNoRelations(Object identifier) {
+
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return databaseObjectRepository.findByStIdNoRelations(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             return databaseObjectRepository.findByDbIdNoRelations(Long.parseLong(id));
         }
         return null;
-    }
-
-    public DatabaseObject findByDbId(Long dbId) {
-        return databaseObjectRepository.findByDbId(dbId);
-    }
-
-    public DatabaseObject findByStId(String stId) {
-        return databaseObjectRepository.findByStId(stId);
-    }
-
-    public DatabaseObject findByDbIdNoRelations(Long dbId) {
-        return databaseObjectRepository.findByDbIdNoRelations(dbId);
-    }
-
-    public DatabaseObject findByStIdRelations(String stId) {
-        return databaseObjectRepository.findByStIdNoRelations(stId);
     }
 
     public Collection<DatabaseObject> findByDbIdsNoRelations(Collection<Long> dbIds) {

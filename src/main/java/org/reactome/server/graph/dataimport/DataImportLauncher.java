@@ -16,7 +16,7 @@ public class DataImportLauncher {
     public static void main(String[] args) throws JSAPException, IOException {
 
 
-        SimpleJSAP jsap = new SimpleJSAP(DataImportLauncher.class.getName(), "A tool for importing reactome dataimport to the neo4j graphDb",
+        SimpleJSAP jsap = new SimpleJSAP(DataImportLauncher.class.getName(), "A tool for importing reactome data import to the neo4j graphDb",
                 new Parameter[]{
                         new FlaggedOption("host",     JSAP.STRING_PARSER, "localhost",  JSAP.NOT_REQUIRED, 'h', "host",     "The database host"),
                         new FlaggedOption("port",     JSAP.INTEGER_PARSER,"3306",       JSAP.NOT_REQUIRED, 's', "port",     "The reactome port"),

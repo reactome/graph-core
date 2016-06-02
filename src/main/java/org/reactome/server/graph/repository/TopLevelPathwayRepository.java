@@ -20,10 +20,10 @@ public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathw
     Collection<TopLevelPathway> getTopLevelPathways();
 
     @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.dbId = {0}  RETURN n")
-    Collection<TopLevelPathway> getTopLevelPathways(Long speciesId);
+    Collection<TopLevelPathway> getTopLevelPathwaysById(Long speciesId);
 
     @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {0}  RETURN n")
-    Collection<TopLevelPathway> getTopLevelPathways(String speciesName);
+    Collection<TopLevelPathway> getTopLevelPathwaysByName(String speciesName);
 
     @Query("Match (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n")
     Collection<TopLevelPathway> getTopLevelPathwaysByTaxId(String taxId);
@@ -32,10 +32,10 @@ public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathw
     Collection<TopLevelPathway> getCuratedTopLevelPathways();
 
     @Query("Match (n:TopLevelPathway)-[:species]-(s) Where n.isInferred = false AND s.dbId = {0}  RETURN n")
-    Collection<TopLevelPathway> getCuratedTopLevelPathways(Long speciesId);
+    Collection<TopLevelPathway> getCuratedTopLevelPathwaysById(Long speciesId);
 
     @Query("Match (n:TopLevelPathway)-[:species]-(s) Where n.isInferred = false AND s.displayName = {0}  RETURN n")
-    Collection<TopLevelPathway> getCuratedTopLevelPathways(String speciesName);
+    Collection<TopLevelPathway> getCuratedTopLevelPathwaysByName(String speciesName);
 
     @Query("Match (n:TopLevelPathway)-[:species]-(s)-[:crossReference]-(c:DatabaseIdentifier) WHERE n.isInferred = false AND c.identifier={0} RETURN n")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByTaxId(String taxId);

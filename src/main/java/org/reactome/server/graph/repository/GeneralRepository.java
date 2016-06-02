@@ -1,7 +1,6 @@
 package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.ComponentOf;
@@ -35,9 +34,6 @@ public interface GeneralRepository extends GraphRepository<DatabaseObject> {
 
     @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(Long dbId);
-
-    @Query("Match (n:Person) Where n.surname =~ {0} OR n.firstname =~ {0} RETURN n")
-    Collection<Person> findPersonByName(String name);
 
     @Query("Match (n:DBInfo) RETURN n.version LIMIT 1")
     Integer getDBVersion();

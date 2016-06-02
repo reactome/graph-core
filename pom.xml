@@ -73,7 +73,7 @@
             <artifactId>reactome-base</artifactId>
             <version>${reactome.version}</version>
         </dependency>
-        <!--Spring dataimport neo4j-->
+        <!--Spring data import neo4j-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
@@ -86,7 +86,6 @@
             <version>${spring.test.version}</version>
             <scope>test</scope>
         </dependency>
-
 
         <dependency>
             <groupId>org.neo4j</groupId>

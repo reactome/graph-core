@@ -15,7 +15,7 @@ public class SimpleEntity extends PhysicalEntity {
     @ReactomeProperty
     private String referenceType;
 
-    @Relationship(type = "referetnceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
     private ReferenceMolecule referenceEntity;
 
     @Relationship(type = "species", direction = Relationship.OUTGOING)

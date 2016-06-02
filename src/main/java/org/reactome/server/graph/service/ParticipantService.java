@@ -17,13 +17,14 @@ import java.util.Collection;
  * @since 19.04.16.
  */
 @Service
+@SuppressWarnings("WeakerAccess")
 public class ParticipantService {
 
     @Autowired
     private ParticipantRepository participantRepository;
 
-    public Collection<ReferenceEntity> getParticipatingReferenceEntities(String id) {
-        id = DatabaseObjectUtils.trimId(id);
+    public Collection<ReferenceEntity> getParticipatingReferenceEntities(String identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return participantRepository.getParticipatingReferenceEntities(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
@@ -32,8 +33,8 @@ public class ParticipantService {
         return null;
     }
 
-    public Collection<PhysicalEntity> getParticipatingPhysicalEntities(String id) {
-        id = DatabaseObjectUtils.trimId(id);
+    public Collection<PhysicalEntity> getParticipatingPhysicalEntities(String identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return participantRepository.getParticipatingPhysicalEntities(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
@@ -42,8 +43,8 @@ public class ParticipantService {
         return null;
     }
 
-    public Collection<Participant> getParticipants(String id) {
-        id = DatabaseObjectUtils.trimId(id);
+    public Collection<Participant> getParticipants(String identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return participantRepository.getParticipants(id);
         } else if (DatabaseObjectUtils.isDbId(id)){

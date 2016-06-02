@@ -213,7 +213,7 @@ The quality assurance module can be executed without the script using the Qualit
 
 #### Project Structure
 
-The application follows a basic spring multitier architecture:
+The application follows a basic spring multi-tier architecture:
 
 * Presentation Layer - Outside of the scope of this project. The projects acts as a data access layer for the content service. To see details about the content service goto ...
 * Service Layer - Service and Spring Transactions.

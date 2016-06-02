@@ -3,7 +3,6 @@ package org.reactome.server.graph.domain.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.neo4j.ogm.annotation.Transient;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 
@@ -34,17 +33,6 @@ public abstract class Event extends DatabaseObject {
     private String releaseStatus;
     @ReactomeProperty
     private String speciesName;
-
-    /**
-     * graph contains only relationships to Regulation
-     * positive and negativeRegulators have to be filled in service
-     */
-    @Deprecated
-    @Transient
-    private List<DatabaseObject> negativeRegulators;
-    @Deprecated
-    @Transient
-    private List<DatabaseObject> positiveRegulators;
 
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private List<InstanceEdit> authored;
@@ -207,22 +195,6 @@ public abstract class Event extends DatabaseObject {
         this.speciesName = speciesName;
     }
 
-    public List<DatabaseObject> getNegativeRegulators() {
-        return negativeRegulators;
-    }
-
-    public void setNegativeRegulators(List<DatabaseObject> negativeRegulators) {
-        this.negativeRegulators = negativeRegulators;
-    }
-
-    public List<DatabaseObject> getPositiveRegulators() {
-        return positiveRegulators;
-    }
-
-    public void setPositiveRegulators(List<DatabaseObject> positiveRegulators) {
-        this.positiveRegulators = positiveRegulators;
-    }
-
     public List<InstanceEdit> getAuthored() {
         return authored;
     }
@@ -302,14 +274,6 @@ public abstract class Event extends DatabaseObject {
     public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
         this.goBiologicalProcess = goBiologicalProcess;
     }
-
-//    public Set<Event> getInferredTo() {
-//        return inferredTo;
-//    }
-//
-//    public void setInferredTo(Set<Event> inferredTo) {
-//        this.inferredTo = inferredTo;
-//    }
 
     public Set<Event> getInferredFrom() {
         return inferredFrom;
@@ -411,9 +375,7 @@ public abstract class Event extends DatabaseObject {
     public List<Regulation> getRegulations() {
         List<Regulation> regulations = null;
         if (this.getPositivelyRegulatedBy() != null && !this.getPositivelyRegulatedBy().isEmpty()) {
-            if (regulations == null) {
-                regulations = new ArrayList<>();
-            }
+            regulations = new ArrayList<>();
             regulations.addAll(this.getPositivelyRegulatedBy());
         }
         if (this.getNegativelyRegulatedBy() != null && !this.getNegativelyRegulatedBy().isEmpty()) {

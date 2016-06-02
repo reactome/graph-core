@@ -4,7 +4,6 @@ import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.repository.DetailsRepository;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
-import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
 import org.slf4j.Logger;
@@ -13,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,6 +21,7 @@ import java.util.Set;
  * @since 14.04.16.
  */
 @Service
+@SuppressWarnings("WeakerAccess")
 public class DetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(DetailsService.class);
@@ -34,56 +32,48 @@ public class DetailsService {
     private GeneralService generalService;
     @Autowired
     private PhysicalEntityService physicalEntityService;
+    @Autowired
+    private HierarchyService hierarchyService;
 
-//    Todo rename
     @Transactional
-    public ContentDetails getContentDetails(String id, boolean interactors) {
+    public ContentDetails getContentDetails(Object identifier, boolean interactors) {
 
         ContentDetails contentDetails = new ContentDetails();
         DatabaseObject databaseObject;
-        id = DatabaseObjectUtils.trimId(id);
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             databaseObject = detailsRepository.detailsPageQuery(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
             databaseObject = detailsRepository.detailsPageQuery(Long.parseLong(id));
         } else {
-//            todo decide return empty or null or throw
             return null;
         }
-
         contentDetails.setDatabaseObject(databaseObject);
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, interactors);
             leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
-            contentDetails.setLeaves(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+            contentDetails.setNodes(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
             contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStId()));
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
         }
         return contentDetails;
     }
 
-
-    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean interactors) {
+    private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean interactors) {
         return getLocationsInThePathwayBrowser(databaseObject, interactors).getLeaves();
     }
 
-    public Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(String id, boolean interactors) {
-        return getLocationsInThePathwayBrowser(id, interactors).getLeaves();
-    }
-
-
-
-
-
-
-    public PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject, boolean interactors) {
+    private PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject, boolean interactors) {
         if (databaseObject == null) return null;
+
+        Object id = databaseObject.getStId();
+        if (databaseObject.getStId() == null) id = databaseObject.getDbId();
 
         PathwayBrowserNode node;
         if (interactors) {
-            node = detailsRepository.getLocationsInPathwayBrowserForInteractors(databaseObject);
+            node = hierarchyService.getLocationsInPathwayBrowserForInteractors(id);
         } else {
-            node = detailsRepository.getLocationsInPathwayBrowser(databaseObject);
+            node = hierarchyService.getLocationsInPathwayBrowser(id);
         }
 
         if (databaseObject instanceof Regulation) {
@@ -114,18 +104,6 @@ public class DetailsService {
             node.setStId(physicalEntity.getStId());
             node.setType(physicalEntity.getSchemaClass());
         }
-
         return node;
-    }
-
-    //todo find other method
-    public PathwayBrowserNode getLocationsInThePathwayBrowser(String id, boolean interactors) {
-        id = DatabaseObjectUtils.trimId(id);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return getLocationsInThePathwayBrowser(generalService.findByStIdNoRelations(DatabaseObject.class, id), interactors);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return getLocationsInThePathwayBrowser(generalService.findByDbIdNoRelations(DatabaseObject.class, Long.valueOf(id)), interactors);
-        }
-        return null;
     }
 }

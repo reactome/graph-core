@@ -159,7 +159,7 @@ public class ReactomeBatchImporter {
                         break;
                     case "orthologousEvent":
                         /**
-                         * only one type of regulation is needed here, In the native dataimport only regulatedBy exists
+                         * only one type of regulation is needed here, In the native data import only regulatedBy exists
                          * since the type of regulation is later determined by the Object Type we can only save one
                          * otherwise relationships will be duplicated
                          * if event will break otherwise (physical entity will fall to default
@@ -223,11 +223,10 @@ public class ReactomeBatchImporter {
         properties.put(DBID, instance.getDBID());
         if (instance.getDisplayName() != null) {
             // TO fix Different Styles in Person display Name (example Jupe, Steven or Jupe, S)
-            // todo find nice styple
+            // todo find nice style
             if (instance.getSchemClass().isa(ReactomeJavaConstants.Person)) {
                 String firstName = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.firstname);
                 String surName = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.surname);
-                String inital = (String) getObjectFromGkInstance(instance, ReactomeJavaConstants.initial);
 
                 properties.put(NAME, surName + ", " + firstName);
             } else {
@@ -382,16 +381,14 @@ public class ReactomeBatchImporter {
         }
 
         Map<Long, GkInstanceStoichiometryHelper> stoichiometryMap = new HashMap<>();
-        for (Object object : objects) {
-            if (object instanceof GKInstance) {
-                GKInstance instance = (GKInstance) object;
-                if(stoichiometryMap.containsKey(instance.getDBID())){
-                    stoichiometryMap.get(instance.getDBID()).increment();
-                } else {
-                    stoichiometryMap.put(instance.getDBID(), new GkInstanceStoichiometryHelper(instance));
-                }
+        objects.stream().filter(object -> object instanceof GKInstance).forEach(object -> {
+            GKInstance instance = (GKInstance) object;
+            if (stoichiometryMap.containsKey(instance.getDBID())) {
+                stoichiometryMap.get(instance.getDBID()).increment();
+            } else {
+                stoichiometryMap.put(instance.getDBID(), new GkInstanceStoichiometryHelper(instance));
             }
-        }
+        });
         for (Long dbId : stoichiometryMap.keySet()) {
 
             GKInstance instance = stoichiometryMap.get(dbId).getInstance();
@@ -498,7 +495,7 @@ public class ReactomeBatchImporter {
 //        createSchemaConstraint(Label.label(Person.class.getSimpleName()), "orcidId");
         batchInserter.createDeferredSchemaIndex(Label.label(Person.class.getSimpleName())).on("orcidId");
 
-//        todo should be constraint, currentry voilate constraint
+//        todo should be constraint, currently voilate constraint
         batchInserter.createDeferredSchemaIndex(Label.label(LiteratureReference.class.getSimpleName())).on("pubMedIdentifier");
         batchInserter.createDeferredSchemaIndex(Label.label(ReferenceEntity.class.getSimpleName())).on(ACCESSION);
     }
@@ -536,7 +533,7 @@ public class ReactomeBatchImporter {
     }
 
     /**
-     * Cleaning the Neo4j dataimport directory
+     * Cleaning the Neo4j data import directory
      */
     private File cleanDatabase() {
 
