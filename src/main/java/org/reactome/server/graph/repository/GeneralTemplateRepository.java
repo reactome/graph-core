@@ -18,8 +18,8 @@ import java.util.*;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 11.11.15.
  */
-@SuppressWarnings("unused")
 @Repository
+@SuppressWarnings("unused")
 public class GeneralTemplateRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(GeneralTemplateRepository.class);
@@ -237,12 +237,12 @@ public class GeneralTemplateRepository {
 
     // Find by Class Name
 
-    public <T> Collection<T> findObjectsByClassName(Class<T> clazz) {
+    public <T> Collection<T> findByClass(Class<T> clazz) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
         return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, Collections.emptyMap());
     }
 
-    public <T> Collection<T> findObjectsByClassName(Class<T> clazz, Integer page, Integer offset) {
+    public <T> Collection<T> findByClass(Class<T> clazz, Integer page, Integer offset) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("limit", offset);

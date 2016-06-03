@@ -43,6 +43,7 @@ public class DatabaseObjectServiceTest {
 
     private static final List<Long> dbIds = Arrays.asList(1640170L, 73886L, 1500620L);
     private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-1500620");
+    private static final List<Object> ids = Arrays.asList(1640170L, 73886L, 1500620L,"R-HSA-199420");
 
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
@@ -157,7 +158,7 @@ public class DatabaseObjectServiceTest {
         long start, time;
         start = System.currentTimeMillis();
 
-        Collection<DatabaseObject> databaseObjectsObserved =  databaseObjectService.findByDbIdsNoRelations(dbIds);
+        Collection<DatabaseObject> databaseObjectsObserved =  databaseObjectService.findByIdsNoRelations(dbIds);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -171,11 +172,25 @@ public class DatabaseObjectServiceTest {
         logger.info("Started testing databaseObjectService.findByStIds");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByStIdsNoRelations(stIds);
+        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByIdsNoRelations(stIds);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(3, databaseObjectsObserved.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findByIdsTest() {
+
+        logger.info("Started testing databaseObjectService.findByIdsTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByIdsNoRelations(ids);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(4, databaseObjectsObserved.size());
         logger.info("Finished");
     }
 }

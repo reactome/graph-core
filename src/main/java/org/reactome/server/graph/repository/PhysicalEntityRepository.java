@@ -17,9 +17,9 @@ import java.util.Collection;
 public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity> {
 
     @Query("Match (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
-    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Long dbId);
+    Collection<PhysicalEntity> getOtherFormsOf(Long dbId);
 
     @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
-    Collection<PhysicalEntity> getOtherFormsOfThisMolecule(String stId);
+    Collection<PhysicalEntity> getOtherFormsOf(String stId);
 
 }

@@ -90,25 +90,6 @@ public class GeneralServiceTest {
     }
 
     @Test
-    public void testGetAllSpeciesTest() {
-
-        logger.info("Started testing genericService.getSpecies");
-        long start, time;
-        start = System.currentTimeMillis();
-        Set<Species> observedSpecies = new HashSet<>(generalService.getAllSpecies());
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        start = System.currentTimeMillis();
-        Set<Species> expectedSpecies = new HashSet<>(DatabaseObjectFactory.getSpecies());
-        time = System.currentTimeMillis() - start;
-        logger.info("GkInstance execution time: " + time + "ms");
-
-        assertEquals(expectedSpecies, observedSpecies);
-        logger.info("Finished");
-    }
-
-    @Test
     public void testGetAllChemicalsTest() {
 
         logger.info("Started testing genericService.getSpecies");
@@ -336,12 +317,52 @@ public class GeneralServiceTest {
      * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
      */
     @Test
+    public void getObjectsByClassTest() {
+
+        logger.info("Started testing genericService.getObjectsByClassTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Species> species = generalService.findByClass(Species.class);
+        Set observedSpecies = new HashSet<>(species);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        Set<Species> expectedSpecies = new HashSet<>(DatabaseObjectFactory.getSpecies());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(expectedSpecies, observedSpecies);
+        logger.info("Finished");
+    }
+
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
+     */
+    @Test
+    public void getObjectsByClassWithPagingTest() {
+
+        logger.info("Started testing genericService.getObjectsByClassWithPagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> pathways = generalService.findByClass(Pathway.class, 1, 25);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(25, pathways.size());
+        logger.info("Finished");
+    }
+
+    /**
+     * This method can hardly be tested. GkInstance does not provide any comparison since pagination is not possible.
+     */
+    @Test
     public void getObjectsByClassNameTest() {
 
         logger.info("Started testing genericService.getObjectsByClassName");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Disease> diseases = generalService.findObjectsByClassName("Disease");
+        Collection<Disease> diseases = generalService.findByClassName("Disease");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -358,7 +379,7 @@ public class GeneralServiceTest {
         logger.info("Started testing genericService.getObjectsByClassNameWithPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = generalService.findObjectsByClassName("Pathway", 1, 25);
+        Collection<Pathway> pathways = generalService.findByClassName("Pathway", 1, 25);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
