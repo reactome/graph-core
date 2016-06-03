@@ -51,8 +51,7 @@ public class DetailsService {
         contentDetails.setDatabaseObject(databaseObject);
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, interactors);
-            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
-            contentDetails.setNodes(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+            contentDetails.setNodes(leaves);
             contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStId()));
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
         }
@@ -60,7 +59,13 @@ public class DetailsService {
     }
 
     private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean interactors) {
-        return getLocationsInThePathwayBrowser(databaseObject, interactors).getLeaves();
+        PathwayBrowserNode root = getLocationsInThePathwayBrowser(databaseObject, interactors);
+        if (root!=null) {
+            Set<PathwayBrowserNode> leaves = root.getLeaves();
+            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
+            return PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves);
+        }
+        return null;
     }
 
     private PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject, boolean interactors) {

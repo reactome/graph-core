@@ -37,6 +37,20 @@ public class GeneralTemplateRepository {
         return neo4jTemplate.loadAllByProperty(clazz, property, value, depth);
     }
 
+
+
+    public DatabaseObject findEnhancedObjectById(Long dbId, String relationships) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity]-(o) RETURN n,r1,m,r2,o";
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        Result result =  neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
+
+
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public DatabaseObject findEnhancedObjectById(Long dbId) {
