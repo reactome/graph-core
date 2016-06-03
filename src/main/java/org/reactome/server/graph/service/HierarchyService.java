@@ -23,24 +23,19 @@ public class HierarchyService {
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
 
-    public PathwayBrowserNode getLocationsInPathwayBrowser(Object identifier) {
+    public PathwayBrowserNode getLocationsInPathwayBrowser(Object identifier, boolean showDirectParticipants) {
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
+            if (showDirectParticipants) {
+                return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(id);
+            }
             return hierarchyRepository.getLocationsInPathwayBrowser(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
+            if (showDirectParticipants) {
+                return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(Long.parseLong(id));
+            }
             return hierarchyRepository.getLocationsInPathwayBrowser(Long.parseLong(id));
-        }
-        return null;
-    }
-
-    public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(Object identifier) {
-
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return hierarchyRepository.getLocationsInPathwayBrowserForInteractors(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return hierarchyRepository.getLocationsInPathwayBrowserForInteractors(Long.parseLong(id));
         }
         return null;
     }

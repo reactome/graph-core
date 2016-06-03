@@ -51,12 +51,12 @@ public class HierarchyRepository {
      *
      * @return a PathwayBrowserNode.
      */
-    public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(String stId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(String stId) {
         Result result = getLocationsInPathwayBrowserForInteractorByStIdRaw(stId);
         return parseResult(result, true);
     }
 
-    public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(Long dbId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(Long dbId) {
         Result result = getLocationsInPathwayBrowserForInteractorByDbIdRaw(dbId);
         return parseResult(result, true);
     }
