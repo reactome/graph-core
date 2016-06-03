@@ -87,17 +87,17 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-core</artifactId>
-            <version>2.0.3-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.neo4j</groupId>-->
+            <!--<artifactId>neo4j-ogm-core</artifactId>-->
+            <!--<version>2.0.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
-        <dependency> <!-- If you're using the HTTP driver -->
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-http-driver</artifactId>
-            <version>2.0.3-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency> &lt;!&ndash; If you're using the HTTP driver &ndash;&gt;-->
+            <!--<groupId>org.neo4j</groupId>-->
+            <!--<artifactId>neo4j-ogm-http-driver</artifactId>-->
+            <!--<version>2.0.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
 
         <!--&lt;!&ndash;TODO remove: Neo4j kernel and index for batch import (had to added since SDN.4.1.0 &ndash;&gt;-->

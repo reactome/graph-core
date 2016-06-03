@@ -63,6 +63,7 @@ public class PersonServiceTest {
         DatabaseObjectFactory.clearCache();
     }
 
+    //TODO Fix
     @Test
     public void findPersonByNameTest() {
         logger.info("Started testing genericService.findPersonByName");
@@ -76,6 +77,7 @@ public class PersonServiceTest {
         logger.info("Finished");
     }
 
+    //TODO Fix
     @Test
     public void queryPersonByNameTest() {
         logger.info("Started testing genericService.queryPersonByName");
