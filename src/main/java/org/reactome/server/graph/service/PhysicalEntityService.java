@@ -21,13 +21,13 @@ public class PhysicalEntityService {
     @Autowired
     private PhysicalEntityRepository physicalEntityRepository;
 
-    public Collection<PhysicalEntity> getOtherFormsOfThisMolecule(Object identifier) {
+    public Collection<PhysicalEntity> getOtherFormsOf(Object identifier) {
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getOtherFormsOfThisMolecule(id);
+            return physicalEntityRepository.getOtherFormsOf(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getOtherFormsOfThisMolecule(Long.parseLong(id));
+            return physicalEntityRepository.getOtherFormsOf(Long.parseLong(id));
         }
         return null;
     }

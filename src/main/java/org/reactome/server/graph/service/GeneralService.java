@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -43,10 +42,6 @@ public class GeneralService {
 
     public Collection<SchemaClassCount> getSchemaClassCounts() {
         return generalRepository.getSchemaClassCounts();
-    }
-
-    public Collection<Species> getAllSpecies() {
-        return generalRepository.getAllSpecies();
     }
 
     public Collection<ReferenceEntity> getAllChemicals() {
@@ -143,25 +138,32 @@ public class GeneralService {
 
     // ---------------------------------------- Class Level Operations -------------------------------------------------
 
-    //todo what do we return
-    public <T> Collection<T> findObjectsByClassName(String className) {
-        try {
-            Class clazz = DatabaseObjectUtils.getClassForName(className);
-            return generalTemplateRepository.findObjectsByClassName(clazz);
-        } catch (ClassNotFoundException e) {
-            logger.warn("Class name " + className + " was not found in the DataModel");
-        }
-        return Collections.emptyList();
+    public <T> Collection<T> findByClass(Class clazz) {
+        return generalTemplateRepository.findByClass(clazz);
     }
 
-    public <T> Collection<T> findObjectsByClassName(String className, Integer page, Integer offset) {
+    public <T> Collection<T> findByClass(Class clazz, Integer page, Integer offset) {
+        return generalTemplateRepository.findByClass(clazz, page, offset);
+    }
+
+    public <T> Collection<T> findByClassName(String className) {
         try {
             Class clazz = DatabaseObjectUtils.getClassForName(className);
-            return generalTemplateRepository.findObjectsByClassName(clazz, page, offset);
+            return generalTemplateRepository.findByClass(clazz);
         } catch (ClassNotFoundException e) {
             logger.warn("Class name " + className + " was not found in the DataModel");
         }
-        return Collections.emptyList();
+        return null;
+    }
+
+    public <T> Collection<T> findByClassName(String className, Integer page, Integer offset) {
+        try {
+            Class clazz = DatabaseObjectUtils.getClassForName(className);
+            return generalTemplateRepository.findByClass(clazz, page, offset);
+        } catch (ClassNotFoundException e) {
+            logger.warn("Class name " + className + " was not found in the DataModel");
+        }
+        return null;
     }
 
     public Collection<String> findSimpleReferencesByClassName(String className) {

@@ -2,7 +2,6 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
-import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.springframework.data.neo4j.annotation.Query;
@@ -22,9 +21,6 @@ public interface GeneralRepository extends GraphRepository<DatabaseObject> {
 
     @Query("MATCH (n) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<SchemaClassCount> getSchemaClassCounts();
-
-    @Query("Match (n:Species) RETURN n")
-    Collection<Species> getAllSpecies();
 
     @Query("Match (n:SimpleEntity)-[:referenceEntity]-(m:ReferenceEntity) RETURN Distinct(m)")
     Collection<ReferenceEntity> getAllChemicals();

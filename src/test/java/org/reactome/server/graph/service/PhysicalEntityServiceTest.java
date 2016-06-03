@@ -111,7 +111,7 @@ public class PhysicalEntityServiceTest {
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOfThisMolecule(dbId);
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -125,7 +125,7 @@ public class PhysicalEntityServiceTest {
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOfThisMolecule(stId);
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

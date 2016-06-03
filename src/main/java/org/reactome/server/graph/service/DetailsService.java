@@ -36,7 +36,7 @@ public class DetailsService {
     private HierarchyService hierarchyService;
 
     @Transactional
-    public ContentDetails getContentDetails(Object identifier, boolean directParticipants) {
+    public ContentDetails getContentDetails(Object identifier, Boolean directParticipants) {
 
         ContentDetails contentDetails = new ContentDetails();
         DatabaseObject databaseObject;
@@ -50,10 +50,11 @@ public class DetailsService {
         }
         contentDetails.setDatabaseObject(databaseObject);
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
+            if (directParticipants == null) directParticipants = false;
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, directParticipants);
             contentDetails.setNodes(leaves);
             contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStId()));
-            contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
+            contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOf(databaseObject.getDbId()));
         }
         return contentDetails;
     }
