@@ -91,28 +91,7 @@ public abstract class DatabaseObjectUtils {
         return propertiesList;
     }
 
-    /**
-     * If the entry is available in more the one species,
-     * we show all present species and then the user can choose
-     * them in a dropdown list.
-     * This method just prepare the species list where the Homo sapiens is the first
-     * and the following species sorted without the Homo sapiens.
-     */
-    @SuppressWarnings("unused")
-    public static List<String> getAvailableSpecies(Set<PathwayBrowserNode> graph) {
-        Set<String> availableSpecies = graph.stream().map(PathwayBrowserNode::getSpecies).collect(Collectors.toCollection(TreeSet::new));
 
-        final String DEFAULT_SPECIES = "Homo sapiens";
-        List<String> newAvailableSpecies = new ArrayList<>();
-        if (availableSpecies.contains(DEFAULT_SPECIES)) {
-            newAvailableSpecies.add(DEFAULT_SPECIES);
-            availableSpecies.remove(DEFAULT_SPECIES);
-        }
-
-        newAvailableSpecies.addAll(availableSpecies);
-
-        return newAvailableSpecies;
-    }
 
     public static String getIdentifier(Object id){
         if (id instanceof String) {

@@ -6,9 +6,8 @@ import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Please bear in mind here that we are building the Locations in the Pathway Browser tree from the LEAVES.
@@ -51,6 +50,30 @@ public abstract class PathwayBrowserLocationsUtils {
             }
         }
         return leaves;
+    }
+
+    /**
+     * If the entry is available in more the one species,
+     * we show all present species and then the user can choose
+     * them in a dropdown list.
+     * This method just prepare the species list where the Homo sapiens is the first
+     * and the following species sorted without the Homo sapiens.
+     */
+    @SuppressWarnings("unused")
+    public static List<String> getAvailableSpecies(Set<PathwayBrowserNode> graph) {
+        if (graph == null) return null;
+        Set<String> availableSpecies = graph.stream().map(PathwayBrowserNode::getSpecies).collect(Collectors.toCollection(TreeSet::new));
+
+        final String DEFAULT_SPECIES = "Homo sapiens";
+        List<String> newAvailableSpecies = new ArrayList<>();
+        if (availableSpecies.contains(DEFAULT_SPECIES)) {
+            newAvailableSpecies.add(DEFAULT_SPECIES);
+            availableSpecies.remove(DEFAULT_SPECIES);
+        }
+
+        newAvailableSpecies.addAll(availableSpecies);
+
+        return newAvailableSpecies;
     }
 
 

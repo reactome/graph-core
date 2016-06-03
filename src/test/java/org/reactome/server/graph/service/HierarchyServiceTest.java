@@ -67,7 +67,7 @@ public class HierarchyServiceTest {
         logger.info("Started testing detailsService.getLocationsInPathwayBrowserTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630");
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -76,12 +76,12 @@ public class HierarchyServiceTest {
     }
 
     @Test
-    public void getLocationsInThePathwayBrowserForInteractorsTest() {
+    public void getLocationsInThePathwayBrowserDirectParticipantsTest() {
 
-        logger.info("Started testing detailsService.getLocationsInThePathwayBrowserForInteractorsTest");
+        logger.info("Started testing detailsService.getLocationsInThePathwayBrowserDirectParticipantsTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowserForInteractors("R-HSA-5205630");
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

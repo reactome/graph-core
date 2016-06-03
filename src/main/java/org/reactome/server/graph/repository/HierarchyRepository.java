@@ -51,12 +51,12 @@ public class HierarchyRepository {
      *
      * @return a PathwayBrowserNode.
      */
-    public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(String stId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(String stId) {
         Result result = getLocationsInPathwayBrowserForInteractorByStIdRaw(stId);
         return parseResult(result, true);
     }
 
-    public PathwayBrowserNode getLocationsInPathwayBrowserForInteractors(Long dbId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(Long dbId) {
         Result result = getLocationsInPathwayBrowserForInteractorByDbIdRaw(dbId);
         return parseResult(result, true);
     }
@@ -278,7 +278,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserByStIdRaw(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -293,7 +293,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserByDbIdRaw(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -311,7 +311,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserForInteractorByStIdRaw(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -329,7 +329,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserForInteractorByDbIdRaw(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);

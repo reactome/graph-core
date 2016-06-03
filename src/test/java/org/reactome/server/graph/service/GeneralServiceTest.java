@@ -193,6 +193,7 @@ public class GeneralServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(1, databaseObjectObserved.size());
+        logger.info("Finished");
     }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
@@ -208,6 +209,7 @@ public class GeneralServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals("R-HSA-113454", databaseObjectObserved.getPositivelyRegulates().get(0).getRegulatedEntity().getStId());
+        logger.info("Finished");
     }
 
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------

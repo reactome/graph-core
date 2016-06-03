@@ -36,7 +36,7 @@ public class DetailsService {
     private HierarchyService hierarchyService;
 
     @Transactional
-    public ContentDetails getContentDetails(Object identifier, boolean interactors) {
+    public ContentDetails getContentDetails(Object identifier, boolean directParticipants) {
 
         ContentDetails contentDetails = new ContentDetails();
         DatabaseObject databaseObject;
@@ -50,31 +50,32 @@ public class DetailsService {
         }
         contentDetails.setDatabaseObject(databaseObject);
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
-            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, interactors);
-            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
-            contentDetails.setNodes(PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves));
+            Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, directParticipants);
+            contentDetails.setNodes(leaves);
             contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStId()));
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOfThisMolecule(databaseObject.getDbId()));
         }
         return contentDetails;
     }
 
-    private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean interactors) {
-        return getLocationsInThePathwayBrowser(databaseObject, interactors).getLeaves();
+    private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean directParticipants) {
+        PathwayBrowserNode root = getLocationsInThePathwayBrowser(databaseObject, directParticipants);
+        if (root!=null) {
+            Set<PathwayBrowserNode> leaves = root.getLeaves();
+            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
+            return PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves);
+        }
+        return null;
     }
 
-    private PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject, boolean interactors) {
+    private PathwayBrowserNode getLocationsInThePathwayBrowser(DatabaseObject databaseObject, boolean directParticipants) {
         if (databaseObject == null) return null;
 
         Object id = databaseObject.getStId();
         if (databaseObject.getStId() == null) id = databaseObject.getDbId();
 
         PathwayBrowserNode node;
-        if (interactors) {
-            node = hierarchyService.getLocationsInPathwayBrowserForInteractors(id);
-        } else {
-            node = hierarchyService.getLocationsInPathwayBrowser(id);
-        }
+        node = hierarchyService.getLocationsInPathwayBrowser(id, directParticipants);
 
         if (databaseObject instanceof Regulation) {
             DatabaseObject regulator = ((Regulation) databaseObject).getRegulator();
