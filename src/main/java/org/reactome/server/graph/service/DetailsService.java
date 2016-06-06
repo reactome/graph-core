@@ -29,7 +29,7 @@ public class DetailsService {
     @Autowired
     private DetailsRepository detailsRepository;
     @Autowired
-    private GeneralService generalService;
+    private ComponentService componentService;
     @Autowired
     private PhysicalEntityService physicalEntityService;
     @Autowired
@@ -53,7 +53,7 @@ public class DetailsService {
             if (directParticipants == null) directParticipants = false;
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, directParticipants);
             contentDetails.setNodes(leaves);
-            contentDetails.setComponentOf(generalService.getComponentsOf(databaseObject.getStId()));
+            contentDetails.setComponentOf(componentService.getComponentsOf(databaseObject.getStId()));
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOf(databaseObject.getDbId()));
         }
         return contentDetails;
@@ -76,7 +76,7 @@ public class DetailsService {
         if (databaseObject.getStId() == null) id = databaseObject.getDbId();
 
         PathwayBrowserNode node;
-        node = hierarchyService.getLocationsInPathwayBrowser(id, directParticipants);
+        node = hierarchyService.getLocationsInPathwayBrowser(id, directParticipants, true);
 
         if (databaseObject instanceof Regulation) {
             DatabaseObject regulator = ((Regulation) databaseObject).getRegulator();

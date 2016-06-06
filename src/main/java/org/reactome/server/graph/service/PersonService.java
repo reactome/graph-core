@@ -1,9 +1,12 @@
 package org.reactome.server.graph.service;
 
+import org.apache.commons.lang.StringUtils;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
 import org.reactome.server.graph.repository.PersonRepository;
+import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,27 +37,31 @@ public class PersonService {
         return personRepository.findPersonByName(name);
     }
 
-    public Person findPersonByOrcidId(String orcidId) {
-        return personRepository.findPersonByOrcidId(orcidId);
+    public Person findPerson(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.findPersonByDbId(Long.valueOf(id));
+        } else {
+            return personRepository.findPersonByOrcidId(id);
+        }
     }
 
-    public Person findPersonByDbId(Long dbId) {
-        return personRepository.findPersonByDbId(dbId);
+    public Collection<Publication> getPublicationsOfPerson(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getPublicationsOfPersonByDbId(Long.valueOf(id));
+        } else {
+            return personRepository.getPublicationsOfPersonByOrcidId(id);
+        }
     }
 
-    public Collection<Publication> getPublicationsOfPersonByOrcidId(String orcidId) {
-        return personRepository.getPublicationsOfPersonByOrcidId(orcidId);
+    public Collection<Pathway> getAuthoredPathways(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
+        } else {
+            return personRepository.getAuthoredPathwaysByOrcidId(id);
+        }
     }
 
-    public Collection<Publication> getPublicationsOfPersonByDbId(Long dbId) {
-        return personRepository.getPublicationsOfPersonByDbId(dbId);
-    }
-
-    public Collection<Pathway> getAuthoredPathwaysByOrcidId(String orcidId) {
-        return personRepository.getAuthoredPathwaysByOrcidId(orcidId);
-    }
-
-    public Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId) {
-        return personRepository.getAuthoredPathwaysByDbId(dbId);
-    }
 }
