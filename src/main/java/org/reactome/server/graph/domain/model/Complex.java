@@ -17,10 +17,6 @@ public class Complex extends PhysicalEntity {
     @ReactomeProperty
     private Boolean isChimeric;
 
-    /**
-     * Will be provided by getter method getHasComponentLegacy
-     */
-//    @JsonIgnore
     @Relationship(type = "hasComponent")
     private Set<HasComponent> hasComponent;
 
