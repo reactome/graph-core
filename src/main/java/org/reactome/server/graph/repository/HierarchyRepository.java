@@ -36,14 +36,14 @@ public class HierarchyRepository {
      *
      * @return a PathwayBrowserNode.
      */
-    public PathwayBrowserNode getLocationsInPathwayBrowser(String stId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowser(String stId, Boolean omitNonDisplayableItems) {
         Result result = getLocationsInPathwayBrowserByStIdRaw(stId);
-        return parseResult(result, true);
+        return parseResult(result, omitNonDisplayableItems);
     }
 
-    public PathwayBrowserNode getLocationsInPathwayBrowser(Long dbId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowser(Long dbId, Boolean omitNonDisplayableItems) {
         Result result = getLocationsInPathwayBrowserByDbIdRaw(dbId);
-        return parseResult(result, true);
+        return parseResult(result, omitNonDisplayableItems);
     }
 
     /**
@@ -51,14 +51,14 @@ public class HierarchyRepository {
      *
      * @return a PathwayBrowserNode.
      */
-    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(String stId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(String stId, Boolean omitNonDisplayableItems) {
         Result result = getLocationsInPathwayBrowserForInteractorByStIdRaw(stId);
-        return parseResult(result, true);
+        return parseResult(result, omitNonDisplayableItems);
     }
 
-    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(Long dbId) {
+    public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(Long dbId, Boolean omitNonDisplayableItems) {
         Result result = getLocationsInPathwayBrowserForInteractorByDbIdRaw(dbId);
-        return parseResult(result, true);
+        return parseResult(result, omitNonDisplayableItems);
     }
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
@@ -82,11 +82,6 @@ public class HierarchyRepository {
 
     public Collection<PathwayBrowserNode> getEventHierarchyByTaxId(String taxId) {
         Result result = getEventHierarchyByTaxIdRaw(taxId);
-        return parseResults(result, false);
-    }
-
-    public Collection<PathwayBrowserNode> getEventHierarchyByDbId(Long dbId) {
-        Result result = getEventHierarchyByDbIdRaw(dbId);
         return parseResults(result, false);
     }
 
@@ -248,14 +243,6 @@ public class HierarchyRepository {
                 "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, labels(endNode(rel)) ])) AS nodePairCollection";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
-        return neo4jTemplate.query(query, map);
-    }
-
-    private Result getEventHierarchyByDbIdRaw(Long dbId) {
-        String query = "Match (s:Species{dbId:{dbId}})<-[:species]-(n:TopLevelPathway)-[r:hasEvent*]->(m:Event)" +
-                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, labels(endNode(rel)) ])) AS nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
-        map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
     }
 

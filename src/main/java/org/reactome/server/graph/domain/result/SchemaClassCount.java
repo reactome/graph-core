@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.result;
 
-
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Collection;

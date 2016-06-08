@@ -67,7 +67,7 @@ public class HierarchyServiceTest {
         logger.info("Started testing detailsService.getLocationsInPathwayBrowserTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", false);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", false, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -81,7 +81,7 @@ public class HierarchyServiceTest {
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowserDirectParticipantsTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", true, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -112,7 +112,7 @@ public class HierarchyServiceTest {
         logger.info("Started testing eventService.getEventHierarchyBySpeciesNameTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchyBySpeciesName("Homo sapiens");
+        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy("Homo sapiens");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -125,25 +125,11 @@ public class HierarchyServiceTest {
         logger.info("Started testing eventService.getEventHierarchyByTaxIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchyByTaxId("9606");
+        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy(9606);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(24, eventHierarchy.size());
         logger.info("Finished");
     }
-
-    @Test
-    public void getEventHierarchyByDbId() {
-        logger.info("Started testing eventService.getEventHierarchyByDbId");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchyByDbId(48887L);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(24, eventHierarchy.size());
-        logger.info("Finished");
-    }
-
 }

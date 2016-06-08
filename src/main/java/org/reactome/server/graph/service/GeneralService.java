@@ -28,40 +28,11 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class GeneralService {
 
-    private static final Logger logger = LoggerFactory.getLogger(GeneralService.class);
-
     @Autowired
     public GeneralRepository generalRepository;
 
     @Autowired
     private GeneralTemplateRepository generalTemplateRepository;
-
-    // --------------------------------------------- General Repository ------------------------------------------------
-
-    // Gets all schema classes and their counts
-
-    public Collection<SchemaClassCount> getSchemaClassCounts() {
-        return generalRepository.getSchemaClassCounts();
-    }
-
-    public Collection<ReferenceEntity> getAllChemicals() {
-        return generalRepository.getAllChemicals();
-    }
-
-    // Gets componentsOf relation (hasEvent, input, output, ...)
-
-    public Collection<ComponentOf> getComponentsOf(Object identifier) {
-
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return generalRepository.getComponentsOf(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return generalRepository.getComponentsOf(Long.parseLong(id));
-        }
-        return null;
-    }
-
-    // Gets release version
 
     public Integer getDBVersion() {
         return generalRepository.getDBVersion();
@@ -71,107 +42,10 @@ public class GeneralService {
         return generalRepository.getDBName();
     }
 
+    // Gets all schema classes and their counts
 
-    // -------------------------------------- General Template Repository ----------------------------------------------
-
-    // --------------------------------------- Generic Finder Methods --------------------------------------------------
-
-    public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return generalTemplateRepository.findByProperty(clazz, property, value, depth);
-    }
-
-    public <T> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return generalTemplateRepository.findAllByProperty(clazz, property, value, depth);
-    }
-
-    // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
-
-    public DatabaseObject findEnhancedObjectById(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return generalTemplateRepository.findEnhancedObjectById(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalTemplateRepository.findEnhancedObjectById(Long.parseLong(id));
-        }
-        return null;
-    }
-
-    // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
-
-    public DatabaseObject findById (Object identifier, RelationshipDirection direction) {
-
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return generalTemplateRepository.findById(id, direction);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalTemplateRepository.findById(Long.parseLong(id), direction);
-        }
-        return null;
-    }
-
-    public DatabaseObject findById (Object identifier, RelationshipDirection direction, String... relationships) {
-
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return generalTemplateRepository.findById(id, direction, relationships);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return generalTemplateRepository.findById(Long.parseLong(id), direction, relationships);
-        }
-        return null;
-    }
-
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
-        return generalTemplateRepository.findByDbIds(dbIds, direction);
-    }
-
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction) {
-        return generalTemplateRepository.findByStIds(stIds, direction);
-    }
-
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
-        return generalTemplateRepository.findByDbIds(dbIds, direction, relationships);
-    }
-
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
-        return generalTemplateRepository.findByStIds(stIds, direction, relationships);
-    }
-
-    // ---------------------------------------- Class Level Operations -------------------------------------------------
-
-    public <T> Collection<T> findByClass(Class clazz) {
-        return generalTemplateRepository.findByClass(clazz);
-    }
-
-    public <T> Collection<T> findByClass(Class clazz, Integer page, Integer offset) {
-        return generalTemplateRepository.findByClass(clazz, page, offset);
-    }
-
-    public <T> Collection<T> findByClassName(String className) {
-        try {
-            Class clazz = DatabaseObjectUtils.getClassForName(className);
-            return generalTemplateRepository.findByClass(clazz);
-        } catch (ClassNotFoundException e) {
-            logger.warn("Class name " + className + " was not found in the DataModel");
-        }
-        return null;
-    }
-
-    public <T> Collection<T> findByClassName(String className, Integer page, Integer offset) {
-        try {
-            Class clazz = DatabaseObjectUtils.getClassForName(className);
-            return generalTemplateRepository.findByClass(clazz, page, offset);
-        } catch (ClassNotFoundException e) {
-            logger.warn("Class name " + className + " was not found in the DataModel");
-        }
-        return null;
-    }
-
-    public Collection<String> findSimpleReferencesByClassName(String className) {
-        return generalTemplateRepository.findSimpleReferencesByClassName(className);
-    }
-
-    public Long countEntries(Class<?> clazz){
-        return generalTemplateRepository.countEntries(clazz);
+    public Collection<SchemaClassCount> getSchemaClassCounts() {
+        return generalRepository.getSchemaClassCounts();
     }
 
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
@@ -215,76 +89,3 @@ public class GeneralService {
     }
 
 }
-
-
-// Find methods
-
-//    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    public <T> T find(Class<T> clazz, String id) {
-//        id = DatabaseObjectUtils.trimId(id);
-//        if (DatabaseObjectUtils.isStId(id)) {
-//            return generalTemplateRepository.findByStableIdentifier(clazz, id);
-//        } else if (DatabaseObjectUtils.isDbId(id)){
-//            return generalTemplateRepository.findByDbId(clazz, Long.parseLong(id));
-//        }
-//        return null;
-//    }
-
-//    public <T> T findNoRelation(Class<T> clazz, String id) {
-//        id = DatabaseObjectUtils.trimId(id);
-//        if (DatabaseObjectUtils.isStId(id)) {
-//            return generalTemplateRepository.findByStIdNoRelations(clazz, id);
-//        } else if (DatabaseObjectUtils.isDbId(id)){
-//            return generalTemplateRepository.findByDbIdNoRelations(clazz, Long.parseLong(id));
-//        }
-//        return null;
-//    }
-// Default Finder Methods
-
-//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> T findByDbId(Class<T> clazz, Long dbId) {
-//        return generalTemplateRepository.findByDbId(clazz, dbId);
-//    }
-//
-//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> T findByStableIdentifier(Class<T> clazz, String stableIdentifier) {
-//        return generalTemplateRepository.findByStableIdentifier(clazz, stableIdentifier);
-//    }
-//
-//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> Iterable<T> findByDbIds(Class<T> clazz, Collection<Long> dbIds) {
-//        return generalTemplateRepository.findByDbIds(clazz, dbIds);
-//    }
-//
-//    //    todo could also be solved in GeneralRepository, Will not contain any relationships
-//    @Deprecated
-//    public <T> Iterable<T> findByStableIdentifiers(Class<T> clazz, Collection<String> stableIdentifiers) {
-//        return generalTemplateRepository.+findByStableIdentifiers(clazz, stableIdentifiers);
-//    }
-
-
-
-
-
-
-//    // Finder Methods without Relationships
-
-//    public <T> T findByDbIdNoRelations(Class<T> clazz, Long dbId) {
-//        return generalTemplateRepository.findByDbIdNoRelations(clazz, dbId);
-//    }
-//
-//    public <T> T findByStIdNoRelations(Class<T> clazz, String stId) {
-//        return generalTemplateRepository.findByStIdNoRelations(clazz, stId);
-//    }
-//
-//    public <T> Iterable<T> findByDbIdsNoRelations(Class<T> clazz, Collection<Long> dbIds) {
-//        return generalTemplateRepository.findByDbIdsNoRelations(clazz, dbIds);
-//    }
-//
-//    public <T> Iterable<T> findByStIdsNoRelations(Class<T> clazz, Collection<String> stIds) {
-//        return generalTemplateRepository.findByStIdsNoRelations(clazz, stIds);
-//    }
-

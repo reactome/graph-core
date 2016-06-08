@@ -63,13 +63,25 @@ public class PersonServiceTest {
         DatabaseObjectFactory.clearCache();
     }
 
-    //TODO Fix
     @Test
     public void findPersonByNameTest() {
-        logger.info("Started testing genericService.findPersonByName");
+        logger.info("Started testing personService.findPersonByName");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Person> persons = personService.findPersonByName("steve");
+        Collection<Person> persons = personService.findPersonByName("steve jupe");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(1,persons.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void queryPersonByNameTest() {
+        logger.info("Started testing personService.queryPersonByName");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Person> persons = personService.queryPersonByName("steve jupe");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -77,26 +89,12 @@ public class PersonServiceTest {
         logger.info("Finished");
     }
 
-    //TODO Fix
-    @Test
-    public void queryPersonByNameTest() {
-        logger.info("Started testing genericService.queryPersonByName");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<Person> persons = personService.queryPersonByName("steve jupe");
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(185,persons.size());
-        logger.info("Finished");
-    }
-
     @Test
     public void findPersonByOrcidIdTest() {
-        logger.info("Started testing genericService.findPersonByOrcidId");
+        logger.info("Started testing personService.findPersonByOrcidIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Person person = personService.findPersonByOrcidId("0000-0001-5807-0069");
+        Person person = personService.findPerson("0000-0001-5807-0069");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -106,10 +104,10 @@ public class PersonServiceTest {
 
     @Test
     public void findPersonByDbIdTest() {
-        logger.info("Started testing genericService.findPersonByDbId");
+        logger.info("Started testing personService.findPersonByDbIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Person person = personService.findPersonByDbId(391309L);
+        Person person = personService.findPerson(391309L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -117,13 +115,25 @@ public class PersonServiceTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void findPersonByEmailTest() {
+        logger.info("Started testing personService.findPersonByEmailTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Person person = personService.findPerson("sjupe@ebi.ac.uk");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals("Jupe, Steve", person.getDisplayName());
+        logger.info("Finished");
+    }
 
     @Test
     public void getPublicationsOfPersonByOrcidIdTest() {
-        logger.info("Started testing genericService.getPublicationsOfPersonByOrcidId");
+        logger.info("Started testing personService.getPublicationsOfPersonByOrcidId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Publication> publications = personService.getPublicationsOfPersonByOrcidId("0000-0001-5807-0069");
+        Collection<Publication> publications = personService.getPublicationsOfPerson("0000-0001-5807-0069");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -133,10 +143,10 @@ public class PersonServiceTest {
 
     @Test
     public void getPublicationsOfPersonByDbIdTest() {
-        logger.info("Started testing genericService.getPublicationsOfPersonByDbId");
+        logger.info("Started testing personService.getPublicationsOfPersonByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Publication> publications = personService.getPublicationsOfPersonByDbId(391309L);
+        Collection<Publication> publications = personService.getPublicationsOfPerson(391309L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -144,13 +154,25 @@ public class PersonServiceTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void getPublicationsOfPersonByEmailTest() {
+        logger.info("Started testing personService.getPublicationsOfPersonByEmailTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Publication> publications = personService.getPublicationsOfPerson("sjupe@ebi.ac.uk");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(3, publications.size());
+        logger.info("Finished");
+    }
 
     @Test
     public void getAuthoredPathwaysByOrcidIdTest() {
-        logger.info("Started testing genericService.getAuthoredPathwaysByOrcidId");
+        logger.info("Started testing personService.getAuthoredPathwaysByOrcidId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getAuthoredPathwaysByOrcidId("0000-0001-5807-0069");
+        Collection<Pathway> pathways = personService.getAuthoredPathways("0000-0001-5807-0069");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -160,10 +182,23 @@ public class PersonServiceTest {
 
     @Test
     public void getAuthoredPathwaysByDbIdTest() {
-        logger.info("Started testing genericService.getAuthoredPathwaysByDbId");
+        logger.info("Started testing personService.getAuthoredPathwaysByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getAuthoredPathwaysByDbId(391309L);
+        Collection<Pathway> pathways = personService.getAuthoredPathways(391309L);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(65, pathways.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getAuthoredPathwaysByEmailTest() {
+        logger.info("Started testing personService.getAuthoredPathwaysByEmailTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> pathways = personService.getAuthoredPathways("sjupe@ebi.ac.uk");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

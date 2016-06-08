@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service;
 
+import org.apache.commons.lang.StringUtils;
 import org.reactome.server.graph.repository.HierarchyRepository;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -23,25 +24,26 @@ public class HierarchyService {
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
 
-    public PathwayBrowserNode getLocationsInPathwayBrowser(Object identifier, boolean showDirectParticipants) {
+    public PathwayBrowserNode getLocationsInPathwayBrowser(Object identifier, Boolean showDirectParticipants, Boolean omitNonDisplayableItems) {
 
+        if (omitNonDisplayableItems == null) omitNonDisplayableItems = true;
+        if (showDirectParticipants == null) showDirectParticipants = false;
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             if (showDirectParticipants) {
-                return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(id);
+                return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(id, omitNonDisplayableItems);
             }
-            return hierarchyRepository.getLocationsInPathwayBrowser(id);
+            return hierarchyRepository.getLocationsInPathwayBrowser(id, omitNonDisplayableItems);
         } else if (DatabaseObjectUtils.isDbId(id)){
             if (showDirectParticipants) {
-                return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(Long.parseLong(id));
+                return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(Long.parseLong(id), omitNonDisplayableItems);
             }
-            return hierarchyRepository.getLocationsInPathwayBrowser(Long.parseLong(id));
+            return hierarchyRepository.getLocationsInPathwayBrowser(Long.parseLong(id), omitNonDisplayableItems);
         }
         return null;
     }
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
-
 
     public PathwayBrowserNode getSubHierarchy(Object identifier) {
 
@@ -56,15 +58,12 @@ public class HierarchyService {
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------
 
-    public Collection<PathwayBrowserNode> getEventHierarchyBySpeciesName(String speciesName) {
-        return hierarchyRepository.getEventHierarchyBySpeciesName(speciesName);
-    }
-
-    public Collection<PathwayBrowserNode> getEventHierarchyByTaxId(String taxId) {
-        return hierarchyRepository.getEventHierarchyByTaxId(taxId);
-    }
-
-    public Collection<PathwayBrowserNode> getEventHierarchyByDbId(Long dbId) {
-        return hierarchyRepository.getEventHierarchyByDbId(dbId);
+    public Collection<PathwayBrowserNode> getEventHierarchy(Object species) {
+        String speciesString = species.toString();
+        if (StringUtils.isNumeric(speciesString)) {
+            return hierarchyRepository.getEventHierarchyByTaxId(speciesString);
+        } else {
+            return hierarchyRepository.getEventHierarchyBySpeciesName(speciesString);
+        }
     }
 }

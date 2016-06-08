@@ -192,24 +192,6 @@
             </snapshots>
         </repository>
 
-        <!--TODO REMOVE ONE -->
-        <!--Spring snapshot repository-->
-        <!--<repository>-->
-            <!--<id>spring-milestones</id>-->
-            <!--<name>Spring Milestones</name>-->
-            <!--<url>http://repo.spring.io/milestone</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-        <!--<repository>-->
-            <!--<id>spring-snapshots</id>-->
-            <!--<name>Spring Snapshots</name>-->
-            <!--<url>https://repo.spring.io/libs-snapshot</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
         <!--Reactome repository-->
         <repository>
             <id>nexus-ebi-repo</id>
@@ -227,9 +209,6 @@
     <build>
         <finalName>${project.name}</finalName>
         <testResources>
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-            <!--</resource>-->
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>

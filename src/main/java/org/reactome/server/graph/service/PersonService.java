@@ -1,9 +1,11 @@
 package org.reactome.server.graph.service;
 
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
 import org.reactome.server.graph.repository.PersonRepository;
+import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,37 +26,59 @@ public class PersonService {
 
     //    equals person name
     public Collection<Person> findPersonByName(String name) {
-        name = "(?i)" + name;
-        return personRepository.findPersonByName(name);
+        String[] names = name.split(" ");
+        for (int i = 0; i<names.length; i++) {
+            names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
+        }
+        return personRepository.findPersonByName(names);
     }
 
     //    contains person name
     public Collection<Person> queryPersonByName(String name) {
-        name = ".*(?i)" + name + ".*";
-        return personRepository.findPersonByName(name);
+        String[] names = name.split(" ");
+        for (int i = 0; i<names.length; i++) {
+            names[i] = names[i].substring(0, 1).toUpperCase() + names[i].substring(1);
+        }
+        return personRepository.queryPersonByName(names);
     }
 
-    public Person findPersonByOrcidId(String orcidId) {
-        return personRepository.findPersonByOrcidId(orcidId);
+    public Person findPerson(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isEmail(id)){
+            return personRepository.findPersonByEmail(id);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.findPersonByDbId(Long.valueOf(id));
+        } else if (DatabaseObjectUtils.isOrcidId(id)){
+            return personRepository.findPersonByOrcidId(id);
+        } else {
+            return null;
+        }
     }
 
-    public Person findPersonByDbId(Long dbId) {
-        return personRepository.findPersonByDbId(dbId);
+    public Collection<Publication> getPublicationsOfPerson(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isEmail(id)){
+            return personRepository.getPublicationsOfPersonByEmail(id);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getPublicationsOfPersonByDbId(Long.valueOf(id));
+        } else if (DatabaseObjectUtils.isOrcidId(id)){
+            return personRepository.getPublicationsOfPersonByOrcidId(id);
+        } else {
+            return null;
+        }
     }
 
-    public Collection<Publication> getPublicationsOfPersonByOrcidId(String orcidId) {
-        return personRepository.getPublicationsOfPersonByOrcidId(orcidId);
+    public Collection<Pathway> getAuthoredPathways(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isEmail(id)){
+            return personRepository.getAuthoredPathwaysByEmail(id);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
+        } else if (DatabaseObjectUtils.isOrcidId(id)){
+            return personRepository.getAuthoredPathwaysByOrcidId(id);
+        } else {
+            return null;
+        }
     }
 
-    public Collection<Publication> getPublicationsOfPersonByDbId(Long dbId) {
-        return personRepository.getPublicationsOfPersonByDbId(dbId);
-    }
-
-    public Collection<Pathway> getAuthoredPathwaysByOrcidId(String orcidId) {
-        return personRepository.getAuthoredPathwaysByOrcidId(orcidId);
-    }
-
-    public Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId) {
-        return personRepository.getAuthoredPathwaysByDbId(dbId);
-    }
 }

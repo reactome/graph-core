@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.service.helper.AttributeProperties;
-import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.helper.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 /**
  * Created by:
@@ -100,6 +99,17 @@ public abstract class DatabaseObjectUtils {
             return id.toString();
         }
         return null;
+    }
+
+    public static boolean isEmail(String email) {
+        Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
+        return p.matcher(email).matches();
+    }
+
+
+    public static boolean isOrcidId(String id) {
+        Pattern p = Pattern.compile("(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})");
+        return p.matcher(id).matches();
     }
 
     public static boolean isStId(String id) {
