@@ -14,9 +14,6 @@ import java.util.Set;
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 
-
-    @ReactomeProperty
-    private Boolean _doRelease;
     @ReactomeProperty
     private String definition;
     //A simple flag to indicate if this Event object is a disease
@@ -85,10 +82,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
-    /**
-     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<NegativeRegulation> negativelyRegulatedBy;
@@ -96,10 +89,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private Set<Event> orthologousEvent;
 
-    /**
-     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<PositiveRegulation> positivelyRegulatedBy;
 
@@ -109,10 +98,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
     private List<Species> relatedSpecies;
 
-    /**
-     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<Requirement> requirements;
@@ -130,14 +115,6 @@ public abstract class Event extends DatabaseObject {
     private List<Summation> summation;
 
     public Event() {}
-
-    public Boolean get_doRelease() {
-        return _doRelease;
-    }
-
-    public void set_doRelease(Boolean _doRelease) {
-        this._doRelease = _doRelease;
-    }
 
     public String getDefinition() {
         return definition;
