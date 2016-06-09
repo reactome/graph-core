@@ -11,7 +11,7 @@
     </appender>
     <appender name="testFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/flo/logs/graph-core/junit/service-test-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./target/test-logging/service-test-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
@@ -21,7 +21,7 @@
     </appender>
     <appender name="importFileErrors" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/flo/logs/graph-core/data-import/data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./target/data-import-logging/data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
@@ -31,7 +31,7 @@
     </appender>
     <appender name="importFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>/home/flo/logs/graph-core/data-import/data-import-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./target/data-import-logging/data-import-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
@@ -39,7 +39,7 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-
+    <logger name="deng" level="DEBUG"/>
     <logger name="testLogger" level="INFO" additivity="false">
         <appender-ref ref="testFile"/>
     </logger>
