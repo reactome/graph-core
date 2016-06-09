@@ -34,9 +34,10 @@
         <!--dependencies-->
         <reactome.version>1.2.4</reactome.version>
         <sdn.version>4.1.1.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
-        <spring.test.version>4.2.4.RELEASE</spring.test.version>
+        <spring.test.version>4.2.6.RELEASE</spring.test.version>
+        <spring.version>4.2.6.RELEASE</spring.version>
         <neo4j.version>3.0.1</neo4j.version>
-        <aspectj.version>1.8.8</aspectj.version>
+        <aspectj.version>1.8.9</aspectj.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
         <jasp.version>2.1</jasp.version>
@@ -161,6 +162,24 @@
             <scope>compile</scope>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-instrument</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <repositories>
@@ -173,24 +192,6 @@
             </snapshots>
         </repository>
 
-        <!--TODO REMOVE ONE -->
-        <!--Spring snapshot repository-->
-        <!--<repository>-->
-            <!--<id>spring-milestones</id>-->
-            <!--<name>Spring Milestones</name>-->
-            <!--<url>http://repo.spring.io/milestone</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
-        <!--<repository>-->
-            <!--<id>spring-snapshots</id>-->
-            <!--<name>Spring Snapshots</name>-->
-            <!--<url>https://repo.spring.io/libs-snapshot</url>-->
-            <!--<snapshots>-->
-                <!--<enabled>true</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
         <!--Reactome repository-->
         <repository>
             <id>nexus-ebi-repo</id>
@@ -207,10 +208,17 @@
 
     <build>
         <finalName>${project.name}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>logback.xml</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <testResources>
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-            <!--</resource>-->
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
@@ -310,8 +318,46 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test-compile</id>
+                        <configuration>
+                            <weaveMainSourceFolder>true</weaveMainSourceFolder>
+                        </configuration>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjrt</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
+
+
+
     <!--Configures the distribution to nexus repository -->
     <distributionManagement>
         <repository>

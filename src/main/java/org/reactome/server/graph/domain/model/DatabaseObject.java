@@ -9,6 +9,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ import java.io.Serializable;
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
 @NodeEntity
+@Configurable
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 
     @ReactomeTransient
