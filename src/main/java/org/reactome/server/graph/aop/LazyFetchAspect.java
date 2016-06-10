@@ -32,7 +32,7 @@ public class LazyFetchAspect {
         if (returnTypeOfPointcutMethod.getCanonicalName().equals(Long.class.getCanonicalName())) {
 
 
-            System.out.println( " ##################### I AM HEREEEEE AS NODEENTITYssss ##############################");
+//            System.out.println( " ##################### I AM HEREEEEE AS NODEENTITYssss ##############################");
 
 
         } else if (returnTypeOfPointcutMethod.getCanonicalName().equals(Collection.class.getCanonicalName())) {

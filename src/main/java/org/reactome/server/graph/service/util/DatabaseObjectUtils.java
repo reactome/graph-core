@@ -90,8 +90,6 @@ public abstract class DatabaseObjectUtils {
         return propertiesList;
     }
 
-
-
     public static String getIdentifier(Object id){
         if (id instanceof String) {
             return trimId((String) id);

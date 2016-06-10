@@ -49,7 +49,7 @@
     <logger name="importErrorLogger" level="WARN" additivity="false">
         <appender-ref ref="importFileErrors"/>
     </logger>
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
