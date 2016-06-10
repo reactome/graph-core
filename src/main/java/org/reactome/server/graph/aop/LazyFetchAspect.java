@@ -25,7 +25,7 @@ public class LazyFetchAspect {
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
-        System.out.println(method.getReturnType().getName());
+//        System.out.println(method.getReturnType().getName());
 
         Class<?> returnTypeOfPointcutMethod = method.getReturnType();
 
