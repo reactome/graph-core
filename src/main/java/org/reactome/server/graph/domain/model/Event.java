@@ -82,10 +82,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
-    /**
-     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<NegativeRegulation> negativelyRegulatedBy;
@@ -93,10 +89,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private Set<Event> orthologousEvent;
 
-    /**
-     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<PositiveRegulation> positivelyRegulatedBy;
 
@@ -106,10 +98,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
     private List<Species> relatedSpecies;
 
-    /**
-     * positivelyRegulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     private List<Requirement> requirements;
