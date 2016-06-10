@@ -16,21 +16,21 @@ import java.util.Collection;
 @Repository
 public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathway> {
 
-    @Query("Match (n:TopLevelPathway) WHERE n.isInferred = false RETURN n")
+    @Query("Match (n:TopLevelPathway) WHERE n.isInferred = false RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getTopLevelPathways();
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {0}  RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {0}  RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getTopLevelPathwaysByName(String speciesName);
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getTopLevelPathwaysByTaxId(String taxId);
 
-    @Query("Match (n:TopLevelPathway) Where n.isInferred = false  RETURN n")
+    @Query("Match (n:TopLevelPathway) Where n.isInferred = false  RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getCuratedTopLevelPathways();
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where n.isInferred = false AND s.displayName = {0}  RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where n.isInferred = false AND s.displayName = {0}  RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByName(String speciesName);
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) WHERE n.isInferred = false AND s.taxId={0} RETURN n")
+    @Query("Match (n:TopLevelPathway)-[:species]-(s) WHERE n.isInferred = false AND s.taxId={0} RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByTaxId(String taxId);
 }

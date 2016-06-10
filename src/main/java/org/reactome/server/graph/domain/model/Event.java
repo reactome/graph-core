@@ -14,9 +14,6 @@ import java.util.Set;
 @NodeEntity
 public abstract class Event extends DatabaseObject {
 
-
-    @ReactomeProperty
-    private Boolean _doRelease;
     @ReactomeProperty
     private String definition;
     //A simple flag to indicate if this Event object is a disease
@@ -130,14 +127,6 @@ public abstract class Event extends DatabaseObject {
     private List<Summation> summation;
 
     public Event() {}
-
-    public Boolean get_doRelease() {
-        return _doRelease;
-    }
-
-    public void set_doRelease(Boolean _doRelease) {
-        this._doRelease = _doRelease;
-    }
 
     public String getDefinition() {
         return definition;
