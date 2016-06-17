@@ -10,10 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 04.06.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public class SchemaRepository {

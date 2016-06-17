@@ -21,10 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 03.03.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @ContextConfiguration(classes = {Neo4jConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -152,5 +150,16 @@ public class PhysicalEntityServiceTest {
 //        logger.info("Finished");
 //    }
 
+    @Test
+    public void testGetComplexSubunits(){
+        logger.info("Started testing physicalEntityService.testGetComplexSubunits");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<PhysicalEntity> complexSubunits = physicalEntityService.getComplexSubunits("R-HSA-5674003");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
 
+        assertEquals(5, complexSubunits.size());
+        logger.info("Finished");
+    }
 }

@@ -6,7 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.Neo4jConfig;
-import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collection;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -24,7 +25,7 @@ import static org.junit.Assume.assumeTrue;
  */
 @ContextConfiguration(classes = { Neo4jConfig.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class FireworksServiceTest {
+public class EventsServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
@@ -35,7 +36,7 @@ public class FireworksServiceTest {
     private GeneralService generalService;
 
     @Autowired
-    private FireworksService fireworksService;
+    private EventsService eventsService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -59,24 +60,31 @@ public class FireworksServiceTest {
     }
 
     @Test
-    public void getPathwaysForTest(){
-        logger.info("Started testing genericService.getPathwaysForTest");
+    public void getEventAncestorsByStIdTest(){
+        logger.info("Started testing eventsService.getEventAncestorsByStIdTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = fireworksService.getPathwaysFor("R-ALL-113592", 48887L);
+        Collection<Collection<Pathway>> pathways = eventsService.getEventAncestors("R-HSA-5673001");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592) in human", pathways.size() >= 429);
+        assertTrue("Raf/Map is at least in 20 different locations", pathways.size() >= 20);
+        for (Collection<Pathway> pathway : pathways) {
+            assertFalse("Ancestors list cannot be empty", pathway.isEmpty());
+        }
     }
 
     @Test
-    public void getPathwaysForAllFormsOfTest(){
-        logger.info("Started testing genericService.getPathwaysForAllFormsOfTest");
+    public void getEventAncestorsByDbIdTest(){
+        logger.info("Started testing eventsService.getEventAncestorsByDbIdTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = fireworksService.getPathwaysForAllFormsOf("R-ALL-113592", 48887L);
+        Collection<Collection<Pathway>> pathways = eventsService.getEventAncestors(5673001L);
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 591 or more pathways for all forms of ATP (R-ALL-113592) in human", pathways.size() >= 591);
+        assertTrue("Raf/Map is at least in 20 different locations", pathways.size() >= 20);
+        for (Collection<Pathway> pathway : pathways) {
+            assertFalse("Ancestors list cannot be empty", pathway.isEmpty());
+        }
     }
+
 }
