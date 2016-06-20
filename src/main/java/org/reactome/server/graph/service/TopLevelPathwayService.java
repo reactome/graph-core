@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.repository.TopLevelPathwayRepository;
 import org.springframework.beans.factory.annotation.Autowired;

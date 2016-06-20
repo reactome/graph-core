@@ -55,7 +55,6 @@ public class EventsServiceTest {
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 

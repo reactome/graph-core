@@ -57,7 +57,6 @@ public class HierarchyServiceTest {
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 

@@ -68,7 +68,7 @@ public class AdvancedServiceTest {
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        generalService.clearCache();
+//        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 

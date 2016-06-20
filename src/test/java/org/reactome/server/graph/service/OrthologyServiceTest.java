@@ -53,7 +53,6 @@ public class OrthologyServiceTest {
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 

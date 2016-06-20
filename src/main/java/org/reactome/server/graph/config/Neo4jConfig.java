@@ -3,13 +3,12 @@ package org.reactome.server.graph.config;
 import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
-import org.springframework.context.annotation.*;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
-import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
-import org.springframework.instrument.classloading.LoadTimeWeaver;
-import org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -23,10 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = "org.reactome.server.graph")
 @EnableNeo4jRepositories(basePackages = "org.reactome.server.graph.repository")
 @EnableTransactionManagement
-@EnableAspectJAutoProxy
-@EnableSpringConfigured
-@EnableLoadTimeWeaving
-public class Neo4jConfig extends Neo4jConfiguration implements LoadTimeWeavingConfigurer {
+public class Neo4jConfig extends Neo4jConfiguration {
 
     @Bean
     public Configuration getConfiguration() {
@@ -42,20 +38,8 @@ public class Neo4jConfig extends Neo4jConfiguration implements LoadTimeWeavingCo
     }
 
     @Bean
-    @Scope(value = "prototype")
+    @Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public Session getSession() throws Exception {
         return super.getSession();
     }
-
-    @Override
-    public LoadTimeWeaver getLoadTimeWeaver() {
-        return new ReflectiveLoadTimeWeaver();
-    }
-
-    @Bean
-    public InstrumentationLoadTimeWeaver loadTimeWeaver()  throws Throwable {
-        InstrumentationLoadTimeWeaver loadTimeWeaver = new InstrumentationLoadTimeWeaver();
-        return loadTimeWeaver;
-    }
-
 }
