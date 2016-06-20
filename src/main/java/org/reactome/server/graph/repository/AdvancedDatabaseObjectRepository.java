@@ -229,4 +229,27 @@ public class AdvancedDatabaseObjectRepository {
         return databaseObjects;
     }
 
+    public Collection<DatabaseObject> findByRelationship (Long dbId, RelationshipDirection direction, String... relationships) {
+        String query;
+        switch (direction) {
+            case OUTGOING:
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) RETURN m";
+                break;
+            case INCOMING:
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN m";
+                break;
+            default: //UNDIRECTED
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN m";
+                break;
+        }
+        Map<String,Object> map = new HashMap<>();
+        map.put("dbId",dbId);
+        Result result =  neo4jTemplate.query(query,map);
+        List<DatabaseObject> databaseObjects = new ArrayList<>();
+        for (Map<String, Object> stringObjectMap : result) {
+            databaseObjects.add((DatabaseObject) stringObjectMap.get("m"));
+        }
+        return databaseObjects;
+    }
+
 }

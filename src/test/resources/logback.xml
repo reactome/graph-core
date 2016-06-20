@@ -40,13 +40,13 @@
         </encoder>
     </appender>
 
-    <logger name="testLogger" level="INFO" additivity="false">
+    <logger name="testLogger" level="DEBUG" additivity="false">
         <appender-ref ref="testFile"/>
     </logger>
-    <logger name="importLogger" level="INFO" additivity="false">
+    <logger name="importLogger" level="DEBUG" additivity="false">
         <appender-ref ref="importFile"/>
     </logger>
-    <logger name="importErrorLogger" level="WARN" additivity="false">
+    <logger name="importErrorLogger" level="DEBUG" additivity="false">
         <appender-ref ref="importFileErrors"/>
     </logger>
     <root level="WARN">

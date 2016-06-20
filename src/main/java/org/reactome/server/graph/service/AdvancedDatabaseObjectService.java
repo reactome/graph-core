@@ -1,10 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
-import org.reactome.server.graph.repository.ComponentRepository;
-import org.reactome.server.graph.repository.GeneralTemplateRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +83,8 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
     }
 
+    public Collection<DatabaseObject> findByRelationship(Long dbId, RelationshipDirection direction, String... relationships){
+        return advancedDatabaseObjectRepository.findByRelationship(dbId, direction, relationships);
+    }
 
 }

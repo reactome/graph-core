@@ -9,7 +9,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -26,7 +25,6 @@ import java.io.Serializable;
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
 @NodeEntity
-@Configurable
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 
     @ReactomeTransient
@@ -106,11 +104,10 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                (stId == null ? "dbId=" + dbId : "") +
-                (stId != null ? ", stId='" + stId + '\'' : "") +
+        return getClass().getSimpleName() + " {" +
+                (stId == null ? "dbId=" + dbId : "dbId=" + dbId + ", stId='" + stId + '\'') +
                 ", displayName='" + displayName + '\'' +
-                '}';
+                "}";
     }
 
     @Override
@@ -151,5 +148,10 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @JsonIgnore
     public String getClassName() {
         return getClass().getSimpleName().replaceAll("([A-Z])", " $1");
+    }
+
+    @JsonIgnore
+    public Long aopDbId() {
+        return dbId;
     }
 }
