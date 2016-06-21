@@ -61,7 +61,6 @@ public class ParticipantServiceTest {
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 

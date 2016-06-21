@@ -56,7 +56,6 @@ public class PathwaysServiceTest {
             checkedOnce = true;
         }
         assumeTrue(isFit);
-        generalService.clearCache();
         DatabaseObjectFactory.clearCache();
     }
 
