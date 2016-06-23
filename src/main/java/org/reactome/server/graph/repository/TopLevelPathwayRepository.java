@@ -8,29 +8,27 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 19.04.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathway> {
 
-    @Query("Match (n:TopLevelPathway) WHERE n.isInferred = false RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getTopLevelPathways();
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where s.displayName = {0}  RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway)-[:species]-(s:Species{displayName:{0}}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getTopLevelPathwaysByName(String speciesName);
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getTopLevelPathwaysByTaxId(String taxId);
 
-    @Query("Match (n:TopLevelPathway) Where n.isInferred = false  RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getCuratedTopLevelPathways();
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) Where n.isInferred = false AND s.displayName = {0}  RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False})-[:species]-(:Species{displayName:{0}}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByName(String speciesName);
 
-    @Query("Match (n:TopLevelPathway)-[:species]-(s) WHERE n.isInferred = false AND s.taxId={0} RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False})-[:species]-(:Species{taxId:{0}}) RETURN n Order By n.displayName")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByTaxId(String taxId);
 }

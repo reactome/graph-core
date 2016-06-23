@@ -1,7 +1,10 @@
 package org.reactome.server.graph.repository;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Pathway;
+import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
@@ -16,10 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 24.05.16.
  */
 @Repository
 public class HierarchyRepository {
@@ -88,17 +88,17 @@ public class HierarchyRepository {
 
     /**
      * Build Locations in the Pathway Browser of a given query Result.
+     * <p>
+     * //     * @param id the one where querying for
      *
-     //     * @param id the one where querying for
      * @param result the cypher query result
-     *
      * @return PathwayBrowserNode having parents and children
      */
     private PathwayBrowserNode parseResult(Result result, Boolean omitNonDisplayableItems) {
 
         if (result != null && result.iterator().hasNext()) {
             Map<String, Object> stringObjectMap = result.iterator().next();
-            return parseRaw(stringObjectMap,omitNonDisplayableItems);
+            return parseRaw(stringObjectMap, omitNonDisplayableItems);
         }
         return null;
     }
@@ -109,7 +109,7 @@ public class HierarchyRepository {
         if (result != null && result.iterator().hasNext()) {
             Collection<PathwayBrowserNode> eventHierarchy = new ArrayList<>();
             for (Map<String, Object> stringObjectMap : result) {
-                eventHierarchy.add(parseRaw(stringObjectMap,omitNonDisplayableItems));
+                eventHierarchy.add(parseRaw(stringObjectMap, omitNonDisplayableItems));
             }
             return eventHierarchy;
         }
@@ -118,20 +118,20 @@ public class HierarchyRepository {
 
     @SuppressWarnings("unchecked")
     private PathwayBrowserNode parseRaw(Map<String, Object> stringObjectMap, Boolean omitNonDisplayableItems) {
-        PathwayBrowserNode root = createNode((DatabaseObject)stringObjectMap.get("n"));
-        Map<String,PathwayBrowserNode> nodes = new HashMap<>();
+        PathwayBrowserNode root = createNode((DatabaseObject) stringObjectMap.get("n"));
+        Map<String, PathwayBrowserNode> nodes = new HashMap<>();
         PathwayBrowserNode previous = root;
-        nodes.put(root.getStId(),root);
+        nodes.put(root.getStId(), root);
         int previousSize = 0;
-        for (ArrayList<Object> nodePairCollection : ((ArrayList<Object>[])stringObjectMap.get("nodePairCollection"))) {
+        for (ArrayList<Object> nodePairCollection : ((ArrayList<Object>[]) stringObjectMap.get("nodePairCollection"))) {
             int size = nodePairCollection.size();
-            if (size>previousSize) {
-                ArrayList<Object> objects = (ArrayList<Object>) nodePairCollection.get(nodePairCollection.size()-1);
-                previous = addNode(previous,nodes,objects,omitNonDisplayableItems);
+            if (size > previousSize) {
+                ArrayList<Object> objects = (ArrayList<Object>) nodePairCollection.get(nodePairCollection.size() - 1);
+                previous = addNode(previous, nodes, objects, omitNonDisplayableItems);
             } else {
                 previous = root;
                 for (Object objects : nodePairCollection) {
-                    previous = addNode(previous,nodes,(ArrayList) objects,omitNonDisplayableItems);
+                    previous = addNode(previous, nodes, (ArrayList) objects, omitNonDisplayableItems);
                 }
             }
             previousSize = size;
@@ -152,7 +152,7 @@ public class HierarchyRepository {
         /**
          * We do not link them in the Tree.
          */
-        if ( ! omitNonDisplayableItems || (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus"))) {
+        if (!omitNonDisplayableItems || (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus"))) {
             previous.addChild(node);
             node.addParent(previous);
             previous = node;
@@ -223,7 +223,7 @@ public class HierarchyRepository {
     private Result getSubHierarchyByDbIdRaw(Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
                 "Return n.stId, .displayName, n.hasDiagram, n.speciesName, labels(n), COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName,labels(endNode(rel)) ])) AS nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
     }
@@ -231,7 +231,7 @@ public class HierarchyRepository {
     private Result getSubHierarchyByStIdRaw(String stId) {
         String query = "Match (n:DatabaseObject{stId:{stId}})-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName,labels(endNode(rel)) ])) AS nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         return neo4jTemplate.query(query, map);
     }
@@ -241,16 +241,15 @@ public class HierarchyRepository {
     private Result getEventHierarchyBySpeciesNameRaw(String speciesName) {
         String query = "Match (n:TopLevelPathway{speciesName:{speciesName}})-[r:hasEvent*]->(m:Event)" +
                 "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, labels(endNode(rel)) ])) AS nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         return neo4jTemplate.query(query, map);
     }
 
     private Result getEventHierarchyByTaxIdRaw(String taxId) {
-
         String query = "Match (s:Species{taxId:{taxId}})<-[:species]-(n:TopLevelPathway)-[r:hasEvent*]->(m:Event) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, labels(endNode(rel)) ])) AS nodePairCollection";
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("taxId", taxId);
         return neo4jTemplate.query(query, map);
     }

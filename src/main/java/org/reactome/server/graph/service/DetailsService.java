@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
@@ -35,7 +36,7 @@ public class DetailsService {
     @Autowired
     private HierarchyService hierarchyService;
 
-    @Transactional
+//    @Transactional
     public ContentDetails getContentDetails(Object identifier, Boolean directParticipants) {
 
         ContentDetails contentDetails = new ContentDetails();

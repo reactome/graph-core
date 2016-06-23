@@ -8,10 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 28.02.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity> {
@@ -22,4 +20,9 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
     @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOf(String stId);
 
+    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity)-[:referenceEntity]->() RETURN pe")
+    Collection<PhysicalEntity> getComplexSubunits(Long dbId);
+
+    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity)-[:referenceEntity]->() RETURN pe")
+    Collection<PhysicalEntity> getComplexSubunits(String stId);
 }

@@ -6,7 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.Neo4jConfig;
-import org.reactome.server.graph.service.helper.ContentDetails;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,35 +14,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 14.04.16.
+ * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
-@ContextConfiguration(classes = {Neo4jConfig.class})
+@ContextConfiguration(classes = { Neo4jConfig.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-public class DetailsServiceTest {
+public class OrthologyServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger("testLogger");
 
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
 
-    private static final String stId = "R-HSA-199420";
-
-    @Autowired
-    private DetailsService detailsService;
-
     @Autowired
     private GeneralService generalService;
 
+    @Autowired
+    private OrthologyService orthologyService;
+
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
+        logger.info(" --- !!! Running OrthologyServiceTests !!! --- \n");
     }
 
     @AfterClass
@@ -61,21 +57,15 @@ public class DetailsServiceTest {
     }
 
     @Test
-    public void getContentDetailsTest() {
+    public void getOrthologyTest(){
+        logger.info("Started testing eventsService.getEventAncestorsByStIdTest");
+        long start = System.currentTimeMillis();
+        DatabaseObject orthology = orthologyService.getOrthology("R-HSA-6799198", 49633L);
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
 
-        logger.info("Started testing detailsService.getContentDetails");
-        long start, time;
-        start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails(stId, false);
-        time = System.currentTimeMillis() - start;
-        logger.info("getContentDetails execution time: " + time + "ms");
-
-        assertEquals(4, contentDetails.getNodes().size());
-        assertEquals("PTEN [cytosol]", contentDetails.getDatabaseObject().getDisplayName());
-        assertEquals(27, contentDetails.getOtherFormsOfThisMolecule().size());
-        assertEquals(1, contentDetails.getComponentOf().size());
-        logger.info("Finished");
+        assertNotNull("The orthology cannot be null", orthology.getStId());
+        assertTrue("The orthologous of 'R-HSA-6799198' for 'Sus scrofa' is 'R-SSC-6799198'", orthology.getStId().equals("R-SSC-6799198"));
     }
-
 
 }
