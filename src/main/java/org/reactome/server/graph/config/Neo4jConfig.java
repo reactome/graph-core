@@ -7,6 +7,7 @@ import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

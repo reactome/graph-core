@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
+ * @author Guilherme Viteri (gviteri@ebi.ac.uk)
+ *
  * @since 05.06.16.
  */
 @Service
@@ -83,8 +83,10 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
     }
 
-    public Collection<DatabaseObject> findByRelationship(Long dbId, RelationshipDirection direction, String... relationships){
+    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, Class<?> collectionClazz, RelationshipDirection direction, String... relationships){
+        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, collectionClazz, direction, relationships);
+    }
+    public DatabaseObject findByRelationship(Long dbId, RelationshipDirection direction, String... relationships){
         return advancedDatabaseObjectRepository.findByRelationship(dbId, direction, relationships);
     }
-
 }

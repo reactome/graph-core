@@ -39,7 +39,7 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-
+    <logger name="deng" level="WARN"/>
     <logger name="testLogger" level="DEBUG" additivity="false">
         <appender-ref ref="testFile"/>
     </logger>

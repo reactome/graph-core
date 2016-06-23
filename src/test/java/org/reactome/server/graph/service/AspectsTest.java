@@ -5,23 +5,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.junit.Assume.assumeTrue;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 14.04.16.
+ * @author Guilherme Viteri (gviteri@ebi.ac.uk)
+ * @since 14.06.16.
  */
 @ContextConfiguration(classes = {Neo4jConfig.class})
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -50,14 +46,14 @@ public class AspectsTest {
     }
 
     @Test
-    public void getEvidenceTypeTest() {
-        DatabaseObject dd = dbs.findByIdNoRelations("R-HSA-109581");
+    public void lazyLoadingTest() {
+        DatabaseObject dd = dbs.findByIdNoRelations("R-HSA-446203");
         Pathway pe = (Pathway)dd;
-
-        List<Event> ee = pe.getHasEvent();
-        pe.setHasEvent(ee);
-
         System.out.println(pe.getHasEvent());
+        System.out.println(pe.getOrthologousEvent());
+        System.out.println(pe.getNormalPathway());
+        System.out.println(pe.getCreated().getAuthor());
+        System.out.println(pe.getModified().getNote());
     }
 
 }

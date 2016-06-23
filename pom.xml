@@ -161,17 +161,17 @@
         </dependency>
 
         <!-- TODO: I am not sure if these dependencies are needed when running the project as library. Right now is not needed -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.aspectj</groupId>-->
+            <!--<artifactId>aspectjrt</artifactId>-->
+            <!--<version>${aspectj.version}</version>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.aspectj</groupId>-->
+            <!--<artifactId>aspectjweaver</artifactId>-->
+            <!--<version>${aspectj.version}</version>-->
+        <!--</dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.aspectj</groupId>-->
@@ -211,9 +211,9 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>logback.xml</exclude>
-                </excludes>
+                <!--<excludes>-->
+                    <!--<exclude>logback.xml</exclude>-->
+                <!--</excludes>-->
             </resource>
         </resources>
 

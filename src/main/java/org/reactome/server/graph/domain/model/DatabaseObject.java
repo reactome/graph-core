@@ -149,9 +149,4 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     public String getClassName() {
         return getClass().getSimpleName().replaceAll("([A-Z])", " $1");
     }
-
-    @JsonIgnore
-    public Long aopDbId() {
-        return dbId;
-    }
 }
