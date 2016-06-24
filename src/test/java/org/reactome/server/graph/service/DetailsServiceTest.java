@@ -15,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -72,7 +73,7 @@ public class DetailsServiceTest {
 
         assertEquals(4, contentDetails.getNodes().size());
         assertEquals("PTEN [cytosol]", contentDetails.getDatabaseObject().getDisplayName());
-        assertEquals(27, contentDetails.getOtherFormsOfThisMolecule().size());
+        assertTrue(contentDetails.getOtherFormsOfThisMolecule().size() >= 27);
         assertEquals(1, contentDetails.getComponentOf().size());
         logger.info("Finished");
     }

@@ -192,4 +192,16 @@ public class DatabaseObjectServiceTest {
         assertEquals(4, databaseObjectsObserved.size());
         logger.info("Finished");
     }
+
+    public void useOldStableIdentifier() {
+        logger.info("Started testing databaseObjectService.useOldStableIdentifier");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObject = databaseObjectService.findById("REACT_13");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals("The old StId for R-HSA-71291 is REACT_13. Wrong one found " + databaseObject.getStId(), "R-HSA-71291", databaseObject.getStId());
+        logger.info("Finished");
+    }
 }

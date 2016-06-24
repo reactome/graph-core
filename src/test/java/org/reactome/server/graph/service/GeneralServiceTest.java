@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -134,7 +135,7 @@ public class GeneralServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1266096, result.iterator().next().get("COUNT(n)"));
+        assertTrue(((Integer) result.iterator().next().get("COUNT(n)")) >= 1266096);
         logger.info("Finished");
     }
 

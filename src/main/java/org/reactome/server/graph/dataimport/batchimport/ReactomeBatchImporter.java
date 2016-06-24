@@ -39,6 +39,7 @@ public class ReactomeBatchImporter {
 
     private static final String DBID = "dbId";
     private static final String STID = "stId";
+    private static final String OLD_STID = "oldStId";
     private static final String ACCESSION = "identifier";
     private static final String NAME = "displayName";
 
@@ -242,9 +243,15 @@ public class ReactomeBatchImporter {
                     case STID:
                         GKInstance stableIdentifier = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.stableIdentifier);
                         if (stableIdentifier == null) continue;
-                        String id = (String) getObjectFromGkInstance(stableIdentifier, ReactomeJavaConstants.identifier);
-                        if (id == null) continue;
-                        properties.put(attribute, id);
+                        String stId = (String) getObjectFromGkInstance(stableIdentifier, ReactomeJavaConstants.identifier);
+                        if (stId == null) continue;
+                        properties.put(attribute, stId);
+                        //Stable identifier version
+                        String version = (String) getObjectFromGkInstance(stableIdentifier, ReactomeJavaConstants.identifierVersion);
+                        if (version != null) properties.put("stIdVersion", stId + "." + version);
+                        //Keeping old stable identifier if present
+                        String oldStId = (String) getObjectFromGkInstance(stableIdentifier, "oldIdentifier");
+                        if (oldStId != null) properties.put("oldStId", oldStId);
                         break;
                     case "orcidId":
                         GKInstance orcid = (GKInstance) getObjectFromGkInstance(instance, ReactomeJavaConstants.crossReference);
@@ -459,6 +466,7 @@ public class ReactomeBatchImporter {
 
         createSchemaConstraint(Label.label(DatabaseObject.class.getSimpleName()), DBID);
         createSchemaConstraint(Label.label(DatabaseObject.class.getSimpleName()), STID);
+        createSchemaConstraint(Label.label(DatabaseObject.class.getSimpleName()), OLD_STID);
 
         createSchemaConstraint(Label.label(Event.class.getSimpleName()),DBID);
         createSchemaConstraint(Label.label(Event.class.getSimpleName()),STID);

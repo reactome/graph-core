@@ -44,6 +44,11 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeProperty
     private String stId;
 
+    @ApiModelProperty(value = "This is the version of the main external identifier of a Reactome entry")
+    private String stIdVersion;
+
+    private transient String oldStId;
+
     @ApiModelProperty(value = "Instance that created this entry")
     @Relationship(type = "created", direction = Relationship.INCOMING)
     private InstanceEdit created;
@@ -84,6 +89,14 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     public void setStId(String stId) {
         this.stId = stId;
+    }
+
+    public String getOldStId() {
+        return oldStId;
+    }
+
+    public void setOldStId(String oldStId) {
+        this.oldStId = oldStId;
     }
 
     public InstanceEdit getCreated() {

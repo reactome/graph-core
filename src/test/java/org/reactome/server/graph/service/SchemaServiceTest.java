@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -98,7 +99,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991, pathways.size());
+        assertTrue(pathways.size() > 1991);
         logger.info("Finished");
     }
 
@@ -126,7 +127,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991, pathways.size());
+        assertTrue(pathways.size() >= 1991);
         logger.info("Finished");
     }
 
@@ -200,7 +201,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(21191, pathways.size());
+        assertTrue(pathways.size() >= 21191);
         logger.info("Finished");
     }
 
@@ -214,7 +215,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991, pathways.size());
+        assertTrue(pathways.size() >= 1991);
         logger.info("Finished");
     }
 
@@ -228,7 +229,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(21191, pathways.size());
+        assertTrue(pathways.size() >= 21191);
         logger.info("Finished");
     }
 
@@ -242,7 +243,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991, pathways.size());
+        assertTrue(pathways.size() >= 1991);
         logger.info("Finished");
     }
 
@@ -258,7 +259,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(20000, pathways.size());
+        assertTrue(pathways.size() >= 20000);
         logger.info("Finished");
     }
 
@@ -272,7 +273,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991, pathways.size());
+        assertTrue(pathways.size() >= 1991);
         logger.info("Finished");
     }
 
@@ -300,7 +301,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991, pathways.size());
+        assertTrue(pathways.size() >= 1991);
         logger.info("Finished");
     }
 
@@ -373,7 +374,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(21191L, count);
+        assertTrue(count >= 21191L);
         logger.info("Finished");
     }
 
@@ -386,7 +387,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991L, count);
+        assertTrue(count > 1991L);
         logger.info("Finished");
     }
 
@@ -399,7 +400,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(21191L, count);
+        assertTrue(count >= 21191L);
         logger.info("Finished");
     }
 
@@ -412,7 +413,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1991L, count);
+        assertTrue(count >= 1991L);
         logger.info("Finished");
     }
 

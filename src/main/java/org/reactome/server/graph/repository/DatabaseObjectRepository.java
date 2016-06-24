@@ -8,16 +8,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 10.11.15.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject>{
 
     DatabaseObject findByDbId(Long dbId);
     DatabaseObject findByStId(String stId);
+    DatabaseObject findByOldStId(String oldStId);
 
     @Query("MATCH (n:DatabaseObject{dbId:{0}}) RETURN n")
     DatabaseObject findByDbIdNoRelations(Long dbId);
@@ -30,7 +29,5 @@ public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject
 
     @Query("MATCH (n:DatabaseObject) WHERE n.stId IN {0} RETURN n")
     Collection<DatabaseObject> findByStIdsNoRelations(Collection<String> stId);
-
-
 
 }

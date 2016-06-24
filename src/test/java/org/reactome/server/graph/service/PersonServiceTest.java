@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -84,7 +85,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(14,persons.size());
+        assertTrue(persons.size() >= 14);
         logger.info("Finished");
     }
 
@@ -175,7 +176,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(65, pathways.size());
+        assertTrue(pathways.size() >= 65);
         logger.info("Finished");
     }
 
@@ -188,7 +189,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(65, pathways.size());
+        assertTrue(pathways.size() >= 65);
         logger.info("Finished");
     }
 
@@ -201,7 +202,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(65, pathways.size());
+        assertTrue(pathways.size() >= 65);
         logger.info("Finished");
     }
 

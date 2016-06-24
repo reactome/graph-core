@@ -3,10 +3,13 @@ package org.reactome.server.graph.service.util;
 import org.apache.commons.lang.StringUtils;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
+import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.AttributeProperties;
 import org.reactome.server.graph.service.helper.SchemaNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -16,16 +19,22 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 22.02.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
-public abstract class DatabaseObjectUtils {
+@Component
+public class DatabaseObjectUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectUtils.class);
 
     private static Map<String,SchemaNode> map;
+
+    private static DatabaseObjectRepository databaseObjectRepository;
+
+    @Autowired
+    public void setDatabaseObjectRepository(DatabaseObjectRepository databaseObjectRepository){
+        DatabaseObjectUtils.databaseObjectRepository = databaseObjectRepository;
+    }
 
     @SuppressWarnings("unused")
     public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts ) throws ClassNotFoundException {
@@ -92,7 +101,12 @@ public abstract class DatabaseObjectUtils {
 
     public static String getIdentifier(Object id){
         if (id instanceof String) {
-            return trimId((String) id);
+            String aux = trimId((String) id);
+            if(aux.startsWith("REACT_")){ //In case the provided identifier is an OLD style one, we translate to the new one
+                DatabaseObject dbObject = databaseObjectRepository.findByOldStId(aux);
+                if(dbObject!=null) aux = dbObject.getStId();
+            }
+            return aux;
         } else if (id instanceof Number && !(id instanceof Double)) {
             return id.toString();
         }
