@@ -99,7 +99,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(pathways.size() > 1991);
+        assertTrue(pathways.size() >= 1991);
         logger.info("Finished");
     }
 
@@ -387,7 +387,7 @@ public class SchemaServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(count > 1991L);
+        assertTrue(count >= 1991L);
         logger.info("Finished");
     }
 

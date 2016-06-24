@@ -112,7 +112,7 @@ public class PhysicalEntityServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(otherFormsOfThisMolecule.size() > 27);
+        assertTrue(otherFormsOfThisMolecule.size() >= 27);
         logger.info("Finished");
     }
 

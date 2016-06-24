@@ -309,8 +309,6 @@
         </plugins>
     </build>
 
-
-
     <!--Configures the distribution to nexus repository -->
     <distributionManagement>
         <repository>
