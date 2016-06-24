@@ -24,11 +24,17 @@ import java.util.Collection;
 @Component
 public class LazyFetchAspect {
 
+    public Boolean enableAOP = true;
+
     @Autowired
     private AdvancedDatabaseObjectService advancedDatabaseObjectService;
 
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
+        if(!enableAOP){
+            return pjp.proceed();
+        }
+
         /**
          * Target is the whole object that originated this pointcut.
          */
@@ -124,4 +130,9 @@ public class LazyFetchAspect {
 
         return null;
     }
+
+    public void setEnableAOP(boolean enableAOP) {
+        this.enableAOP = enableAOP;
+    }
+
 }
