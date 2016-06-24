@@ -10,6 +10,8 @@ import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -39,15 +41,18 @@ public class DatabaseObjectFactory {
      */
     static {
         try {
-            String host = System.getProperty("database.host");
-            String port = System.getProperty("database.port");
-            String database = System.getProperty("database.name");
-            String user = System.getProperty("database.user");
-            String password = System.getProperty("database.password");
+            Properties properties = new Properties();
+            InputStream inputStream = DatabaseObjectFactory.class.getResourceAsStream("/db.properties");
+            properties.load(inputStream);
+            String host = properties.getProperty("database.host");
+            String port = properties.getProperty("database.port");
+            String database = properties.getProperty("database.name");
+            String user = properties.getProperty("database.user");
+            String password = properties.getProperty("database.password");
             dba = new MySQLAdaptor(host,database,user,password,Integer.parseInt(port));
             dba.setUseCache(false);
             logger.info("Established connection to Reactome database");
-        } catch (SQLException e) {
+        } catch (SQLException|IOException e) {
             logger.error("An error occurred while connection to the Reactome database", e);
         }
     }

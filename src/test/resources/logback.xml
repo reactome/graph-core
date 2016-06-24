@@ -4,52 +4,32 @@
         The syntax of logback configuration files is extremely flexible.
         As such, it is not possible to specify the allowed syntax with a DTD file or an XML schema.-->
 <configuration>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="testFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="TEST" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./target/test-logging/service-test-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${logging.dir}/graph/graph-tests-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="importFileErrors" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./target/data-import-logging/data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <cleanHistoryOnStart>true</cleanHistoryOnStart>
-            <maxHistory>-1</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <appender name="importFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./target/data-import-logging/data-import-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <cleanHistoryOnStart>true</cleanHistoryOnStart>
-            <maxHistory>-1</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <logger name="deng" level="WARN"/>
-    <logger name="testLogger" level="DEBUG" additivity="false">
-        <appender-ref ref="testFile"/>
+
+    <logger name="deng" level="DEBUG"/>
+
+    <logger name="testLogger" level="INFO" additivity="false">
+        <appender-ref ref="TEST"/>
     </logger>
-    <logger name="importLogger" level="DEBUG" additivity="false">
-        <appender-ref ref="importFile"/>
-    </logger>
-    <logger name="importErrorLogger" level="DEBUG" additivity="false">
-        <appender-ref ref="importFileErrors"/>
-    </logger>
+
     <root level="WARN">
         <appender-ref ref="STDOUT" />
     </root>
+
 </configuration>

@@ -25,16 +25,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class Neo4jConfig extends Neo4jConfiguration {
 
     @Bean
-    public Configuration getConfiguration() {
-        Configuration config = new Configuration();
-        config.driverConfiguration().setDriverClassName("org.neo4j.ogm.drivers.http.driver.HttpDriver")
-                .setURI(System.getProperty("neo4j.host")).setCredentials(System.getProperty("neo4j.user"),System.getProperty("neo4j.password"));
-        return config;
-    }
-
-    @Bean
     public SessionFactory getSessionFactory() {
-        return new SessionFactory(getConfiguration(), "org.reactome.server.graph.domain" );
+        return new SessionFactory("org.reactome.server.graph.domain" );
     }
 
     @Bean

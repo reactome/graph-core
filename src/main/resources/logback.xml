@@ -4,52 +4,63 @@
         The syntax of logback configuration files is extremely flexible.
         As such, it is not possible to specify the allowed syntax with a DTD file or an XML schema.-->
 <configuration>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="testFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.dir}/graph/graph-core.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${logging.dir}/graph/graph-%i-log.zip</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>3</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="IMPORT" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./target/test-logging/service-test-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${logging.dir}/graph/import-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="importFileErrors" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="IMPORT_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./target/data-import-logging/data-import-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${logging.dir}/graph/import-error-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
-    <appender name="importFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./target/data-import-logging/data-import-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <cleanHistoryOnStart>true</cleanHistoryOnStart>
-            <maxHistory>-1</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <logger name="deng" level="WARN"/>
-    <logger name="testLogger" level="INFO" additivity="false">
-        <appender-ref ref="testFile"/>
+
+    <logger name="deng" level="DEBUG"/>
+
+    <logger name="import" level="INFO" additivity="false">
+        <appender-ref ref="IMPORT"/>
     </logger>
-    <logger name="importLogger" level="INFO" additivity="false">
-        <appender-ref ref="importFile"/>
+
+    <logger name="import_error" level="WARN" additivity="false">
+        <appender-ref ref="IMPORT_ERROR"/>
     </logger>
-    <logger name="importErrorLogger" level="WARN" additivity="false">
-        <appender-ref ref="importFileErrors"/>
-    </logger>
-    <root level="WARN">
-        <appender-ref ref="STDOUT" />
+
+    <root level="INFO">
+        <appender-ref ref="FILE" />
     </root>
+
 </configuration>

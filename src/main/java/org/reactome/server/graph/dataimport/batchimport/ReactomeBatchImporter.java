@@ -30,8 +30,8 @@ import java.util.*;
 
 public class ReactomeBatchImporter {
 
-    private static final Logger errorLogger = LoggerFactory.getLogger("importErrorLogger");
-    private static final Logger importLogger = LoggerFactory.getLogger("importLogger");
+    private static final Logger errorLogger = LoggerFactory.getLogger("import_error");
+    private static final Logger importLogger = LoggerFactory.getLogger("import");
 
     private static MySQLAdaptor dba;
     private static BatchInserter batchInserter;

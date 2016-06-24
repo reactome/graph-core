@@ -51,6 +51,7 @@
         <!--maven build and plugins-->
         <maven.compiler.version>3.5.1</maven.compiler.version>
         <maven.javadoc.version>2.10.3</maven.javadoc.version>
+        <maven.jar.version>2.6</maven.jar.version>
         <maven.assembly.version>2.6</maven.assembly.version>
         <maven.surefire.version>2.12.4</maven.surefire.version>
         <maven.site.version>3.4</maven.site.version>
@@ -58,14 +59,7 @@
         <jackrabbit.version>2.10</jackrabbit.version>
         <pmd.version>3.6</pmd.version>
         <!--will be set as system properties during testing phase-->
-        <neo4j.host>empty</neo4j.host>
-        <neo4j.user>empty</neo4j.user>
-        <neo4j.password>empty</neo4j.password>
-        <database.host>empty</database.host>
-        <database.port>empty</database.port>
-        <database.name>empty</database.name>
-        <database.user>empty</database.user>
-        <database.password>empty</database.password>
+
     </properties>
 
     <dependencies>
@@ -179,6 +173,8 @@
         <!--<version>${aspectj.version}</version>-->
         <!--</dependency>-->
 
+
+
     </dependencies>
 
     <repositories>
@@ -211,9 +207,7 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <!--<excludes>-->
-                    <!--<exclude>logback.xml</exclude>-->
-                <!--</excludes>-->
+                <filtering>true</filtering>
             </resource>
         </resources>
 
@@ -223,7 +217,17 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
         <plugins>
+
+            <!--Plugin needed to force maven resources to latest version. Default version contains a bug-->
+            <!--preventing maven to filter resources containg a @ symbol-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -234,34 +238,7 @@
                 </configuration>
             </plugin>
             <!--injecting property values into system properties during testing phase-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.version}</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <neo4j.host>${neo4j.host}</neo4j.host>
-                        <neo4j.user>${neo4j.user}</neo4j.user>
-                        <neo4j.password>${neo4j.password}</neo4j.password>
-                        <database.host>${database.host}</database.host>
-                        <database.port>${database.port}</database.port>
-                        <database.name>${database.name}</database.name>
-                        <database.user>${database.user}</database.user>
-                        <database.password>${database.password}</database.password>
-                    </systemPropertyVariables>
 
-                    <!--
-                        Adding a Spring Instrument agent to participate in a test execution
-                        http://www.dotkam.com/2010/10/12/running-spring-aspectj-tests-with-maven/
-                    -->
-                    <forkMode>once</forkMode>
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/springframework/spring-instrument/${spring.instrument.version}/spring-instrument-${spring.instrument.version}.jar"
-                    </argLine>
-                    <useSystemClassLoader>true</useSystemClassLoader>
-
-                </configuration>
-            </plugin>
             <!--Maven site generates project summary that can be deployed to nexus-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -276,9 +253,8 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <version>${maven.jar.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/logback.xml</exclude>
@@ -287,44 +263,25 @@
             </plugin>
             <!--Assembles executable jar files with dependencies for Importing and QualityAssurance-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven.assembly.version}</version>
                 <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.reactome.server.graph.dataimport.DataImportLauncher</mainClass>
+                        </manifest>
+                    </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>DatabaseImporter</id>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <finalName>DatabaseImporter</finalName>
-                            <archive>
-                                <manifest>
-                                    <mainClass>org.reactome.server.graph.dataimport.DataImportLauncher</mainClass>
-                                </manifest>
-                            </archive>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>QualityAssurance</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>QualityAssurance</finalName>
-                            <archive>
-                                <manifest>
-                                    <mainClass>org.reactome.server.graph.qa.QualityAssuranceLauncher</mainClass>
-                                </manifest>
-                            </archive>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
