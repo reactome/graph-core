@@ -47,6 +47,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ApiModelProperty(value = "This is the version of the main external identifier of a Reactome entry")
     private String stIdVersion;
 
+    @JsonIgnore
     private transient String oldStId;
 
     @ApiModelProperty(value = "Instance that created this entry")
