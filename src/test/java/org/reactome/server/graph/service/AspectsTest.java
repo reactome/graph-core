@@ -7,10 +7,12 @@ import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import static org.junit.Assume.assumeTrue;
@@ -27,6 +29,8 @@ public class AspectsTest {
 
     private static Boolean checkedOnce = false;
     private static Boolean isFit = false;
+
+    private static final String stId = "R-HSA-446203";
 
     @Autowired
     private GeneralService generalService;
@@ -46,14 +50,16 @@ public class AspectsTest {
     }
 
     @Test
-    public void lazyLoadingTest() {
-        DatabaseObject dd = dbs.findByIdNoRelations("R-HSA-446203");
-        Pathway pe = (Pathway)dd;
-        System.out.println(pe.getHasEvent());
-        System.out.println(pe.getOrthologousEvent());
-        System.out.println(pe.getNormalPathway());
-        System.out.println(pe.getCreated().getAuthor());
-        System.out.println(pe.getModified().getNote());
+    public void lazyLoadingTest() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing genericService.findAllByProperty");
+
+        DatabaseObject databaseObjectObserved = dbs.findByIdNoRelations(stId);
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
+
+        //getters will be automatically called by the Assertion test
+        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        logger.info("Finished");
     }
 
 }

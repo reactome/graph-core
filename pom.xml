@@ -33,7 +33,7 @@
     <properties>
         <!--dependencies-->
         <reactome.version>1.2.4</reactome.version>
-        <sdn.version>4.1.1.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
+        <sdn.version>4.1.2.RELEASE</sdn.version> <!--4.1.0.BUILD-SNAPSHOT-->
         <spring.test.version>4.2.6.RELEASE</spring.test.version>
         <spring.version>4.3.0.RELEASE</spring.version>
         <spring.instrument.version>4.2.6.RELEASE</spring.instrument.version>
@@ -63,13 +63,7 @@
     </properties>
 
     <dependencies>
-        <!--Reactome-base for MYSQL Adapter-->
-        <dependency>
-            <groupId>org.reactome.base</groupId>
-            <artifactId>reactome-base</artifactId>
-            <version>${reactome.version}</version>
-            <scope>provided</scope>
-        </dependency>
+
         <!--Spring data import neo4j-->
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -84,30 +78,18 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-core</artifactId>
-            <version>2.0.3-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.neo4j</groupId>-->
+            <!--<artifactId>neo4j-ogm-core</artifactId>-->
+            <!--<version>2.0.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
-        <dependency> <!-- If you're using the HTTP driver -->
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-http-driver</artifactId>
-            <version>2.0.3-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency> &lt;!&ndash; If you're using the HTTP driver &ndash;&gt;-->
+            <!--<groupId>org.neo4j</groupId>-->
+            <!--<artifactId>neo4j-ogm-http-driver</artifactId>-->
+            <!--<version>2.0.3-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
-
-        <!-- TODO remove: Neo4j kernel and index for batch import (had to added since SDN.4.1.0 -->
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-kernel</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-lucene-index</artifactId>
-            <version>${neo4j.version}</version>
-        </dependency>
         <!--Junit Tests-->
         <dependency>
             <groupId>junit</groupId>
@@ -121,18 +103,7 @@
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>
-        <!--Jasp console reader-->
-        <dependency>
-            <groupId>com.martiansoftware</groupId>
-            <artifactId>jsap</artifactId>
-            <version>${jasp.version}</version>
-        </dependency>
-        <!--To be removed soon -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
+
         <!--Reflection library -->
         <dependency>
             <groupId>org.reflections</groupId>
@@ -159,6 +130,20 @@
             <version>${aspectj.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reactome.base</groupId>
+            <artifactId>reactome-base</artifactId>
+            <version>1.2.4</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <repositories>
@@ -171,7 +156,6 @@
             </snapshots>
         </repository>
 
-        <!--Reactome repository-->
         <repository>
             <id>nexus-ebi-repo</id>
             <name>The EBI internal repository</name>
@@ -210,6 +194,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>3.0.1</version>
+
+                <configuration>
+                    <escapeString>\</escapeString>
+                </configuration>
             </plugin>
 
             <plugin>
@@ -243,30 +231,6 @@
                         <exclude>**/logback.xml</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-            <!--Assembles executable jar files with dependencies for Importing and QualityAssurance-->
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>${maven.assembly.version}</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.reactome.server.graph.dataimport.DataImportLauncher</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <!--

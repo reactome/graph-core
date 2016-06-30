@@ -1,6 +1,6 @@
 package org.reactome.server.graph.service.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;

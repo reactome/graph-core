@@ -1,6 +1,6 @@
 package org.reactome.server.graph.service;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.ExternalOntology;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
