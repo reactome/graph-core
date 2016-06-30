@@ -29,14 +29,6 @@
 
     <logger name="deng" level="DEBUG"/>
 
-    <logger name="import" level="INFO" additivity="false">
-        <appender-ref ref="IMPORT"/>
-    </logger>
-
-    <logger name="import_error" level="WARN" additivity="false">
-        <appender-ref ref="IMPORT_ERROR"/>
-    </logger>
-
     <root level="INFO">
         <appender-ref ref="FILE" />
     </root>
