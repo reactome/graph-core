@@ -152,7 +152,7 @@ public class HierarchyRepository {
         /**
          * We do not link them in the Tree.
          */
-        if (!omitNonDisplayableItems || (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("EntityFunctionalStatus"))) {
+        if (!omitNonDisplayableItems || (!node.getType().equals("CatalystActivity") && !node.getType().contains("Regulation") && !node.getType().equals("Requirement") && !node.getType().equals("EntityFunctionalStatus"))) {
             previous.addChild(node);
             node.addParent(previous);
             previous = node;

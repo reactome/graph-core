@@ -74,30 +74,15 @@ public class DetailsService {
         Object id = databaseObject.getStId();
         if (databaseObject.getStId() == null) id = databaseObject.getDbId();
 
+        /**
+         * If the databaseObject is a Regulation, we get the StId from the Regulator and query again
+         */
+        if (databaseObject instanceof Regulation) {
+            id = ((Regulation) databaseObject).getRegulator().getStId();
+        }
+
         PathwayBrowserNode node;
         node = hierarchyService.getLocationsInPathwayBrowser(id, directParticipants, true);
-
-        if (databaseObject instanceof Regulation) {
-            DatabaseObject regulator = ((Regulation) databaseObject).getRegulator();
-            node.setName(regulator.getDisplayName());
-            node.setStId(regulator.getStId());
-            node.setType(regulator.getSchemaClass());
-
-            if (regulator instanceof Event) {
-                Event event = (Event) regulator;
-                node.setSpecies(event.getSpeciesName());
-                if (event instanceof Pathway) {
-                    Pathway pathway = (Pathway) event;
-                    node.setDiagram(pathway.getHasDiagram());
-                }
-            } else if (regulator instanceof PhysicalEntity) {
-                PhysicalEntity physicalEntity = (PhysicalEntity) regulator;
-                node.setSpecies(physicalEntity.getSpeciesName());
-            }
-            else {
-                logger.error("Regulator must be either an Event or PhysicalEntity");
-            }
-        }
 
         if (databaseObject instanceof CatalystActivity) {
             PhysicalEntity physicalEntity = ((CatalystActivity) databaseObject).getPhysicalEntity();
