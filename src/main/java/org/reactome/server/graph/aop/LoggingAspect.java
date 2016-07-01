@@ -35,7 +35,7 @@ public class LoggingAspect {
         int milliseconds = (int) elapsedTime % 1000;
         int seconds = (int) (elapsedTime / 1000) % 60;
         int minutes = (int) ((elapsedTime / (1000 * 60)) % 60);
-        logger.info(joinPoint.getSignature().getDeclaringType().getSimpleName() + ":" + joinPoint.getSignature().getName() +
+        logger.debug(joinPoint.getSignature().getDeclaringType().getSimpleName() + ":" + joinPoint.getSignature().getName() +
                 " successfully executed in " + minutes + " min " + seconds + " sec " + milliseconds + " mil");
         return result;
     }
