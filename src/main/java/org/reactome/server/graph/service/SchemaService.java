@@ -6,24 +6,18 @@ import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.repository.SchemaRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 28.02.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Service
 @SuppressWarnings("WeakerAccess")
 public class SchemaService {
-
-    private static final Logger logger = LoggerFactory.getLogger(SchemaService.class);
 
     @Autowired
     private SchemaRepository schemaRepository;
