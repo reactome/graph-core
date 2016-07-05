@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class Person extends DatabaseObject {
     private List<DatabaseIdentifier> crossReference;
 
 //    @ReactomeTransient
-//    @Relationship(type = "author", direction = Relationship.INCOMING)
+//    @Relationship(type = "author", direction = Relationship.OUTGOING)
 //    private List<Publication> publications;
 
     public Person() {}

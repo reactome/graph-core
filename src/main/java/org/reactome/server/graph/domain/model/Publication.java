@@ -13,7 +13,7 @@ public class Publication extends DatabaseObject {
     @ReactomeProperty
     private String title;
 
-    @Relationship(type = "author", direction = Relationship.OUTGOING)
+    @Relationship(type = "author", direction = Relationship.INCOMING)
     private List<Person> author;
 
     public Publication() {}
