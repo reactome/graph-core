@@ -1,10 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.model.ExternalOntology;
-import org.reactome.server.graph.domain.model.PhysicalEntity;
-import org.reactome.server.graph.domain.model.ReferenceEntity;
+import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.repository.SchemaRepository;
@@ -204,7 +201,7 @@ public class SchemaService {
     }
 
     private <T> Collection<T> getByClassAndSpecies(Class clazz, Object species) {
-        String speciesString = species.toString();
+        String speciesString = species instanceof Species ? ((Species) species).getTaxId() : species.toString();
         if (StringUtils.isNumeric(speciesString)) {
             return schemaRepository.getByClassAndSpeciesTaxId(clazz, speciesString);
         } else {
@@ -213,7 +210,7 @@ public class SchemaService {
     }
 
     private <T> Collection<T> getByClassAndSpecies(Class clazz, Object species, Integer page, Integer offset) {
-        String speciesString = species.toString();
+        String speciesString = species instanceof Species ? ((Species) species).getTaxId() : species.toString();
         if (StringUtils.isNumeric(speciesString)) {
             return schemaRepository.getByClassAndSpeciesTaxId(clazz, speciesString, page, offset);
         } else {
@@ -222,7 +219,7 @@ public class SchemaService {
     }
 
     private Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpecies(Class clazz, Object species) {
-        String speciesString = species.toString();
+        String speciesString = species instanceof Species ? ((Species) species).getTaxId() : species.toString();
         if (StringUtils.isNumeric(speciesString)) {
             return schemaRepository.getSimpleDatabaseObjectByClassAndSpeciesTaxId(clazz,speciesString);
         } else {
@@ -231,7 +228,7 @@ public class SchemaService {
     }
 
     private Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpecies(Class clazz, Object species, Integer page, Integer offset) {
-        String speciesString = species.toString();
+        String speciesString = species instanceof Species ? ((Species) species).getTaxId() : species.toString();
         if (StringUtils.isNumeric(speciesString)) {
             return schemaRepository.getSimpleDatabaseObjectByClassAndSpeciesTaxId(clazz,speciesString, page, offset);
         } else {
@@ -240,7 +237,7 @@ public class SchemaService {
     }
 
     private Long countEntriesWithSpecies(Class clazz, Object species) {
-        String speciesString = species.toString();
+        String speciesString = species instanceof Species ? ((Species) species).getTaxId() : species.toString();
         if (StringUtils.isNumeric(speciesString)) {
             return schemaRepository.countEntriesWithSpeciesTaxId(clazz, speciesString);
         } else {
