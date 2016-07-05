@@ -24,9 +24,26 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableSpringConfigured
 public class Neo4jConfig extends Neo4jConfiguration {
 
+    /**
+     * The Neo4J Configuration has to be set using SystemProperties (or rely on Maven Profile).
+     * However to keep the library easy to be incorporated by external user, they do not need to
+     * configure Maven, just pass program arguments.
+     * Using the ogm.properties we lose this requirement.
+     */
+    @Bean
+    public Configuration getConfiguration() {
+        Configuration config = new Configuration();
+        config.driverConfiguration()
+                .setDriverClassName("org.neo4j.ogm.drivers.http.driver.HttpDriver")
+                .setURI(System.getProperty("neo4j.host"))
+                .setCredentials(System.getProperty("neo4j.user"), System.getProperty("neo4j.password"));
+
+        return config;
+    }
+
     @Bean
     public SessionFactory getSessionFactory() {
-        return new SessionFactory("org.reactome.server.graph.domain" );
+        return new SessionFactory(getConfiguration(), "org.reactome.server.graph.domain" );
     }
 
     @Bean
@@ -39,5 +56,4 @@ public class Neo4jConfig extends Neo4jConfiguration {
     public LazyFetchAspect lazyFetchAspect() {
         return org.aspectj.lang.Aspects.aspectOf(LazyFetchAspect.class);
     }
-
 }
