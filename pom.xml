@@ -211,25 +211,6 @@
                 </configuration>
             </plugin>
 
-            <!--injecting property values into system properties during testing phase-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven.surefire.version}</version>
-                <configuration>
-                    <systemPropertyVariables>
-                        <neo4j.host>${neo4j.host}</neo4j.host>
-                        <neo4j.user>${neo4j.user}</neo4j.user>
-                        <neo4j.password>${neo4j.password}</neo4j.password>
-                        <database.host>${database.host}</database.host>
-                        <database.port>${database.port}</database.port>
-                        <database.name>${database.name}</database.name>
-                        <database.user>${database.user}</database.user>
-                        <database.password>${database.password}</database.password>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-
             <!--Maven site generates project summary that can be deployed to nexus-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
