@@ -98,7 +98,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("Jupe, Steve", person.getDisplayName());
+        assertEquals("Jupe, S", person.getDisplayName());
         logger.info("Finished");
     }
 
@@ -111,7 +111,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("Jupe, Steve", person.getDisplayName());
+        assertEquals("Jupe, S", person.getDisplayName());
         logger.info("Finished");
     }
 
@@ -124,7 +124,7 @@ public class PersonServiceTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("Jupe, Steve", person.getDisplayName());
+        assertEquals("Jupe, S", person.getDisplayName());
         logger.info("Finished");
     }
 
