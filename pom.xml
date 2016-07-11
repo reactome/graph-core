@@ -24,6 +24,18 @@
             <email>fkorn@ebi.ac.uk</email>
             <organization>http://www.ebi.ac.uk/</organization>
         </developer>
+        <developer>
+            <id>gviteri</id>
+            <name>Guilherme Viteri</name>
+            <email>gviteri@ebi.ac.uk</email>
+            <organization>http://www.ebi.ac.uk/</organization>
+        </developer>
+        <developer>
+            <id>fabregat</id>
+            <name>Antonio Fabregat</name>
+            <email>fabregat@ebi.ac.uk</email>
+            <organization>http://www.ebi.ac.uk/</organization>
+        </developer>
     </developers>
     <contributors>
         <contributor>
@@ -52,6 +64,7 @@
         <maven.compiler.version>3.5.1</maven.compiler.version>
         <maven.javadoc.version>2.10.3</maven.javadoc.version>
         <maven.jar.version>2.6</maven.jar.version>
+        <maven.source.version>2.4</maven.source.version>
         <maven.assembly.version>2.6</maven.assembly.version>
         <maven.surefire.version>2.12.4</maven.surefire.version>
         <maven.site.version>3.4</maven.site.version>
@@ -278,26 +291,41 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <!--Configures the distribution to nexus repository -->
     <distributionManagement>
+        <!-- EBI repo -->
         <repository>
-            <id>nexus-release</id>
-            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+            <id>pst-release</id>
+            <name>EBI Nexus Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
         </repository>
+        <!-- EBI SNAPSHOT repo -->
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
-            <id>nexus-snapshot</id>
-            <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+            <id>pst-snapshots</id>
+            <name>EBI Nexus Snapshots Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
         </snapshotRepository>
-        <site>
-            <id>nexus-site</id>
-            <url>dav:http://localhost:8081/nexus/content/sites/site/</url>
-        </site>
     </distributionManagement>
     <!--This configuration is needed so that javadoc is included in maven site-->
+
     <reporting>
 
         <plugins>
