@@ -1,13 +1,9 @@
 package org.reactome.server.graph.config;
 
-import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.SessionFactory;
 import org.reactome.server.graph.aop.LazyFetchAspect;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
@@ -17,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
  */
-@org.springframework.context.annotation.Configuration
+@Configuration
 @ComponentScan(basePackages = "org.reactome.server.graph")
 @EnableNeo4jRepositories(basePackages = "org.reactome.server.graph.repository")
 @EnableTransactionManagement
@@ -39,5 +35,4 @@ public class Neo4jConfig extends Neo4jConfiguration {
     public LazyFetchAspect lazyFetchAspect() {
         return org.aspectj.lang.Aspects.aspectOf(LazyFetchAspect.class);
     }
-
 }
