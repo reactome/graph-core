@@ -151,7 +151,7 @@ public class SchemaRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         Result result = neo4jTemplate.query(query, map);
-        return (result.iterator().hasNext()) ? ((Integer) result.iterator().next().get("n")).longValue() : null;
+        return (result.iterator().hasNext()) ? (Long) result.iterator().next().get("n") : null;
     }
 
     public Long countEntriesWithSpeciesName(Class<?> clazz, String speciesName) {
@@ -159,7 +159,7 @@ public class SchemaRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         Result result = neo4jTemplate.query(query, map);
-        return (result.iterator().hasNext()) ? ((Integer) result.iterator().next().get("n")).longValue() : null;
+        return (result.iterator().hasNext()) ? ((Long) result.iterator().next().get("n")) : null;
     }
 
     // ---------------------------------------- private methods ------------------------------------------------
