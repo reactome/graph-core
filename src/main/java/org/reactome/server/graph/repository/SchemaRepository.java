@@ -1,12 +1,14 @@
 package org.reactome.server.graph.repository;
 
 import org.neo4j.ogm.model.Result;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -140,6 +142,18 @@ public class SchemaRepository {
         return parseReferenceResult(result);
     }
 
+    // ---------------------------------------- Query by Class for ids ------------------------------------------------
+
+    public Collection<String> getStIdsByClass (Class clazz) {
+        String query = "Match (n:" + clazz.getSimpleName() + ") RETURN n.stId";
+        return (Collection<String>) neo4jTemplate.queryForObjects(String.class, query, Collections.emptyMap());
+    }
+
+    public Collection<Long> getDbIdsByClass (Class clazz) {
+        String query = "Match (n:" + clazz.getSimpleName() + ") RETURN n.dbId";
+        return (Collection<Long>) neo4jTemplate.queryForObjects(Long.class, query, Collections.emptyMap());
+    }
+
     // ---------------------------------------- Count by Class ------------------------------------------------
 
     public Long countEntries(Class<?> clazz) {
@@ -151,7 +165,7 @@ public class SchemaRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         Result result = neo4jTemplate.query(query, map);
-        return (result.iterator().hasNext()) ? (Long) result.iterator().next().get("n") : null;
+        return (result.iterator().hasNext()) ? ((Integer) result.iterator().next().get("n")).longValue() : null;
     }
 
     public Long countEntriesWithSpeciesName(Class<?> clazz, String speciesName) {
@@ -159,7 +173,7 @@ public class SchemaRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         Result result = neo4jTemplate.query(query, map);
-        return (result.iterator().hasNext()) ? ((Long) result.iterator().next().get("n")) : null;
+        return (result.iterator().hasNext()) ? ((Integer) result.iterator().next().get("n")).longValue() : null;
     }
 
     // ---------------------------------------- private methods ------------------------------------------------
