@@ -1,13 +1,11 @@
 package org.reactome.server.graph.service;
 
-import org.gk.model.ReactomeJavaConstants;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.Neo4jConfig;
-import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Disease;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
@@ -22,7 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -402,24 +399,7 @@ public class SchemaServiceTest {
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Set<Long> dbIds = new HashSet<Long> (schemaService.getDbIdsByClass(Pathway.class));
-        List<Long> instIds = DatabaseObjectFactory.getIds(ReactomeJavaConstants.Pathway);
-
-        for (Long instId : instIds) {
-            if (!dbIds.contains(instId)) {
-
-                Pathway object = DatabaseObjectFactory.createObject(instId.toString());
-                System.out.print(instId + "\t");
-                System.out.print(object.getDisplayName() + "\t");
-                System.out.print(object.getCreated().getDisplayName() + "\t");
-                System.out.print(object.getSpecies().get(0).getDisplayName()+ "\n");
-
-            }
-        }
-
-
-
-
+        Set<Long> dbIds = new HashSet<> (schemaService.getDbIdsByClass(Pathway.class));
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
