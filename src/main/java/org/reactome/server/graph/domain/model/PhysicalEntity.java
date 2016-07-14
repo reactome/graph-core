@@ -5,9 +5,11 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
+import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +113,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
+    @JsonIgnore
+    @ReactomeTransient
+    @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
+    private List<RepeatedUnit> repeatedUnitOf;
+
     @ReactomeTransient
     @Relationship(type = "output", direction = Relationship.INCOMING)
     private List<Output> producedByEvent;
@@ -181,10 +188,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
     public void setCompartment(List<EntityCompartment> compartment) {
         this.compartment = compartment;
     }
-
-//    public List<HasComponent> getComponentOf() {
-//        return componentOf;
-//    }
 
     public void setComponentOf(List<HasComponent> componentOf) {
         this.componentOf = componentOf;
@@ -258,6 +261,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.isRequired = isRequired;
     }
 
+    public void setRepeatedUnitOf(List<RepeatedUnit> repeatedUnitOf) {
+        this.repeatedUnitOf = repeatedUnitOf;
+    }
+
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
@@ -310,6 +317,43 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.summation = summation;
     }
 
+    @JsonIgnore
+    public List<StoichiometryObject> fetchRepeatedUnitOf() {
+
+        List<StoichiometryObject> objects = new ArrayList<>();
+        if(repeatedUnitOf!=null) {
+            for (RepeatedUnit aux : repeatedUnitOf) {
+                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPolymer()));
+            }
+        }
+        return objects;
+    }
+
+    public List<Polymer> getRepeatedUnitOf() {
+        List<Polymer> rtn = new ArrayList<>();
+        if(repeatedUnitOf!=null) {
+            for (RepeatedUnit aux : repeatedUnitOf) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
+                    rtn.add(aux.getPolymer());
+                }
+            }
+            return rtn;
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public List<StoichiometryObject> fetchComponentOf() {
+
+        List<StoichiometryObject> objects = new ArrayList<>();
+        if(componentOf!=null) {
+            for (HasComponent aux : componentOf) {
+                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getComplex()));
+            }
+        }
+        return objects;
+    }
+
     public List<Complex> getComponentOf() {
         List<Complex> rtn = new ArrayList<>();
         if(componentOf!=null) {
@@ -323,6 +367,18 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return null;
     }
 
+    @JsonIgnore
+    public List<StoichiometryObject> fetchConsumedByEvent() {
+
+        List<StoichiometryObject> objects = new ArrayList<>();
+        if(consumedByEvent!=null) {
+            for (Input aux : consumedByEvent) {
+                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getEvent()));
+            }
+        }
+        return objects;
+    }
+
     public List<Event> getConsumedByEvent() {
         List<Event> rtn = new ArrayList<>();
         if(consumedByEvent!=null) {
@@ -334,6 +390,18 @@ public abstract class PhysicalEntity extends DatabaseObject {
             return rtn;
         }
         return null;
+    }
+
+    @JsonIgnore
+    public List<StoichiometryObject> fetchProducedByEvent() {
+
+        List<StoichiometryObject> objects = new ArrayList<>();
+        if(producedByEvent!=null) {
+            for (Output aux : producedByEvent) {
+                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getEvent()));
+            }
+        }
+        return objects;
     }
 
     public List<Event> getProducedByEvent() {

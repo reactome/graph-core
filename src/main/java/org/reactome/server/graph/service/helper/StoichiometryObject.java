@@ -1,10 +1,8 @@
-package org.reactome.server.graph.domain.helper;
+package org.reactome.server.graph.service.helper;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
 
-/**
- * Created by flo on 14/07/16.
- */
+@SuppressWarnings("unused")
 public class StoichiometryObject {
 
     private Integer stoichiometry;

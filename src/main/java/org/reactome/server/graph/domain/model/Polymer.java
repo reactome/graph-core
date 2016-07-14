@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.helper.StoichiometryObject;
+import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
