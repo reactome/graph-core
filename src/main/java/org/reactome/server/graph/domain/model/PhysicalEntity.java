@@ -182,9 +182,9 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.compartment = compartment;
     }
 
-    public List<HasComponent> getComponentOf() {
-        return componentOf;
-    }
+//    public List<HasComponent> getComponentOf() {
+//        return componentOf;
+//    }
 
     public void setComponentOf(List<HasComponent> componentOf) {
         this.componentOf = componentOf;
@@ -310,6 +310,18 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.summation = summation;
     }
 
+    public List<Complex> getComponentOf() {
+        List<Complex> rtn = new ArrayList<>();
+        if(componentOf!=null) {
+            for (HasComponent aux : componentOf) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
+                    rtn.add(aux.getComplex());
+                }
+            }
+            return rtn;
+        }
+        return null;
+    }
 
     public List<Event> getConsumedByEvent() {
         List<Event> rtn = new ArrayList<>();
