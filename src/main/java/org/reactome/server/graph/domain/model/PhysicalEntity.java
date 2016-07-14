@@ -5,7 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
-import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
@@ -317,100 +316,44 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.summation = summation;
     }
 
-    @JsonIgnore
-    public List<StoichiometryObject> fetchRepeatedUnitOf() {
-
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if(repeatedUnitOf!=null) {
-            for (RepeatedUnit aux : repeatedUnitOf) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPolymer()));
-            }
-        }
-        return objects;
-    }
-
     public List<Polymer> getRepeatedUnitOf() {
         List<Polymer> rtn = new ArrayList<>();
         if(repeatedUnitOf!=null) {
             for (RepeatedUnit aux : repeatedUnitOf) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getPolymer());
-                }
             }
             return rtn;
         }
         return null;
-    }
-
-    @JsonIgnore
-    public List<StoichiometryObject> fetchComponentOf() {
-
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if(componentOf!=null) {
-            for (HasComponent aux : componentOf) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getComplex()));
-            }
-        }
-        return objects;
     }
 
     public List<Complex> getComponentOf() {
         List<Complex> rtn = new ArrayList<>();
         if(componentOf!=null) {
             for (HasComponent aux : componentOf) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getComplex());
-                }
             }
             return rtn;
         }
         return null;
-    }
-
-    @JsonIgnore
-    public List<StoichiometryObject> fetchConsumedByEvent() {
-
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if(consumedByEvent!=null) {
-            for (Input aux : consumedByEvent) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getEvent()));
-            }
-        }
-        return objects;
     }
 
     public List<Event> getConsumedByEvent() {
         List<Event> rtn = new ArrayList<>();
         if(consumedByEvent!=null) {
             for (Input aux : consumedByEvent) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getEvent());
-                }
             }
             return rtn;
         }
         return null;
     }
 
-    @JsonIgnore
-    public List<StoichiometryObject> fetchProducedByEvent() {
-
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if(producedByEvent!=null) {
-            for (Output aux : producedByEvent) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getEvent()));
-            }
-        }
-        return objects;
-    }
-
     public List<Event> getProducedByEvent() {
         List<Event> rtn = new ArrayList<>();
         if(producedByEvent!=null) {
             for (Output aux : producedByEvent) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getEvent());
-                }
             }
             return rtn;
         }
