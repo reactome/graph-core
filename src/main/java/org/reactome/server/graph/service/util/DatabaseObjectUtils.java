@@ -79,22 +79,25 @@ public class DatabaseObjectUtils {
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         Class clazz = Class.forName(packageName + className);
         Set<AttributeProperties> propertiesList = new TreeSet<>();
-        Set<Method> declaredMethods = new HashSet<>(Arrays.asList(clazz.getDeclaredMethods()));
-        for (Method method : clazz.getMethods()) {
-            String methodName = method.getName();
-            if (methodName.startsWith("get")
-                    && !methodName.startsWith("getSuper")
-                    && !methodName.equals("getClass")
-                    && !methodName.equals("getId")) {
 
-                AttributeProperties properties = getAttributeProperties(method);
-                if (declaredMethods.contains(method)) {
-                    properties.setDeclaredMethod(true);
-                } else {
-                    properties.setDeclaredMethod(false);
+        while (clazz != null && !clazz.getClass().equals(Object.class)) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                String methodName = method.getName();
+                if (methodName.startsWith("get")
+                        && !methodName.startsWith("getSuper")
+                        && !methodName.equals("getClass")
+                        && !methodName.equals("getId")
+                        && !methodName.contains("_aroundBody")) {
+
+                    AttributeProperties properties = getAttributeProperties(method);
+                    properties.setOrigin(clazz);
+
+                    propertiesList.add(properties);
                 }
-                propertiesList.add(properties);
             }
+
+            /** Didn't find the field in the given class. Check the Superclass. **/
+            clazz = clazz.getSuperclass();
         }
         return propertiesList;
     }
@@ -202,12 +205,12 @@ public class DatabaseObjectUtils {
             properties.setCardinality("+");
             if (typeArguments.length>0) {
                 Class clazz = (Class) typeArguments[0];
-                properties.setValueType(clazz.getSimpleName());
+                properties.setValueType(clazz);
             }
         } else {
             Class clazz = (Class) returnType;
             properties.setCardinality("1");
-            properties.setValueType(clazz.getSimpleName());
+            properties.setValueType(clazz);
         }
         return properties;
     }
