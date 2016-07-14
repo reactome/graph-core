@@ -1,8 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 
 import java.util.*;
@@ -37,6 +39,18 @@ public class Complex extends PhysicalEntity {
 
     public void setIsChimeric(Boolean isChimeric) {
         this.isChimeric = isChimeric;
+    }
+
+    @JsonIgnore
+    public List<StoichiometryObject> fetchHasComponent() {
+
+        List<StoichiometryObject> objects = new ArrayList<>();
+        if(hasComponent!=null) {
+            for (HasComponent aux : hasComponent) {
+                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
+            }
+        }
+        return objects;
     }
 
     public List<PhysicalEntity> getHasComponent(){
