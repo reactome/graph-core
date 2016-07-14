@@ -27,9 +27,13 @@ public class DatabaseObjectService {
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return databaseObjectRepository.findByStId(id);
+            DatabaseObject a = databaseObjectRepository.findByStId(id);
+            a.isLoaded = true;
+            return a;
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return databaseObjectRepository.findByDbId(Long.parseLong(id));
+            DatabaseObject a = databaseObjectRepository.findByDbId(Long.parseLong(id));
+            a.isLoaded = true;
+            return a;
         }
         return null;
     }
