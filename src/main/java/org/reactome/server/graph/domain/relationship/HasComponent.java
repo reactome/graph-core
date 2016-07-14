@@ -4,8 +4,8 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.Complex;
+import org.reactome.server.graph.domain.model.PhysicalEntity;
 
 /**
  * HasComponent is the relationship entity of Complexes. It is needed to specify the stoichiometry (stoichiometry) of
@@ -35,7 +35,7 @@ public class HasComponent {
         this.stoichiometry = stoichiometry;
     }
 
-    public PhysicalEntity getComplex() {
+    public Complex getComplex() {
         return complex;
     }
 
