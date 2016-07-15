@@ -61,12 +61,34 @@ public class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
-            if (method.getName().startsWith("get") && !method.getName().equals("getClass") && !method.getName().equals("getId") && !method.getName().equals("getExplanation")) {
+            if (method.getName().startsWith("get")
+                    && !method.getName().equals("getClass")
+                    && !method.getName().equals("getId")
+                    && !method.getName().equals("getExplanation")
+                    && !method.getName().equals("getEMailAddress")) {
+
                 try {
                     Object object = method.invoke(databaseObject);
                     if (object == null || object.equals("")) continue;
-                    map.put(method.getName().substring(3), object);
-                } catch (IllegalAccessException|InvocationTargetException e) {
+
+                    switch (method.getName()) {
+                        case "getInput":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
+                            break;
+                        case "getOutput":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchOutput").invoke(databaseObject));
+                            break;
+                        case "getHasComponent":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchHasComponent").invoke(databaseObject));
+                            break;
+                        case "getRepeatedUnit":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchRepeatedUnit").invoke(databaseObject));
+                            break;
+                        default:
+                            map.put(method.getName().substring(3), object);
+                            break;
+                    }
+                } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
                     logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method " + method.getName());
                 }
             }
