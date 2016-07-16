@@ -61,12 +61,34 @@ public class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
-            if (method.getName().startsWith("get") && !method.getName().equals("getClass") && !method.getName().equals("getId") && !method.getName().equals("getExplanation")) {
+            if (method.getName().startsWith("get")
+                    && !method.getName().equals("getClass")
+                    && !method.getName().equals("getId")
+                    && !method.getName().equals("getExplanation")
+                    && !method.getName().equals("getEMailAddress")) {
+
                 try {
                     Object object = method.invoke(databaseObject);
                     if (object == null || object.equals("")) continue;
-                    map.put(method.getName().substring(3), object);
-                } catch (IllegalAccessException|InvocationTargetException e) {
+
+                    switch (method.getName()) {
+                        case "getInput":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
+                            break;
+                        case "getOutput":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchOutput").invoke(databaseObject));
+                            break;
+                        case "getHasComponent":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchHasComponent").invoke(databaseObject));
+                            break;
+                        case "getRepeatedUnit":
+                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchRepeatedUnit").invoke(databaseObject));
+                            break;
+                        default:
+                            map.put(method.getName().substring(3), object);
+                            break;
+                    }
+                } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
                     logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method " + method.getName());
                 }
             }
@@ -79,22 +101,25 @@ public class DatabaseObjectUtils {
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         Class clazz = Class.forName(packageName + className);
         Set<AttributeProperties> propertiesList = new TreeSet<>();
-        Set<Method> declaredMethods = new HashSet<>(Arrays.asList(clazz.getDeclaredMethods()));
-        for (Method method : clazz.getMethods()) {
-            String methodName = method.getName();
-            if (methodName.startsWith("get")
-                    && !methodName.startsWith("getSuper")
-                    && !methodName.equals("getClass")
-                    && !methodName.equals("getId")) {
 
-                AttributeProperties properties = getAttributeProperties(method);
-                if (declaredMethods.contains(method)) {
-                    properties.setDeclaredMethod(true);
-                } else {
-                    properties.setDeclaredMethod(false);
+        while (clazz != null && !clazz.getClass().equals(Object.class)) {
+            for (Method method : clazz.getDeclaredMethods()) {
+                String methodName = method.getName();
+                if (methodName.startsWith("get")
+                        && !methodName.startsWith("getSuper")
+                        && !methodName.equals("getClass")
+                        && !methodName.equals("getId")
+                        && !methodName.contains("_aroundBody")) {
+
+                    AttributeProperties properties = getAttributeProperties(method);
+                    properties.setOrigin(clazz);
+
+                    propertiesList.add(properties);
                 }
-                propertiesList.add(properties);
             }
+
+            /** Didn't find the field in the given class. Check the Superclass. **/
+            clazz = clazz.getSuperclass();
         }
         return propertiesList;
     }
@@ -202,12 +227,12 @@ public class DatabaseObjectUtils {
             properties.setCardinality("+");
             if (typeArguments.length>0) {
                 Class clazz = (Class) typeArguments[0];
-                properties.setValueType(clazz.getSimpleName());
+                properties.setValueType(clazz);
             }
         } else {
             Class clazz = (Class) returnType;
             properties.setCardinality("1");
-            properties.setValueType(clazz.getSimpleName());
+            properties.setValueType(clazz);
         }
         return properties;
     }

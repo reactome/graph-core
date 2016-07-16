@@ -87,6 +87,16 @@ public class DatabaseObjectFactory {
         return databaseObjects;
     }
 
+    public static List<Long> getIds(String clazzName) throws Exception {
+        Collection<?> instances = dba.fetchInstancesByClass(clazzName);
+        List<Long> dbIds = new ArrayList<>();
+        for (Object instance : instances) {
+            GKInstance gkInstance = (GKInstance) instance;
+            dbIds.add(gkInstance.getDBID());
+        }
+        return dbIds;
+    }
+
     public static List<Species> getSpecies() {
         List<Species> species = new ArrayList<>();
         try {

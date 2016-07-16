@@ -1,12 +1,14 @@
 package org.reactome.server.graph.repository;
 
 import org.neo4j.ogm.model.Result;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -138,6 +140,18 @@ public class SchemaRepository {
         map.put("skip", (page-1) * offset);
         Result result = neo4jTemplate.query(query, map);
         return parseReferenceResult(result);
+    }
+
+    // ---------------------------------------- Query by Class for ids ------------------------------------------------
+
+    public Collection<String> getStIdsByClass (Class clazz) {
+        String query = "Match (n:" + clazz.getSimpleName() + ") RETURN n.stId";
+        return (Collection<String>) neo4jTemplate.queryForObjects(String.class, query, Collections.emptyMap());
+    }
+
+    public Collection<Long> getDbIdsByClass (Class clazz) {
+        String query = "Match (n:" + clazz.getSimpleName() + ") RETURN n.dbId";
+        return (Collection<Long>) neo4jTemplate.queryForObjects(Long.class, query, Collections.emptyMap());
     }
 
     // ---------------------------------------- Count by Class ------------------------------------------------

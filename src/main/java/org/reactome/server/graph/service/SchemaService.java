@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -156,6 +159,26 @@ public class SchemaService {
             return schemaRepository.getSimpleReferencesObjectsByClass(clazz, page, offset);
         }
         return null;
+    }
+
+    // ---------------------------------------- Query by Class for single value ------------------------------------------------
+
+    public Collection<String> getStIdsByClass (Class clazz) {
+        return schemaRepository.getStIdsByClass(clazz);
+    }
+
+    public Collection<String> getStIdsByClass (String className) throws ClassNotFoundException {
+        Class clazz = DatabaseObjectUtils.getClassForName(className);
+        return schemaRepository.getStIdsByClass(clazz);
+    }
+
+    public Collection<Long> getDbIdsByClass (Class clazz) {
+        return schemaRepository.getDbIdsByClass(clazz);
+    }
+
+    public Collection<Long> getDbIdsByClass (String className) throws ClassNotFoundException {
+        Class clazz = DatabaseObjectUtils.getClassForName(className);
+        return schemaRepository.getDbIdsByClass(clazz);
     }
 
     // ---------------------------------------- Count by Class ------------------------------------------------

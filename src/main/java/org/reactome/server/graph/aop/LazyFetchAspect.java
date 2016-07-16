@@ -55,7 +55,7 @@ public class LazyFetchAspect {
              * Check whether the object has been loaded.
              * pjp.proceed() has the result of the invoked method.
              */
-            if (pjp.proceed() == null) {
+            if (pjp.proceed() == null && !databaseObject.isLoaded) {
                 Long dbId = databaseObject.getDbId();
                 String setterMethod = method.getName().replaceFirst("get", "set");
                 Class<?> methodReturnClazz = method.getReturnType();

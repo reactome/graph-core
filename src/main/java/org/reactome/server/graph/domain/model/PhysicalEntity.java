@@ -8,6 +8,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
+import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +112,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "regulator", direction = Relationship.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
+    @JsonIgnore
+    @ReactomeTransient
+    @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
+    private List<RepeatedUnit> repeatedUnitOf;
+
     @ReactomeTransient
     @Relationship(type = "output", direction = Relationship.INCOMING)
     private List<Output> producedByEvent;
@@ -180,10 +186,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     public void setCompartment(List<EntityCompartment> compartment) {
         this.compartment = compartment;
-    }
-
-    public List<HasComponent> getComponentOf() {
-        return componentOf;
     }
 
     public void setComponentOf(List<HasComponent> componentOf) {
@@ -258,6 +260,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.isRequired = isRequired;
     }
 
+    public void setRepeatedUnitOf(List<RepeatedUnit> repeatedUnitOf) {
+        this.repeatedUnitOf = repeatedUnitOf;
+    }
+
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
@@ -310,14 +316,33 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.summation = summation;
     }
 
+    public List<Polymer> getRepeatedUnitOf() {
+        List<Polymer> rtn = new ArrayList<>();
+        if(repeatedUnitOf!=null) {
+            for (RepeatedUnit aux : repeatedUnitOf) {
+                    rtn.add(aux.getPolymer());
+            }
+            return rtn;
+        }
+        return null;
+    }
+
+    public List<Complex> getComponentOf() {
+        List<Complex> rtn = new ArrayList<>();
+        if(componentOf!=null) {
+            for (HasComponent aux : componentOf) {
+                    rtn.add(aux.getComplex());
+            }
+            return rtn;
+        }
+        return null;
+    }
 
     public List<Event> getConsumedByEvent() {
         List<Event> rtn = new ArrayList<>();
         if(consumedByEvent!=null) {
             for (Input aux : consumedByEvent) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getEvent());
-                }
             }
             return rtn;
         }
@@ -328,9 +353,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         List<Event> rtn = new ArrayList<>();
         if(producedByEvent!=null) {
             for (Output aux : producedByEvent) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getEvent());
-                }
             }
             return rtn;
         }

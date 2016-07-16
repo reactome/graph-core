@@ -1,8 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
@@ -46,6 +48,14 @@ public class Polymer extends PhysicalEntity {
 
     public void setMinUnitCount(Integer minUnitCount) {
         this.minUnitCount = minUnitCount;
+    }
+
+    @JsonIgnore
+    public StoichiometryObject fetchRepeatedUnit() {
+        if(repeatedUnit!=null) {
+            return new StoichiometryObject(repeatedUnit.getStoichiometry(), repeatedUnit.getPhysicalEntity());
+        }
+        return null;
     }
 
     public List<PhysicalEntity> getRepeatedUnit() {

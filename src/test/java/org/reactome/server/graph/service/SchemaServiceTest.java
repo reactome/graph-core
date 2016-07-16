@@ -363,6 +363,64 @@ public class SchemaServiceTest {
         logger.info("Finished");
     }
 
+    // ---------------------------------------- Query by Class for single value ------------------------------------------------
+
+    @Test
+    public void getStIdsByClassTest () {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<String> stIds = schemaService.getStIdsByClass(Pathway.class);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(stIds.size() >= 21191L);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getStIdsByClassNameTest () throws ClassNotFoundException {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<String> stIds = schemaService.getStIdsByClass("Pathway");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(stIds.size() >= 21191L);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getDbIdsByClassTest () throws Exception {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Set<Long> dbIds = new HashSet<> (schemaService.getDbIdsByClass(Pathway.class));
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(dbIds.size() >= 21191L);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getDbIdsByClassNameTest () throws ClassNotFoundException {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Long> dbIds = schemaService.getDbIdsByClass("Pathway");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(dbIds.size() >= 21191L);
+        logger.info("Finished");
+    }
+
     // ---------------------------------------- Count by Class ------------------------------------------------
 
     @Test
