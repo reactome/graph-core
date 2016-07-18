@@ -172,10 +172,12 @@ public abstract class Event extends DatabaseObject {
         this.speciesName = speciesName;
     }
 
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public List<InstanceEdit> getAuthored() {
         return authored;
     }
 
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public void setAuthored(List<InstanceEdit> authored) {
         this.authored = authored;
     }
@@ -204,10 +206,12 @@ public abstract class Event extends DatabaseObject {
         this.disease = disease;
     }
 
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public List<InstanceEdit> getEdited() {
         return edited;
     }
 
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public void setEdited(List<InstanceEdit> edited) {
         this.edited = edited;
     }
@@ -216,10 +220,12 @@ public abstract class Event extends DatabaseObject {
         return evidenceType;
     }
 
+    @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
     public List<Event> getEventOf() {
         return eventOf;
     }
 
+    @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
     public void setEventOf(List<Event> eventOf) {
         this.eventOf = eventOf;
     }
@@ -236,10 +242,12 @@ public abstract class Event extends DatabaseObject {
         this.figure = figure;
     }
 
+    @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
     public List<Event> getFollowingEvent() {
         return followingEvent;
     }
 
+    @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
     public void setFollowingEvent(List<Event> followingEvent) {
         this.followingEvent = followingEvent;
     }
@@ -252,10 +260,12 @@ public abstract class Event extends DatabaseObject {
         this.goBiologicalProcess = goBiologicalProcess;
     }
 
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     public Set<Event> getInferredFrom() {
         return inferredFrom;
     }
 
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     public void setInferredFrom(Set<Event> inferredFrom) {
         this.inferredFrom = inferredFrom;
     }
@@ -316,18 +326,22 @@ public abstract class Event extends DatabaseObject {
         this.requirements = requirements;
     }
 
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public List<InstanceEdit> getReviewed() {
         return reviewed;
     }
 
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public void setReviewed(List<InstanceEdit> reviewed) {
         this.reviewed = reviewed;
     }
 
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public List<InstanceEdit> getRevised() {
         return revised;
     }
 
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public void setRevised(List<InstanceEdit> revised) {
         this.revised = revised;
     }

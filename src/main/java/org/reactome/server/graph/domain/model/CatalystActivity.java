@@ -53,10 +53,12 @@ public class CatalystActivity extends DatabaseObject  {
         this.activity = activity;
     }
 
+    @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     public List<ReactionLikeEvent> getCatalyzedEvent() {
         return catalyzedEvent;
     }
 
+    @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     public void setCatalyzedEvent(List<ReactionLikeEvent> catalyzedEvent) {
         this.catalyzedEvent = catalyzedEvent;
     }

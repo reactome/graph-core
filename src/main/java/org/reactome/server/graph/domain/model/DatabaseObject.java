@@ -100,18 +100,22 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.oldStId = oldStId;
     }
 
+    @Relationship(type = "created", direction = Relationship.INCOMING)
     public InstanceEdit getCreated() {
         return created;
     }
 
+    @Relationship(type = "created", direction = Relationship.INCOMING)
     public void setCreated(InstanceEdit created) {
         this.created = created;
     }
 
+    @Relationship(type = "modified", direction = Relationship.INCOMING)
     public InstanceEdit getModified() {
         return modified;
     }
 
+    @Relationship(type = "modified", direction = Relationship.INCOMING)
     public void setModified(InstanceEdit modified) {
         this.modified = modified;
     }
