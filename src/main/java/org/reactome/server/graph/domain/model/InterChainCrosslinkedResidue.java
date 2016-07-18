@@ -4,6 +4,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 @NodeEntity
@@ -13,7 +14,7 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
     private List<InterChainCrosslinkedResidue> equivalentTo;
 
     @Relationship(type = "secondReferenceSequence", direction = Relationship.OUTGOING)
-    private List<ReferenceSequence> secondReferenceSequence;
+    private Set<ReferenceSequence> secondReferenceSequence;
     
     public InterChainCrosslinkedResidue() {}
 
@@ -25,12 +26,11 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
         this.equivalentTo = equivalentTo;
     }
 
-    public List<ReferenceSequence> getSecondReferenceSequence() {
+    public Set<ReferenceSequence> getSecondReferenceSequence() {
         return secondReferenceSequence;
     }
 
-    public void setSecondReferenceSequence(List<ReferenceSequence> secondReferenceSequence) {
+    public void setSecondReferenceSequence(Set<ReferenceSequence> secondReferenceSequence) {
         this.secondReferenceSequence = secondReferenceSequence;
     }
-    
 }
