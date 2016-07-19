@@ -123,18 +123,21 @@ public class HierarchyRepository {
         PathwayBrowserNode previous = root;
         nodes.put(root.getStId(), root);
         int previousSize = 0;
-        for (ArrayList<Object> nodePairCollection : ((ArrayList<Object>[]) stringObjectMap.get("nodePairCollection"))) {
-            int size = nodePairCollection.size();
-            if (size > previousSize) {
-                ArrayList<Object> objects = (ArrayList<Object>) nodePairCollection.get(nodePairCollection.size() - 1);
-                previous = addNode(previous, nodes, objects, omitNonDisplayableItems);
-            } else {
-                previous = root;
-                for (Object objects : nodePairCollection) {
-                    previous = addNode(previous, nodes, (ArrayList) objects, omitNonDisplayableItems);
+        Object[] nodePairCollections = (Object[]) stringObjectMap.get("nodePairCollection");
+        if (nodePairCollections != null && nodePairCollections.length > 0) {
+            for (ArrayList<Object> nodePairCollection : ((ArrayList<Object>[]) nodePairCollections)) {
+                int size = nodePairCollection.size();
+                if (size > previousSize) {
+                    ArrayList<Object> objects = (ArrayList<Object>) nodePairCollection.get(nodePairCollection.size() - 1);
+                    previous = addNode(previous, nodes, objects, omitNonDisplayableItems);
+                } else {
+                    previous = root;
+                    for (Object objects : nodePairCollection) {
+                        previous = addNode(previous, nodes, (ArrayList) objects, omitNonDisplayableItems);
+                    }
                 }
+                previousSize = size;
             }
-            previousSize = size;
         }
         return root;
     }
@@ -183,7 +186,8 @@ public class HierarchyRepository {
         PathwayBrowserNode node = new PathwayBrowserNode();
         node.setStId(databaseObject.getStId());
         node.setName(databaseObject.getDisplayName());
-        node.setType(databaseObject.getSchemaClass());
+        // do not use SchemaClass here
+        node.setType(databaseObject.getClass().getSimpleName());
 
         /** Root by default is clickable and highlighted **/
         node.setClickable(true);
@@ -221,7 +225,7 @@ public class HierarchyRepository {
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
     private Result getSubHierarchyByDbIdRaw(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
+        String query = "Match (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH(n)-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
                 "Return n.stId, .displayName, n.hasDiagram, n.speciesName, labels(n), COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName,labels(endNode(rel)) ])) AS nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -229,7 +233,7 @@ public class HierarchyRepository {
     }
 
     private Result getSubHierarchyByStIdRaw(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
+        String query = "Match (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH(n)-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName,labels(endNode(rel)) ])) AS nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -264,7 +268,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserByStIdRaw(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -279,7 +283,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserByDbIdRaw(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -297,7 +301,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserForInteractorByStIdRaw(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -315,7 +319,7 @@ public class HierarchyRepository {
      * @return nodePairCollection
      */
     private Result getLocationsInPathwayBrowserForInteractorByDbIdRaw(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
+        String query = "Match (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
                 "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
