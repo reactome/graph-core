@@ -36,6 +36,31 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.loadAllByProperty(clazz, property, value, depth);
     }
 
+    // --------------------------------------- Limited Finder Methods --------------------------------------------------
+
+
+    public DatabaseObject findById(Long dbId, Integer limit) {
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m LIMIT {limit}";
+        Map<String, Object> map = new HashMap<>();
+        map.put("dbId", dbId);
+        map.put("limit", limit);
+        Result result = neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
+    public DatabaseObject findById(String stId, Integer limit) {
+        String query = "Match (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m LIMIT {limit}";
+        Map<String, Object> map = new HashMap<>();
+        map.put("stId", stId);
+        map.put("limit", limit);
+        Result result = neo4jTemplate.query(query, map);
+        if (result != null && result.iterator().hasNext())
+            return (DatabaseObject) result.iterator().next().get("n");
+        return null;
+    }
+
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public DatabaseObject findEnhancedObjectById(Long dbId) {

@@ -61,16 +61,25 @@ public class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
+
+            /**
+             * Filtering fields that we don't want to show
+             * in the Schema Details.
+             */
             if (method.getName().startsWith("get")
                     && !method.getName().equals("getClass")
                     && !method.getName().equals("getId")
                     && !method.getName().equals("getExplanation")
-                    && !method.getName().equals("getEMailAddress")) {
+                    && !method.getName().equals("getEMailAddress")
+                    && !method.getName().equals("getSchemaClass")) {
 
                 try {
                     Object object = method.invoke(databaseObject);
                     if (object == null || object.equals("")) continue;
 
+                    /**
+                     * For this four methods we want to invoke fetch{NAME} rather than the getter.
+                     */
                     switch (method.getName()) {
                         case "getInput":
                             map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
