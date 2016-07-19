@@ -1,22 +1,14 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.Disease;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +16,6 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by:
@@ -32,40 +23,15 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 04.06.16.
  */
-@ContextConfiguration(classes = { Neo4jConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-public class SchemaServiceTest {
+public class SchemaServiceTest extends BaseTest {
 
-        private static final Logger logger = LoggerFactory.getLogger("testLogger");
+    @Autowired
+    private SchemaService schemaService;
 
-        private static Boolean checkedOnce = false;
-        private static Boolean isFit = false;
-
-        @Autowired
-        private GeneralService generalService;
-
-        @Autowired
-        private SchemaService schemaService;
-
-        @BeforeClass
-        public static void setUpClass() {
-            logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
-        }
-
-        @AfterClass
-        public static void tearDownClass() {
-            logger.info("\n\n");
-        }
-
-        @Before
-        public void setUp() throws Exception {
-            if (!checkedOnce) {
-                isFit = generalService.fitForService();
-                checkedOnce = true;
-            }
-            assumeTrue(isFit);
-            DatabaseObjectFactory.clearCache();
-        }
+    @BeforeClass
+    public static void setUpClass() {
+        logger.info(" --- !!! Running " + SchemaServiceTest.class.getName() + " !!! --- \n");
+    }
 
     // ---------------------------------------- Query by Class --------------------------------------------------
 
@@ -153,7 +119,7 @@ public class SchemaServiceTest {
         logger.info("Started testing schemaService.getByClassAndSpeciesWithPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = schemaService.getByClass(Pathway.class, 9606, 1 ,25);
+        Collection<Pathway> pathways = schemaService.getByClass(Pathway.class, 9606, 1, 25);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -366,7 +332,7 @@ public class SchemaServiceTest {
     // ---------------------------------------- Query by Class for single value ------------------------------------------------
 
     @Test
-    public void getStIdsByClassTest () {
+    public void getStIdsByClassTest() {
 
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
         long start, time;
@@ -380,7 +346,7 @@ public class SchemaServiceTest {
     }
 
     @Test
-    public void getStIdsByClassNameTest () throws ClassNotFoundException {
+    public void getStIdsByClassNameTest() throws ClassNotFoundException {
 
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
         long start, time;
@@ -394,12 +360,12 @@ public class SchemaServiceTest {
     }
 
     @Test
-    public void getDbIdsByClassTest () throws Exception {
+    public void getDbIdsByClassTest() throws Exception {
 
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Set<Long> dbIds = new HashSet<> (schemaService.getDbIdsByClass(Pathway.class));
+        Set<Long> dbIds = new HashSet<>(schemaService.getDbIdsByClass(Pathway.class));
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -408,7 +374,7 @@ public class SchemaServiceTest {
     }
 
     @Test
-    public void getDbIdsByClassNameTest () throws ClassNotFoundException {
+    public void getDbIdsByClassNameTest() throws ClassNotFoundException {
 
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
         long start, time;

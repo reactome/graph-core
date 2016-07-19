@@ -1,29 +1,20 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by:
@@ -31,45 +22,19 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 05.06.16.
  */
-@ContextConfiguration(classes = { Neo4jConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-public class AdvancedServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
+public class AdvancedServiceTest extends BaseTest {
 
     private static final Long dbId = 5205685L;
     private static final Long dbId2 = 199420L;
     private static final String stId = "R-HSA-5205685";
     private static final String stId2 = "R-HSA-199420";
 
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
-
-    @Autowired
-    private GeneralService generalService;
-
     @Autowired
     private AdvancedDatabaseObjectService advancedDatabaseObjectService;
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        logger.info("\n\n");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-//        generalService.clearCache();
-        DatabaseObjectFactory.clearCache();
+        logger.info(" --- !!! Running " + AdvancedServiceTest.class.getName() + "!!! --- \n");
     }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
@@ -87,6 +52,24 @@ public class AdvancedServiceTest {
         assertEquals("R-HSA-113454", databaseObjectObserved.getPositivelyRegulates().get(0).getRegulatedEntity().getStId());
         logger.info("Finished");
     }
+
+    // --------------------------------------- Limited Finder Methods --------------------------------------------------
+
+    @Test
+    public void findLimitedObjectByIdTest() {
+
+        logger.info("Started testing genericService.findAllByProperty");
+        long start, time;
+        start = System.currentTimeMillis();
+        Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById("R-HSA-5205685", 10);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        databaseObjectObserved.getHasEvent();
+//        assertTrue();
+        logger.info("Finished");
+    }
+
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 

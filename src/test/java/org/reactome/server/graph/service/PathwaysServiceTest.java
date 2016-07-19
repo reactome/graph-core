@@ -41,7 +41,7 @@ public class PathwaysServiceTest {
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running PathwaysServiceTest !!! --- \n");
+        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
     }
 
     @AfterClass

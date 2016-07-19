@@ -1,19 +1,11 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -21,57 +13,30 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 10.11.15.
- *
+ * <p>
  * 507868 Will test wrong. Difference is that duplications are removed in the graph
- *
  */
-@ContextConfiguration(classes = { Neo4jConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-public class DatabaseObjectServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
+public class DatabaseObjectServiceTest extends BaseTest {
 
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
     private static final List<Long> dbIds = Arrays.asList(1640170L, 73886L, 1500620L);
     private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-1500620");
-    private static final List<Object> ids = Arrays.asList(1640170L, 73886L, 1500620L,"R-HSA-199420");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
+    private static final List<Object> ids = Arrays.asList(1640170L, 73886L, 1500620L, "R-HSA-199420");
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
 
-    @Autowired
-    private GeneralService generalService;
-
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        logger.info("\n\n");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-        DatabaseObjectFactory.clearCache();
+        logger.info(" --- !!! Running " + DatabaseObjectServiceTest.class.getName() + "!!! --- \n");
     }
 
     @Test
@@ -80,7 +45,7 @@ public class DatabaseObjectServiceTest {
         logger.info("Started testing databaseObjectService.findByDbIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved =  databaseObjectService.findById(dbId);
+        DatabaseObject databaseObjectObserved = databaseObjectService.findById(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -157,7 +122,7 @@ public class DatabaseObjectServiceTest {
         long start, time;
         start = System.currentTimeMillis();
 
-        Collection<DatabaseObject> databaseObjectsObserved =  databaseObjectService.findByIdsNoRelations(dbIds);
+        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByIdsNoRelations(dbIds);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
