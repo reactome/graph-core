@@ -43,7 +43,7 @@ public class TopLevelPathwayServiceTest {
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
+        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
     }
 
     @AfterClass

@@ -36,10 +36,12 @@ public class InstanceEdit extends DatabaseObject {
         this.note = note;
     }
 
+    @Relationship(type = "author", direction = Relationship.INCOMING)
     public List<Person> getAuthor() {
         return author;
     }
 
+    @Relationship(type = "author", direction = Relationship.INCOMING)
     public void setAuthor(List<Person> author) {
         this.author = author;
     }

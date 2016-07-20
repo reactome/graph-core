@@ -12,7 +12,6 @@ import java.util.Collection;
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
- *
  * @since 05.06.16.
  */
 @Service
@@ -27,8 +26,20 @@ public class AdvancedDatabaseObjectService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findEnhancedObjectById(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id));
+        }
+        return null;
+    }
+
+    // --------------------------------------- Limited Finder Methods --------------------------------------------------
+
+    public DatabaseObject findById(Object identifier, Integer limit) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return advancedDatabaseObjectRepository.findById(id, limit);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return advancedDatabaseObjectRepository.findById(Long.parseLong(id), limit);
         }
         return null;
     }
@@ -45,23 +56,23 @@ public class AdvancedDatabaseObjectService {
 
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
-    public DatabaseObject findById (Object identifier, RelationshipDirection direction) {
+    public DatabaseObject findById(Object identifier, RelationshipDirection direction) {
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return advancedDatabaseObjectRepository.findById(Long.parseLong(id), direction);
         }
         return null;
     }
 
-    public DatabaseObject findById (Object identifier, RelationshipDirection direction, String... relationships) {
+    public DatabaseObject findById(Object identifier, RelationshipDirection direction, String... relationships) {
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction, relationships);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return advancedDatabaseObjectRepository.findById(Long.parseLong(id), direction, relationships);
         }
         return null;
@@ -83,10 +94,11 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
     }
 
-    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, Class<?> collectionClazz, RelationshipDirection direction, String... relationships){
+    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, collectionClazz, direction, relationships);
     }
-    public DatabaseObject findByRelationship(Long dbId, RelationshipDirection direction, String... relationships){
+
+    public DatabaseObject findByRelationship(Long dbId, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByRelationship(dbId, direction, relationships);
     }
 }

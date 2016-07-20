@@ -17,6 +17,7 @@ public class ComponentOf {
     private String type;
     private List<String> names;
     private List<String> stIds;
+    private List<String> schemaClasses;
 
     public ComponentOf() {}
 
@@ -42,5 +43,13 @@ public class ComponentOf {
 
     public void setStIds(List<String> stIds) {
         this.stIds = stIds;
+    }
+
+    public List<String> getSchemaClasses() {
+        return schemaClasses;
+    }
+
+    public void setSchemaClasses(List<String> schemaClasses) {
+        this.schemaClasses = schemaClasses;
     }
 }

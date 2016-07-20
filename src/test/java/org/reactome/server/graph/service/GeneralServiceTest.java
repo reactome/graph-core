@@ -1,21 +1,13 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.config.Neo4jConfig;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +16,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Created by:
@@ -32,39 +23,14 @@ import static org.junit.Assume.assumeTrue;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 05.06.16.
  */
-@ContextConfiguration(classes = { Neo4jConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-public class GeneralServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
-
-    @Autowired
-    private GeneralService generalService;
+public class GeneralServiceTest extends BaseTest {
 
     @Autowired
     private SchemaService schemaService;
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running DatabaseObjectServiceTests !!! --- \n");
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        logger.info("\n\n");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-        DatabaseObjectFactory.clearCache();
+        logger.info(" --- !!! Running " + GeneralServiceTest.class.getName() + " !!! --- \n");
     }
 
     // --------------------------------------------- General Repository ------------------------------------------------
@@ -127,7 +93,7 @@ public class GeneralServiceTest {
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
     @Test
-    public void queryTest () {
+    public void queryTest() {
         logger.info("Started testing generalService.countEntries");
         long start, time;
         start = System.currentTimeMillis();
@@ -182,7 +148,7 @@ public class GeneralServiceTest {
         pathway.setHasEvent(hasEvent);
 
         long count = schemaService.countEntries(Pathway.class);
-        generalService.save(pathway,1);
+        generalService.save(pathway, 1);
         long countAfterSave = schemaService.countEntries(Pathway.class);
         assertEquals(count + 3, countAfterSave);
         // delete will delete all relationships, nevertheless the other Nodes will still be present

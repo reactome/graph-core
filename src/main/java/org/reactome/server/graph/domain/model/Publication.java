@@ -26,10 +26,12 @@ public class Publication extends DatabaseObject {
         this.title = title;
     }
 
+    @Relationship(type = "author", direction = Relationship.INCOMING)
     public List<Person> getAuthor() {
         return author;
     }
 
+    @Relationship(type = "author", direction = Relationship.INCOMING)
     public void setAuthor(List<Person> author) {
         this.author = author;
     }

@@ -71,10 +71,12 @@ public abstract class Regulation extends DatabaseObject {
         this.name = name;
     }
 
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public InstanceEdit getAuthored() {
         return authored;
     }
 
+    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public void setAuthored(InstanceEdit authored) {
         this.authored = authored;
     }
@@ -87,10 +89,12 @@ public abstract class Regulation extends DatabaseObject {
         this.containedInPathway = containedInPathway;
     }
 
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public List<InstanceEdit> getEdited() {
         return edited;
     }
 
+    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public void setEdited(List<InstanceEdit> edited) {
         this.edited = edited;
     }
@@ -111,21 +115,15 @@ public abstract class Regulation extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
+    @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     public DatabaseObject getRegulatedEntity() {
         return regulatedEntity;
     }
 
+    @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     public void setRegulatedEntity(DatabaseObject regulatedEntity) {
         this.regulatedEntity = regulatedEntity;
     }
-
-//    public RegulationType getRegulationType() {
-//        return regulationType;
-//    }
-//
-//    public void setRegulationType(RegulationType regulationType) {
-//        this.regulationType = regulationType;
-//    }
 
     public DatabaseObject getRegulator() {
         return regulator;
@@ -135,18 +133,22 @@ public abstract class Regulation extends DatabaseObject {
         this.regulator = regulator;
     }
 
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public List<InstanceEdit> getReviewed() {
         return reviewed;
     }
 
+    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public void setReviewed(List<InstanceEdit> reviewed) {
         this.reviewed = reviewed;
     }
 
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public List<InstanceEdit> getRevised() {
         return revised;
     }
 
+    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public void setRevised(List<InstanceEdit> revised) {
         this.revised = revised;
     }

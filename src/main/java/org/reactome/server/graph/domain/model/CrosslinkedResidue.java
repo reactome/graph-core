@@ -11,7 +11,7 @@ public class CrosslinkedResidue extends TranslationalModification {
     @ReactomeProperty
     private Integer secondCoordinate;
 
-    @Relationship(type = "modification")
+    @Relationship(type = "modification", direction = Relationship.OUTGOING)
     private DatabaseObject modification;
 
     public CrosslinkedResidue() {}
