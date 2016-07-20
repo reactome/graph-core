@@ -117,8 +117,9 @@ public class DatabaseObjectUtils {
                 if (methodName.startsWith("get")
                         && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
+                        && !methodName.equals("getSchemaClass")
                         && !methodName.equals("getId")
-                        && !methodName.contains("_aroundBody")) {
+                        && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getAttributeProperties(method);
                     properties.setOrigin(clazz);

@@ -14,10 +14,10 @@ import java.util.Collection;
 @Repository
 public interface ComponentRepository extends GraphRepository<DatabaseObject> {
 
-    @Query("Match (n:DatabaseObject{stId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
+    @Query("Match (n:DatabaseObject{stId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.simpleLabel) AS schemaClasses, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(String stId);
 
-    @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
+    @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.simpleLabel) AS schemaClasses, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(Long dbId);
 
 }
