@@ -28,11 +28,11 @@ public class DatabaseObjectService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             DatabaseObject a = databaseObjectRepository.findByStId(id);
-            a.isLoaded = true;
+            if (a != null) a.isLoaded = true;
             return a;
         } else if (DatabaseObjectUtils.isDbId(id)){
             DatabaseObject a = databaseObjectRepository.findByDbId(Long.parseLong(id));
-            a.isLoaded = true;
+            if (a != null) a.isLoaded = true;
             return a;
         }
         return null;
