@@ -6,7 +6,6 @@ import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,7 +174,7 @@ public class HierarchyRepository {
         node.setName((String) nodePairCollection.get(1));
         node.setDiagram((Boolean) nodePairCollection.get(2));
         node.setSpecies((String) nodePairCollection.get(3));
-        node.setType(DatabaseObjectUtils.getSchemaClass((Collection<String>) nodePairCollection.get(4)));
+        node.setType((String) nodePairCollection.get(4));
 
         doHighlighting(node);
 
@@ -226,7 +225,7 @@ public class HierarchyRepository {
 
     private Result getSubHierarchyByDbIdRaw(Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH(n)-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
-                "Return n.stId, .displayName, n.hasDiagram, n.speciesName, labels(n), COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName,labels(endNode(rel)) ])) AS nodePairCollection";
+                "Return n.stId, .displayName, n.hasDiagram, n.speciesName, labels(n), COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).simpleLabel ])) AS nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
@@ -234,7 +233,7 @@ public class HierarchyRepository {
 
     private Result getSubHierarchyByStIdRaw(String stId) {
         String query = "Match (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH(n)-[r:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
-                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName,labels(endNode(rel)) ])) AS nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).simpleLabel ])) AS nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         return neo4jTemplate.query(query, map);
@@ -244,7 +243,7 @@ public class HierarchyRepository {
 
     private Result getEventHierarchyBySpeciesNameRaw(String speciesName) {
         String query = "Match (n:TopLevelPathway{speciesName:{speciesName}})-[r:hasEvent*]->(m:Event)" +
-                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, labels(endNode(rel)) ])) AS nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).simpleLabel ])) AS nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         return neo4jTemplate.query(query, map);
@@ -252,7 +251,7 @@ public class HierarchyRepository {
 
     private Result getEventHierarchyByTaxIdRaw(String taxId) {
         String query = "Match (s:Species{taxId:{taxId}})<-[:species]-(n:TopLevelPathway)-[r:hasEvent*]->(m:Event) " +
-                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, labels(endNode(rel)) ])) AS nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).simpleLabel ])) AS nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("taxId", taxId);
         return neo4jTemplate.query(query, map);
@@ -269,7 +268,7 @@ public class HierarchyRepository {
      */
     private Result getLocationsInPathwayBrowserByStIdRaw(String stId) {
         String query = "Match (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
-                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).simpleLabel ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         return neo4jTemplate.query(query, map);
@@ -284,7 +283,7 @@ public class HierarchyRepository {
      */
     private Result getLocationsInPathwayBrowserByDbIdRaw(Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-(m) " +
-                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).simpleLabel ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
@@ -302,7 +301,7 @@ public class HierarchyRepository {
      */
     private Result getLocationsInPathwayBrowserForInteractorByStIdRaw(String stId) {
         String query = "Match (n:DatabaseObject{stId:{stId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
-                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).simpleLabel ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         return neo4jTemplate.query(query, map);
@@ -320,7 +319,7 @@ public class HierarchyRepository {
      */
     private Result getLocationsInPathwayBrowserForInteractorByDbIdRaw(Long dbId) {
         String query = "Match (n:DatabaseObject{dbId:{dbId}}) OPTIONAL MATCH(n)<-[r:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-(m) " +
-                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, labels(startNode(rel)) ])) as nodePairCollection";
+                "Return n, COLLECT(EXTRACT(rel IN r | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).simpleLabel ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);

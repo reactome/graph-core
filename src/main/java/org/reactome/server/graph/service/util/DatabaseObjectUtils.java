@@ -71,7 +71,7 @@ public class DatabaseObjectUtils {
                     && !method.getName().equals("getId")
                     && !method.getName().equals("getExplanation")
                     && !method.getName().equals("getEMailAddress")
-                    && !method.getName().equals("getSchemaClass")) {
+                    && !method.getName().equals("getClassName")) {
 
                 try {
                     Object object = method.invoke(databaseObject);
@@ -82,19 +82,19 @@ public class DatabaseObjectUtils {
                      */
                     switch (method.getName()) {
                         case "getInput":
-                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
+                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
                             break;
                         case "getOutput":
-                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchOutput").invoke(databaseObject));
+                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchOutput").invoke(databaseObject));
                             break;
                         case "getHasComponent":
-                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchHasComponent").invoke(databaseObject));
+                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchHasComponent").invoke(databaseObject));
                             break;
                         case "getRepeatedUnit":
-                            map.put(method.getName().substring(3), databaseObject.getClass().getMethod("fetchRepeatedUnit").invoke(databaseObject));
+                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchRepeatedUnit").invoke(databaseObject));
                             break;
                         default:
-                            map.put(method.getName().substring(3), object);
+                            map.put(lowerFirst(method.getName().substring(3)), object);
                             break;
                     }
                 } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
@@ -117,7 +117,7 @@ public class DatabaseObjectUtils {
                 if (methodName.startsWith("get")
                         && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
-                        && !methodName.equals("getSchemaClass")
+                        && !methodName.equals("getClassName")
                         && !methodName.equals("getId")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 

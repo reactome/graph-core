@@ -31,7 +31,7 @@ public class LazyFetchAspect {
 
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
-        if(!enableAOP){
+        if (!enableAOP) {
             return pjp.proceed();
         }
 
@@ -60,7 +60,7 @@ public class LazyFetchAspect {
                 String setterMethod = method.getName().replaceFirst("get", "set");
                 Class<?> methodReturnClazz = method.getReturnType();
 
-                if (Collection.class.isAssignableFrom(method.getReturnType())) {
+                if (Collection.class.isAssignableFrom(methodReturnClazz)) {
                     /** querying the graph and fill the collection **/
                     Collection<DatabaseObject> lazyLoadedObjectAsCollection = advancedDatabaseObjectService.findCollectionByRelationship(dbId, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObjectAsCollection != null) {
@@ -70,7 +70,7 @@ public class LazyFetchAspect {
                     }
                 }
 
-                if (DatabaseObject.class.isAssignableFrom(method.getReturnType())) {
+                if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
                     /** querying the graph and fill the single object **/
                     DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(dbId, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObject != null) {
@@ -86,15 +86,11 @@ public class LazyFetchAspect {
     }
 
     /**
-     * AspectJ pointcut for all the getters, excluding getters in the DatabaseObject,
-     * so then we can freely invoke getDbId, getStId and so on without being cut.
-     * Take into account calling Pathway.getDbId won't invoke the AspectJ and this is the
-     * expected behaviour.
+     * AspectJ pointcut for all the getters that return a Collection of DatabaseObject
+     * or instance of DatabaseObject.
      */
-    @Pointcut("execution(public * org.reactome.server.graph.domain.model.*.get*(..))" +
-            " && ! execution(public * org.reactome.server.graph.domain.model.DatabaseObject.*Id(..))" +
-            " && ! execution(public * org.reactome.server.graph.domain.model.DatabaseObject.getSchemaClass(..))" +
-            " && ! execution(public * org.reactome.server.graph.domain.model.DatabaseObject.*Name(..))")
+    @Pointcut("execution(public java.util.Collection<org.reactome.server.graph.domain.model.DatabaseObject+>+ org.reactome.server.graph.domain.model.*.get*(..))" +
+            "|| execution(public org.reactome.server.graph.domain.model.DatabaseObject+ org.reactome.server.graph.domain.model.*.get*(..))")
     public void modelGetter() {
     }
 

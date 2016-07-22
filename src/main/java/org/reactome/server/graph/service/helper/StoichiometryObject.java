@@ -2,8 +2,11 @@ package org.reactome.server.graph.service.helper;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
 
+import javax.annotation.Nonnull;
+
 @SuppressWarnings("unused")
-public class StoichiometryObject {
+public class StoichiometryObject implements Comparable<StoichiometryObject> {
+
 
     private Integer stoichiometry;
 
@@ -28,5 +31,10 @@ public class StoichiometryObject {
 
     public void setObject(DatabaseObject object) {
         this.object = object;
+    }
+
+    @Override
+    public int compareTo(@Nonnull StoichiometryObject o) {
+        return this.object.getDisplayName().compareTo(o.getObject().getDisplayName());
     }
 }

@@ -16,7 +16,7 @@ import static org.junit.Assume.assumeTrue;
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
  * @since 14.06.16.
  */
-public class AspectsTest extends BaseTest {
+public class LazyLoadingTest extends BaseTest {
 
     private static final String stId = "R-HSA-446203";
 
@@ -25,7 +25,7 @@ public class AspectsTest extends BaseTest {
 
     @BeforeClass
     public static void setUpClass() {
-        logger.info(" --- !!! Running " + AspectsTest.class.getName() + "!!! --- \n");
+        logger.info(" --- !!! Running " + LazyLoadingTest.class.getName() + "!!! --- \n");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AspectsTest extends BaseTest {
     @Test
     public void lazyLoadingTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing genericService.findAllByProperty");
+        logger.info("Testing Lazy Loading.");
 
         DatabaseObject databaseObjectObserved = dbs.findByIdNoRelations(stId);
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);

@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
+import org.reactome.server.graph.service.helper.StoichiometryObject;
 
 import java.util.*;
 
 /**
  * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerisation. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
- *
+ * <p>
  * Logic in getter/setter of input and output is needed for retrieving data import using the GKInstance.
  * This is still used for testing if graph and sql produce the same data import
  */
@@ -46,7 +46,8 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "requiredInputComponent", direction = Relationship.OUTGOING)
     private Set<PhysicalEntity> requiredInputComponent;
 
-    public ReactionLikeEvent() {}
+    public ReactionLikeEvent() {
+    }
 
 
     public Boolean getIsChimeric() {
@@ -107,19 +108,19 @@ public abstract class ReactionLikeEvent extends Event {
 
     @JsonIgnore
     public List<StoichiometryObject> fetchInput() {
-
         List<StoichiometryObject> objects = new ArrayList<>();
-        if(input!=null) {
+        if (input != null) {
             for (Input aux : input) {
                 objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
             }
+            Collections.sort(objects);
         }
         return objects;
     }
 
     public List<PhysicalEntity> getInput() {
         List<PhysicalEntity> rtn = new ArrayList<>();
-        if(input!=null) {
+        if (input != null) {
             for (Input aux : input) {
                 for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getPhysicalEntity());
@@ -131,8 +132,9 @@ public abstract class ReactionLikeEvent extends Event {
     }
 
     public void setInput(List<PhysicalEntity> inputs) {
-        if(inputs == null) return;
-        Map<Long, Input> map = new HashMap<>();
+        if (inputs == null) return;
+        /** Using LinkedHashMap in order to keep the Collection Sorted previously by AOP **/
+        Map<Long, Input> map = new LinkedHashMap<>();
         for (PhysicalEntity physicalEntity : inputs) {
             Input input = map.get(physicalEntity.getDbId());
             if (input == null) {
@@ -149,12 +151,12 @@ public abstract class ReactionLikeEvent extends Event {
 
     @JsonIgnore
     public List<StoichiometryObject> fetchOutput() {
-
         List<StoichiometryObject> objects = new ArrayList<>();
-        if(output!=null) {
+        if (output != null) {
             for (Output aux : output) {
                 objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
             }
+            Collections.sort(objects);
         }
         return objects;
     }
@@ -173,8 +175,9 @@ public abstract class ReactionLikeEvent extends Event {
     }
 
     public void setOutput(List<PhysicalEntity> outputs) {
-        if(outputs == null) return;
-        Map<Long, Output> map = new HashMap<>();
+        if (outputs == null) return;
+        /** Using LinkedHashMap in order to keep the Collection Sorted previously by AOP **/
+        Map<Long, Output> map = new LinkedHashMap<>();
         for (PhysicalEntity physicalEntity : outputs) {
             Output output = map.get(physicalEntity.getDbId());
             if (output == null) {
