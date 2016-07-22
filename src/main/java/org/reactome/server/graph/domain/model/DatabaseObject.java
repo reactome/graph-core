@@ -165,6 +165,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     @JsonIgnore
     public String getClassName() {
-        return getClass().getSimpleName().replaceAll("([A-Z])", " $1");
+        return getClass().getSimpleName();
     }
 }

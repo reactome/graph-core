@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.reactome.server.graph.domain.relationship.HasComponent;
+import org.reactome.server.graph.service.helper.StoichiometryObject;
 
 import java.util.*;
 
@@ -20,7 +20,7 @@ public class Complex extends PhysicalEntity {
     private Boolean isChimeric;
 
     @Relationship(type = "hasComponent")
-    private Set<HasComponent> hasComponent;
+    private List<HasComponent> hasComponent;
 
     @Relationship(type = "entityOnOtherCell")
     private List<PhysicalEntity> entityOnOtherCell;
@@ -49,7 +49,9 @@ public class Complex extends PhysicalEntity {
             for (HasComponent aux : hasComponent) {
                 objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
             }
+            Collections.sort(objects);
         }
+
         return objects;
     }
 
@@ -67,7 +69,7 @@ public class Complex extends PhysicalEntity {
 
     public void setHasComponent(List<PhysicalEntity> hasComponent) {
         if (hasComponent == null) return;
-        Map<Long, HasComponent> components = new HashMap<>();
+        Map<Long, HasComponent> components = new LinkedHashMap<>();
         for (PhysicalEntity physicalEntity : hasComponent) {
             HasComponent component = components.get(physicalEntity.getDbId());
             if (component != null) {
@@ -79,7 +81,7 @@ public class Complex extends PhysicalEntity {
                 components.put(physicalEntity.getDbId(), component);
             }
         }
-        this.hasComponent = new HashSet<>(components.values());
+        this.hasComponent = new ArrayList<>(components.values());
     }
 
     public List<PhysicalEntity> getEntityOnOtherCell() {
