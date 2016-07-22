@@ -64,7 +64,7 @@ public class AdvancedDatabaseObjectRepository {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public DatabaseObject findEnhancedObjectById(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity]-(o) RETURN n,r1,m,r2,o";
+        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) RETURN n,r1,m,r2,o";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         Result result = neo4jTemplate.query(query, map);
@@ -74,7 +74,7 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     public DatabaseObject findEnhancedObjectById(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity]-(o) RETURN n,r1,m,r2,o";
+        String query = "Match (n:DatabaseObject{stId:{stId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) RETURN n,r1,m,r2,o";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         Result result = neo4jTemplate.query(query, map);
