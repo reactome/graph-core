@@ -41,6 +41,9 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
 
     public void setValueType(Class valueType) {
         this.valueType = valueType;
+        if(DatabaseObject.class.isAssignableFrom(valueType)) {
+            valueTypeDatabaseObject = true;
+        }
     }
 
     public Class<? extends DatabaseObject> getOrigin() {
@@ -52,14 +55,7 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
     }
 
     public boolean isValueTypeDatabaseObject() {
-        if(DatabaseObject.class.isAssignableFrom(valueType)) {
-            setValueTypeDatabaseObject(true);
-        }
         return valueTypeDatabaseObject;
-    }
-
-    public void setValueTypeDatabaseObject(boolean valueTypeDatabaseObject) {
-        this.valueTypeDatabaseObject = valueTypeDatabaseObject;
     }
 
     @Override
