@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 
@@ -108,6 +109,7 @@ public class Complex extends PhysicalEntity {
         this.species = species;
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "An entity formed by the association of two or more component entities (these components can themselves be complexes). " +

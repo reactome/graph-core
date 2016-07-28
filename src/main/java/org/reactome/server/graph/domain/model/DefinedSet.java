@@ -1,6 +1,7 @@
 package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
 /**
  * Two or more entities that are interchangeable in function.
@@ -11,6 +12,7 @@ public class DefinedSet extends EntitySet {
 
     public DefinedSet() {}
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "Two or more entities that are interchangeable in function";

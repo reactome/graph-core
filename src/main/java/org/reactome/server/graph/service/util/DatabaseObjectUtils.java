@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
@@ -62,26 +63,17 @@ public class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
-
-            /**
-             * Filtering fields that we don't want to show
-             * in the Schema Details.
-             */
-            if (method.getName().startsWith("get")
-                    && !method.getName().equals("getClass")
-                    && !method.getName().equals("getId")
-                    && !method.getName().equals("getOldStId")
-                    && !method.getName().equals("getExplanation")
-                    && !method.getName().equals("getEMailAddress")
-                    && !method.getName().equals("getClassName")) {
+             // Filtering fields that we don't want to show
+             // in the Schema Details.
+            if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
+                    && method.getName().startsWith("get")
+                    && !method.getName().equals("getClass")){
 
                 try {
                     Object object = method.invoke(databaseObject);
                     if (object == null || object.equals("")) continue;
 
-                    /**
-                     * For this four methods we want to invoke fetch{NAME} rather than the getter.
-                     */
+                     // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {
                         case "getInput":
                             map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
@@ -116,13 +108,11 @@ public class DatabaseObjectUtils {
         while (clazz != null && !clazz.getClass().equals(Object.class)) {
             for (Method method : clazz.getDeclaredMethods()) {
                 String methodName = method.getName();
-                if (methodName.startsWith("get")
+
+                if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
+                        && methodName.startsWith("get")
                         && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
-                        && !methodName.equals("getClassName")
-                        && !methodName.equals("getId")
-                        && !method.getName().equals("getOldStId")
-                        && !method.getName().equals("getEMailAddress")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getAttributeProperties(method);

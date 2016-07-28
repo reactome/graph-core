@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @NodeEntity
 public class BlackBoxEvent extends ReactionLikeEvent {
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "Shortcut reactions that make the connection between input and output, but don't provide complete mechanistic detail. " +

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
@@ -192,6 +193,7 @@ public abstract class ReactionLikeEvent extends Event {
         this.output = new ArrayList<>(map.values());
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getClassName() {
         return "Reaction";

@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class CandidateSet extends EntitySet {
         this.hasCandidate = hasCandidate;
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. " +
