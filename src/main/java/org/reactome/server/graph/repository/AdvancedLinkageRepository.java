@@ -22,9 +22,9 @@ public interface AdvancedLinkageRepository extends GraphRepository<DatabaseObjec
     @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.simpleLabel) AS schemaClasses, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(Long dbId);
 
-    @Query("MATCH (:DatabaseObject{stId:{0}})<-[rel]-(ref) WHERE NOT ref:InstanceEdit RETURN DISTINCT TYPE(rel) AS referral, COLLECT(ref) AS objects LIMIT 1000")
+    @Query("MATCH (d:DatabaseObject{stId:{0}})<-[rel]-(ref) WHERE NOT ref:InstanceEdit AND NOT (d)<-[:species|compartment|includedLocation|referenceDatabase]-(ref) RETURN DISTINCT TYPE(rel) AS referral, COLLECT(ref) AS objects LIMIT 1000")
     Collection<Referrals> getReferralsTo(String stId);
 
-    @Query("MATCH (:DatabaseObject{dbId:{0}})<-[rel]-(ref) WHERE NOT ref:InstanceEdit RETURN DISTINCT TYPE(rel) AS referral, COLLECT(ref) AS objects LIMIT 1000")
+    @Query("MATCH (d:DatabaseObject{dbId:{0}})<-[rel]-(ref) WHERE NOT ref:InstanceEdit AND NOT (d)<-[:species|compartment|includedLocation|referenceDatabase]-(ref) RETURN DISTINCT TYPE(rel) AS referral, COLLECT(ref) AS objects LIMIT 1000")
     Collection<Referrals> getReferralsTo(Long dbId);
 }
