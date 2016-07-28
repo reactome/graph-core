@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
  *
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReactomeSchemaIgnore {}
