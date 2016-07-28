@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
@@ -12,6 +13,7 @@ public class GO_MolecularFunction extends GO_Term {
     private String ecNumber;
 
     @Relationship(type = "componentOf", direction = Relationship.OUTGOING)
+    @ReactomeAllowedClasses(allowed = {GO_MolecularFunction.class, GO_BiologicalProcess.class})
     private DatabaseObject componentOf;
 
     @Relationship(type = "negativelyRegulate", direction = Relationship.OUTGOING)
@@ -34,6 +36,7 @@ public class GO_MolecularFunction extends GO_Term {
         this.ecNumber = ecNumber;
     }
 
+    @ReactomeAllowedClasses(allowed = {GO_MolecularFunction.class, GO_BiologicalProcess.class})
     public DatabaseObject getComponentOf() {
         return componentOf;
     }

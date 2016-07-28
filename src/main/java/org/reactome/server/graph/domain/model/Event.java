@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
 import java.util.ArrayList;
@@ -164,6 +165,7 @@ public abstract class Event extends DatabaseObject {
         this.releaseStatus = releaseStatus;
     }
 
+    @ReactomeSchemaIgnore
     public String getSpeciesName() {
         return speciesName;
     }

@@ -153,7 +153,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return this.dbId.compareTo(o.dbId);
     }
 
-    @ReactomeSchemaIgnore
     public String getSchemaClass() {
         return getClass().getSimpleName();
     }

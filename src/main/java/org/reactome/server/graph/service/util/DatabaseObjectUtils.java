@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -63,17 +65,17 @@ public class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
-             // Filtering fields that we don't want to show
-             // in the Schema Details.
+            // Filtering fields that we don't want to show
+            // in the Schema Details.
             if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
                     && method.getName().startsWith("get")
-                    && !method.getName().equals("getClass")){
+                    && !method.getName().equals("getClass")) {
 
                 try {
                     Object object = method.invoke(databaseObject);
                     if (object == null || object.equals("")) continue;
 
-                     // For this four methods we want to invoke fetch{NAME} rather than the getter.
+                    // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {
                         case "getInput":
                             map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
@@ -147,15 +149,16 @@ public class DatabaseObjectUtils {
             if (targets.contains(clazz)) continue;
             for (Method method : clazz.getDeclaredMethods()) {
                 String methodName = method.getName();
-                if (methodName.startsWith("get")
+                if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
+                        && methodName.startsWith("get")
                         && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
-                        && !methodName.equals("getClassName")
-                        && !methodName.equals("getId")
+//                        && !methodName.equals("getClassName")
+//                        && !methodName.equals("getId")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getReferralProperties(method, targets);
-                    if (properties != null){
+                    if (properties != null) {
                         properties.setOrigin(clazz);
                         propertiesList.add(properties);
                     }
@@ -268,12 +271,19 @@ public class DatabaseObjectUtils {
             properties.setCardinality("+");
             if (typeArguments.length > 0) {
                 Class clazz = (Class) typeArguments[0];
-                properties.setValueType(clazz);
+                properties.addAttributeClass(clazz);
             }
         } else {
-            Class clazz = (Class) returnType;
             properties.setCardinality("1");
-            properties.setValueType(clazz);
+            Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
+            if (annotation == null) {
+                properties.addAttributeClass((Class) returnType);
+            } else {
+                ReactomeAllowedClasses allocatedClasses = (ReactomeAllowedClasses) annotation;
+                for (Class<? extends DatabaseObject> clazz : allocatedClasses.allowed()) {
+                    properties.addAttributeClass(clazz);
+                }
+            }
         }
         return properties;
     }
@@ -289,13 +299,26 @@ public class DatabaseObjectUtils {
             if (typeArguments.length > 0) {
                 Class clazz = (Class) typeArguments[0];
                 if (!targets.contains(clazz)) return null;
-                properties.setValueType(clazz);
+                properties.addAttributeClass(clazz);
             }
         } else {
-            Class clazz = (Class) returnType;
-            if (!targets.contains(clazz)) return null;
             properties.setCardinality("1");
-            properties.setValueType(clazz);
+            Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
+            if (annotation == null) {
+                Class clazz = (Class) returnType;
+                if (!targets.contains(clazz)) return null;
+                properties.addAttributeClass(clazz);
+            } else {
+                ReactomeAllowedClasses allocatedClasses = (ReactomeAllowedClasses) annotation;
+                boolean found = false;
+                for (Class<? extends DatabaseObject> clazz : allocatedClasses.allowed()) {
+                    if (targets.contains(clazz)) {
+                        properties.addAttributeClass(clazz);
+                        found = true;
+                    }
+                }
+                if(!found) return null;
+            }
         }
         return properties;
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.domain.relationship.Input;
@@ -164,6 +165,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.systematicName = systematicName;
     }
 
+    @ReactomeSchemaIgnore
     public String getSpeciesName() {
         return speciesName;
     }

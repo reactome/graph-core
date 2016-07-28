@@ -14,9 +14,7 @@ import java.util.*;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Guilherme Viteri (gviteri@ebi.ac.uk)
- *
- * @since 06.06.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public class AdvancedDatabaseObjectRepository {
