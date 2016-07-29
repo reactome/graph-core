@@ -1,7 +1,10 @@
 package org.reactome.server.graph.repository;
 
+import jodd.typeconverter.TypeConverterManager;
+import org.apache.commons.lang3.ArrayUtils;
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.slf4j.Logger;
@@ -10,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
+
+import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
- *
  * @since 06.06.16.
  */
 @Repository
@@ -261,7 +267,7 @@ public class AdvancedDatabaseObjectRepository {
         Result result = queryRelationshipTypesByDbId(dbId, direction, relationships);
 
         Collection<DatabaseObject> databaseObjects = new ArrayList<>();
-        if (collectionClass.getName().equals(Set.class.getName())){
+        if (collectionClass.getName().equals(Set.class.getName())) {
             databaseObjects = new HashSet<>();
         }
 
@@ -305,4 +311,123 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.query(query, map);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+        Collection<T> instancesResult = new ArrayList<>();
+        Result result = neo4jTemplate.query(query, parametersMap);
+        Field[] fields = getAllFields(clazz);
+
+        try {
+            for (Map<String, Object> stringObjectMap : result) {
+                T instance = clazz.newInstance();
+                for (Field field : fields) {
+                    setFields(instance, field, stringObjectMap);
+                }
+                instancesResult.add(instance);
+            }
+        } catch (Throwable e) {
+            throw new CustomQueryException(e);
+        }
+
+        return instancesResult;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+        Result result = neo4jTemplate.query(query, parametersMap);
+        Field[] fields = getAllFields(clazz);
+
+        try {
+            for (Map<String, Object> stringObjectMap : result) {
+                T instance = clazz.newInstance();
+                for (Field field : fields) {
+                    setFields(instance, field, stringObjectMap);
+                }
+                return instance;
+            }
+        } catch (Throwable e) {
+            throw new CustomQueryException(e);
+        }
+
+        return null; // ??
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (clazz.isAssignableFrom(DatabaseObject.class)) throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
+
+        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+
+        try {
+            return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, parametersMap);
+        } catch (RuntimeException e) {
+            throw new CustomQueryException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (clazz.isAssignableFrom(DatabaseObject.class)) throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
+
+        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+
+        try {
+            return neo4jTemplate.queryForObject(clazz, query, parametersMap);
+        } catch (RuntimeException e) {
+            throw new CustomQueryException(e);
+        }
+    }
+
+    /**
+     * Neo4j results always return the Object (wrapper)
+     * as an Array (if it is collection). However if we are
+     * mapping an object which attribute is a int[] e.g then it
+     * does not 'boxing', then this method checks the type
+     * and return the proper Array of primitive .
+     *
+     * @param value
+     * @param type
+     * @return
+     */
+    private Object toPrimitiveArray(Object value, Class type) {
+        if (type == byte[].class) {
+            return ArrayUtils.toPrimitive((Byte[]) value);
+        } else if (type == short[].class) {
+            return ArrayUtils.toPrimitive((Short[]) value);
+        } else if (type == int[].class) {
+            return ArrayUtils.toPrimitive((Integer[]) value);
+        } else if (type == float[].class) {
+            return ArrayUtils.toPrimitive((Float[]) value);
+        } else if (type == double[].class) {
+            return ArrayUtils.toPrimitive((Double[]) value);
+        } else if (type == char[].class) {
+            return ArrayUtils.toPrimitive((Character[]) value);
+        } else if (type == long[].class) {
+            return ArrayUtils.toPrimitive((Long[]) value);
+        } else if (type == boolean[].class) {
+            return ArrayUtils.toPrimitive((Boolean[]) value);
+        }
+        // version 3.5 we can perform a single call like - return ArrayUtils.toPrimitive(value);
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void setFields(T instance, Field field, Map<String, Object> stringObjectMap) throws IllegalAccessException {
+        String fieldName = field.getName();
+        Object object = stringObjectMap.get(fieldName);
+        if (object != null) {
+            field.setAccessible(true);
+            if (field.getType().isArray() && field.getType().getComponentType().isPrimitive()) {
+                field.set(instance, toPrimitiveArray(object, field.getType()));
+            } else if (Collection.class.isAssignableFrom(field.getType())) {
+                ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
+                Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
+                field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
+            } else {
+                field.set(instance, TypeConverterManager.convertType(object, field.getType()));
+            }
+        }
+    }
 }

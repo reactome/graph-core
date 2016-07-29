@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -222,4 +225,39 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
+    // ------------------------------ Methods with Custom Query -------------------------------------
+    @Test
+    public void customQueryWithCustomObjectTest() throws CustomQueryException {
+        String query = "MATCH (p:Pathway{dbId:{dbId}})-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ";
+        Map<String, Object> parametersMap = new HashMap<>();
+        parametersMap.put("dbId", 1640170);
+        CustomQueryResult small = advancedDatabaseObjectService.customQueryForObject(CustomQueryResult.class, query, parametersMap);
+
+        System.out.println(small);
+    }
+
+    @Test
+    public void customQueryListOfCustomObjectTest() throws CustomQueryException {
+        String query = "MATCH (p:Pathway)-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray LIMIT 20";
+        Collection<CustomQueryResult> small = advancedDatabaseObjectService.customQueryForObjects(CustomQueryResult.class, query, null);
+        System.out.println(small);
+    }
+
+    @Test
+    public void customQueryDatabaseObjectTest() throws CustomQueryException {
+        String query = "MATCH (p:Pathway{dbId:1640170})-[r:hasEvent]->(m) RETURN p,r,m";
+        Pathway pathway = (Pathway) advancedDatabaseObjectService.customQueryForDatabaseObject(Pathway.class, query, null);
+        System.out.println(pathway);
+    }
+
+    @Test
+    public void customQueryListOfDatabaseObjectTest() throws CustomQueryException {
+        String query = "MATCH (p:Pathway)<-[r:hasEvent]-(m) RETURN p,r,m LIMIT 10";
+        Collection<Pathway> small = advancedDatabaseObjectService.customQueryForDatabaseObjects(Pathway.class, query, null);
+        for (Pathway pathway : small) {
+            pathway.getHasEvent();
+        }
+        System.out.println(small);
+    }
 }
+

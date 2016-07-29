@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -57,7 +59,6 @@ public class AdvancedDatabaseObjectService {
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
     public DatabaseObject findById(Object identifier, RelationshipDirection direction) {
-
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction);
@@ -68,7 +69,6 @@ public class AdvancedDatabaseObjectService {
     }
 
     public DatabaseObject findById(Object identifier, RelationshipDirection direction, String... relationships) {
-
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction, relationships);
@@ -100,5 +100,21 @@ public class AdvancedDatabaseObjectService {
 
     public DatabaseObject findByRelationship(Long dbId, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByRelationship(dbId, direction, relationships);
+    }
+
+    public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customQueryForObject(clazz, query, parametersMap);
+    }
+
+    public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customQueryForObjects(clazz, query, parametersMap);
+    }
+
+    public DatabaseObject customQueryForDatabaseObject(Class<? extends DatabaseObject> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customQueryForDatabaseObject(clazz, query, parametersMap);
+    }
+
+    public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customQueryForDatabaseObjects(clazz, query, parametersMap);
     }
 }
