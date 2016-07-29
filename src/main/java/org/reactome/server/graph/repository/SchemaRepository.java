@@ -1,14 +1,12 @@
 package org.reactome.server.graph.repository;
 
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
-import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -61,6 +59,14 @@ public class SchemaRepository {
         return (Collection<T>)  neo4jTemplate.queryForObjects(clazz, query, map);
     }
 
+    public Integer countByClassAndSpeciesTaxId(Class clazz, String taxId) {
+        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
+        Map<String,Object> map = new HashMap<>();
+        map.put("taxId", taxId);
+        return (Integer) neo4jTemplate.query(query, map).iterator().next().get("num");
+    }
+
+
     public <T> Collection<T> getByClassAndSpeciesName(Class<T> clazz, String speciesName, Integer page, Integer offset) {
         String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
@@ -69,6 +75,14 @@ public class SchemaRepository {
         map.put("skip", (page-1) * offset);
         return (Collection<T>)  neo4jTemplate.queryForObjects(clazz, query, map);
     }
+
+    public Integer countByClassAndSpeciesName(Class clazz, String speciesName) {
+        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
+        Map<String,Object> map = new HashMap<>();
+        map.put("speciesName", speciesName);
+        return (Integer) neo4jTemplate.query(query, map).iterator().next().get("num");
+    }
+
 
     // ---------------------------------------- Query by Class for SimpleObject ------------------------------------------------
 

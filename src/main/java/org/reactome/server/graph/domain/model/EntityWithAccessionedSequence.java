@@ -3,6 +3,7 @@ package org.reactome.server.graph.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
         this.referenceEntity = referenceEntity;
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getClassName() {
         switch (referenceType) {
@@ -82,6 +84,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
         }
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "A protein, RNA, or DNA molecule or fragment thereof in a specified cellular compartment and specific post-translational state. " +

@@ -1,7 +1,6 @@
 package org.reactome.server.graph.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
@@ -11,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -75,6 +72,14 @@ public class SchemaService {
             return getByClassAndSpecies(clazz,species, page, offset);
         }
         return null;
+    }
+
+    public Integer countByClassAndSpecies(String className, Object species) throws ClassNotFoundException {
+        Class clazz = DatabaseObjectUtils.getClassForName(className);
+        if (isValidSpeciesClass(clazz)) {
+            return countByClassAndSpecies(clazz,species);
+        }
+        return 0;
     }
 
     // ---------------------------------------- Query by Class for SimpleObject ------------------------------------------------
@@ -232,6 +237,16 @@ public class SchemaService {
             return schemaRepository.getByClassAndSpeciesTaxId(clazz, speciesString, page, offset);
         } else {
             return schemaRepository.getByClassAndSpeciesName(clazz, speciesString, page, offset);
+        }
+    }
+
+
+    private Integer countByClassAndSpecies(Class clazz, Object species) {
+        String speciesString = species instanceof Species ? ((Species) species).getTaxId() : species.toString();
+        if (StringUtils.isNumeric(speciesString)) {
+            return schemaRepository.countByClassAndSpeciesTaxId(clazz, speciesString);
+        } else {
+            return schemaRepository.countByClassAndSpeciesName(clazz, speciesString);
         }
     }
 

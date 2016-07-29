@@ -8,6 +8,7 @@ import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
 import javax.annotation.Nonnull;
@@ -60,6 +61,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     public DatabaseObject() {}
 
+    @ReactomeSchemaIgnore
     public Long getId() {
         return id;
     }
@@ -92,6 +94,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.stId = stId;
     }
 
+    @ReactomeSchemaIgnore
     public String getOldStId() {
         return oldStId;
     }
@@ -158,11 +161,13 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return new Pathway();
     }
 
+    @ReactomeSchemaIgnore
     @JsonIgnore
     public String getExplanation() {
         return "Not available";
     }
 
+    @ReactomeSchemaIgnore
     @JsonIgnore
     public String getClassName() {
         return getClass().getSimpleName();

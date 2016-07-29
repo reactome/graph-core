@@ -3,20 +3,19 @@ package org.reactome.server.graph.service.helper;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 11.02.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class AttributeProperties implements Comparable<AttributeProperties> {
 
     private String name;
     private String cardinality;
-    private Class valueType;
-    private boolean valueTypeDatabaseObject;
+    private List<AttributeClass> attributeClasses = new LinkedList<>();
     private Class<? extends DatabaseObject> origin;
 
     public String getName() {
@@ -35,12 +34,12 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
         this.cardinality = cardinality;
     }
 
-    public Class getValueType() {
-        return valueType;
+    public List<AttributeClass> getAttributeClasses() {
+        return attributeClasses;
     }
 
-    public void setValueType(Class valueType) {
-        this.valueType = valueType;
+    public void addAttributeClass(Class valueType) {
+        this.attributeClasses.add(new AttributeClass(valueType));
     }
 
     public Class<? extends DatabaseObject> getOrigin() {
@@ -49,17 +48,6 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
 
     public void setOrigin(Class<? extends DatabaseObject> origin) {
         this.origin = origin;
-    }
-
-    public boolean isValueTypeDatabaseObject() {
-        if(DatabaseObject.class.isAssignableFrom(valueType)) {
-            setValueTypeDatabaseObject(true);
-        }
-        return valueTypeDatabaseObject;
-    }
-
-    public void setValueTypeDatabaseObject(boolean valueTypeDatabaseObject) {
-        this.valueTypeDatabaseObject = valueTypeDatabaseObject;
     }
 
     @Override

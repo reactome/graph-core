@@ -14,10 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 14.04.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -28,7 +26,7 @@ public class DetailsService {
     @Autowired
     private DetailsRepository detailsRepository;
     @Autowired
-    private ComponentService componentService;
+    private AdvancedLinkageService advancedLinkageService;
     @Autowired
     private PhysicalEntityService physicalEntityService;
     @Autowired
@@ -52,7 +50,7 @@ public class DetailsService {
             if (directParticipants == null) directParticipants = false;
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, directParticipants);
             contentDetails.setNodes(leaves);
-            contentDetails.setComponentOf(componentService.getComponentsOf(databaseObject.getStId()));
+            contentDetails.setComponentOf(advancedLinkageService.getComponentsOf(databaseObject.getStId()));
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOf(databaseObject.getDbId()));
         }
         return contentDetails;

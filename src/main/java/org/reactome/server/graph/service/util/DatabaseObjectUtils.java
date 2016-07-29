@@ -1,16 +1,20 @@
 package org.reactome.server.graph.service.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.AttributeProperties;
 import org.reactome.server.graph.service.helper.SchemaNode;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -27,17 +31,17 @@ public class DatabaseObjectUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectUtils.class);
 
-    private static Map<String,SchemaNode> map;
+    private static Map<String, SchemaNode> map;
 
     private static DatabaseObjectRepository databaseObjectRepository;
 
     @Autowired
-    public void setDatabaseObjectRepository(DatabaseObjectRepository databaseObjectRepository){
+    public void setDatabaseObjectRepository(DatabaseObjectRepository databaseObjectRepository) {
         DatabaseObjectUtils.databaseObjectRepository = databaseObjectRepository;
     }
 
     @SuppressWarnings("unused")
-    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts ) throws ClassNotFoundException {
+    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts) throws ClassNotFoundException {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         for (SchemaClassCount schemaClassCount : schemaClassCounts) {
@@ -61,25 +65,17 @@ public class DatabaseObjectUtils {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
-
-            /**
-             * Filtering fields that we don't want to show
-             * in the Schema Details.
-             */
-            if (method.getName().startsWith("get")
-                    && !method.getName().equals("getClass")
-                    && !method.getName().equals("getId")
-                    && !method.getName().equals("getExplanation")
-                    && !method.getName().equals("getEMailAddress")
-                    && !method.getName().equals("getClassName")) {
+            // Filtering fields that we don't want to show
+            // in the Schema Details.
+            if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
+                    && method.getName().startsWith("get")
+                    && !method.getName().equals("getClass")) {
 
                 try {
                     Object object = method.invoke(databaseObject);
                     if (object == null || object.equals("")) continue;
 
-                    /**
-                     * For this four methods we want to invoke fetch{NAME} rather than the getter.
-                     */
+                    // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {
                         case "getInput":
                             map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
@@ -97,7 +93,7 @@ public class DatabaseObjectUtils {
                             map.put(lowerFirst(method.getName().substring(3)), object);
                             break;
                     }
-                } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                     logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method " + method.getName());
                 }
             }
@@ -114,11 +110,11 @@ public class DatabaseObjectUtils {
         while (clazz != null && !clazz.getClass().equals(Object.class)) {
             for (Method method : clazz.getDeclaredMethods()) {
                 String methodName = method.getName();
-                if (methodName.startsWith("get")
+
+                if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
+                        && methodName.startsWith("get")
                         && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
-                        && !methodName.equals("getClassName")
-                        && !methodName.equals("getId")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getAttributeProperties(method);
@@ -134,12 +130,50 @@ public class DatabaseObjectUtils {
         return propertiesList;
     }
 
-    public static String getIdentifier(Object id){
+    @SuppressWarnings("unused")
+    public static Set<AttributeProperties> getReferrals(String className) throws ClassNotFoundException {
+        String packageName = DatabaseObject.class.getPackage().getName();
+
+        Class target = Class.forName(packageName + "." + className);
+        Collection<Class> targets = new LinkedList<>();
+        while (target != null && !target.getClass().equals(Object.class)) {
+            targets.add(target);
+            target = target.getSuperclass();
+        }
+
+        Reflections reflections = new Reflections(packageName);
+        Set<Class<? extends DatabaseObject>> classes = reflections.getSubTypesOf(DatabaseObject.class);
+
+        Set<AttributeProperties> propertiesList = new TreeSet<>();
+        for (Class<? extends DatabaseObject> clazz : classes) {
+            if (targets.contains(clazz)) continue;
+            for (Method method : clazz.getDeclaredMethods()) {
+                String methodName = method.getName();
+                if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
+                        && methodName.startsWith("get")
+                        && !methodName.startsWith("getSuper")
+                        && !methodName.equals("getClass")
+//                        && !methodName.equals("getClassName")
+//                        && !methodName.equals("getId")
+                        && !methodName.contains("_aroundBody")) { // aspectj injected methods
+
+                    AttributeProperties properties = getReferralProperties(method, targets);
+                    if (properties != null) {
+                        properties.setOrigin(clazz);
+                        propertiesList.add(properties);
+                    }
+                }
+            }
+        }
+        return propertiesList;
+    }
+
+    public static String getIdentifier(Object id) {
         if (id instanceof String) {
             String aux = trimId((String) id);
-            if(aux.startsWith("REACT_")){ //In case the provided identifier is an OLD style one, we translate to the new one
+            if (aux.startsWith("REACT_")) { //In case the provided identifier is an OLD style one, we translate to the new one
                 DatabaseObject dbObject = databaseObjectRepository.findByOldStId(aux);
-                if(dbObject!=null) aux = dbObject.getStId();
+                if (dbObject != null) aux = dbObject.getStId();
             }
             return aux;
         } else if (id instanceof Number && !(id instanceof Double)) {
@@ -188,7 +222,7 @@ public class DatabaseObjectUtils {
     }
 
     public static String lowerFirst(String str) {
-        if(StringUtils.isAllUpperCase(str)) {
+        if (StringUtils.isAllUpperCase(str)) {
             return str;
         }
         return str.substring(0, 1).toLowerCase() + str.substring(1);
@@ -200,7 +234,7 @@ public class DatabaseObjectUtils {
 
     private static void recursion(Class clazz, SchemaNode oldNode, int count) {
         if (!clazz.equals(Object.class)) {
-            SchemaNode node = new SchemaNode(clazz,count);
+            SchemaNode node = new SchemaNode(clazz, count);
             if (map.containsKey(clazz.getSimpleName())) {
                 if (oldNode != null) {
                     map.get(clazz.getSimpleName()).addChild(oldNode);
@@ -212,14 +246,14 @@ public class DatabaseObjectUtils {
                 if (oldNode != null) {
                     node.addChild(oldNode);
                 }
-                map.put(clazz.getSimpleName(),node);
-                recursion(clazz.getSuperclass(),node,0);
+                map.put(clazz.getSimpleName(), node);
+                recursion(clazz.getSuperclass(), node, 0);
             }
         }
     }
 
     private static void correctCounts(SchemaNode node) {
-        if (node.getChildren()!=null) {
+        if (node.getChildren() != null) {
             for (SchemaNode node1 : node.getChildren()) {
                 correctCounts(node1);
                 node.setCount(node.getCount() + node1.getCount());
@@ -235,17 +269,57 @@ public class DatabaseObjectUtils {
             ParameterizedType type = (ParameterizedType) returnType;
             Type[] typeArguments = type.getActualTypeArguments();
             properties.setCardinality("+");
-            if (typeArguments.length>0) {
+            if (typeArguments.length > 0) {
                 Class clazz = (Class) typeArguments[0];
-                properties.setValueType(clazz);
+                properties.addAttributeClass(clazz);
             }
         } else {
-            Class clazz = (Class) returnType;
             properties.setCardinality("1");
-            properties.setValueType(clazz);
+            Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
+            if (annotation == null) {
+                properties.addAttributeClass((Class) returnType);
+            } else {
+                ReactomeAllowedClasses allocatedClasses = (ReactomeAllowedClasses) annotation;
+                for (Class<? extends DatabaseObject> clazz : allocatedClasses.allowed()) {
+                    properties.addAttributeClass(clazz);
+                }
+            }
         }
         return properties;
     }
 
-
+    private static AttributeProperties getReferralProperties(Method method, Collection<Class> targets) {
+        AttributeProperties properties = new AttributeProperties();
+        properties.setName(lowerFirst(method.getName().substring(3)));
+        Type returnType = method.getGenericReturnType();
+        if (returnType instanceof ParameterizedType) {
+            ParameterizedType type = (ParameterizedType) returnType;
+            Type[] typeArguments = type.getActualTypeArguments();
+            properties.setCardinality("+");
+            if (typeArguments.length > 0) {
+                Class clazz = (Class) typeArguments[0];
+                if (!targets.contains(clazz)) return null;
+                properties.addAttributeClass(clazz);
+            }
+        } else {
+            properties.setCardinality("1");
+            Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
+            if (annotation == null) {
+                Class clazz = (Class) returnType;
+                if (!targets.contains(clazz)) return null;
+                properties.addAttributeClass(clazz);
+            } else {
+                ReactomeAllowedClasses allocatedClasses = (ReactomeAllowedClasses) annotation;
+                boolean found = false;
+                for (Class<? extends DatabaseObject> clazz : allocatedClasses.allowed()) {
+                    if (targets.contains(clazz)) {
+                        properties.addAttributeClass(clazz);
+                        found = true;
+                    }
+                }
+                if(!found) return null;
+            }
+        }
+        return properties;
+    }
 }

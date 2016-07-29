@@ -3,6 +3,7 @@ package org.reactome.server.graph.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
 import java.util.List;
 
@@ -48,12 +49,14 @@ public abstract class EntitySet extends PhysicalEntity{
         this.species = species;
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "Two or more entities grouped because of a shared molecular feature. " +
                 "The superclass for CandidateSet, DefinedSet, and OpenSet";
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getClassName() {
         return "Set";

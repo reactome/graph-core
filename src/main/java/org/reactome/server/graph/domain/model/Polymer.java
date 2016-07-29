@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.service.helper.StoichiometryObject;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
+import org.reactome.server.graph.service.helper.StoichiometryObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +94,7 @@ public class Polymer extends PhysicalEntity {
 
 */
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. " +

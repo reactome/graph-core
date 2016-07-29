@@ -3,6 +3,7 @@ package org.reactome.server.graph.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
 /**
  * A chemical species not encoded directly or indirectly in the genome, typically small molecules such as ATP or ethanol.
@@ -47,12 +48,14 @@ public class SimpleEntity extends PhysicalEntity {
         this.species = species;
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getExplanation() {
         return "A chemical species not encoded directly or indirectly in the genome, typically small molecules such as ATP or ethanol. " +
                 "The detailed structure of a simpleEntity is specified by linking it to details of the molecule in the ChEBI or KEGG databases via the referenceEntity slot. Use of KEGG is deprecated";
     }
 
+    @ReactomeSchemaIgnore
     @Override
     public String getClassName() {
         return "Chemical Compound";

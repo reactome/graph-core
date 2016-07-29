@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
@@ -36,12 +37,11 @@ public abstract class Regulation extends DatabaseObject {
 
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
+    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class})
     private DatabaseObject regulatedEntity;
 
-//    @Relationship(type = "regulationType", direction = Relationship.OUTGOING)
-//    private RegulationType regulationType;
-
     @Relationship(type = "regulator", direction = Relationship.OUTGOING)
+    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class, PhysicalEntity.class})
     private DatabaseObject regulator;
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
@@ -116,6 +116,7 @@ public abstract class Regulation extends DatabaseObject {
     }
 
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
+    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class})
     public DatabaseObject getRegulatedEntity() {
         return regulatedEntity;
     }
@@ -125,6 +126,7 @@ public abstract class Regulation extends DatabaseObject {
         this.regulatedEntity = regulatedEntity;
     }
 
+    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class, PhysicalEntity.class})
     public DatabaseObject getRegulator() {
         return regulator;
     }

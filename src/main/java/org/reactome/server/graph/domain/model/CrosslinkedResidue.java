@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 
 @SuppressWarnings("unused")
@@ -12,10 +13,12 @@ public class CrosslinkedResidue extends TranslationalModification {
     private Integer secondCoordinate;
 
     @Relationship(type = "modification", direction = Relationship.OUTGOING)
+    @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})
     private DatabaseObject modification;
 
     public CrosslinkedResidue() {}
 
+    @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})
     public DatabaseObject getModification() {
         return modification;
     }
