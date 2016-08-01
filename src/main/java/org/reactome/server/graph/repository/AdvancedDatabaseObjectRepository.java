@@ -7,8 +7,6 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
@@ -23,13 +21,10 @@ import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
- *
  * @since 06.06.16.
  */
 @Repository
 public class AdvancedDatabaseObjectRepository {
-
-    private static final Logger logger = LoggerFactory.getLogger(GeneralTemplateRepository.class);
 
     @Autowired
     private Neo4jOperations neo4jTemplate;
@@ -314,6 +309,9 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * Executes the specified Cypher query with the given parameters against the underlying Neo4j database and returns the result manually marshalled using Reflection and 3rd Party Library based on the given custom result.
+     */
     public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
         if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
         Collection<T> instancesResult = new ArrayList<>();
@@ -336,6 +334,9 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * Executes the specified Cypher query with the given parameters against the underlying Neo4j database and returns the result automatically marshalled using Reflection and 3rd Party Library based on the given custom result.
+     */
     public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
         if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
         Result result = neo4jTemplate.query(query, parametersMap);
@@ -356,9 +357,12 @@ public class AdvancedDatabaseObjectRepository {
         return null; // ??
     }
 
+    // ----------------------------------------- Custom Query Methods --------------------------------------------------
+
     @SuppressWarnings("unchecked")
     public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (clazz.isAssignableFrom(DatabaseObject.class)) throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
+        if (clazz.isAssignableFrom(DatabaseObject.class))
+            throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
 
         if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
 
@@ -371,7 +375,8 @@ public class AdvancedDatabaseObjectRepository {
 
     @SuppressWarnings("unchecked")
     public <T> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (clazz.isAssignableFrom(DatabaseObject.class)) throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
+        if (clazz.isAssignableFrom(DatabaseObject.class))
+            throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
 
         if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
 
@@ -388,10 +393,6 @@ public class AdvancedDatabaseObjectRepository {
      * mapping an object which attribute is a int[] e.g then it
      * does not 'boxing', then this method checks the type
      * and return the proper Array of primitive .
-     *
-     * @param value
-     * @param type
-     * @return
      */
     private Object toPrimitiveArray(Object value, Class type) {
         if (type == byte[].class) {
@@ -416,18 +417,29 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * Method that uses Java Reflection in order to set the attributes of a specific instance.
+     * The attribute is handled in different ways depends on its type.
+     * The types are: Array of primitive, Collection and others.
+     * A external type convert is used to convert the Result "stringObjectMap" once Neo4j returns
+     * an array of Integer for a list of number and we must be able to convert it to whatever type the final user
+     * has defined in his Custom Object. Obviously the type conversion is going to check the type compatibility.
+     */
     private <T> void setFields(T instance, Field field, Map<String, Object> stringObjectMap) throws IllegalAccessException {
         String fieldName = field.getName();
         Object object = stringObjectMap.get(fieldName);
         if (object != null) {
             field.setAccessible(true);
             if (field.getType().isArray() && field.getType().getComponentType().isPrimitive()) {
+                /** An array of primitives do not box automatically then we cast it manually using ArrayUtils and the attribute type **/
                 field.set(instance, toPrimitiveArray(object, field.getType()));
             } else if (Collection.class.isAssignableFrom(field.getType())) {
+                /** The returned results are normally stored in an Array, then we need to convert in case the attribute is a Collection **/
                 ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
                 Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
                 field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
             } else {
+                /** Other fields, no problem with type conversion **/
                 field.set(instance, TypeConverterManager.convertType(object, field.getType()));
             }
         }
