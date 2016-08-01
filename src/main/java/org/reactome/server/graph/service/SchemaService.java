@@ -1,7 +1,9 @@
 package org.reactome.server.graph.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.model.ExternalOntology;
+import org.reactome.server.graph.domain.model.ReferenceEntity;
+import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.repository.SchemaRepository;
@@ -9,6 +11,7 @@ import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
@@ -215,7 +218,13 @@ public class SchemaService {
     // ---------------------------------------- private methods ------------------------------------------------
 
     private Boolean isValidSpeciesClass(Class clazz) {
-        return PhysicalEntity.class.isAssignableFrom(clazz) || Event.class.isAssignableFrom(clazz);
+        try {
+            //noinspection unused,unchecked
+            Method m = clazz.getMethod("getSpecies");
+            return true;
+        } catch (NoSuchMethodException e) {
+            return false;
+        }
     }
 
     private Boolean isValidReferenceClass(Class clazz) {

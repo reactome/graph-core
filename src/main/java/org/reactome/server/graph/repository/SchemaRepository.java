@@ -27,14 +27,14 @@ public class SchemaRepository {
     }
 
     public <T> Collection<T> getByClassAndSpeciesTaxId(Class<T> clazz, String taxId) {
-        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
+        String query = "MATCH (s:Species{taxId:{taxId}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         return (Collection<T>)  neo4jTemplate.queryForObjects(clazz, query, map);
     }
 
     public <T> Collection<T> getByClassAndSpeciesName(Class<T> clazz, String speciesName) {
-        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
+        String query = "MATCH (s:Species{displayName:{speciesName}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         return (Collection<T>)  neo4jTemplate.queryForObjects(clazz, query, map);
@@ -51,7 +51,7 @@ public class SchemaRepository {
     }
 
     public <T> Collection<T> getByClassAndSpeciesTaxId(Class<T> clazz, String taxId, Integer page, Integer offset) {
-        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
+        String query = "MATCH (s:Species{taxId:{taxId}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         map.put("limit", offset);
@@ -60,7 +60,7 @@ public class SchemaRepository {
     }
 
     public Integer countByClassAndSpeciesTaxId(Class clazz, String taxId) {
-        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
+        String query = "MATCH (s:Species{taxId:{taxId}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         return (Integer) neo4jTemplate.query(query, map).iterator().next().get("num");
@@ -68,7 +68,7 @@ public class SchemaRepository {
 
 
     public <T> Collection<T> getByClassAndSpeciesName(Class<T> clazz, String speciesName, Integer page, Integer offset) {
-        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
+        String query = "MATCH (s:Species{displayName:{speciesName}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN n ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         map.put("limit", offset);
@@ -77,7 +77,7 @@ public class SchemaRepository {
     }
 
     public Integer countByClassAndSpeciesName(Class clazz, String speciesName) {
-        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
+        String query = "MATCH (s:Species{displayName:{speciesName}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         return (Integer) neo4jTemplate.query(query, map).iterator().next().get("num");
@@ -93,7 +93,7 @@ public class SchemaRepository {
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class clazz, String taxId) {
-        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName";
+        String query = "MATCH (s:Species{taxId:{taxId}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         Result result = neo4jTemplate.query(query, map);
@@ -101,7 +101,7 @@ public class SchemaRepository {
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class clazz, String speciesName) {
-        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName";
+        String query = "MATCH (s:Species{displayName:{speciesName}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         Result result = neo4jTemplate.query(query, map);
@@ -120,7 +120,7 @@ public class SchemaRepository {
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class clazz, String taxId, Integer page, Integer offset) {
-        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
+        String query = "MATCH (s:Species{taxId:{taxId}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         map.put("limit", offset);
@@ -130,7 +130,7 @@ public class SchemaRepository {
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class clazz, String speciesName, Integer page, Integer offset) {
-        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
+        String query = "MATCH (s:Species{displayName:{speciesName}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN Distinct(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels ORDER BY n.displayName SKIP {skip} LIMIT {limit}";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         map.put("limit", offset);
@@ -175,7 +175,7 @@ public class SchemaRepository {
     }
 
     public Long countEntriesWithSpeciesTaxId(Class<?> clazz, String taxId) {
-        String query = "MATCH (s:Species{taxId:{taxId}})<--(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS n";
+        String query = "MATCH (s:Species{taxId:{taxId}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS n";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
         Result result = neo4jTemplate.query(query, map);
@@ -183,7 +183,7 @@ public class SchemaRepository {
     }
 
     public Long countEntriesWithSpeciesName(Class<?> clazz, String speciesName) {
-        String query = "MATCH (s:Species{displayName:{speciesName}})<--(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS n";
+        String query = "MATCH (s:Species{displayName:{speciesName}})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS n";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
         Result result = neo4jTemplate.query(query, map);
