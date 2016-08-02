@@ -20,7 +20,7 @@ In the Reactome Graph project Neo4j, a Java implemented, open source, transactio
 
 #### Project usage: 
 
-The project can be used as a "Core" library providing a Data Object Layer on top of the Neo4j Db.
+The project can be used as a "Core" library providing a Data Object Layer on top of the Neo4j Db. To get started include the following dependency:
 
 **Dependency** 
 
@@ -43,28 +43,42 @@ The project can be used as a "Core" library providing a Data Object Layer on top
 </snapshotRepository>
 ```
 
-#### Maven test
+**Properties**
 
-Maven tests will only be executed if a connection to Neo4j can be established. Otherwise all tests will be skipped. All parameters needed to execute the JunitTests have to be provided as maven profile:
+SDN expects the properties file to be called "ogm.properties".
 
 ```
-<profile>
-    <id>neo4j</id>
-    <properties>
-        <neo4j.host>localhost</neo4j.host>
-        <neo4j.port>7474</neo4j.port>
-        <neo4j.user>neo4j</neo4j.user>
-        <neo4j.password>reactome</neo4j.password>
-        <reactome.host>localhost</reactome.host>
-        <reactome.port>3306</reactome.port>
-        <reactome.database>reactome</reactome.database>
-        <reactome.user>reactome</reactome.user>
-        <reactome.password>reactome</reactome.password>
-    </properties>
-</profile>
+driver=org.neo4j.ogm.drivers.http.driver.HttpDriver
+URI=http://user:password@localhost:7474
 ```
 
+To provide properties programmatically Neo4jConfig.class of the Batch importer has to be overwritten and System properties have to be set:
 
+```
+@org.springframework.context.annotation.Configuration
+@ComponentScan( basePackages = {"org.reactome.server.graph"} )
+@EnableTransactionManagement
+@EnableNeo4jRepositories( basePackages = {"org.reactome.server.graph.repository"} )
+@EnableSpringConfigured
+public class MyNeo4jConfig extends Neo4jConfig {
+
+    @Bean
+    public Configuration getConfiguration() {
+        Configuration config = new Configuration();
+        config.driverConfiguration()
+                .setDriverClassName("org.neo4j.ogm.drivers.http.driver.HttpDriver")
+                .setURI("http://".concat(System.getProperty("neo4j.host")).concat(":").concat(System.getProperty("neo4j.port")))
+                .setCredentials(System.getProperty("neo4j.user"),System.getProperty("neo4j.password"));
+        return config;
+    }
+
+    @Override
+    @Bean
+    public SessionFactory getSessionFactory() {
+        return new SessionFactory(getConfiguration(), "org.reactome.server.graph.domain" );
+    }
+}
+```
 
 #### Project Structure
 
