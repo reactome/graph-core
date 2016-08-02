@@ -120,16 +120,16 @@ public abstract class ReactionLikeEvent extends Event {
     }
 
     public List<PhysicalEntity> getInput() {
-        List<PhysicalEntity> rtn = new ArrayList<>();
+        List<PhysicalEntity> rtn = null;
         if (input != null) {
+            rtn = new ArrayList<>();
             for (Input aux : input) {
                 for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getPhysicalEntity());
                 }
             }
-            return rtn;
         }
-        return null;
+        return rtn;
     }
 
     public void setInput(List<PhysicalEntity> inputs) {
@@ -163,16 +163,16 @@ public abstract class ReactionLikeEvent extends Event {
     }
 
     public List<PhysicalEntity> getOutput() {
-        List<PhysicalEntity> rtn = new ArrayList<>();
+        List<PhysicalEntity> rtn = null;
         if (output != null) {
+            rtn = new ArrayList<>();
             for (Output aux : output) {
                 for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getPhysicalEntity());
                 }
             }
-            return rtn;
         }
-        return null;
+        return rtn;
     }
 
     public void setOutput(List<PhysicalEntity> outputs) {

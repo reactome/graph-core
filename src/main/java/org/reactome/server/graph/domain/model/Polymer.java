@@ -60,8 +60,9 @@ public class Polymer extends PhysicalEntity {
     }
 
     public List<PhysicalEntity> getRepeatedUnit() {
-        List<PhysicalEntity> rtn = new ArrayList<>();
+        List<PhysicalEntity> rtn = null;
         if(repeatedUnit!=null){
+            rtn = new ArrayList<>();
             for (int i = 0; i < repeatedUnit.getStoichiometry(); i++) {
                 rtn.add(repeatedUnit.getPhysicalEntity());
             }

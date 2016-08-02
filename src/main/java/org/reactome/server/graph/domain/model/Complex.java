@@ -44,7 +44,6 @@ public class Complex extends PhysicalEntity {
 
     @JsonIgnore
     public List<StoichiometryObject> fetchHasComponent() {
-
         List<StoichiometryObject> objects = new ArrayList<>();
         if(hasComponent!=null) {
             for (HasComponent aux : hasComponent) {
@@ -57,8 +56,9 @@ public class Complex extends PhysicalEntity {
     }
 
     public List<PhysicalEntity> getHasComponent(){
-        List<PhysicalEntity> rtn = new ArrayList<>();
+        List<PhysicalEntity> rtn = null;
         if (this.hasComponent != null) {
+            rtn = new ArrayList<>();
             for (HasComponent component : this.hasComponent) {
                 for (int i = 0; i < component.getStoichiometry(); i++) {
                     rtn.add(component.getPhysicalEntity());

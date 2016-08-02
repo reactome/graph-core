@@ -8,8 +8,8 @@ import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.Polymer;
 
 /**
- * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
- * outputs.
+ * RepeatedUnit is the relationship entity of Polymer. It is needed to specify the stoichiometry (stoichiometry) of
+ * repeatedUnits.
  */
 @SuppressWarnings("unused")
 @RelationshipEntity(type = "repeatedUnit")
