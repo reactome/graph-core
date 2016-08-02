@@ -24,7 +24,7 @@ import java.util.Collection;
 @Component
 public class LazyFetchAspect {
 
-    public Boolean enableAOP = true;
+    private Boolean enableAOP = true;
 
     @Autowired
     private AdvancedDatabaseObjectService advancedDatabaseObjectService;
@@ -35,46 +35,38 @@ public class LazyFetchAspect {
             return pjp.proceed();
         }
 
-        /**
-         * Target is the whole object that originated this pointcut.
-         */
+         // Target is the whole object that originated this pointcut.
         DatabaseObject databaseObject = (DatabaseObject) pjp.getTarget();
 
-        /**
-         * Gathering information of the method we are invoking and it's being intercepted by AOP
-         */
+         // Gathering information of the method we are invoking and it's being intercepted by AOP
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
 
-        /**
-         * Get the relationship that is annotated in the attribute
-         */
+         // Get the relationship that is annotated in the attribute
         Relationship relationship = getRelationship(method.getName(), databaseObject.getClass());
         if (relationship != null) {
-            /**
-             * Check whether the object has been loaded.
-             * pjp.proceed() has the result of the invoked method.
-             */
+             // Check whether the object has been loaded.
+             // pjp.proceed() has the result of the invoked method.
             if (pjp.proceed() == null && !databaseObject.isLoaded) {
                 Long dbId = databaseObject.getDbId();
                 String setterMethod = method.getName().replaceFirst("get", "set");
                 Class<?> methodReturnClazz = method.getReturnType();
 
                 if (Collection.class.isAssignableFrom(methodReturnClazz)) {
-                    /** querying the graph and fill the collection **/
+                    // querying the graph and fill the collection
                     Collection<DatabaseObject> lazyLoadedObjectAsCollection = advancedDatabaseObjectService.findCollectionByRelationship(dbId, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObjectAsCollection != null) {
-                        /** invoke the setter in order to set the object in the target **/
+                        // invoke the setter in order to set the object in the target
                         databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObjectAsCollection);
                         return lazyLoadedObjectAsCollection;
                     }
                 }
 
                 if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
-                    /** querying the graph and fill the single object **/
+                    // querying the graph and fill the single object
                     DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(dbId, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObject != null) {
-                        /** invoke the setter in order to set the object in the target **/
+                        // invoke the setter in order to set the object in the target
                         databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObject);
                         return lazyLoadedObject;
                     }
@@ -108,9 +100,7 @@ public class LazyFetchAspect {
 
         String attribute = new String(c);
 
-        /**
-         * Look up for the given attribute in the class and after superclasses.
-         */
+         // Look up for the given attribute in the class and after superclasses.
         while (_clazz != null && !_clazz.getClass().equals(Object.class)) {
             for (Field field : _clazz.getDeclaredFields()) {
                 if (field.getAnnotation(Relationship.class) != null) {
@@ -120,7 +110,7 @@ public class LazyFetchAspect {
                 }
             }
 
-            /** Didn't find the field in the given class. Check the Superclass. **/
+            // Didn't find the field in the given class. Check the Superclass.
             _clazz = _clazz.getSuperclass();
         }
 
