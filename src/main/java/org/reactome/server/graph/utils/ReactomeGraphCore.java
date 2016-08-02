@@ -25,12 +25,13 @@ public class ReactomeGraphCore {
 
     private static ApplicationContext context;
 
-    public static void initialise(String host, String user, String password) {
+    public static void initialise(String host, String port, String user, String password, Class<? extends Neo4jConfig> clazz) {
         System.setProperty("neo4j.host", host);
+        System.setProperty("neo4j.port", port);
         System.setProperty("neo4j.user", user);
         System.setProperty("neo4j.password", password);
 
-        context = new AnnotationConfigApplicationContext(Neo4jConfig.class);
+        context = new AnnotationConfigApplicationContext(clazz);
     }
 
     public static <T> T getService(Class<T> clazz) {
