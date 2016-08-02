@@ -19,7 +19,7 @@ import java.util.*;
 @Component
 public class SortingAspect {
 
-    public Boolean enableSorting = true;
+    private Boolean enableSorting = true;
 
     @SuppressWarnings("unchecked")
     @Around("modelGetter()")
@@ -31,7 +31,7 @@ public class SortingAspect {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();
 
-        /** This is the value that is returned by the intercepted getter **/
+        // This is the value that is returned by the intercepted getter
         Object returnedValue = pjp.proceed();
 
         DatabaseObject target = (DatabaseObject) pjp.getTarget();
@@ -44,24 +44,19 @@ public class SortingAspect {
         if (returnedValue instanceof List) {
             returnedValueAsList = (List<? extends DatabaseObject>) returnedValue;
 
-            /** Do not apply lambda function here. ajc won't compile **/
-            Collections.sort(returnedValueAsList, new Comparator<DatabaseObject>() {
-                @Override
-                public int compare(DatabaseObject o1, DatabaseObject o2) {
-                    return o1.getDisplayName().compareTo(o2.getDisplayName());
-                }
-            });
+            // Do not apply lambda function here. ajc won't compile
+            Collections.sort(returnedValueAsList, (Comparator<DatabaseObject>) (o1, o2) -> o1.getDisplayName().compareTo(o2.getDisplayName()));
 
             String setterMethod = method.getName().replaceFirst("get", "set");
 
-            /** Set collection in object, then we do not sort every execution **/
+            // Set collection in object, then we do not sort every execution
             target.getClass().getMethod(setterMethod, method.getReturnType()).invoke(target, returnedValueAsList);
 
-            /** return the sorted list **/
+            // return the sorted list
             return returnedValueAsList;
 
         } else if (returnedValue instanceof Set) {
-            /**
+            /*
              * The set by default (DatabaseObject.compareTo) is sorting by dbId, in this case we want to sort by displayName.
              * Then take the Set, convert to a List, sort it and convert back to a LinkedHashSet.
              */
@@ -69,22 +64,17 @@ public class SortingAspect {
 
             returnedValueAsList = new ArrayList<>(returnedValueSet);
 
-            /** Do not apply lambda function here. ajc won't compile **/
-            Collections.sort(returnedValueAsList, new Comparator<DatabaseObject>() {
-                @Override
-                public int compare(DatabaseObject o1, DatabaseObject o2) {
-                    return o1.getDisplayName().compareTo(o2.getDisplayName());
-                }
-            });
+            // Do not apply lambda function here. ajc won't compile
+            Collections.sort(returnedValueAsList, (Comparator<DatabaseObject>) (o1, o2) -> o1.getDisplayName().compareTo(o2.getDisplayName()));
 
             String setterMethod = method.getName().replaceFirst("get", "set");
 
             Set<? extends DatabaseObject> returnedValueAsSet = new LinkedHashSet<>(returnedValueAsList);
 
-            /** Set collection in object, then we do not sort every execution **/
+            // Set collection in object, then we do not sort every execution
             target.getClass().getMethod(setterMethod, method.getReturnType()).invoke(target, returnedValueAsSet);
 
-            /** return the sorted list **/
+            // return the sorted list
             return returnedValueAsSet;
         }
         return returnedValue;
