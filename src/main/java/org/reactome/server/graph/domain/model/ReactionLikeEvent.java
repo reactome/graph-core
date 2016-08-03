@@ -134,7 +134,7 @@ public abstract class ReactionLikeEvent extends Event {
 
     public void setInput(List<PhysicalEntity> inputs) {
         if (inputs == null) return;
-        /** Using LinkedHashMap in order to keep the Collection Sorted previously by AOP **/
+        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
         Map<Long, Input> map = new LinkedHashMap<>();
         for (PhysicalEntity physicalEntity : inputs) {
             Input input = map.get(physicalEntity.getDbId());
@@ -177,7 +177,7 @@ public abstract class ReactionLikeEvent extends Event {
 
     public void setOutput(List<PhysicalEntity> outputs) {
         if (outputs == null) return;
-        /** Using LinkedHashMap in order to keep the Collection Sorted previously by AOP **/
+        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
         Map<Long, Output> map = new LinkedHashMap<>();
         for (PhysicalEntity physicalEntity : outputs) {
             Output output = map.get(physicalEntity.getDbId());
