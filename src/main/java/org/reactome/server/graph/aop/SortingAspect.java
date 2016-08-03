@@ -44,8 +44,13 @@ public class SortingAspect {
         if (returnedValue instanceof List) {
             returnedValueAsList = (List<? extends DatabaseObject>) returnedValue;
 
-            // Do not apply lambda function here. ajc won't compile
-            Collections.sort(returnedValueAsList, (Comparator<DatabaseObject>) (o1, o2) -> o1.getDisplayName().compareTo(o2.getDisplayName()));
+            //noinspection Convert2Lambda, Do not apply lambda function here. ajc won't compile
+            Collections.sort(returnedValueAsList, new Comparator<DatabaseObject>() {
+                @Override
+                public int compare(DatabaseObject o1, DatabaseObject o2) {
+                    return o1.getDisplayName().compareTo(o2.getDisplayName());
+                }
+            });
 
             String setterMethod = method.getName().replaceFirst("get", "set");
 
@@ -64,8 +69,13 @@ public class SortingAspect {
 
             returnedValueAsList = new ArrayList<>(returnedValueSet);
 
-            // Do not apply lambda function here. ajc won't compile
-            Collections.sort(returnedValueAsList, (Comparator<DatabaseObject>) (o1, o2) -> o1.getDisplayName().compareTo(o2.getDisplayName()));
+            //noinspection Convert2Lambda, Do not apply lambda function here. ajc won't compile
+            Collections.sort(returnedValueAsList, new Comparator<DatabaseObject>() {
+                @Override
+                public int compare(DatabaseObject o1, DatabaseObject o2) {
+                    return o1.getDisplayName().compareTo(o2.getDisplayName());
+                }
+            });
 
             String setterMethod = method.getName().replaceFirst("get", "set");
 
