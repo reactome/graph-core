@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.exception.CustomQueryException;
@@ -18,8 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by:
@@ -45,16 +45,30 @@ public class AdvancedServiceTest extends BaseTest {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     @Test
-    public void findEnhancedObjectByIdTest() {
+    public void findEnhancedPhysicalEntityByIdTest() {
 
-        logger.info("Started testing genericService.findAllByProperty");
+        logger.info("Started testing advancedDatabaseObjectService.findEnhancedPhysicalEntityByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        PhysicalEntity databaseObjectObserved = (PhysicalEntity) advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
+        PhysicalEntity peObserved = (PhysicalEntity) advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("R-HSA-113454", databaseObjectObserved.getPositivelyRegulates().get(0).getRegulatedEntity().getStId());
+        assertEquals("R-HSA-113454", peObserved.getPositivelyRegulates().get(0).getRegulatedEntity().getStId());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void findEnhancedEventByIdTest() {
+
+        logger.info("Started testing advancedDatabaseObjectService.findEnhancedPathwayByIdTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Event pathwayObserved = (Event) advancedDatabaseObjectService.findEnhancedObjectById(1368139L);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertFalse(pathwayObserved.getDisplayName() + " should have regulators", pathwayObserved.getRegulations().isEmpty());
         logger.info("Finished");
     }
 
@@ -63,7 +77,7 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void findLimitedObjectByIdTest() {
 
-        logger.info("Started testing genericService.findAllByProperty");
+        logger.info("Started testing advancedDatabaseObjectService.findAllByProperty");
         long start, time;
         start = System.currentTimeMillis();
         Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById("R-HSA-5205685", 10);
@@ -81,7 +95,7 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void findByPropertyTest() throws InvocationTargetException, IllegalAccessException {
 
-        logger.info("Started testing genericService.findByProperty");
+        logger.info("Started testing advancedDatabaseObjectService.findByProperty");
         long start, time;
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findByProperty(DatabaseObject.class, "stId", stId, 1);
@@ -100,7 +114,7 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void findAllByPropertyTest() {
 
-        logger.info("Started testing genericService.findAllByProperty");
+        logger.info("Started testing advancedDatabaseObjectService.findAllByProperty");
         long start, time;
         start = System.currentTimeMillis();
         Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findAllByProperty(DatabaseObject.class, "stId", stId, 1);
@@ -115,7 +129,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByDbIdWithRelationshipDirectionTest() throws InvocationTargetException, IllegalAccessException {
-        logger.info("Started testing genericService.findByDbIdWithRelationshipDirectionTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByDbIdWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findById(dbId, RelationshipDirection.UNDIRECTED);
@@ -133,7 +147,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByStIdWithRelationshipDirectionTest() throws InvocationTargetException, IllegalAccessException {
-        logger.info("Started testing genericService.findByStIdWithRelationshipDirectionTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByStIdWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findById(stId, RelationshipDirection.UNDIRECTED);
@@ -151,7 +165,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByDbIdWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing genericService.findByDbIdWithRelationshipDirectionAndRelationshipsTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByDbIdWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
         Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById(dbId, RelationshipDirection.OUTGOING, "hasEvent");
@@ -164,7 +178,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByStIdWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing genericService.findByStIdWithRelationshipDirectionAndRelationshipsTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByStIdWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
         Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById(stId, RelationshipDirection.OUTGOING, "hasEvent");
@@ -177,7 +191,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByDbIdsWithRelationshipDirectionTest() {
-        logger.info("Started testing genericService.findByDbIdsWithRelationshipDirectionTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByDbIdsWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
         Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByDbIds(Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING);
@@ -190,7 +204,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByStIdsWithRelationshipDirectionTest() {
-        logger.info("Started testing genericService.findByStIdsWithRelationshipDirectionTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByStIdsWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
         Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByStIds(Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING);
@@ -203,7 +217,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByDbIdsWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing genericService.findByDbIdsWithRelationshipDirectionAndRelationshipsTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByDbIdsWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
         Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByDbIds(Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
@@ -216,7 +230,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByStIdsWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing genericService.findByStIdsWithRelationshipDirectionAndRelationshipsTest");
+        logger.info("Started testing advancedDatabaseObjectService.findByStIdsWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
         Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByStIds(Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
