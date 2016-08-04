@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
@@ -71,6 +72,7 @@ public class Pathway extends Event {
 
     @ReactomeSchemaIgnore
     @Override
+    @JsonIgnore
     public String getExplanation() {
         return "A collection of related Events. These events can be ReactionLikeEvents or Pathways";
     }

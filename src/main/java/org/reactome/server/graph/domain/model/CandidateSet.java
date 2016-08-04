@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
@@ -28,6 +29,7 @@ public class CandidateSet extends EntitySet {
 
     @ReactomeSchemaIgnore
     @Override
+    @JsonIgnore
     public String getExplanation() {
         return "A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. " +
                 "Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. " +

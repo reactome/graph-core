@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
@@ -86,6 +87,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
     @ReactomeSchemaIgnore
     @Override
+    @JsonIgnore
     public String getExplanation() {
         return "A protein, RNA, or DNA molecule or fragment thereof in a specified cellular compartment and specific post-translational state. " +
                 "Must be linked to an external database reference, given as the value of referenceSequence. An EWAS typically corresponds to the entire protein or polynucleotide described in the external database. " +

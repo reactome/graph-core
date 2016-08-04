@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
@@ -51,6 +52,7 @@ public abstract class EntitySet extends PhysicalEntity{
 
     @ReactomeSchemaIgnore
     @Override
+    @JsonIgnore
     public String getExplanation() {
         return "Two or more entities grouped because of a shared molecular feature. " +
                 "The superclass for CandidateSet, DefinedSet, and OpenSet";

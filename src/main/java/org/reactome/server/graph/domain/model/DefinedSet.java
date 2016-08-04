@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 
@@ -14,6 +15,7 @@ public class DefinedSet extends EntitySet {
 
     @ReactomeSchemaIgnore
     @Override
+    @JsonIgnore
     public String getExplanation() {
         return "Two or more entities that are interchangeable in function";
     }

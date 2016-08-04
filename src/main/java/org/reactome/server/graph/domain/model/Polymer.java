@@ -97,6 +97,7 @@ public class Polymer extends PhysicalEntity {
 
     @ReactomeSchemaIgnore
     @Override
+    @JsonIgnore
     public String getExplanation() {
         return "Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. " +
                 "The repeated unit(s) is(are) identified in the repeatedUnit slot";
