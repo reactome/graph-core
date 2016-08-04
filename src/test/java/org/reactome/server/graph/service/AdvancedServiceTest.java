@@ -22,10 +22,8 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 /**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 05.06.16.
+ * @author Florian Korninger <florian.korninger@ebi.ac.uk>
+ * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 public class AdvancedServiceTest extends BaseTest {
 
