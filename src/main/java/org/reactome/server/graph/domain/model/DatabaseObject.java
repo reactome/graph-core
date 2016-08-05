@@ -168,7 +168,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     }
 
     @ReactomeSchemaIgnore
-    @JsonIgnore
     public String getClassName() {
         return getClass().getSimpleName();
     }
