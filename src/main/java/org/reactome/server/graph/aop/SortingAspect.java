@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -18,6 +20,8 @@ import java.util.*;
 @Aspect
 @Component
 public class SortingAspect {
+
+    protected static final Logger logger = LoggerFactory.getLogger("infoLogger");
 
     private Boolean enableSorting = true;
 
@@ -53,20 +57,24 @@ public class SortingAspect {
             });
 
             String setterMethod = method.getName().replaceFirst("get", "set");
+            try {
+                // Check if the setter exists. e.g getRegulation, which wraps Positive and Negative Regulation,
+                // does not have a setter, in this case we are going to return the list but won't set the target object.
+                Method setter = target.getClass().getMethod(setterMethod, method.getReturnType());
 
-            // Set collection in object, then we do not sort every execution
-            target.getClass().getMethod(setterMethod, method.getReturnType()).invoke(target, returnedValueAsList);
+                // Set collection in object, then we do not sort every execution.
+                setter.invoke(target, returnedValueAsList);
+            } catch (NoSuchMethodException e) {
+                logger.warn("Could not find method " + setterMethod + " in the class " + target.getClass().getName());
+            }
 
             // return the sorted list
             return returnedValueAsList;
 
         } else if (returnedValue instanceof Set) {
-            /*
-             * The set by default (DatabaseObject.compareTo) is sorting by dbId, in this case we want to sort by displayName.
-             * Then take the Set, convert to a List, sort it and convert back to a LinkedHashSet.
-             */
+            // The set by default (DatabaseObject.compareTo) is sorting by dbId, in this case we want to sort by displayName.
+            // Then take the Set, convert to a List, sort it and convert back to a LinkedHashSet.
             Set<? extends DatabaseObject> returnedValueSet = (Set<? extends DatabaseObject>) returnedValue;
-
             returnedValueAsList = new ArrayList<>(returnedValueSet);
 
             //noinspection Convert2Lambda, Do not apply lambda function here. ajc won't compile
@@ -77,12 +85,18 @@ public class SortingAspect {
                 }
             });
 
-            String setterMethod = method.getName().replaceFirst("get", "set");
-
             Set<? extends DatabaseObject> returnedValueAsSet = new LinkedHashSet<>(returnedValueAsList);
+            String setterMethod = method.getName().replaceFirst("get", "set");
+            try {
+                // Check if the setter exists. e.g getRegulation, which wraps Positive and Negative Regulation,
+                // does not have a setter, in this case we are going to return the list but won't set the target object.
+                Method setter = target.getClass().getMethod(setterMethod, method.getReturnType());
 
-            // Set collection in object, then we do not sort every execution
-            target.getClass().getMethod(setterMethod, method.getReturnType()).invoke(target, returnedValueAsSet);
+                // Set collection in object, then we do not sort every execution.
+                setter.invoke(target, returnedValueAsSet);
+            } catch (NoSuchMethodException e) {
+                logger.warn("Could not find method " + setterMethod + " in the class " + target.getClass().getName());
+            }
 
             // return the sorted list
             return returnedValueAsSet;
