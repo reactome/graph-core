@@ -1,10 +1,10 @@
-![Logo](https://cdn.evbuc.com/images/3621635/40070539972/1/logo.png)
+#![Logo](https://cdn.evbuc.com/images/3621635/40070539972/1/logo.png)
 
 # Reactome Graph Database
 
 ## What is the Reactome Graph project
  
-The Reactome Graph Project aims to model the [Reactome knowledgebase](http://www.reactome.org) into a interconnected graph.
+The Reactome Graph Project models the [Reactome knowledgebase](http://www.reactome.org) into a interconnected graph.
 
 At the cellular level, life is a network of molecular reactions. In Reactome, these processes are systematically described in molecular detail to generate an ordered network of molecular transformations (Fabregat et al. 2015). This amounts to millions of interconnected terms naturally forming a graph of biological knowledge. The Reactome Graph aims to provide an intuitive way for data retrieval as well as interpretation and analysis of pathway knowledge. 
 
