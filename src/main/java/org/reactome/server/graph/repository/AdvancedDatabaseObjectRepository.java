@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.reflect.FieldUtils.getAllFields;
 
@@ -308,12 +309,12 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.query(query, map);
     }
 
-    @SuppressWarnings("unchecked")
-    /**
-     * Executes the specified Cypher query with the given parameters against the underlying Neo4j database and returns the result manually marshalled using Reflection and 3rd Party Library based on the given custom result.
-     */
+    // ----------------------------------------- Custom Query Methods --------------------------------------------------
+
     public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
+
         Collection<T> instancesResult = new ArrayList<>();
         Result result = neo4jTemplate.query(query, parametersMap);
         Field[] fields = getAllFields(clazz);
@@ -333,17 +334,16 @@ public class AdvancedDatabaseObjectRepository {
         return instancesResult;
     }
 
-    @SuppressWarnings("unchecked")
-    /**
-     * Executes the specified Cypher query with the given parameters against the underlying Neo4j database and returns the result automatically marshalled using Reflection and 3rd Party Library based on the given custom result.
-     */
     public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
+
         Result result = neo4jTemplate.query(query, parametersMap);
         Field[] fields = getAllFields(clazz);
 
         try {
-            for (Map<String, Object> stringObjectMap : result) {
+            if (result.iterator().hasNext()) {
+                Map<String, Object> stringObjectMap = result.iterator().next();
                 T instance = clazz.newInstance();
                 for (Field field : fields) {
                     setFields(instance, field, stringObjectMap);
@@ -354,17 +354,58 @@ public class AdvancedDatabaseObjectRepository {
             throw new CustomQueryException(e);
         }
 
-        return null; // ??
+        return null;
     }
 
-    // ----------------------------------------- Custom Query Methods --------------------------------------------------
+    public String customQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
 
-    @SuppressWarnings("unchecked")
+        Result result = neo4jTemplate.query(query, parametersMap);
+
+        try {
+            if (result.iterator().hasNext()) {
+                Map<String, Object> stringObjectMap = result.iterator().next();
+                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), String.class);
+            }
+        } catch (Throwable e) {
+            throw new CustomQueryException(e);
+        }
+
+        return null;
+    }
+
+    public Collection<String> customQueryResults(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
+
+        // result is an ArrayList which each position has a Map<String, Object> and the map.key is the label we have
+        // present in the query MATCH ... RETURN n.dbId as identifier, then "identifier" and the Object is List
+        Result result = neo4jTemplate.query(query, parametersMap);
+
+        List<Object> list = new ArrayList<>();
+        try {
+            for (Map<String, Object> stringObjectMap : result) {
+                // for a list of String result the important bit are the values - collect the and add into List<Object>
+                list.addAll(stringObjectMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList()));
+            }
+
+            // convert list of Object into a list of strings.
+            return TypeConverterManager.convertToCollection(list, List.class, String.class);
+
+        } catch (Throwable e) {
+            throw new CustomQueryException(e);
+        }
+    }
+
+
+
     public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (clazz.isAssignableFrom(DatabaseObject.class))
+        if (!DatabaseObject.class.isAssignableFrom(clazz))
             throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
 
-        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
 
         try {
             return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, parametersMap);
@@ -373,12 +414,12 @@ public class AdvancedDatabaseObjectRepository {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (clazz.isAssignableFrom(DatabaseObject.class))
+        if (!DatabaseObject.class.isAssignableFrom(clazz))
             throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
 
-        if (parametersMap == null) parametersMap = Collections.EMPTY_MAP;
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
 
         try {
             return neo4jTemplate.queryForObject(clazz, query, parametersMap);
@@ -416,7 +457,6 @@ public class AdvancedDatabaseObjectRepository {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     /**
      * Method that uses Java Reflection in order to set the attributes of a specific instance.
      * The attribute is handled in different ways depends on its type.
@@ -437,6 +477,7 @@ public class AdvancedDatabaseObjectRepository {
                 /** The returned results are normally stored in an Array, then we need to convert in case the attribute is a Collection **/
                 ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
                 Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
+                //noinspection unchecked
                 field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
             } else {
                 /** Other fields, no problem with type conversion **/
