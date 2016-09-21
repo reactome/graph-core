@@ -17,6 +17,7 @@ public abstract class Regulation extends DatabaseObject {
 
     @ReactomeProperty
     private String releaseDate;
+
     @ReactomeProperty
     private List<String> name;
 
@@ -31,6 +32,9 @@ public abstract class Regulation extends DatabaseObject {
 
     @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
+
+    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    private GO_BiologicalProcess goBiologicalProcess;
 
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
@@ -105,6 +109,10 @@ public abstract class Regulation extends DatabaseObject {
 
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
+    }
+
+    public GO_BiologicalProcess getGoBiologicalProcess() {
+        return goBiologicalProcess;
     }
 
     public List<Publication> getLiteratureReference() {
