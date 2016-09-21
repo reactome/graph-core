@@ -22,12 +22,12 @@ public class DetailsRepository {
     private Neo4jOperations neo4jTemplate;
 
     public DatabaseObject detailsPageQuery(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})-[r]->(m)" +
+        String query = "MATCH (n:DatabaseObject{stId:{stId}})-[r]->(m)" +
                 "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
                 "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
-                "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
+                "OPTIONAL MATCH (m:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
                 "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
-                "Return n,r,m,l,e,t,z,u,i,o,p";
+                "RETURN n,r,m,l,e,t,z,u,i,o,p";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         Result result = neo4jTemplate.query(query, map);
@@ -37,12 +37,12 @@ public class DetailsRepository {
     }
 
     public DatabaseObject detailsPageQuery(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m)" +
+        String query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r]->(m)" +
                 "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
                 "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
-                "OPTIONAL MATCH (z:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
+                "OPTIONAL MATCH (m:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
                 "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
-                "Return n,r,m,l,e,t,z,u,i,o,p";
+                "RETURN n,r,m,l,e,t,z,u,i,o,p";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         Result result = neo4jTemplate.query(query, map);

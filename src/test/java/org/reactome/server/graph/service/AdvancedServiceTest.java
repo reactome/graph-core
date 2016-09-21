@@ -6,6 +6,7 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.CustomQueryResult;
@@ -83,7 +84,6 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         databaseObjectObserved.getHasEvent();
-//        assertTrue();
         logger.info("Finished");
     }
 
@@ -276,12 +276,12 @@ public class AdvancedServiceTest extends BaseTest {
         Pathway pathway = (Pathway) advancedDatabaseObjectService.customQueryForDatabaseObject(Pathway.class, query, parametersMap);
         assertNotNull(pathway);
 
-        /** by default, lazy loading is disabled in our tests, enable here for a particular test **/
+        // by default, lazy loading is disabled in our tests, enable here for a particular test
         lazyFetchAspect.setEnableAOP(true);
         assertNotNull(pathway.getHasEvent());
         assertEquals(4, pathway.getHasEvent().size());
 
-        /** disable it for further tests in this particular test class **/
+        // disable it for further tests in this particular test class
         lazyFetchAspect.setEnableAOP(false);
     }
 
@@ -292,10 +292,25 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (p:Pathway{dbId:{dbId}})-[r:hasEvent]->(m) RETURN p,r,m ORDER BY p.dbId";
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("dbId", 1640170);
-        /** In this test case, the relationships are mapped in the object Pathway inside the Collection **/
+        // In this test case, the relationships are mapped in the object Pathway inside the Collection
         Collection<Pathway> pathways = advancedDatabaseObjectService.customQueryForDatabaseObjects(Pathway.class, query, parametersMap);
         assertNotNull(pathways);
         assertEquals(5, pathways.size());
         assertEquals(4, pathways.iterator().next().getHasEvent().size());
+    }
+
+    @Test
+    public void customQueryTest() throws CustomQueryException {
+        String query = "MATCH (n:ReferenceEntity) RETURN DISTINCT n.identifier AS identifier";
+        Collection<String> accessions = advancedDatabaseObjectService.customQueryResults(query, null);
+        assertNotNull(accessions);
+        assertTrue(accessions.size() >= 200000);
+    }
+
+    @Test
+    public void customSimpleQueryTest() throws CustomQueryException {
+        String query = "MATCH (n:ReferenceEntity) RETURN COUNT(n.identifier)";
+        String pathways = advancedDatabaseObjectService.customQueryResult(query, null);
+        assertNotNull(pathways);
     }
 }
