@@ -8,19 +8,9 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 public class ReferenceMolecule extends ReferenceEntity {
 
     @ReactomeProperty
-    private String atomicConnectivity;
-    @ReactomeProperty
     private String formula;
 
     public ReferenceMolecule() {}
-
-    public String getAtomicConnectivity() {
-        return atomicConnectivity;
-    }
-
-    public void setAtomicConnectivity(String atomicConnectivity) {
-        this.atomicConnectivity = atomicConnectivity;
-    }
 
     public String getFormula() {
         return formula;
