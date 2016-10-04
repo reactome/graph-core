@@ -163,7 +163,14 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     @Override
     public int compareTo(@Nonnull PathwayBrowserNode node) {
-        return this.stId.compareTo(node.stId);
+        // Sorting PathwayBrowserNode by species (if present) first, then sort by name.
+        String thisSpecies = this.species == null ? "" : this.species;
+        String nodeSpecies = node.getSpecies() == null ? "" : node.getSpecies();
+        int speciesCompare = thisSpecies.compareTo(nodeSpecies);
+        if (speciesCompare != 0) {
+            return speciesCompare;
+        } else {
+            return this.name.compareTo(node.getName());
+        }
     }
-
 }
