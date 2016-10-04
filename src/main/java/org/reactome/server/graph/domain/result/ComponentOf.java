@@ -2,7 +2,7 @@ package org.reactome.server.graph.domain.result;
 
 import org.springframework.data.neo4j.annotation.QueryResult;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by:
@@ -51,5 +51,24 @@ public class ComponentOf {
 
     public void setSchemaClasses(List<String> schemaClasses) {
         this.schemaClasses = schemaClasses;
+    }
+
+    public void sortByName(){
+        List<String> sortedList = new ArrayList<>(names.size());
+        for (int i = 0; i < names.size(); i++) {
+            String sortingLine = names.get(i).concat("###").concat(stIds.get(i)).concat("###").concat(schemaClasses.get(i));
+            sortedList.add(sortingLine);
+        }
+
+        Collections.sort(sortedList, String::compareToIgnoreCase);
+        stIds.clear();
+        schemaClasses.clear();
+        names.clear();
+        for (String sortedLine : sortedList) {
+            String[] items = sortedLine.split("###");
+            names.add(items[0]);
+            stIds.add(items[1]);
+            schemaClasses.add(items[2]);
+        }
     }
 }

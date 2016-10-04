@@ -26,8 +26,9 @@ public class ContentDetails {
         return componentOf;
     }
 
-    public void setComponentOf(Collection<ComponentOf> componentOf) {
-        this.componentOf = componentOf;
+    public void setComponentOf(Collection<ComponentOf> componentOfs) {
+        componentOfs.forEach(ComponentOf::sortByName);
+        this.componentOf = componentOfs;
     }
 
     public DatabaseObject getDatabaseObject() {
