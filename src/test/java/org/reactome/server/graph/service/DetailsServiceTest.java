@@ -36,10 +36,10 @@ public class DetailsServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 
-        assertEquals(4, contentDetails.getNodes().size());
+        assertTrue(contentDetails.getNodes().size() >= 5);
         assertEquals("PTEN [cytosol]", contentDetails.getDatabaseObject().getDisplayName());
         assertTrue(contentDetails.getOtherFormsOfThisMolecule().size() >= 27);
-        assertEquals(1, contentDetails.getComponentOf().size());
+        assertTrue(contentDetails.getComponentOf().size() >= 1);
         logger.info("Finished");
     }
 

@@ -50,7 +50,7 @@ public class GeneralServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(60, schemaClassCounts.size());
+        assertTrue(schemaClassCounts.size() >= 60);
         logger.info("Finished");
     }
 
