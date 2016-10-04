@@ -6,8 +6,6 @@ import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +18,6 @@ import java.util.Set;
 @Service
 @SuppressWarnings("WeakerAccess")
 public class DetailsService {
-
-    private static final Logger logger = LoggerFactory.getLogger(DetailsService.class);
 
     @Autowired
     private DetailsRepository detailsRepository;
