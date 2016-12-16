@@ -261,8 +261,8 @@ public class AdvancedDatabaseObjectRepository {
         return databaseObjects;
     }
 
-    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
-        Result result = queryRelationshipTypesByDbId(dbId, direction, relationships);
+    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
+        Result result = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
 
         Collection<DatabaseObject> databaseObjects = new ArrayList<>();
         if (collectionClass.getName().equals(Set.class.getName())) {
@@ -275,8 +275,8 @@ public class AdvancedDatabaseObjectRepository {
         return databaseObjects.isEmpty() ? null : databaseObjects;
     }
 
-    public DatabaseObject findByRelationship(Long dbId, RelationshipDirection direction, String... relationships) {
-        Result result = queryRelationshipTypesByDbId(dbId, direction, relationships);
+    public DatabaseObject findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+        Result result = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
 
         if (result != null && result.iterator().hasNext())
             return (DatabaseObject) result.iterator().next().get("m");
@@ -289,20 +289,19 @@ public class AdvancedDatabaseObjectRepository {
      * This method queries the Graph and returns it as a Result object that will be parsed in the findByRelationship
      * and findCollectionByRelationship accordingly.
      */
-    private Result queryRelationshipTypesByDbId(Long dbId, RelationshipDirection direction, String... relationships) {
+    private Result queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) RETURN m";
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") RETURN m";
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{dbId:{dbId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN m";
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m";
                 break;
             default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) RETURN m";
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m";
                 break;
         }
-
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
 
