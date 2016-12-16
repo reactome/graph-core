@@ -31,6 +31,7 @@ public interface PersonRepository extends GraphRepository<Person>{
     Person findPersonByDbId(Long dbId);
 
     @Query("Match (n:Person{eMailAddress:{0}}) Return n")
+    @Deprecated
     Person findPersonByEmail(String email);
 
     @Query("MATCH (n:Person{orcidId:{0}})-[:author]-(m:Publication) Return m")
@@ -49,5 +50,6 @@ public interface PersonRepository extends GraphRepository<Person>{
     Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId);
 
     @Query("Match (n:Person{eMailAddress:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
+    @Deprecated
     Collection<Pathway> getAuthoredPathwaysByEmail(String email);
 }
