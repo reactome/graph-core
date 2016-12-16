@@ -4,6 +4,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.NegativeRegulation;
+import org.reactome.server.graph.domain.model.PositiveRegulation;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,4 +59,20 @@ public class LazyLoadingTest extends BaseTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void lazyLoadingPositiveAndNegativeRegulatorsTest() {
+        logger.info("Testing Lazy Loading Positive And Negative Regulators");
+
+        Event p = (Event) dbs.findById("R-HSA-71670");
+
+        for (DatabaseObject positiveRegulation : p.getPositivelyRegulatedBy()) {
+            assumeTrue(positiveRegulation instanceof PositiveRegulation);
+        }
+
+        for (DatabaseObject positiveRegulation : p.getNegativelyRegulatedBy()) {
+            assumeTrue(positiveRegulation instanceof NegativeRegulation);
+        }
+
+        logger.info("Finished");
+    }
 }
