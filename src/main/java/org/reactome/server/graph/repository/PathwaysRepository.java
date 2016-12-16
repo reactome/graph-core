@@ -97,4 +97,11 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "WITH r, HEAD(COLLECT(p)) as m " +
             "RETURN Distinct(m.dbId) as dbId, m.stId as stId, m.displayName as displayName, labels(m) as labels")
     Collection<SimpleDatabaseObject> getPathwaysWithDiagramForAllFormsOfByDbId(Long dbId, Long speciesId);
+
+    @Query("MATCH (rd:ReferenceDatabase)<--(n{identifier:{0}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+            "WITH DISTINCT pe " +
+            "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{dbId:{1}}) " +
+            "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
+    Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Long speciesId);
+
 }
