@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 /**
@@ -65,12 +66,14 @@ public class LazyLoadingTest extends BaseTest {
 
         Event p = (Event) dbs.findById("R-HSA-71670");
 
+        assumeFalse(p.getPositivelyRegulatedBy().isEmpty());
         for (DatabaseObject positiveRegulation : p.getPositivelyRegulatedBy()) {
             assumeTrue(positiveRegulation instanceof PositiveRegulation);
         }
 
-        for (DatabaseObject positiveRegulation : p.getNegativelyRegulatedBy()) {
-            assumeTrue(positiveRegulation instanceof NegativeRegulation);
+        assumeFalse(p.getNegativelyRegulatedBy().isEmpty());
+        for (DatabaseObject negativeRegulation : p.getNegativelyRegulatedBy()) {
+            assumeTrue(negativeRegulation instanceof NegativeRegulation);
         }
 
         logger.info("Finished");
