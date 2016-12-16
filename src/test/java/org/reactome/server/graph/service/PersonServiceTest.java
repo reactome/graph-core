@@ -81,19 +81,6 @@ public class PersonServiceTest extends BaseTest {
     }
 
     @Test
-    public void findPersonByEmailTest() {
-        logger.info("Started testing personService.findPersonByEmailTest");
-        long start, time;
-        start = System.currentTimeMillis();
-        Person person = personService.findPerson("sjupe@ebi.ac.uk");
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals("Jupe, S", person.getDisplayName());
-        logger.info("Finished");
-    }
-
-    @Test
     public void getPublicationsOfPersonByOrcidIdTest() {
         logger.info("Started testing personService.getPublicationsOfPersonByOrcidId");
         long start, time;
@@ -119,18 +106,18 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    @Test
-    public void getPublicationsOfPersonByEmailTest() {
-        logger.info("Started testing personService.getPublicationsOfPersonByEmailTest");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<Publication> publications = personService.getPublicationsOfPerson("sjupe@ebi.ac.uk");
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals(3, publications.size());
-        logger.info("Finished");
-    }
+//    @Test
+//    public void getPublicationsOfPersonByEmailTest() {
+//        logger.info("Started testing personService.getPublicationsOfPersonByEmailTest");
+//        long start, time;
+//        start = System.currentTimeMillis();
+//        Collection<Publication> publications = personService.getPublicationsOfPerson("sjupe@ebi.ac.uk");
+//        time = System.currentTimeMillis() - start;
+//        logger.info("GraphDb execution time: " + time + "ms");
+//
+//        assertTrue(publications.size() > 0);
+//        logger.info("Finished");
+//    }
 
     @Test
     public void getAuthoredPathwaysByOrcidIdTest() {
@@ -151,19 +138,6 @@ public class PersonServiceTest extends BaseTest {
         long start, time;
         start = System.currentTimeMillis();
         Collection<Pathway> pathways = personService.getAuthoredPathways(391309L);
-        time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertTrue(pathways.size() >= 65);
-        logger.info("Finished");
-    }
-
-    @Test
-    public void getAuthoredPathwaysByEmailTest() {
-        logger.info("Started testing personService.getAuthoredPathwaysByEmailTest");
-        long start, time;
-        start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getAuthoredPathways("sjupe@ebi.ac.uk");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -31,11 +30,11 @@ public class AdvancedLinkageServiceTest extends BaseTest {
         logger.info("Started testing genericService.getComponentsOfTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf("R-HSA-199426");
+        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf("R-HSA-199420");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(1, componentOfs.size());
+        assertTrue(componentOfs.size() > 0);
         logger.info("Finished");
     }
 

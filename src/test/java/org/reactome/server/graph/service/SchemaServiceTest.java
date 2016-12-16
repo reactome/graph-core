@@ -79,7 +79,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(281, diseases.size());
+        assertTrue("There should be 281 diseases or more", diseases.size() > 281);
         logger.info("Finished");
     }
 
@@ -283,7 +283,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(281, diseases.size());
+        assertTrue("There should be 281 diseases or more", diseases.size() >= 281);
         logger.info("Finished");
     }
 
@@ -311,7 +311,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(281, diseases.size());
+        assertTrue(diseases.size() >= 281);
         logger.info("Finished");
     }
 

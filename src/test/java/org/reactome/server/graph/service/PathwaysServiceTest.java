@@ -61,7 +61,7 @@ public class PathwaysServiceTest {
 
     @Test
     public void getContainedEventsByStIdTest(){
-        logger.info("Started testing eventsService.getContainedEventsByStIdTest");
+        logger.info("Started testing pathwaysService.getContainedEventsByStIdTest");
         long start = System.currentTimeMillis();
         Collection<Event> events = pathwaysService.getContainedEvents("R-HSA-5673001");
         long time = System.currentTimeMillis() - start;
@@ -72,7 +72,7 @@ public class PathwaysServiceTest {
 
     @Test
     public void getContainedEventsByDbIdTest(){
-        logger.info("Started testing eventsService.getContainedEventsByDbIdTest");
+        logger.info("Started testing pathwaysService.getContainedEventsByDbIdTest");
         long start = System.currentTimeMillis();
         Collection<Event> events = pathwaysService.getContainedEvents(5673001L);
         long time = System.currentTimeMillis() - start;
@@ -123,5 +123,16 @@ public class PathwaysServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue("There should be 5 or more pathways with diagram for all forms of PTEN (R-HSA-199420) in human", pathways.size() >= 6);
+    }
+
+    @Test
+    public void getLowerLevelPathwaysForIdentifierTest(){
+        logger.info("Started testing pathwaysService.getLowerLevelPathwaysForIdentifier");
+        long start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getLowerLevelPathwaysForIdentifier("PTEN", 48887L);
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be 9 or more pathways containing PTEN in human", pathways.size() >= 9);
     }
 }
