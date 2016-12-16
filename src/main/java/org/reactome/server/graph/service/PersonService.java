@@ -1,6 +1,5 @@
 package org.reactome.server.graph.service;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
@@ -44,9 +43,7 @@ public class PersonService {
 
     public Person findPerson(Object identifier) {
         String id = identifier.toString();
-        if (DatabaseObjectUtils.isEmail(id)){
-            return personRepository.findPersonByEmail(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
+        if (DatabaseObjectUtils.isDbId(id)) {
             return personRepository.findPersonByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
             return personRepository.findPersonByOrcidId(id);
@@ -55,6 +52,7 @@ public class PersonService {
         }
     }
 
+    @Deprecated
     public Collection<Publication> getPublicationsOfPerson(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isEmail(id)){
@@ -70,9 +68,7 @@ public class PersonService {
 
     public Collection<Pathway> getAuthoredPathways(Object identifier) {
         String id = identifier.toString();
-        if (DatabaseObjectUtils.isEmail(id)){
-            return personRepository.getAuthoredPathwaysByEmail(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
+        if (DatabaseObjectUtils.isDbId(id)) {
             return personRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
             return personRepository.getAuthoredPathwaysByOrcidId(id);
