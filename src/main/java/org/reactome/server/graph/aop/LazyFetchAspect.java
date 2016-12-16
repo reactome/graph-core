@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
 /**
@@ -53,8 +54,11 @@ public class LazyFetchAspect {
                 Class<?> methodReturnClazz = method.getReturnType();
 
                 if (Collection.class.isAssignableFrom(methodReturnClazz)) {
+                    ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
+                    Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
+                    String clazz = type.getSimpleName();
                     // querying the graph and fill the collection
-                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = advancedDatabaseObjectService.findCollectionByRelationship(dbId, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObjectAsCollection != null) {
                         // invoke the setter in order to set the object in the target
                         databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObjectAsCollection);
@@ -63,8 +67,9 @@ public class LazyFetchAspect {
                 }
 
                 if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
+                    String clazz = methodReturnClazz.getSimpleName();
                     // querying the graph and fill the single object
-                    DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(dbId, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(dbId, clazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObject != null) {
                         // invoke the setter in order to set the object in the target
                         databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObject);

@@ -94,12 +94,12 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
     }
 
-    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, collectionClazz, direction, relationships);
+    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
+        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, relationships);
     }
 
-    public DatabaseObject findByRelationship(Long dbId, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByRelationship(dbId, direction, relationships);
+    public DatabaseObject findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+        return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, relationships);
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
