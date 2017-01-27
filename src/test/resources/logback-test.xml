@@ -22,7 +22,11 @@
         </encoder>
     </appender>
 
+    <logger name="org.neo4j" level="ERROR" /> <!-- Remove neo4j info logging. It prints user credentials -->
+    <logger name="org.springframework" level="ERROR" />
+
     <logger name="deng" level="DEBUG"/>
+
 
     <logger name="testLogger" level="INFO" additivity="false">
         <appender-ref ref="TEST"/>
