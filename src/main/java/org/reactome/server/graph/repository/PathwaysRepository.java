@@ -98,10 +98,48 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN Distinct(m.dbId) as dbId, m.stId as stId, m.displayName as displayName, labels(m) as labels")
     Collection<SimpleDatabaseObject> getPathwaysWithDiagramForAllFormsOfByDbId(Long dbId, Long speciesId);
 
-    @Query("MATCH (rd:ReferenceDatabase)<--(n{identifier:{0}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+
+    @Query(" MATCH (rd:ReferenceDatabase)<--(n{identifier:{0}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WITH DISTINCT pe " +
             "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{dbId:{1}}) " +
             "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
     Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Long speciesId);
 
+
+    @Query(" MATCH (rd:ReferenceDatabase)<--(n{identifier:{0}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+            "WITH DISTINCT pe " +
+            "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]-(p:Pathway) " +
+            "WHERE p.stId IN {1} " +
+            "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
+    Collection<SimpleDatabaseObject> getPathwaysForIdentifierByStId(String identifier, Collection<String> pathways);
+
+    @Query(" MATCH (rd:ReferenceDatabase)<--(n{identifier:{0}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+            "WITH DISTINCT pe " +
+            "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]-(p:Pathway) " +
+            "WHERE p.dbId IN {1} " +
+            "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
+    Collection<SimpleDatabaseObject> getPathwaysForIdentifierByDbId(String identifier, Collection<Long> pathways);
+
+
+    @Query(" MATCH (t:Pathway{stId:{0}}) " +
+            "OPTIONAL MATCH path=(t)-[:hasEvent*]->(p:Pathway{hasDiagram:False}) " +
+            "WHERE ALL(n IN TAIL(NODES(path)) WHERE n.hasDiagram = False) " +
+            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps "+
+            "UNWIND ps AS p " +
+            "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT rle " +
+            "MATCH (rd:ReferenceDatabase)<--(n{identifier:{1}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]-(rle) " +
+            "RETURN DISTINCT(pe.dbId) as dbId, pe.stId as stId, pe.displayName as displayName, labels(pe) as labels")
+    Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifierByStId(String stId, String identifier);
+
+    @Query(" MATCH (t:Pathway{dbId:{0}}) " +
+            "OPTIONAL MATCH path=(t)-[:hasEvent*]->(p:Pathway{hasDiagram:False}) " +
+            "WHERE ALL(n IN TAIL(NODES(path)) WHERE n.hasDiagram = False) " +
+            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps "+
+            "UNWIND ps AS p " +
+            "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT rle " +
+            "MATCH (rd:ReferenceDatabase)<--(n{identifier:{1}})<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]-(rle) " +
+            "RETURN DISTINCT(pe.dbId) as dbId, pe.stId as stId, pe.displayName as displayName, labels(pe) as labels")
+    Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifierByDbId(Long dbId, String identifier);
 }

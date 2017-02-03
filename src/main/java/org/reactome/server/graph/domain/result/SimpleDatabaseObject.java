@@ -53,4 +53,19 @@ public class SimpleDatabaseObject {
     public void setLabels(Collection<String> labels) {
         this.schemaClass = DatabaseObjectUtils.getSchemaClass(labels);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SimpleDatabaseObject that = (SimpleDatabaseObject) o;
+
+        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return dbId != null ? dbId.hashCode() : 0;
+    }
 }

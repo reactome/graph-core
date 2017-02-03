@@ -7,7 +7,9 @@ import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
@@ -71,5 +73,48 @@ public class PathwaysService {
 
     public Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Long speciesId) {
         return pathwaysRepository.getLowerLevelPathwaysForIdentifier(identifier, speciesId);
+    }
+
+    public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, String... pathways) {
+        return getPathwaysForIdentifier(identifier, Arrays.asList(pathways));
+    }
+
+    public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, Collection<String> pathways) {
+        //The user might submit a list where dbIds and stIds are mixed -> we create two lists
+        Collection<String> stIds = new HashSet<>();
+        Collection<Long> dbIds = new HashSet<>();
+        for (String pathway : pathways) {
+            String id = DatabaseObjectUtils.getIdentifier(pathway);
+            if (DatabaseObjectUtils.isStId(id)) {
+                stIds.add(id);
+            } else if (DatabaseObjectUtils.isDbId(id)) {
+                dbIds.add(Long.valueOf(id));
+            }
+        }
+
+        Collection<SimpleDatabaseObject> rtn = new HashSet<>();
+        //Aggregating the results in a set (if any). Order isn't taken into account for the time being
+        Collection<SimpleDatabaseObject> aux;
+        if (!stIds.isEmpty()) {
+            aux = pathwaysRepository.getPathwaysForIdentifierByStId(identifier, stIds);
+            if (aux != null && !aux.isEmpty()) rtn.addAll(aux);
+        }
+        if (!dbIds.isEmpty()) {
+            aux = pathwaysRepository.getPathwaysForIdentifierByDbId(identifier, dbIds);
+            if (aux != null && !aux.isEmpty()) rtn.addAll(aux);
+        }
+
+        if (rtn.isEmpty()) return null;
+        return rtn;
+    }
+
+    public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifier(String pathway, String identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(pathway);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return pathwaysRepository.getDiagramEntitiesForIdentifierByStId(pathway, identifier);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return pathwaysRepository.getDiagramEntitiesForIdentifierByDbId(Long.parseLong(pathway), identifier);
+        }
+        return null;
     }
 }

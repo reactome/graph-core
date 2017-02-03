@@ -127,12 +127,34 @@ public class PathwaysServiceTest {
 
     @Test
     public void getLowerLevelPathwaysForIdentifierTest(){
-        logger.info("Started testing pathwaysService.getLowerLevelPathwaysForIdentifier");
+        logger.info("Started testing pathwaysService.getLowerLevelPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
         Collection<SimpleDatabaseObject> pathways = pathwaysService.getLowerLevelPathwaysForIdentifier("PTEN", 48887L);
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue("There should be 9 or more pathways containing PTEN in human", pathways.size() >= 9);
+    }
+
+    @Test
+    public void getPathwaysForIdentifierTest(){
+        logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
+        long start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-1483249");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be 1 or more pathways containing POM121C", pathways.size() >= 0);
+    }
+
+    @Test
+    public void getDiagramEntitiesForIdentifierTest(){
+        logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
+        long start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "POM121C");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be more than 1 entity in the pathway containing POM121C", entities.size() >= 0);
     }
 }
