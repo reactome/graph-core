@@ -20,7 +20,7 @@ public interface SpeciesRepository extends GraphRepository<Species> {
     List<Species> getAllSpecies();
 
     @Query("MATCH (n:Species{taxId:{0}}) RETURN n")
-    Species getSpeciesByTaxId(Long taxId);
+    Species getSpeciesByTaxId(String taxId);
 
     @Query("MATCH (n:Species) WHERE {0} IN n.name RETURN n")
     Species getSpeciesByName(String name);

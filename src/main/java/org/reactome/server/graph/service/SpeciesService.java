@@ -37,7 +37,7 @@ public class SpeciesService {
         return speciesRepository.getAllSpecies();
     }
 
-    public Species getSpeciesByTaxId(Long taxId) {
+    public Species getSpeciesByTaxId(String taxId) {
         return speciesRepository.getSpeciesByTaxId(taxId);
     }
 
