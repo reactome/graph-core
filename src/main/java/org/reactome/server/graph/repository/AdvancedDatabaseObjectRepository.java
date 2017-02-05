@@ -264,13 +264,21 @@ public class AdvancedDatabaseObjectRepository {
     public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
         Result result = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
 
-        Collection<DatabaseObject> databaseObjects = new ArrayList<>();
+        Collection<DatabaseObject> databaseObjects;
         if (collectionClass.getName().equals(Set.class.getName())) {
             databaseObjects = new HashSet<>();
-        }
-
-        for (Map<String, Object> stringObjectMap : result) {
-            databaseObjects.add((DatabaseObject) stringObjectMap.get("m"));
+            //No need to check stoichiometry
+            for (Map<String, Object> stringObjectMap : result) {
+                databaseObjects.add((DatabaseObject) stringObjectMap.get("m"));
+            }
+        } else {
+            databaseObjects = new ArrayList<>();
+            //Here stoichiometry has to be taken into account
+            for (Map<String, Object> stringObjectMap : result) {
+                for (int i = 0; i < (int) stringObjectMap.get("n"); ++i) {
+                    databaseObjects.add((DatabaseObject) stringObjectMap.get("m"));
+                }
+            }
         }
         return databaseObjects.isEmpty() ? null : databaseObjects;
     }
@@ -293,13 +301,13 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") RETURN m";
+                query = "MATCH (:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") RETURN m, r.stoichiometry AS n";
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{dbId:{dbId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m";
+                query = "MATCH (:DatabaseObject{dbId:{dbId}})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m, r.stoichiometry AS n";
                 break;
             default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m";
+                query = "MATCH (:DatabaseObject{dbId:{dbId}})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m, r.stoichiometry AS n";
                 break;
         }
         Map<String, Object> map = new HashMap<>();
