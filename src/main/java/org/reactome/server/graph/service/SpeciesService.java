@@ -26,7 +26,7 @@ public class SpeciesService {
                 break;
             }
         }
-        if(humanPos!=-1){
+        if (humanPos != -1) {
             Species human = species.remove(humanPos);
             species.add(0, human);
         }
@@ -35,5 +35,13 @@ public class SpeciesService {
 
     public List<Species> getAllSpecies() {
         return speciesRepository.getAllSpecies();
+    }
+
+    public Species getSpeciesByTaxId(Long taxId) {
+        return speciesRepository.getSpeciesByTaxId(taxId);
+    }
+
+    public Species getSpeciesByName(String name) {
+        return speciesRepository.getSpeciesByName(name);
     }
 }

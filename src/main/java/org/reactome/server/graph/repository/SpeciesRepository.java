@@ -18,4 +18,10 @@ public interface SpeciesRepository extends GraphRepository<Species> {
 
     @Query("MATCH (n:Species) RETURN n ORDER BY n.displayName")
     List<Species> getAllSpecies();
+
+    @Query("MATCH (n:Species{taxId:{0}}) RETURN n")
+    Species getSpeciesByTaxId(Long taxId);
+
+    @Query("MATCH (n:Species) WHERE {0} IN n.name RETURN n")
+    Species getSpeciesByName(String name);
 }
