@@ -2,11 +2,7 @@ package org.reactome.server.graph.service;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.model.Pathway;
-import org.reactome.server.graph.domain.model.PhysicalEntity;
-import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
+import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.CustomQueryResult;
@@ -312,5 +308,18 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (n:ReferenceEntity) RETURN COUNT(n.identifier)";
         String pathways = advancedDatabaseObjectService.customQueryResult(query, null);
         assertNotNull(pathways);
+    }
+
+    @Test
+    public void activeUnitContentTest() {
+        logger.info("Started testing advancedDatabaseObjectService.blah");
+        long start, time;
+        start = System.currentTimeMillis();
+        CatalystActivity ca = advancedDatabaseObjectService.findById(5643997, 1000);
+        assertTrue("There should be only one active unit", ca.getActiveUnit().size() == 1);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        logger.info("Finished");
     }
 }
