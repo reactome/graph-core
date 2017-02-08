@@ -36,13 +36,13 @@ public abstract class ReactionLikeEvent extends Event {
     private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "input", direction = Relationship.OUTGOING)
-    private List<Input> input;
+    private Set<Input> input;
 
     @Relationship(type = "normalReaction", direction = Relationship.OUTGOING)
     private List<ReactionLikeEvent> normalReaction;
 
     @Relationship(type = "output", direction = Relationship.OUTGOING)
-    private List<Output> output;
+    private Set<Output> output;
 
     @Relationship(type = "requiredInputComponent", direction = Relationship.OUTGOING)
     private Set<PhysicalEntity> requiredInputComponent;
@@ -147,7 +147,7 @@ public abstract class ReactionLikeEvent extends Event {
                 input.setStoichiometry(input.getStoichiometry() + 1);
             }
         }
-        this.input = new ArrayList<>(map.values());
+        this.input = new HashSet<>(map.values());
     }
 
     @JsonIgnore
@@ -190,7 +190,7 @@ public abstract class ReactionLikeEvent extends Event {
                 output.setStoichiometry(output.getStoichiometry() + 1);
             }
         }
-        this.output = new ArrayList<>(map.values());
+        this.output = new HashSet<>(map.values());
     }
 
     @ReactomeSchemaIgnore

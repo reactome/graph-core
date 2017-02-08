@@ -53,4 +53,22 @@ public class Input {
     public void setEvent(Event event) {
         this.event = event;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Input input = (Input) o;
+
+        if (event != null ? !event.equals(input.event) : input.event != null) return false;
+        return physicalEntity != null ? physicalEntity.equals(input.physicalEntity) : input.physicalEntity == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = event != null ? event.hashCode() : 0;
+        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
+        return result;
+    }
 }

@@ -53,4 +53,22 @@ public class Output {
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Output output = (Output) o;
+
+        if (event != null ? !event.equals(output.event) : output.event != null) return false;
+        return physicalEntity != null ? physicalEntity.equals(output.physicalEntity) : output.physicalEntity == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = event != null ? event.hashCode() : 0;
+        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
+        return result;
+    }
 }

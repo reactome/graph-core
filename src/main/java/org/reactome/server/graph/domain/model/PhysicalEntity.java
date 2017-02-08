@@ -13,6 +13,7 @@ import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 @NodeEntity
@@ -50,11 +51,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
-    private List<HasComponent> componentOf;
+    private Set<HasComponent> componentOf;
 
     @ReactomeTransient
     @Relationship(type = "input", direction = Relationship.INCOMING)
-    private List<Input> consumedByEvent;
+    private Set<Input> consumedByEvent;
 
     @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     private List<DatabaseIdentifier> crossReference;
@@ -116,11 +117,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
-    private List<RepeatedUnit> repeatedUnitOf;
+    private Set<RepeatedUnit> repeatedUnitOf;
 
     @ReactomeTransient
     @Relationship(type = "output", direction = Relationship.INCOMING)
-    private List<Output> producedByEvent;
+    private Set<Output> producedByEvent;
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
@@ -203,12 +204,12 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
-    public void setComponentOf(List<HasComponent> componentOf) {
+    public void setComponentOf(Set<HasComponent> componentOf) {
         this.componentOf = componentOf;
     }
 
     @Relationship(type = "input", direction = Relationship.INCOMING)
-    public void setConsumedByEvent(List<Input> consumedByEvent) {
+    public void setConsumedByEvent(Set<Input> consumedByEvent) {
         this.consumedByEvent = consumedByEvent;
     }
 
@@ -293,7 +294,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
-    public void setRepeatedUnitOf(List<RepeatedUnit> repeatedUnitOf) {
+    public void setRepeatedUnitOf(Set<RepeatedUnit> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
     }
 
@@ -326,7 +327,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     @Relationship(type = "output", direction = Relationship.INCOMING)
-    public void setProducedByEvent(List<Output> producedByEvent) {
+    public void setProducedByEvent(Set<Output> producedByEvent) {
         this.producedByEvent = producedByEvent;
     }
 
@@ -363,7 +364,9 @@ public abstract class PhysicalEntity extends DatabaseObject {
         List<Polymer> rtn = new ArrayList<>();
         if(repeatedUnitOf!=null) {
             for (RepeatedUnit aux : repeatedUnitOf) {
+                for (int i = 0; i < aux.getStoichiometry(); i++) {
                     rtn.add(aux.getPolymer());
+                }
             }
             return rtn;
         }

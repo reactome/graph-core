@@ -50,4 +50,22 @@ public class RepeatedUnit {
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RepeatedUnit that = (RepeatedUnit) o;
+
+        if (polymer != null ? !polymer.equals(that.polymer) : that.polymer != null) return false;
+        return physicalEntity != null ? physicalEntity.equals(that.physicalEntity) : that.physicalEntity == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = polymer != null ? polymer.hashCode() : 0;
+        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
+        return result;
+    }
 }
