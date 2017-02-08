@@ -36,12 +36,12 @@ public class AdvancedDatabaseObjectService {
 
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
 
-    public DatabaseObject findById(Object identifier, Integer limit) {
+    public <T extends DatabaseObject> T findById(Object identifier, Integer limit) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findById(id, limit);
+            return (T) advancedDatabaseObjectRepository.findById(id, limit);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findById(Long.parseLong(id), limit);
+            return (T) advancedDatabaseObjectRepository.findById(Long.parseLong(id), limit);
         }
         return null;
     }
