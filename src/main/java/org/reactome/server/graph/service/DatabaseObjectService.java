@@ -14,7 +14,8 @@ import java.util.Set;
  * Created by:
  *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 10.11.15.
+ * @author Guilherme Viter (gviteri@ebi.ac.uk)
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -24,18 +25,15 @@ public class DatabaseObjectService {
     private DatabaseObjectRepository databaseObjectRepository;
 
     public DatabaseObject findById(Object identifier) {
-
+        DatabaseObject rtn  = null;
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            DatabaseObject a = databaseObjectRepository.findByStId(id);
-            if (a != null) a.isLoaded = true;
-            return a;
+            rtn = databaseObjectRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            DatabaseObject a = databaseObjectRepository.findByDbId(Long.parseLong(id));
-            if (a != null) a.isLoaded = true;
-            return a;
+            rtn = databaseObjectRepository.findByDbId(Long.parseLong(id));
         }
-        return null;
+        if (rtn != null) rtn.isLoaded = true;
+        return rtn;
     }
 
     public DatabaseObject findByIdNoRelations(Object identifier) {
