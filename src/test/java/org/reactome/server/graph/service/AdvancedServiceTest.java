@@ -312,7 +312,7 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void activeUnitContentTest() {
-        logger.info("Started testing advancedDatabaseObjectService.blah");
+        logger.info("Started testing advancedDatabaseObjectService.activeUnitContentTest");
         long start, time;
         start = System.currentTimeMillis();
         CatalystActivity ca = advancedDatabaseObjectService.findById(5643997, 1000);
