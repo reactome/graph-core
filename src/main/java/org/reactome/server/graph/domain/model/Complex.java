@@ -20,16 +20,16 @@ public class Complex extends PhysicalEntity {
     @ReactomeProperty
     private Boolean isChimeric;
 
-    @Relationship(type = "hasComponent")
+    @Relationship(type = "hasComponent", direction = Relationship.OUTGOING)
     private Set<HasComponent> hasComponent;
 
-    @Relationship(type = "entityOnOtherCell")
+    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "includedLocation")
+    @Relationship(type = "includedLocation", direction = Relationship.OUTGOING)
     private List<EntityCompartment> includedLocation;
 
-    @Relationship(type = "species")
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     private List<Species> species;
 
     public Complex() {}
@@ -89,6 +89,7 @@ public class Complex extends PhysicalEntity {
         return entityOnOtherCell;
     }
 
+    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
     public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
         this.entityOnOtherCell = entityOnOtherCell;
     }
@@ -97,6 +98,7 @@ public class Complex extends PhysicalEntity {
         return includedLocation;
     }
 
+    @Relationship(type = "includedLocation", direction = Relationship.OUTGOING)
     public void setIncludedLocation(List<EntityCompartment> includedLocation) {
         this.includedLocation = includedLocation;
     }
@@ -105,6 +107,7 @@ public class Complex extends PhysicalEntity {
         return species;
     }
 
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     public void setSpecies(List<Species> species) {
         this.species = species;
     }

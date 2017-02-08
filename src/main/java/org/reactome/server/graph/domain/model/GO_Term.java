@@ -72,6 +72,7 @@ public abstract class GO_Term extends DatabaseObject{
         return referenceDatabase;
     }
 
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

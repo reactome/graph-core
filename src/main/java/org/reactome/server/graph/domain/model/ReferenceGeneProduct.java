@@ -33,6 +33,7 @@ public class ReferenceGeneProduct extends ReferenceSequence {
         return referenceGene;
     }
 
+    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
     public void setReferenceGene(List<ReferenceDNASequence> referenceGene) {
         this.referenceGene = referenceGene;
     }
@@ -41,6 +42,7 @@ public class ReferenceGeneProduct extends ReferenceSequence {
         return referenceTranscript;
     }
 
+    @Relationship(type = "referenceTranscript", direction = Relationship.OUTGOING)
     public void setReferenceTranscript(List<ReferenceRNASequence> referenceTranscript) {
         this.referenceTranscript = referenceTranscript;
     }

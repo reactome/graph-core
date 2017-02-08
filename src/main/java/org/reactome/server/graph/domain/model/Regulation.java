@@ -89,6 +89,7 @@ public abstract class Regulation extends DatabaseObject {
         return containedInPathway;
     }
 
+    @Relationship(type = "containedInPathway", direction = Relationship.OUTGOING)
     public void setContainedInPathway(List<Pathway> containedInPathway) {
         this.containedInPathway = containedInPathway;
     }
@@ -107,6 +108,7 @@ public abstract class Regulation extends DatabaseObject {
         return figure;
     }
 
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }
@@ -115,10 +117,16 @@ public abstract class Regulation extends DatabaseObject {
         return goBiologicalProcess;
     }
 
+    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
+        this.goBiologicalProcess = goBiologicalProcess;
+    }
+
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
 
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
@@ -139,6 +147,7 @@ public abstract class Regulation extends DatabaseObject {
         return regulator;
     }
 
+    @Relationship(type = "regulator", direction = Relationship.OUTGOING)
     public void setRegulator(DatabaseObject regulator) {
         this.regulator = regulator;
     }
@@ -167,6 +176,7 @@ public abstract class Regulation extends DatabaseObject {
         return summation;
     }
 
+    @Relationship(type = "summation", direction = Relationship.OUTGOING)
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
     }

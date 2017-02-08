@@ -83,6 +83,7 @@ public class ExternalOntology extends DatabaseObject {
         return instanceOf;
     }
 
+    @Relationship(type = "instanceOf", direction = Relationship.OUTGOING)
     public void setInstanceOf(List<ExternalOntology> instanceOf) {
         this.instanceOf = instanceOf;
     }
@@ -91,6 +92,7 @@ public class ExternalOntology extends DatabaseObject {
         return referenceDatabase;
     }
 
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

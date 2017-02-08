@@ -58,6 +58,7 @@ public class Pathway extends Event {
         return hasEvent;
     }
 
+    @Relationship(type="hasEvent", direction = Relationship.OUTGOING)
     public void setHasEvent(List<Event> hasEvent) {
         this.hasEvent = hasEvent;
     }
@@ -66,6 +67,7 @@ public class Pathway extends Event {
         return normalPathway;
     }
 
+    @Relationship(type = "normalPathway", direction = Relationship.OUTGOING)
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
     }

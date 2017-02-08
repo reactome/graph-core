@@ -16,6 +16,7 @@ public abstract class AbstractModifiedResidue extends DatabaseObject {
         return referenceSequence;
     }
 
+    @Relationship(type = "referenceSequence", direction = Relationship.OUTGOING)
     public void setReferenceSequence(ReferenceSequence referenceSequence) {
         this.referenceSequence = referenceSequence;
     }

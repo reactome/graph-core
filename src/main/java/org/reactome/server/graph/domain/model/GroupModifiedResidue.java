@@ -19,6 +19,7 @@ public class GroupModifiedResidue extends TranslationalModification {
         return modification;
     }
 
+    @Relationship(type = "modification", direction = Relationship.OUTGOING)
     public void setModification(DatabaseObject modification) {
         this.modification = modification;
     }

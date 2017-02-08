@@ -18,6 +18,7 @@ public class ReferenceRNASequence extends ReferenceSequence {
         return referenceGene;
     }
 
+    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
     public void setReferenceGene(List<ReferenceDNASequence> referenceGene) {
         this.referenceGene = referenceGene;
     }

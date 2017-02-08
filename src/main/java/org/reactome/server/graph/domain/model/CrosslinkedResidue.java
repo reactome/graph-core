@@ -18,11 +18,20 @@ public class CrosslinkedResidue extends TranslationalModification {
 
     public CrosslinkedResidue() {}
 
+    public Integer getSecondCoordinate() {
+        return secondCoordinate;
+    }
+
+    public void setSecondCoordinate(Integer secondCoordinate) {
+        this.secondCoordinate = secondCoordinate;
+    }
+
     @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})
     public DatabaseObject getModification() {
         return modification;
     }
 
+    @Relationship(type = "modification", direction = Relationship.OUTGOING)
     public void setModification(DatabaseObject modification) {
         if(modification == null) return;
 
@@ -33,13 +42,4 @@ public class CrosslinkedResidue extends TranslationalModification {
             throw new RuntimeException(modification + " is not a Polymer, ReferenceGroup or EntitySet");
         }
     }
-
-    public Integer getSecondCoordinate() {
-        return secondCoordinate;
-    }
-
-    public void setSecondCoordinate(Integer secondCoordinate) {
-        this.secondCoordinate = secondCoordinate;
-    }
-
 }

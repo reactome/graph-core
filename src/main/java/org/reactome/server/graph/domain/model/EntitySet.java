@@ -38,6 +38,7 @@ public abstract class EntitySet extends PhysicalEntity{
         return hasMember;
     }
 
+    @Relationship(type = "hasMember", direction = Relationship.OUTGOING)
     public void setHasMember(List<PhysicalEntity> hasMember) {
         this.hasMember = hasMember;
     }
@@ -46,6 +47,7 @@ public abstract class EntitySet extends PhysicalEntity{
         return species;
     }
 
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     public void setSpecies(List<Species> species) {
         this.species = species;
     }

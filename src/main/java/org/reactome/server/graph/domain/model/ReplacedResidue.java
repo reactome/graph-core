@@ -30,6 +30,7 @@ public class ReplacedResidue extends GeneticallyModifiedResidue {
         return psiMod;
     }
 
+    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
     public void setPsiMod(List<PsiMod> psiMod) {
         this.psiMod = psiMod;
     }

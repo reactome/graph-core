@@ -37,6 +37,7 @@ public class SimpleEntity extends PhysicalEntity {
         return referenceEntity;
     }
 
+    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
     public void setReferenceEntity(ReferenceMolecule referenceEntity) {
         this.referenceEntity = referenceEntity;
     }
@@ -45,6 +46,7 @@ public class SimpleEntity extends PhysicalEntity {
         return species;
     }
 
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     public void setSpecies(Species species) {
         this.species = species;
     }

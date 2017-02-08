@@ -18,6 +18,7 @@ public class Species extends Taxon {
         return figure;
     }
 
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }

@@ -73,6 +73,7 @@ public class ReferenceEntity extends DatabaseObject {
         return crossReference;
     }
 
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -81,6 +82,7 @@ public class ReferenceEntity extends DatabaseObject {
         return referenceDatabase;
     }
 
+    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

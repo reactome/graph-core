@@ -93,6 +93,7 @@ public class Person extends DatabaseObject {
         return affiliation;
     }
 
+    @Relationship(type = "affiliation", direction = Relationship.OUTGOING)
     public void setAffiliation(List<Affiliation> affiliation) {
         this.affiliation = affiliation;
     }
@@ -103,6 +104,7 @@ public class Person extends DatabaseObject {
     }
 
     @Deprecated
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }

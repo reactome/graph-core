@@ -58,6 +58,7 @@ public class Book extends Publication {
         return publisher;
     }
 
+    @Relationship(type = "publisher", direction = Relationship.OUTGOING)
     public void setPublisher(Affiliation publisher) {
         this.publisher = publisher;
     }

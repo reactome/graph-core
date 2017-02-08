@@ -33,6 +33,7 @@ public class OpenSet extends EntitySet {
         return referenceEntity;
     }
 
+    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
     public void setReferenceEntity(ReferenceEntity referenceEntity) {
         this.referenceEntity = referenceEntity;
     }

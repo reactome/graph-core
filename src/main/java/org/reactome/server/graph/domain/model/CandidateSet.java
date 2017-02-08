@@ -23,6 +23,7 @@ public class CandidateSet extends EntitySet {
         return hasCandidate;
     }
 
+    @Relationship(type = "hasCandidate", direction = Relationship.OUTGOING)
     public void setHasCandidate(List<PhysicalEntity> hasCandidate) {
         this.hasCandidate = hasCandidate;
     }

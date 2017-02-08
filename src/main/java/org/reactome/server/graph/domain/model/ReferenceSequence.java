@@ -100,6 +100,7 @@ public class ReferenceSequence extends ReferenceEntity {
         return species;
     }
 
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     public void setSpecies(Species species) {
         this.species = species;
     }

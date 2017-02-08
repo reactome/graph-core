@@ -41,6 +41,7 @@ public class GO_MolecularFunction extends GO_Term {
         return componentOf;
     }
 
+    @Relationship(type = "componentOf", direction = Relationship.OUTGOING)
     public void setComponentOf(DatabaseObject componentOf) {
         this.componentOf = componentOf;
     }
@@ -49,6 +50,7 @@ public class GO_MolecularFunction extends GO_Term {
         return negativelyRegulate;
     }
 
+    @Relationship(type = "negativelyRegulate", direction = Relationship.OUTGOING)
     public void setNegativelyRegulate(GO_MolecularFunction negativelyRegulate) {
         this.negativelyRegulate = negativelyRegulate;
     }
@@ -57,6 +59,7 @@ public class GO_MolecularFunction extends GO_Term {
         return positivelyRegulate;
     }
 
+    @Relationship(type = "positivelyRegulate", direction = Relationship.OUTGOING)
     public void setPositivelyRegulate(GO_MolecularFunction positivelyRegulate) {
         this.positivelyRegulate = positivelyRegulate;
     }
@@ -65,6 +68,7 @@ public class GO_MolecularFunction extends GO_Term {
         return regulate;
     }
 
+    @Relationship(type = "regulate", direction = Relationship.OUTGOING)
     public void setRegulate(GO_MolecularFunction regulate) {
         this.regulate = regulate;
     }

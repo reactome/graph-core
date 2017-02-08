@@ -30,6 +30,7 @@ public class Summation extends DatabaseObject {
         return literatureReference;
     }
 
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }

@@ -28,6 +28,7 @@ public class TranslationalModification extends AbstractModifiedResidue {
         return psiMod;
     }
 
+    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
     public void setPsiMod(PsiMod psiMod) {
         this.psiMod = psiMod;
     }

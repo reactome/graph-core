@@ -58,6 +58,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
         return hasModifiedResidue;
     }
 
+    @Relationship(type = "hasModifiedResidue", direction = Relationship.OUTGOING)
     public void setHasModifiedResidue(List<AbstractModifiedResidue> hasModifiedResidue) {
         this.hasModifiedResidue = hasModifiedResidue;
     }
@@ -66,6 +67,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
         return referenceEntity;
     }
 
+    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
     public void setReferenceEntity(ReferenceSequence referenceEntity) {
         this.referenceEntity = referenceEntity;
     }

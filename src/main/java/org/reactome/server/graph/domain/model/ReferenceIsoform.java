@@ -30,6 +30,7 @@ public class ReferenceIsoform extends ReferenceGeneProduct {
         return isoformParent;
     }
 
+    @Relationship(type = "isoformParent", direction = Relationship.OUTGOING)
     public void setIsoformParent(List<ReferenceGeneProduct> isoformParent) {
         this.isoformParent = isoformParent;
     }

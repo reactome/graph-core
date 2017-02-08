@@ -41,6 +41,7 @@ public class CatalystActivity extends DatabaseObject  {
         return activeUnit;
     }
 
+    @Relationship(type = "activeUnit", direction = Relationship.OUTGOING)
     public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
     }
@@ -49,6 +50,7 @@ public class CatalystActivity extends DatabaseObject  {
         return activity;
     }
 
+    @Relationship(type = "activity", direction = Relationship.OUTGOING)
     public void setActivity(GO_MolecularFunction activity) {
         this.activity = activity;
     }
@@ -67,6 +69,7 @@ public class CatalystActivity extends DatabaseObject  {
         return physicalEntity;
     }
 
+    @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
@@ -75,6 +78,7 @@ public class CatalystActivity extends DatabaseObject  {
         return regulatedBy;
     }
 
+    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
     }

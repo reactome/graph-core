@@ -83,6 +83,7 @@ public class Polymer extends PhysicalEntity {
         return species;
     }
 
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     public void setSpecies(Set<Species> species) {
         this.species = species;
     }

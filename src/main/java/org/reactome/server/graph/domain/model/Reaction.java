@@ -21,6 +21,7 @@ public class Reaction extends ReactionLikeEvent {
         return reverseReaction;
     }
 
+    @Relationship(type = "reverseReaction", direction = Relationship.UNDIRECTED)
     public void setReverseReaction(Reaction reverseReaction) {
         this.reverseReaction = reverseReaction;
     }

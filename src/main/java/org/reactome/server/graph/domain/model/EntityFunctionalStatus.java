@@ -21,6 +21,7 @@ public class EntityFunctionalStatus extends DatabaseObject {
         return functionalStatus;
     }
 
+    @Relationship(type = "functionalStatus", direction = Relationship.OUTGOING)
     public void setFunctionalStatus(List<FunctionalStatus> functionalStatus) {
         this.functionalStatus = functionalStatus;
     }
@@ -29,6 +30,7 @@ public class EntityFunctionalStatus extends DatabaseObject {
         return physicalEntity;
     }
 
+    @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }

@@ -199,6 +199,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return compartment;
     }
 
+    @Relationship(type = "compartment", direction = Relationship.OUTGOING)
     public void setCompartment(List<EntityCompartment> compartment) {
         this.compartment = compartment;
     }
@@ -217,6 +218,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return crossReference;
     }
 
+    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -225,6 +227,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return disease;
     }
 
+    @Relationship(type = "disease", direction = Relationship.OUTGOING)
     public void setDisease(List<Disease> disease) {
         this.disease = disease;
     }
@@ -243,6 +246,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return figure;
     }
 
+    @Relationship(type = "figure", direction = Relationship.OUTGOING)
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }
@@ -251,6 +255,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return goCellularComponent;
     }
 
+    @Relationship(type = "goCellularComponent", direction = Relationship.OUTGOING)
     public void setGoCellularComponent(GO_CellularComponent goCellularComponent) {
         this.goCellularComponent = goCellularComponent;
     }
@@ -259,6 +264,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return inferredTo;
     }
 
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     public void setInferredTo(List<PhysicalEntity> inferredTo) {
         this.inferredTo = inferredTo;
     }
@@ -302,6 +308,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return literatureReference;
     }
 
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
@@ -355,6 +362,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return summation;
     }
 
+    @Relationship(type = "summation", direction = Relationship.OUTGOING)
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
     }

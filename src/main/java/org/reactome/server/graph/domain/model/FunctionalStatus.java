@@ -19,6 +19,7 @@ public class FunctionalStatus extends DatabaseObject {
         return functionalStatusType;
     }
 
+    @Relationship(type = "functionalStatusType", direction = Relationship.OUTGOING)
     public void setFunctionalStatusType(FunctionalStatusType functionalStatusType) {
         this.functionalStatusType = functionalStatusType;
     }
@@ -27,6 +28,7 @@ public class FunctionalStatus extends DatabaseObject {
         return structuralVariant;
     }
 
+    @Relationship(type = "structuralVariant", direction = Relationship.OUTGOING)
     public void setStructuralVariant(SequenceOntology structuralVariant) {
         this.structuralVariant = structuralVariant;
     }
