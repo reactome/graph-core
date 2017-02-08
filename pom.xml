@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <name>ReactomeGraphCore</name>
 
     <description>
@@ -45,7 +45,7 @@
     <properties>
         <!--dependencies-->
         <reactome.version>1.2.4</reactome.version>
-        <sdn.version>4.1.7.RELEASE</sdn.version> <!-- 4.1.7.RELEASE -->
+        <sdn.version>4.1.7.RELEASE</sdn.version>
         <spring.test.version>4.2.6.RELEASE</spring.test.version>
         <spring.version>4.3.0.RELEASE</spring.version>
         <spring.instrument.version>4.2.6.RELEASE</spring.instrument.version>
