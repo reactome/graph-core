@@ -478,16 +478,16 @@ public class AdvancedDatabaseObjectRepository {
         if (object != null) {
             field.setAccessible(true);
             if (field.getType().isArray() && field.getType().getComponentType().isPrimitive()) {
-                /** An array of primitives do not box automatically then we cast it manually using ArrayUtils and the attribute type **/
+                // An array of primitives do not box automatically then we cast it manually using ArrayUtils and the attribute type
                 field.set(instance, toPrimitiveArray(object, field.getType()));
             } else if (Collection.class.isAssignableFrom(field.getType())) {
-                /** The returned results are normally stored in an Array, then we need to convert in case the attribute is a Collection **/
+                //The returned results are normally stored in an Array, then we need to convert in case the attribute is a Collection
                 ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
                 Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
                 //noinspection unchecked
                 field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
             } else {
-                /** Other fields, no problem with type conversion **/
+                // Other fields, no problem with type conversion
                 field.set(instance, TypeConverterManager.convertType(object, field.getType()));
             }
         }
