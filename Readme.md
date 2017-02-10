@@ -28,7 +28,7 @@ The project can be used as a "Core" library providing a data access layer on top
 <dependency>
     <groupId>org.reactome.server.tools</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
