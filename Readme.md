@@ -15,7 +15,7 @@ In the Reactome Graph project Neo4j, a Java implemented, open source, transactio
 
 #### main project components used:
 
-* Spring Data Neo4j - version: 4.1.2.RELEASE
+* Spring Data Neo4j - version: 4.1.7.RELEASE
 * AspectJ
 
 #### Project usage: 
