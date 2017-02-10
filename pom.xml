@@ -11,7 +11,9 @@
     <description>
         The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more information visit the reactome github repository.
     </description>
-    <url>https://bitbucket.org/fabregatantonio/graph-reactome/</url>
+
+    <url>https://github.com/reactome/graph-core</url>
+
     <organization>
         <name>The European Bioinformatics Institute</name>
         <url>http://www.ebi.ac.uk/</url>
