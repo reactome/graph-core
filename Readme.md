@@ -1,4 +1,4 @@
-<!--![Logo](https://cdn.evbuc.com/images/3621635/40070539972/1/logo.png)-->
+<img src=https://cloud.githubusercontent.com/assets/6883670/22938783/bbef4474-f2d4-11e6-92a5-07c1a6964491.png width=220 height=100 />
 
 # Reactome Graph Database
 
@@ -8,53 +8,79 @@ The Reactome Graph Project models the [Reactome knowledgebase](http://www.reacto
 
 At the cellular level, life is a network of molecular reactions. In Reactome, these processes are systematically described in molecular detail to generate an ordered network of molecular transformations (Fabregat et al. 2015). This amounts to millions of interconnected terms naturally forming a graph of biological knowledge. The Reactome Graph aims to provide an intuitive way for data retrieval as well as interpretation and analysis of pathway knowledge. 
 
-Retrieving, and especially analyzing such complex data becomes tedious when using relational Databases. Queries across the pathway knowledgebase are composed by a number of expensive join operations resulting in bad performance and a hard-to-maintain project. Due to the schema based approach, relational databases are limited on how information will be stored and thus are difficult to be scaled for new requirements. 
+Retrieving, and especially analyzing such complex data becomes tedious when using relational Databases. Queries across the pathway knowledge base are composed by a number of expensive join operations resulting in bad performance and a hard-to-maintain project. Due to the schema based approach, relational databases are limited on how information will be stored and thus are difficult to be scaled for new requirements. 
 In order to overcome these problems the Reactome database is imported in [Neo4j](http://neo4j.com), creating one big interconnected graph. The Graph database technology is an effective tool for modelling highly connected data. Since molecular networks are by their nature represented as a graph, storing Reactome data is in many ways beneficial: Firstly no normalization is required, data can be stored in its natural form. Secondly, nodes in the vicinity of a starting point can quickly be traversed, giving the user the possibility to not only retrieve data but perform fast analysis of these neighbor networks. Thus, knowledge can be retrieved that previously was not available due to the limitations of the relational data storage.
 
-In the Reactome Graph project Neo4j, a Java implemented, open source, transactional database, with native graph storage and processing, is utilized. Neo4j offers multiple integration possibilities for Java development. In this project, [String Data Neo4j](http://projects.spring.io/spring-data-neo4j/)    provides automatic object graph mapping on top of Neo4j and integrates tightly with other parts of the spring framework used across the project.
+In the Reactome Graph project Neo4j, a Java implemented, open source, transactional database, with native graph storage and processing, is utilized. Neo4j offers multiple integration possibilities for Java development. In this project, [String Data Neo4j](http://projects.spring.io/spring-data-neo4j/) provides automatic object graph mapping on top of Neo4j and integrates tightly with other parts of the spring framework used across the project.
 
-#### main project components used:
+#### Main project components used:
 
-* Spring Data Neo4j - version: 4.1.2.RELEASE
+* Spring Data Neo4j - version: 4.1.7.RELEASE
 * AspectJ
 
-#### Project usage: 
+## Project usage
 
-The project can be used as a "Core" library providing a data access layer on top of the Neo4j Db. To get started using the Graph Core include following dependency:
+The project can be used as a "Core" library providing a data access layer on top of the Neo4j Db. To get started using the Graph Core, please choose one of the following options:
+
+* [Create new Java Standalone Project using Maven Archetype](https://github.com/reactome/graph-core#create-new-java-standalone-project-using-maven-archetype)
+* [Add in an existing Java Standalone Project](https://github.com/reactome/graph-core#adding-the-graph-core-in-an-existing-project)
+* [Add in a Spring based project](https://github.com/reactome/reactome/graph-core#add-in-a-spring-based-project)
+
+### Create new Java Standalone Project using Maven Archetype 
+
+We provide a Maven archetype as an easy handy way to create and set up a project that access the Reactome Graph Database using the graph-core. Please, go to [Graph Archetype](https://github.com/reactome/graph-archetype) page.
+
+```console
+mvn archetype:generate \ 
+       -DarchetypeGroupId=org.reactome.maven.archetypes \ 
+       -DarchetypeArtifactId=graph-archetype \
+       -DarchetypeVersion=1.0.0 \
+       -DgroupId=<your_group_id> \ 
+       -DartifactId=<your \
+       -Dversion=1.0.0-SNAPSHOT
+```
+### Adding the graph-core in an existing project
 
 **Dependency** 
 
-```
+```html
+<!-- http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/org/reactome/server/graph/graph-core/ for updates -->
 <dependency>
     <groupId>org.reactome.server.tools</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
 **Repository**
 
-```
-<snapshotRepository>
-    <uniqueVersion>false</uniqueVersion>
-    <id>pst-snapshots</id>
-    <name>EBI Nexus Snapshots Repository</name>
+```html
+<!-- EBI repo -->
+<repository>
+    <id>pst-release</id>
+    <name>EBI Nexus Repository</name>
     <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-</snapshotRepository>
+</repository>
 ```
 
 **Properties**
 
-Connection to the Neo4j database can be configured using a properties file called "ogm.properties".
-
-```
+Connection to the Neo4j database can be configured using a properties file called ```ogm.properties```.
+The file can be added in ```${project}/src/main/resources``` 
+```console
 driver=org.neo4j.ogm.drivers.http.driver.HttpDriver
 URI=http://user:password@localhost:7474
 ```
 
+Following good practices, do no store passwords directly into a properties file. A Maven profile is strongly recommended and let Maven filter the resources into the properties file.
+```console
+driver=org.neo4j.ogm.drivers.http.driver.HttpDriver
+URI=http://${neo4j.user}:${neo4j.password}@${neo4j.host}:${neo4j.port}
+```
+
 To provide properties programmatically, without the file Neo4jConfig.class of the Batch importer has to be overwritten and System properties have to be set:
 
-```
+```java
 @org.springframework.context.annotation.Configuration
 @ComponentScan( basePackages = {"org.reactome.server.graph"} )
 @EnableTransactionManagement
@@ -62,6 +88,8 @@ To provide properties programmatically, without the file Neo4jConfig.class of th
 @EnableSpringConfigured
 public class MyNeo4jConfig extends Neo4jConfig {
 
+    private SessionFactory sessionFactory;
+    
     @Bean
     public Configuration getConfiguration() {
         Configuration config = new Configuration();
@@ -75,57 +103,79 @@ public class MyNeo4jConfig extends Neo4jConfig {
     @Override
     @Bean
     public SessionFactory getSessionFactory() {
-        return new SessionFactory(getConfiguration(), "org.reactome.server.graph.domain" );
+        if (sessionFactory == null) {
+            logger.info("Creating a Neo4j SessionFactory");
+            sessionFactory = new SessionFactory(getConfiguration(), "org.reactome.server.graph.domain" );
+        }
+        return sessionFactory;
     }
 }
 ```
 
-Afterwards properties need to be set as System properties before loading the Application context 
+Afterwards initialise the Reactome Graph Connection and get access the API 
 
-```
+```java
  public static void main(String[] args) {
 
-        System.setProperty("neo4j.host", "http://localhost:7474/");
-        System.setProperty("neo4j.user", "neo4j");
-        System.setProperty("neo4j.password", "reactome");
-        
-        ApplicationContext context = new AnnotationConfigApplicationContext(MyNeo4jConfig.class);
-        GeneralService genericService = context.getBean(GeneralService.class);
+        // Initialising ReactomeCore Neo4j configuration
+        ReactomeGraphCore.initialise("localhost", "7474", "user", "password", MyNeo4jConfig.class);
+    
+        // Instanciate our services
+        GeneralService genericService = ReactomeGraphCore.getService(GeneralService.class);
+        DatabaseObjectService databaseObjectService = ReactomeGraphCore.getService(DatabaseObjectService.class);
+        SpeciesService speciesService = ReactomeGraphCore.getService(SpeciesService.class);
+        SchemaService schemaService = ReactomeGraphCore.getService(SchemaService.class);
         ... 
+ }
 ```
 
-**Spring**
+## Add in a Spring based project
 
-To enable the Graph Core library, when working with Spring, simply add the the following component-scan package to your mvc-dispatcher-servlet.xml. 
+**Dependency** 
 
+```html
+<!-- http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/org/reactome/server/graph/graph-core/ for updates -->
+<dependency>
+    <groupId>org.reactome.server.tools</groupId>
+    <artifactId>graph-core</artifactId>
+    <version>1.0.3</version>
+</dependency>
 ```
+
+**Repository**
+
+```html
+<!-- EBI repo -->
+<repository>
+    <id>pst-release</id>
+    <name>EBI Nexus Repository</name>
+    <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+</repository>
+```
+
+To enable the Graph Core library, when working with Spring, simply add the the following component-scan package to your ```mvc-dispatcher-servlet.xml```. 
+
+```xml
 <context:component-scan base-package="org.reactome.server" />
 ```
 
 Afterwards services can be autowired: 
 
-```
+```java
 @Autowired
 private DatabaseObjectService service;
 ```
 
-A full list of services and methods is available and can be found in our JAVA-Documentation todo link
-
 **Lazy loading configuration**
 
-The Graph core library provides lazy loading functionality. When using a getter of a relationship property, Objects will be loaded automatically if they are present in the Graph database. To deactivate this feature, which might be required in some cases: eg serializing results to json add the following bean to your configuration.
+The Graph core library provides lazy loading functionality. When using a getter of a relationship property, Objects will be loaded automatically if they are present in the Graph database. To deactivate this feature, which might be required in some cases: e.g. serializing results to json, add the following bean to your configuration ```mvc-dispatcher-servlet.xml```. 
+```xml
+<bean class="org.reactome.server.graph.aop.LazyFetchAspect" factory-method="aspectOf">
+    <property name="enableAOP" value="false"/>
+</bean>
 ```
-    <bean class="org.reactome.server.graph.aop.LazyFetchAspect" factory-method="aspectOf">
-        <property name="enableAOP" value="false"/>
-    </bean>
-```
 
-**Template projects**
-
-Template projects for starting a project using the Graph core are found here: https://bitbucket.org/fkorn/graph-library-templates
-
-
-#### Project Structure
+## Project Structure
 
 The application follows a basic spring multi-tier architecture:
 
