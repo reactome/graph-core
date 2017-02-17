@@ -38,7 +38,9 @@ mvn archetype:generate \
        -DgroupId=<your_group_id> \ 
        -DartifactId=<your \
        -Dversion=1.0.0-SNAPSHOT
+       -DarchetypeRepository=http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/
 ```
+
 ### Adding the graph-core in an existing project
 
 **Dependency** 
@@ -79,7 +81,6 @@ URI=http://${neo4j.user}:${neo4j.password}@${neo4j.host}:${neo4j.port}
 ```
 
 To provide properties programmatically, without the file Neo4jConfig.class of the Batch importer has to be overwritten and System properties have to be set:
-
 ```java
 @org.springframework.context.annotation.Configuration
 @ComponentScan( basePackages = {"org.reactome.server.graph"} )
@@ -113,7 +114,6 @@ public class MyNeo4jConfig extends Neo4jConfig {
 ```
 
 Afterwards initialise the Reactome Graph Connection and get access the API 
-
 ```java
  public static void main(String[] args) {
 
