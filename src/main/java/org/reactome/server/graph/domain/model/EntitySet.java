@@ -24,6 +24,9 @@ public abstract class EntitySet extends PhysicalEntity{
     @Relationship(type = "species", direction = Relationship.OUTGOING)
     private List<Species> species;
 
+    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    private List<Species> relatedSpecies;
+
     public EntitySet() {}
 
     public Boolean getIsOrdered() {
@@ -50,6 +53,15 @@ public abstract class EntitySet extends PhysicalEntity{
     @Relationship(type = "species", direction = Relationship.OUTGOING)
     public void setSpecies(List<Species> species) {
         this.species = species;
+    }
+
+    public List<Species> getRelatedSpecies() {
+        return relatedSpecies;
+    }
+
+    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    public void setRelatedSpecies(List<Species> relatedSpecies) {
+        this.relatedSpecies = relatedSpecies;
     }
 
     @ReactomeSchemaIgnore

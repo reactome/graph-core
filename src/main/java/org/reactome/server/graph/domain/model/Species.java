@@ -12,6 +12,8 @@ public class Species extends Taxon {
     @Relationship(type = "figure", direction = Relationship.OUTGOING)
     private List<Figure> figure;
 
+    private String abbreviation;
+
     public Species() {}
 
     public List<Figure> getFigure() {
@@ -23,4 +25,11 @@ public class Species extends Taxon {
         this.figure = figure;
     }
 
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
 }
