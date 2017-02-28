@@ -108,7 +108,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
 
 
     @Query(" MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]-(p:Pathway) " +
-            "WHERE p.stId IN [{1}] " +
+            "WHERE p.stId IN {1} " +
             "WITH DISTINCT p, pe " +
             "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
@@ -116,7 +116,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
     Collection<SimpleDatabaseObject> getPathwaysForIdentifierByStId(String identifier, Collection<String> pathways);
 
     @Query(" MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]-(p:Pathway) " +
-            "WHERE p.dbId IN [{1}] " +
+            "WHERE p.dbId IN {1} " +
             "WITH DISTINCT p, pe " +
             "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
