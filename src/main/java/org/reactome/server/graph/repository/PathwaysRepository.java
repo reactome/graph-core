@@ -103,48 +103,87 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
             "WITH DISTINCT pe " +
             "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{dbId:{1}}) " +
+            "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels " +
+            "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
+            "MATCH (pe:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{dbId:{1}}) " +
             "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
     Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Long speciesId);
 
 
-    @Query(" MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]-(p:Pathway) " +
+    @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
             "WHERE p.stId IN {1} " +
             "WITH DISTINCT p, pe " +
-            "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+            "MATCH (pe)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n)-->(rd:ReferenceDatabase) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
-            "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
+            "RETURN DISTINCT p.dbId as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels " +
+            "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
+            "MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:{0}}) " +
+            "WHERE p.stId IN {1} " +
+            "RETURN DISTINCT p.dbId as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
     Collection<SimpleDatabaseObject> getPathwaysForIdentifierByStId(String identifier, Collection<String> pathways);
 
-    @Query(" MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]-(p:Pathway) " +
+    @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
             "WHERE p.dbId IN {1} " +
             "WITH DISTINCT p, pe " +
-            "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+            "MATCH (pe)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n)-->(rd:ReferenceDatabase) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
-            "RETURN Distinct(p.dbId) as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
+            "RETURN DISTINCT p.dbId as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels " +
+            "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
+            "MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:{0}}) " +
+            "WHERE p.dbId IN {1} " +
+            "RETURN DISTINCT p.dbId as dbId, p.stId as stId, p.displayName as displayName, labels(p) as labels")
     Collection<SimpleDatabaseObject> getPathwaysForIdentifierByDbId(String identifier, Collection<Long> pathways);
 
 
     @Query(" MATCH (t:Pathway{stId:{0}}) " +
             "OPTIONAL MATCH path=(t)-[:hasEvent*]->(p:Pathway{hasDiagram:False}) " +
             "WHERE ALL(n IN TAIL(NODES(path)) WHERE n.hasDiagram = False) " +
-            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps "+
+            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps " +
             "UNWIND ps AS p " +
             "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
             "WITH DISTINCT rle " +
             "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]-(rle) " +
             "WHERE n.identifier = {1} OR {1} IN n.name OR {1} IN n.geneName " +
+            "RETURN DISTINCT(pe.dbId) as dbId, pe.stId as stId, pe.displayName as displayName, labels(pe) as labels " +
+            "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
+            "MATCH (t:Pathway{stId:{0}}) " +
+            "OPTIONAL MATCH path=(t)-[:hasEvent*]->(p:Pathway{hasDiagram:False}) " +
+            "WHERE ALL(n IN TAIL(NODES(path)) WHERE n.hasDiagram = False) " +
+            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps " +
+            "UNWIND ps AS p " +
+            "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT rle " +
+            "MATCH (rle)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
+            "WITH DISTINCT pe " +
+            "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(a:PhysicalEntity) " +
+            "WITH DISTINCT pe, COLLECT(DISTINCT a.stId) AS participants " +
+            "WHERE pe.stId = {1} OR {1} IN participants " +
             "RETURN DISTINCT(pe.dbId) as dbId, pe.stId as stId, pe.displayName as displayName, labels(pe) as labels")
     Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifierByStId(String stId, String identifier);
 
     @Query(" MATCH (t:Pathway{dbId:{0}}) " +
             "OPTIONAL MATCH path=(t)-[:hasEvent*]->(p:Pathway{hasDiagram:False}) " +
             "WHERE ALL(n IN TAIL(NODES(path)) WHERE n.hasDiagram = False) " +
-            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps "+
+            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps " +
             "UNWIND ps AS p " +
             "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
             "WITH DISTINCT rle " +
             "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]-(rle) " +
             "WHERE n.identifier = {1} OR {1} IN n.name OR {1} IN n.geneName " +
+            "RETURN DISTINCT(pe.dbId) as dbId, pe.stId as stId, pe.displayName as displayName, labels(pe) as labels " +
+            "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
+            "MATCH (t:Pathway{dbId:{0}}) " +
+            "OPTIONAL MATCH path=(t)-[:hasEvent*]->(p:Pathway{hasDiagram:False}) " +
+            "WHERE ALL(n IN TAIL(NODES(path)) WHERE n.hasDiagram = False) " +
+            "WITH CASE WHEN path IS NULL THEN t ELSE NODES(path) END AS ps " +
+            "UNWIND ps AS p " +
+            "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT rle " +
+            "MATCH (rle)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
+            "WITH DISTINCT pe " +
+            "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(a:PhysicalEntity) " +
+            "WITH DISTINCT pe, COLLECT(DISTINCT a.stId) AS participants " +
+            "WHERE pe.stId = {1} OR {1} IN participants " +
             "RETURN DISTINCT(pe.dbId) as dbId, pe.stId as stId, pe.displayName as displayName, labels(pe) as labels")
     Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifierByDbId(Long dbId, String identifier);
 }
