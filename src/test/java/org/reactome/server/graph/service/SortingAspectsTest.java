@@ -1,9 +1,9 @@
 package org.reactome.server.graph.service;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.aop.SortingAspect;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.DatabaseObject;
@@ -28,10 +28,7 @@ public class SortingAspectsTest extends BaseTest {
     private DatabaseObjectService dbs;
 
     @Autowired
-    protected SortingAspect sortingAspect;
-
-    @Autowired
-    protected LazyFetchAspect lazyLoadingAspect;
+    private SortingAspect sortingAspect;
 
     @BeforeClass
     public static void setUpClass() {
@@ -46,10 +43,8 @@ public class SortingAspectsTest extends BaseTest {
             checkedOnce = true;
         }
 
-        /********   ENABLING LAZY LOADING FOR A PROPER TESTING  *********/
+        //********   ENABLING SORTING ASPECT FOR A PROPER TESTING  *********
         sortingAspect.setEnableSorting(true);
-
-        lazyLoadingAspect.setEnableAOP(false);
 
         assumeTrue(isFit);
         DatabaseObjectFactory.clearCache();
@@ -58,7 +53,7 @@ public class SortingAspectsTest extends BaseTest {
     @Test
     public void sortingTest() throws InvocationTargetException, IllegalAccessException {
         logger.info("Testing AOP Sorting");
-        Complex databaseObjectObserved = (Complex) dbs.findById(stId);
+        Complex databaseObjectObserved =  dbs.findById(stId);
         assertTrue(isSorted(databaseObjectObserved.getHasComponent()));
         logger.info("Finished");
     }
@@ -72,5 +67,10 @@ public class SortingAspectsTest extends BaseTest {
             prev = elem;
         }
         return true;
+    }
+
+    @After
+    public void setDown(){
+        sortingAspect.setEnableSorting(false);
     }
 }
