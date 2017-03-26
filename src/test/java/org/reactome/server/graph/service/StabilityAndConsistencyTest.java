@@ -43,7 +43,7 @@ public class StabilityAndConsistencyTest extends BaseTest {
             checkedOnce = true;
         }
 
-        /********   ENABLING LAZY LOADING FOR A PROPER TESTING  *********/
+        //*******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
         lazyFetchAspect.setEnableAOP(true);
 
         assumeTrue(isFit);
@@ -55,11 +55,11 @@ public class StabilityAndConsistencyTest extends BaseTest {
     public void libraryStabilityTest() {
         logger.info("Testing libraryStabilityTest");
 
-        ReactionLikeEvent rle = (ReactionLikeEvent) dbs.findById(stId);
+        ReactionLikeEvent rle = dbs.findById(stId);
 
         PhysicalEntity activeUnit1 = getCatalystActivityActiveUnit(rle);
 
-        Complex c = (Complex) dbs.findById("R-HSA-110185");
+        Complex c = dbs.findById("R-HSA-110185");
         assertTrue("Complex is found", c != null);
 
         PhysicalEntity activeUnit2 = getCatalystActivityActiveUnit(rle);
@@ -92,7 +92,7 @@ public class StabilityAndConsistencyTest extends BaseTest {
             }
         }
 
-        Complex complex = (Complex) dbs.findById("R-HSA-83538");
+        Complex complex = dbs.findById("R-HSA-83538");
         List<PhysicalEntity> hasComponent = complex.getHasComponent();
         int comps2 = hasComponent.size();
 
