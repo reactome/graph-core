@@ -40,7 +40,7 @@ public class LazyLoadingTest extends BaseTest {
             checkedOnce = true;
         }
 
-        /********   ENABLING LAZY LOADING FOR A PROPER TESTING  *********/
+        //*******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
         lazyFetchAspect.setEnableAOP(true);
 
         assumeTrue(isFit);
@@ -64,7 +64,7 @@ public class LazyLoadingTest extends BaseTest {
     public void lazyLoadingPositiveAndNegativeRegulatorsTest() {
         logger.info("Testing Lazy Loading Positive And Negative Regulators");
 
-        Event p = (Event) dbs.findById("R-HSA-71670");
+        Event p = dbs.findById("R-HSA-71670");
 
         assumeFalse(p.getPositivelyRegulatedBy().isEmpty());
         for (DatabaseObject positiveRegulation : p.getPositivelyRegulatedBy()) {
