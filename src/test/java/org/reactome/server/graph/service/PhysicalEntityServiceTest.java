@@ -61,46 +61,6 @@ public class PhysicalEntityServiceTest {
         assumeTrue(isFit);
         DatabaseObjectFactory.clearCache();
     }
-//
-//    @Test
-//    public void testFindByDbId() throws InvocationTargetException, IllegalAccessException {
-//
-//        logger.info("Started testing physicalEntityService.findByDbId");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = physicalEntityService.findById(dbId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-//    }
-//
-//    @Test
-//    public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
-//
-//        logger.info("Started testing physicalEntityService.findByStId");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectObserved = physicalEntityService.findById(stId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        start = System.currentTimeMillis();
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GkInstance execution time: " + time + "ms");
-//
-//        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-//    }
 
     @Test
     public void testGetOtherFormsOfThisMoleculeByDbId() throws InvocationTargetException, IllegalAccessException {
@@ -129,25 +89,6 @@ public class PhysicalEntityServiceTest {
         assertTrue(otherFormsOfThisMolecule.size() >= 27);
         logger.info("Finished");
     }
-
-    /**
-     * Execution times do not give fair estimation since GkInstance does not fill any of the legacy fields.
-     *
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     */
-//    @Test
-//    public void findByIdWithLegacyFields() throws InvocationTargetException, IllegalAccessException {
-//
-//        logger.info("Started testing physicalEntityService.findByIdWithLegacyFields");
-//
-//        DatabaseObject databaseObjectObserved = physicalEntityService.findByIdWithLegacyFields(dbId.toString());
-//        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
-//
-//        assertTrue(databaseObjectExpected.equals(databaseObjectObserved));
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
-//        logger.info("Finished");
-//    }
 
     @Test
     public void testGetComplexSubunits(){
