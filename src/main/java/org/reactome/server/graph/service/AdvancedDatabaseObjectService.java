@@ -24,7 +24,7 @@ public class AdvancedDatabaseObjectService {
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
-    public DatabaseObject findEnhancedObjectById(Object identifier) {
+    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findEnhancedObjectById(id);
@@ -39,26 +39,26 @@ public class AdvancedDatabaseObjectService {
     public <T extends DatabaseObject> T findById(Object identifier, Integer limit) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return (T) advancedDatabaseObjectRepository.findById(id, limit);
+            return advancedDatabaseObjectRepository.findById(id, limit);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return (T) advancedDatabaseObjectRepository.findById(Long.parseLong(id), limit);
+            return advancedDatabaseObjectRepository.findById(Long.parseLong(id), limit);
         }
         return null;
     }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
-    public <T> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+    public <T extends DatabaseObject> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
         return advancedDatabaseObjectRepository.findByProperty(clazz, property, value, depth);
     }
 
-    public <T> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+    public <T extends DatabaseObject> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
         return advancedDatabaseObjectRepository.findAllByProperty(clazz, property, value, depth);
     }
 
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
-    public DatabaseObject findById(Object identifier, RelationshipDirection direction) {
+    public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction);
@@ -68,7 +68,7 @@ public class AdvancedDatabaseObjectService {
         return null;
     }
 
-    public DatabaseObject findById(Object identifier, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction, String... relationships) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction, relationships);
@@ -98,7 +98,7 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, relationships);
     }
 
-    public DatabaseObject findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, relationships);
     }
 
@@ -156,7 +156,7 @@ public class AdvancedDatabaseObjectService {
      *                      assign null if your does not have parameters
      * @throws CustomQueryException in case of any Cypher query Runtime Exception
      */
-    public DatabaseObject customQueryForDatabaseObject(Class<? extends DatabaseObject> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+    public <T extends DatabaseObject> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
         return advancedDatabaseObjectRepository.customQueryForDatabaseObject(clazz, query, parametersMap);
     }
 
