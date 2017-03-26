@@ -75,7 +75,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findAllByProperty");
         long start, time;
         start = System.currentTimeMillis();
-        Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById("R-HSA-5205685", 10);
+        Pathway databaseObjectObserved = advancedDatabaseObjectService.findById("R-HSA-5205685", 10);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -162,7 +162,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByDbIdWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
-        Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById(dbId, RelationshipDirection.OUTGOING, "hasEvent");
+        Pathway databaseObjectObserved = advancedDatabaseObjectService.findById(dbId, RelationshipDirection.OUTGOING, "hasEvent");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -175,7 +175,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByStIdWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
-        Pathway databaseObjectObserved = (Pathway) advancedDatabaseObjectService.findById(stId, RelationshipDirection.OUTGOING, "hasEvent");
+        Pathway databaseObjectObserved = advancedDatabaseObjectService.findById(stId, RelationshipDirection.OUTGOING, "hasEvent");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
