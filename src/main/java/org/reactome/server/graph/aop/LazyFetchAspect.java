@@ -122,6 +122,10 @@ public class LazyFetchAspect {
         return null;
     }
 
+    public Boolean getEnableAOP() {
+        return enableAOP;
+    }
+
     public void setEnableAOP(boolean enableAOP) {
         this.enableAOP = enableAOP;
     }
