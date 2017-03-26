@@ -23,12 +23,12 @@ public class SortingAspect {
 
     protected static final Logger logger = LoggerFactory.getLogger("infoLogger");
 
-    private Boolean enableSorting = true;
+    private static boolean enableSorting = false;
 
     @SuppressWarnings("unchecked")
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
-        if (!enableSorting) {
+        if (!SortingAspect.enableSorting) {
             return pjp.proceed();
         }
 
@@ -114,7 +114,11 @@ public class SortingAspect {
     public void modelGetter() {
     }
 
-    public void setEnableSorting(Boolean enableSorting) {
-        this.enableSorting = enableSorting;
+    public Boolean getEnableSorting() {
+        return SortingAspect.enableSorting;
+    }
+
+    public void setEnableSorting(boolean enableSorting) {
+        SortingAspect.enableSorting = enableSorting;
     }
 }
