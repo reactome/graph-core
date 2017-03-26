@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,25 +19,28 @@ import java.util.Set;
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Service
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "SpringAutowiredFieldsWarningInspection"})
 public class DatabaseObjectService {
 
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
 
-    public DatabaseObject findById(Object identifier) {
-        DatabaseObject rtn  = null;
+    @Autowired
+    private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
+
+    public <T extends DatabaseObject> T findById(Object identifier) {
+        T rtn = null;
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            rtn = databaseObjectRepository.findByStId(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            rtn = databaseObjectRepository.findByDbId(Long.parseLong(id));
+            rtn = advancedDatabaseObjectRepository.findById(id);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            rtn = advancedDatabaseObjectRepository.findById(Long.parseLong(id));
         }
         if (rtn != null) rtn.isLoaded = true;
         return rtn;
     }
 
-    public DatabaseObject findByIdNoRelations(Object identifier) {
+    public <T extends DatabaseObject> T findByIdNoRelations(Object identifier) {
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
@@ -47,7 +51,7 @@ public class DatabaseObjectService {
         return null;
     }
 
-    public Collection<DatabaseObject> findByIdsNoRelations(Collection<?> identifiers) {
+    public <T extends DatabaseObject> Collection<T> findByIdsNoRelations(Collection<?> identifiers) {
         Set<Long> dbIds = new HashSet<>();
         Set<String> stIds = new HashSet<>();
         for (Object identifier : identifiers) {
@@ -59,7 +63,7 @@ public class DatabaseObjectService {
             }
         }
         if (dbIds.isEmpty() && stIds.isEmpty()) return null;
-        Collection<DatabaseObject> databaseObjects = new HashSet<>();
+        Collection<T> databaseObjects = new HashSet<>();
         if (!dbIds.isEmpty()) databaseObjects.addAll(databaseObjectRepository.findByDbIdsNoRelations(dbIds));
         if (!stIds.isEmpty()) databaseObjects.addAll(databaseObjectRepository.findByStIdsNoRelations(stIds));
         return databaseObjects;
