@@ -14,20 +14,23 @@ import java.util.Collection;
 @Repository
 public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject>{
 
-    DatabaseObject findByDbId(Long dbId);
-    DatabaseObject findByStId(String stId);
-    DatabaseObject findByOldStId(String oldStId);
+//    The following two derived queries have been deprecated
+//    DatabaseObject findByDbId(Long dbId);
+//    DatabaseObject findByStId(String stId);
+
+    //Derived query
+    <T extends DatabaseObject> T findByOldStId(String oldStId);
 
     @Query("MATCH (n:DatabaseObject{dbId:{0}}) RETURN n")
-    DatabaseObject findByDbIdNoRelations(Long dbId);
+    <T extends DatabaseObject> T findByDbIdNoRelations(Long dbId);
 
     @Query("MATCH (n:DatabaseObject{stId:{0}}) RETURN n")
-    DatabaseObject findByStIdNoRelations(String stId);
+    <T extends DatabaseObject> T findByStIdNoRelations(String stId);
 
     @Query("MATCH (n:DatabaseObject) WHERE n.dbId IN {0} RETURN n")
-    Collection<DatabaseObject> findByDbIdsNoRelations(Collection<Long> dbIds);
+    <T extends DatabaseObject> Collection<T> findByDbIdsNoRelations(Collection<Long> dbIds);
 
     @Query("MATCH (n:DatabaseObject) WHERE n.stId IN {0} RETURN n")
-    Collection<DatabaseObject> findByStIdsNoRelations(Collection<String> stId);
+    <T extends DatabaseObject> Collection<T> findByStIdsNoRelations(Collection<String> stId);
 
 }
