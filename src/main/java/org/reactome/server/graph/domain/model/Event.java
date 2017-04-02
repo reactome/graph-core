@@ -83,25 +83,21 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
-    @ReactomeTransient
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    private List<NegativeRegulation> negativelyRegulatedBy;
-
     @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     private Set<Event> orthologousEvent;
 
+    /**
+     * regulatedBy is not a field of the previous RestfulApi and will be ignored until needed
+     */
+    @JsonIgnore
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    private List<PositiveRegulation> positivelyRegulatedBy;
+    private List<Regulation> regulatedBy;
 
     @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
     private List<Event> precedingEvent;
 
     @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
     private List<Species> relatedSpecies;
-
-    @ReactomeTransient
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    private List<Requirement> requirements;
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
@@ -287,15 +283,6 @@ public abstract class Event extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public List<NegativeRegulation> getNegativelyRegulatedBy() {
-        return negativelyRegulatedBy;
-    }
-
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    public void setNegativelyRegulatedBy(List<NegativeRegulation> negativelyRegulatedBy) {
-        this.negativelyRegulatedBy = negativelyRegulatedBy;
-    }
-
     public Set<Event> getOrthologousEvent() {
         return orthologousEvent;
     }
@@ -305,16 +292,16 @@ public abstract class Event extends DatabaseObject {
         this.orthologousEvent = orthologousEvent;
     }
 
-    public List<PositiveRegulation> getPositivelyRegulatedBy() {
-        return positivelyRegulatedBy;
+    public List<Regulation> getRegulatedBy() {
+        return regulatedBy;
     }
 
     @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    public void setPositivelyRegulatedBy(List<PositiveRegulation> positivelyRegulatedBy) {
-        this.positivelyRegulatedBy = positivelyRegulatedBy;
+    public void setRegulatedBy(List<Regulation> regulatedBy) {
+        this.regulatedBy = regulatedBy;
     }
 
-    public List<Event> getPrecedingEvent() {
+   public List<Event> getPrecedingEvent() {
         return precedingEvent;
     }
 
@@ -330,15 +317,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
     public void setRelatedSpecies(List<Species> relatedSpecies) {
         this.relatedSpecies = relatedSpecies;
-    }
-
-    public List<Requirement> getRequirements() {
-        return requirements;
-    }
-
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
-    public void setRequirements(List<Requirement> requirements) {
-        this.requirements = requirements;
     }
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
@@ -379,19 +357,42 @@ public abstract class Event extends DatabaseObject {
         this.summation = summation;
     }
 
-    // Null values will not be propagated to json, empty lists will. Thus I rather return null here.
-    public List<Regulation> getRegulations() {
-        List<Regulation> regulations = null;
-        if (this.getPositivelyRegulatedBy() != null && !this.getPositivelyRegulatedBy().isEmpty()) {
-            regulations = new ArrayList<>();
-            regulations.addAll(this.getPositivelyRegulatedBy());
-        }
-        if (this.getNegativelyRegulatedBy() != null && !this.getNegativelyRegulatedBy().isEmpty()) {
-            if (regulations == null) {
-                regulations = new ArrayList<>();
+
+    /* Keeps consistency with the former RESTFul API */
+
+    @ReactomeSchemaIgnore
+    @Deprecated
+    public List<PositiveRegulation> getPositivelyRegulatedBy() {
+        List<PositiveRegulation> rtn = new ArrayList<>();
+        for (Regulation regulation : getRegulatedBy()) {
+            if (regulation instanceof PositiveRegulation && !(regulation instanceof Requirement)) {
+                rtn.add((PositiveRegulation) regulation);
             }
-            regulations.addAll(this.getNegativelyRegulatedBy());
         }
-        return regulations;
+        return rtn.isEmpty() ? null : rtn;
+    }
+
+    @ReactomeSchemaIgnore
+    @Deprecated
+    public List<Requirement> getRequirements() {
+        List<Requirement> rtn = new ArrayList<>();
+        for (Regulation regulation : getRegulatedBy()) {
+            if(regulation instanceof  Requirement){
+                rtn.add((Requirement) regulation);
+            }
+        }
+        return rtn.isEmpty() ? null : rtn;
+    }
+
+    @ReactomeSchemaIgnore
+    @Deprecated
+    public List<NegativeRegulation> getNegativelyRegulatedBy() {
+        List<NegativeRegulation> rtn = new ArrayList<>();
+        for (Regulation regulation : getRegulatedBy()) {
+            if(regulation instanceof  NegativeRegulation){
+                rtn.add((NegativeRegulation) regulation);
+            }
+        }
+        return rtn.isEmpty() ? null : rtn;
     }
 }

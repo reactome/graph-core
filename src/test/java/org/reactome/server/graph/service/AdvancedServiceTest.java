@@ -63,7 +63,7 @@ public class AdvancedServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertFalse(pathwayObserved.getDisplayName() + " should have regulators", pathwayObserved.getRegulations().isEmpty());
+        assertFalse(pathwayObserved.getDisplayName() + " should have regulators", pathwayObserved.getRegulatedBy().isEmpty());
         logger.info("Finished");
     }
 

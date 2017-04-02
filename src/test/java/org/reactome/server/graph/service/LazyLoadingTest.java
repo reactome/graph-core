@@ -61,6 +61,8 @@ public class LazyLoadingTest extends BaseTest {
     }
 
     @Test
+    @Deprecated
+    @SuppressWarnings("deprecation")
     public void lazyLoadingPositiveAndNegativeRegulatorsTest() {
         logger.info("Testing Lazy Loading Positive And Negative Regulators");
 
