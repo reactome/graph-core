@@ -30,28 +30,30 @@ public class AdvancedDatabaseObjectRepository {
     @Autowired
     private Neo4jOperations neo4jTemplate;
 
-    public <T extends DatabaseObject> T findById(Long dbId) {
-        String query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-        Map<String, Object> map = new HashMap<>();
-        map.put("dbId", dbId);
-        neo4jTemplate.clear();
-        Result result = neo4jTemplate.query(query, map, true);
-        if (result != null && result.iterator().hasNext()) {
-            return (T) result.iterator().next().get("n");
-        }
-        return null;
-    }
-
-    public <T extends DatabaseObject> T findById(String stId) {
-        String query = "MATCH (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-        Map<String, Object> map = new HashMap<>();
-        map.put("stId", stId);
-        neo4jTemplate.clear();
-        Result result = neo4jTemplate.query(query, map, true);
-        if (result != null && result.iterator().hasNext())
-            return (T) result.iterator().next().get("n");
-        return null;
-    }
+//    The following two methods were thought to provide order in the lists of attributes, but now is done with the
+//    relationship objects in the model side (instead of with Cypher)
+//    public <T extends DatabaseObject> T findById(Long dbId) {
+//        String query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+//        neo4jTemplate.clear();
+//        Result result = neo4jTemplate.query(query, map, true);
+//        if (result != null && result.iterator().hasNext()) {
+//            return (T) result.iterator().next().get("n");
+//        }
+//        return null;
+//    }
+//
+//    public <T extends DatabaseObject> T findById(String stId) {
+//        String query = "MATCH (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("stId", stId);
+//        neo4jTemplate.clear();
+//        Result result = neo4jTemplate.query(query, map, true);
+//        if (result != null && result.iterator().hasNext())
+//            return (T) result.iterator().next().get("n");
+//        return null;
+//    }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
