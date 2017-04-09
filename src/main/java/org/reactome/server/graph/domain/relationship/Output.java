@@ -12,10 +12,10 @@ import org.reactome.server.graph.domain.model.PhysicalEntity;
  * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
  * outputs.
  */
-@SuppressWarnings("unused")
 @RelationshipEntity(type = "output")
 public class Output {
 
+    @SuppressWarnings("unused")
     @JsonIgnore
     @GraphId
     private Long id;
@@ -61,6 +61,7 @@ public class Output {
 
         Output output = (Output) o;
 
+        //noinspection SimplifiableIfStatement
         if (event != null ? !event.equals(output.event) : output.event != null) return false;
         return physicalEntity != null ? physicalEntity.equals(output.physicalEntity) : output.physicalEntity == null;
     }
