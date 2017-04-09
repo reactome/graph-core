@@ -172,8 +172,8 @@ public class DatabaseObjectUtils {
         if (id instanceof String) {
             String aux = trimId((String) id);
             if (aux.startsWith("REACT_")) { //In case the provided identifier is an OLD style one, we translate to the new one
-                DatabaseObject dbObject = databaseObjectRepository.findByOldStId(aux);
-                if (dbObject != null) aux = dbObject.getStId();
+                String stId = databaseObjectRepository.findNewStId(aux);
+                if (stId != null) aux = stId;
             }
             return aux;
         } else if (id instanceof Number && !(id instanceof Double)) {
