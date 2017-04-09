@@ -14,12 +14,12 @@ import java.util.Collection;
 @Repository
 public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject>{
 
-//    The following two derived queries have been deprecated
-//    DatabaseObject findByDbId(Long dbId);
-//    DatabaseObject findByStId(String stId);
+    //Derived queries
+    <T extends DatabaseObject> T   findByDbId(Long dbId);
+    <T extends DatabaseObject> T  findByStId(String stId);
 
-    //Derived query
-    <T extends DatabaseObject> T findByOldStId(String oldStId);
+    @Query("MATCH (n:DatabaseObject{oldStId:{0}}) RETURN n.stId")
+    String findNewStId(String oldStIid);
 
     @Query("MATCH (n:DatabaseObject{dbId:{0}}) RETURN n")
     <T extends DatabaseObject> T findByDbIdNoRelations(Long dbId);
