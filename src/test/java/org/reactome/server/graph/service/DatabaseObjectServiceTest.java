@@ -158,6 +158,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
+    @Test
     public void useOldStableIdentifier() {
         logger.info("Started testing databaseObjectService.useOldStableIdentifier");
         long start, time;
