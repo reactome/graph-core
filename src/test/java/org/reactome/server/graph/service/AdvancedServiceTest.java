@@ -45,7 +45,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findEnhancedPhysicalEntityByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        PhysicalEntity peObserved = (PhysicalEntity) advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
+        PhysicalEntity peObserved = advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -59,7 +59,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findEnhancedPathwayByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Event pathwayObserved = (Event) advancedDatabaseObjectService.findEnhancedObjectById(1368139L);
+        Event pathwayObserved = advancedDatabaseObjectService.findEnhancedObjectById(1368139L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -79,7 +79,7 @@ public class AdvancedServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        databaseObjectObserved.getHasEvent();
+        assertTrue(databaseObjectObserved.getHasEvent() != null);
         logger.info("Finished");
     }
 
@@ -257,9 +257,9 @@ public class AdvancedServiceTest extends BaseTest {
         Collection<CustomQueryResult> customQueryResultList = advancedDatabaseObjectService.customQueryForObjects(CustomQueryResult.class, query, null);
         assertNotNull(customQueryResultList);
         assertEquals(20, customQueryResultList.size());
-        assertEquals(12, customQueryResultList.iterator().next().getEvents().size());
-        assertEquals(12, customQueryResultList.iterator().next().getEventsArray().length);
-        assertEquals(12, customQueryResultList.iterator().next().getEventsPrimitiveArray().length);
+        assertTrue(customQueryResultList.iterator().next().getEvents().size() > 0);
+        assertTrue(customQueryResultList.iterator().next().getEventsArray().length > 0);
+        assertTrue(customQueryResultList.iterator().next().getEventsPrimitiveArray().length > 0);
     }
 
     @Test
@@ -269,7 +269,7 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (p:Pathway{dbId:{dbId}}) RETURN p";
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("dbId", 1640170);
-        Pathway pathway = (Pathway) advancedDatabaseObjectService.customQueryForDatabaseObject(Pathway.class, query, parametersMap);
+        Pathway pathway = advancedDatabaseObjectService.customQueryForDatabaseObject(Pathway.class, query, parametersMap);
         assertNotNull(pathway);
 
         // by default, lazy loading is disabled in our tests, enable here for a particular test
