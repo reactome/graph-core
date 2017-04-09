@@ -15,8 +15,8 @@ import java.util.Collection;
 public interface DatabaseObjectRepository extends GraphRepository<DatabaseObject>{
 
     //Derived queries
-    <T extends DatabaseObject> T   findByDbId(Long dbId);
-    <T extends DatabaseObject> T  findByStId(String stId);
+    <T extends DatabaseObject> T findByDbId(Long dbId);
+    <T extends DatabaseObject> T findByStId(String stId);
 
     @Query("MATCH (n:DatabaseObject{oldStId:{0}}) RETURN n.stId")
     String findNewStId(String oldStIid);
