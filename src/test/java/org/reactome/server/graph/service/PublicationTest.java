@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Objects;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -47,4 +48,19 @@ public class PublicationTest extends BaseTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void personPublications() {
+        logger.info("Started testing publicationTest.personPublications");
+
+        long start, time;
+        start = System.currentTimeMillis();
+
+        Person person = databaseObjectService.findById(6799816);
+        assertFalse(person.getPublications().isEmpty());
+
+        time = System.currentTimeMillis() - start;
+        logger.info("Comparison execution time: " + time + "ms");
+
+        logger.info("Finished");
+    }
 }
