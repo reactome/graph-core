@@ -1,7 +1,6 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +24,13 @@ public class DatabaseObjectService {
     @Autowired
     private DatabaseObjectRepository databaseObjectRepository;
 
-    @Autowired
-    private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
-
     public <T extends DatabaseObject> T findById(Object identifier) {
         T rtn = null;
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            rtn = advancedDatabaseObjectRepository.findById(id);
+            rtn = databaseObjectRepository.findByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            rtn = advancedDatabaseObjectRepository.findById(Long.parseLong(id));
+            rtn = databaseObjectRepository.findByDbId(Long.parseLong(id));
         }
         if (rtn != null) rtn.isLoaded = true;
         return rtn;
