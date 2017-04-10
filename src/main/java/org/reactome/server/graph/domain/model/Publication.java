@@ -3,8 +3,12 @@ package org.reactome.server.graph.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.relationship.PublicationAuthor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 @SuppressWarnings("unused")
 @NodeEntity
@@ -14,7 +18,7 @@ public class Publication extends DatabaseObject {
     private String title;
 
     @Relationship(type = "author", direction = Relationship.INCOMING)
-    private List<Person> author;
+    private SortedSet<PublicationAuthor> author;
 
     public Publication() {}
 
@@ -28,11 +32,23 @@ public class Publication extends DatabaseObject {
 
     @Relationship(type = "author", direction = Relationship.INCOMING)
     public List<Person> getAuthor() {
-        return author;
+        List<Person> rtn = new ArrayList<>();
+        if(author ==null) return rtn;
+        for (PublicationAuthor author : author) {
+            rtn.add(author.getAuthor());
+        }
+        return rtn;
     }
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
-    public void setAuthor(List<Person> author) {
-        this.author = author;
+    public void setAuthor(List<Person> author){
+        this.author = new TreeSet<>();
+        int order = 0;
+        for (Person person : author) {
+            PublicationAuthor aux = new PublicationAuthor();
+            aux.setAuthor(person);
+            aux.setPublication(this);
+            aux.setOrder(order++);
+            this.author.add(aux);
+        }
     }
 }
