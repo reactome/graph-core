@@ -1,8 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.PublicationAuthor;
 
@@ -13,6 +15,10 @@ import java.util.List;
 @NodeEntity
 public class Person extends DatabaseObject {
 
+    //should not be visible to the public
+    @JsonIgnore
+    @ReactomeProperty
+    private String eMailAddress;
     @ReactomeProperty
     private String firstname;
     @ReactomeProperty
@@ -36,6 +42,15 @@ public class Person extends DatabaseObject {
     private List<PublicationAuthor> publicationAuthorList;
 
     public Person() {}
+
+    @ReactomeSchemaIgnore
+    public String getEMailAddress() {
+        return eMailAddress;
+    }
+
+    public void setEMailAddress(String eMailAddress) {
+        this.eMailAddress = eMailAddress;
+    }
 
     public String getFirstname() {
         return firstname;
