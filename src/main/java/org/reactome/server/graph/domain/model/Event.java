@@ -358,10 +358,9 @@ public abstract class Event extends DatabaseObject {
     }
 
 
-    /* Keeps consistency with the former RESTFul API */
-
     @ReactomeSchemaIgnore
     @Deprecated
+    @JsonIgnore
     public List<PositiveRegulation> getPositivelyRegulatedBy() {
         List<PositiveRegulation> rtn = new ArrayList<>();
         for (Regulation regulation : getRegulatedBy()) {
@@ -374,6 +373,7 @@ public abstract class Event extends DatabaseObject {
 
     @ReactomeSchemaIgnore
     @Deprecated
+    @JsonIgnore
     public List<Requirement> getRequirements() {
         List<Requirement> rtn = new ArrayList<>();
         for (Regulation regulation : getRegulatedBy()) {
@@ -386,6 +386,7 @@ public abstract class Event extends DatabaseObject {
 
     @ReactomeSchemaIgnore
     @Deprecated
+    @JsonIgnore
     public List<NegativeRegulation> getNegativelyRegulatedBy() {
         List<NegativeRegulation> rtn = new ArrayList<>();
         for (Regulation regulation : getRegulatedBy()) {
