@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -359,7 +360,7 @@ public abstract class Event extends DatabaseObject {
 
 
     @ReactomeSchemaIgnore
-    @JsonIgnore
+    @JsonGetter("positivelyRegulatedBy")
     public List<PositiveRegulation> getPositivelyRegulatedBy() {
         List<PositiveRegulation> rtn = new ArrayList<>();
         try {
@@ -375,7 +376,7 @@ public abstract class Event extends DatabaseObject {
     }
 
     @ReactomeSchemaIgnore
-    @JsonIgnore
+    @JsonGetter("requirements")
     public List<Requirement> getRequirements() {
         List<Requirement> rtn = new ArrayList<>();
         try {
@@ -391,7 +392,7 @@ public abstract class Event extends DatabaseObject {
     }
 
     @ReactomeSchemaIgnore
-    @JsonIgnore
+    @JsonGetter("negativelyRegulatedBy")
     public List<NegativeRegulation> getNegativelyRegulatedBy() {
         List<NegativeRegulation> rtn = new ArrayList<>();
         try {
