@@ -10,27 +10,25 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 31.05.16.
+ * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public interface PersonRepository extends GraphRepository<Person>{
 
-    @Query("Match (n:Person) Where  n.surname in {0} AND n.firstname in {0} RETURN n")
+    @Query("MATCH (n:Person)-[r]->(m) WHERE n.surname in {0} AND n.firstname in {0} RETURN n, r, m")
     Collection<Person> findPersonByName(String[] name);
 
-    @Query("Match (n:Person) Where  n.surname in {0} OR n.firstname in {0} RETURN n")
+    @Query("MATCH (n:Person)-[r]->(m) WHERE n.surname in {0} OR n.firstname in {0} RETURN n, r, m")
     Collection<Person> queryPersonByName(String[] name);
 
-    @Query("MATCH (n:Person{orcidId:{0}}) Return n")
+    @Query("MATCH (n:Person{orcidId:{0}})-[r]->(m) Return n, r, m")
     Person findPersonByOrcidId(String orcidId);
 
-    @Query("Match (n:Person{dbId:{0}}) Return n")
+    @Query("MATCH (n:Person{dbId:{0}})-[r]->(m) Return n, r, m")
     Person findPersonByDbId(Long dbId);
 
-    @Query("Match (n:Person{eMailAddress:{0}}) Return n")
+    @Query("MATCH (n:Person{eMailAddress:{0}})-[r]->(m) Return n, r, m")
     @Deprecated
     Person findPersonByEmail(String email);
 
@@ -43,13 +41,13 @@ public interface PersonRepository extends GraphRepository<Person>{
     @Query("MATCH (n:Person{eMailAddress:{0}})-[:author]-(m:Publication) Return m")
     Collection<Publication> getPublicationsOfPersonByEmail(String email);
 
-    @Query("Match (n:Person{orcidId:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
+    @Query("MATCH (n:Person{orcidId:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
     Collection<Pathway> getAuthoredPathwaysByOrcidId(String orcidId);
 
-    @Query("Match (n:Person{dbId:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
+    @Query("MATCH (n:Person{dbId:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
     Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId);
 
-    @Query("Match (n:Person{eMailAddress:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
+    @Query("MATCH (n:Person{eMailAddress:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
     @Deprecated
     Collection<Pathway> getAuthoredPathwaysByEmail(String email);
 }

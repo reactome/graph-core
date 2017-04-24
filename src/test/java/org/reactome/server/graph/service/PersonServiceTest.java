@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by:
@@ -72,11 +71,12 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.findPersonByDbIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Person person = personService.findPerson(391309L);
+        Person person = personService.findPerson(217030L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("Jupe, S", person.getDisplayName());
+        assertEquals("Takao, N", person.getDisplayName());
+        assertFalse(person.getPublications().isEmpty());
         logger.info("Finished");
     }
 

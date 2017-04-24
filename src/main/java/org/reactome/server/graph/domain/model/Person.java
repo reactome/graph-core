@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -112,7 +113,9 @@ public class Person extends DatabaseObject {
         this.crossReference = crossReference;
     }
 
+    @JsonGetter("publications")
     public List<Publication> getPublications() {
+        if (publicationAuthorList == null) return null;
         List<Publication> rtn = new ArrayList<>();
         for (PublicationAuthor publicationAuthor : publicationAuthorList) {
             rtn.add(publicationAuthor.getPublication());
