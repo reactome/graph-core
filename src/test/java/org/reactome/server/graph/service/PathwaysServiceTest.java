@@ -140,7 +140,7 @@ public class PathwaysServiceTest {
     public void getPathwaysForIdentifierTest(){
         logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-1483249");
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-68875");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
