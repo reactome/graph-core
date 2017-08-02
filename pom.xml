@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <name>ReactomeGraphCore</name>
 
     <description>
@@ -51,7 +51,7 @@
         <spring.test.version>4.2.6.RELEASE</spring.test.version>
         <spring.version>4.3.0.RELEASE</spring.version>
         <spring.instrument.version>4.2.6.RELEASE</spring.instrument.version>
-        <neo4j.version>3.0.1</neo4j.version>
+        <neo4j.version>3.2.2</neo4j.version>
         <aspectj.version>1.8.10</aspectj.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.6</logback.version>
