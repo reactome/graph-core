@@ -1,0 +1,28 @@
+package org.reactome.server.graph.domain.schema;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import org.reactome.server.graph.domain.model.Event;
+
+@SuppressWarnings("unused")
+public class SchemaDataDownload {
+    private String contentUrl;
+    private String fileFormat;
+
+    public SchemaDataDownload(SchemaDataDownloadType dataDownloadType, Event event) {
+        this.contentUrl = dataDownloadType.getUrl(event.getDbId());
+        this.fileFormat = dataDownloadType.getFormat();
+    }
+
+    public String getContçentUrl() {
+        return contentUrl;
+    }
+
+    public String getFileFormat() {
+        return fileFormat;
+    }
+
+    @JsonGetter(value = "@type")
+    public String getType(){
+        return "DataDownload";
+    }
+}
