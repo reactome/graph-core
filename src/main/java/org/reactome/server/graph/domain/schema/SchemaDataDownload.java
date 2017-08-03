@@ -13,7 +13,7 @@ public class SchemaDataDownload {
         this.fileFormat = dataDownloadType.getFormat();
     }
 
-    public String getContçentUrl() {
+    public String getContentUrl() {
         return contentUrl;
     }
 
