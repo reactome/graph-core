@@ -45,10 +45,10 @@ public class LazyFetchAspect {
 
          // Get the relationship that is annotated in the attribute
         Relationship relationship = getRelationship(method.getName(), databaseObject.getClass());
-        if (relationship != null) {
+        if (relationship != null && !databaseObject.preventLazyLoading && !databaseObject.isLoaded) {
              // Check whether the object has been loaded.
              // pjp.proceed() has the result of the invoked method.
-            if (pjp.proceed() == null && !databaseObject.isLoaded) {
+            if (pjp.proceed() == null) {
                 Long dbId = databaseObject.getDbId();
                 String setterMethod = method.getName().replaceFirst("get", "set");
                 Class<?> methodReturnClazz = method.getReturnType();
