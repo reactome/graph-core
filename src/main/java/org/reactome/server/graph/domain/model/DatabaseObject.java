@@ -194,7 +194,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
         this.preventLazyLoading = preventLazyLoading;
 
-        //Here we go through all the getters and set all the objects to loaded
+        //Here we go through all the getters and prevent LazyLoading for all the objects
         Method[] methods = getClass().getMethods();
         for (Method method : methods) {
             if (!method.getName().startsWith("get")) continue;
