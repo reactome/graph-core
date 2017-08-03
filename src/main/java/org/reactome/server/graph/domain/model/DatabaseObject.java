@@ -13,23 +13,30 @@ import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 
 /**
- *  DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
- *
- *
- *  For the JsonIdentityInfo, when assigning generator as ObjectIdGenerators.PropertyGenerator could
- *  slow down the json serialisation due to a paging problem. Right now the @JsonIgnore annotations
- *  have been added to avoid serialising the not necessary attributes, but in case those are removed
- *  the best thing is to remove the mentioned property
+ * DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
+ * <p>
+ * <p>
+ * For the JsonIdentityInfo, when assigning generator as ObjectIdGenerators.PropertyGenerator could
+ * slow down the json serialisation due to a paging problem. Right now the @JsonIgnore annotations
+ * have been added to avoid serialising the not necessary attributes, but in case those are removed
+ * the best thing is to remove the mentioned property
  */
 @SuppressWarnings("unused")
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="dbId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
 @NodeEntity
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
 
     @ReactomeTransient
     public transient boolean isLoaded = false;
+
+    @ReactomeTransient
+    public transient boolean preventLazyLoading = false;
 
     @JsonIgnore
     @GraphId
@@ -59,7 +66,8 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @Relationship(type = "modified", direction = Relationship.INCOMING)
     private InstanceEdit modified;
 
-    public DatabaseObject() {}
+    public DatabaseObject() {
+    }
 
     @ReactomeSchemaIgnore
     public Long getId() {
@@ -170,5 +178,57 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeSchemaIgnore
     public String getClassName() {
         return getClass().getSimpleName();
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonIgnore
+    public <T extends DatabaseObject> T preventLazyLoading() {
+        return preventLazyLoading(true);
+    }
+
+    @SuppressWarnings({"unchecked", "WeakerAccess", "UnusedReturnValue"})
+    @ReactomeSchemaIgnore
+    @JsonIgnore
+    public <T extends DatabaseObject> T preventLazyLoading(boolean preventLazyLoading) {
+        if(this.preventLazyLoading == preventLazyLoading) return (T) this;
+
+        this.preventLazyLoading = preventLazyLoading;
+
+        //Here we go through all the getters and set all the objects to loaded
+        Method[] methods = getClass().getMethods();
+        for (Method method : methods) {
+            if (!method.getName().startsWith("get")) continue;
+            try {
+                Class<?> methodReturnClazz = method.getReturnType();
+
+                if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
+                    DatabaseObject object = (DatabaseObject) method.invoke(this);
+                    if (object != null && object.preventLazyLoading != preventLazyLoading) {
+                        object.preventLazyLoading(preventLazyLoading);
+                    }
+                }
+
+                if (Collection.class.isAssignableFrom(methodReturnClazz)) {
+                    ParameterizedType stringListType = (ParameterizedType) method.getGenericReturnType();
+                    Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
+                    String clazz = type.getSimpleName();
+                    if (DatabaseObject.class.isAssignableFrom(type)) {
+                        Collection collection = (Collection) method.invoke(this);
+                        if (collection != null) {
+                            for (Object obj : collection) {
+                                DatabaseObject object = (DatabaseObject) obj;
+                                if (object != null && object.preventLazyLoading != preventLazyLoading) {
+                                    object.preventLazyLoading(preventLazyLoading);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return (T) this;
     }
 }
