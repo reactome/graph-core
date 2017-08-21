@@ -20,9 +20,9 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
     @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOf(String stId);
 
-    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity)-[:referenceEntity]->() RETURN pe")
+    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN pe")
     Collection<PhysicalEntity> getComplexSubunits(Long dbId);
 
-    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity)-[:referenceEntity]->() RETURN pe")
+    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN pe")
     Collection<PhysicalEntity> getComplexSubunits(String stId);
 }
