@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.repository.PathwaysRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -21,6 +22,9 @@ public class PathwaysService {
     @Autowired
     public PathwaysRepository pathwaysRepository;
 
+    @Autowired
+    public SpeciesService speciesService;
+
     public Collection<Event> getContainedEvents(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
@@ -31,48 +35,94 @@ public class PathwaysService {
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysFor(String identifier, Long speciesId) {
+    public Collection<SimpleDatabaseObject> getPathwaysFor(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
+        Species s = speciesService.getSpecies(species);
+
         if (DatabaseObjectUtils.isStId(id)) {
-            return pathwaysRepository.getPathwaysForByStId(id, speciesId);
+            if (s != null) {
+                return pathwaysRepository.getPathwaysForByStIdAndSpeciesTaxId(id, s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysForByStId(id);
+            }
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return pathwaysRepository.getPathwaysForByDbId(Long.parseLong(id), speciesId);
+            if (s != null) {
+                return pathwaysRepository.getPathwaysForByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysForByDbId(Long.parseLong(id));
+            }
         }
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String identifier, Long speciesId) {
+    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
+        Species s = speciesService.getSpecies(species);
+
         if (DatabaseObjectUtils.isStId(id)) {
-            return pathwaysRepository.getPathwaysForAllFormsOfByStId(id, speciesId);
+            if (s != null) {
+                return pathwaysRepository.getPathwaysForAllFormsOfByStIdAndSpeciesTaxId(id, s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysForAllFormsOfByStId(id);
+            }
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return pathwaysRepository.getPathwaysForAllFormsOfByDbId(Long.parseLong(id), speciesId);
+            if (s != null) {
+                return pathwaysRepository.getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysForAllFormsOfByDbId(Long.parseLong(id));
+            }
         }
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysWithDiagramFor(String identifier, Long speciesId) {
+    public Collection<SimpleDatabaseObject> getPathwaysWithDiagramFor(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
+        Species s = speciesService.getSpecies(species);
+
         if (DatabaseObjectUtils.isStId(id)) {
-            return pathwaysRepository.getPathwaysWithDiagramForByStId(id, speciesId);
+            if (s != null) {
+                return pathwaysRepository.getPathwaysWithDiagramForByStIdAndSpeciesTaxId(id, s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysWithDiagramForByStId(id);
+            }
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return pathwaysRepository.getPathwaysWithDiagramForByDbId(Long.parseLong(id), speciesId);
+            if (s != null) {
+                return pathwaysRepository.getPathwaysWithDiagramForByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysWithDiagramForByDbId(Long.parseLong(id));
+            }
+        }
+
+        return null;
+    }
+
+    public Collection<SimpleDatabaseObject> getPathwaysWithDiagramForAllFormsOf(String identifier, Object species) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        Species s = speciesService.getSpecies(species);
+
+        if (DatabaseObjectUtils.isStId(id)) {
+            if (s != null) {
+                return pathwaysRepository.getPathwaysWithDiagramForAllFormsOfByStIdAndSpeciesTaxId(id, s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysWithDiagramForAllFormsOfByStId(id);
+            }
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            if (s != null) {
+                return pathwaysRepository.getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+            } else {
+                return pathwaysRepository.getPathwaysWithDiagramForAllFormsOfByDbId(Long.parseLong(id));
+            }
         }
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysWithDiagramForAllFormsOf(String identifier, Long speciesId) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return pathwaysRepository.getPathwaysWithDiagramForAllFormsOfByStId(id, speciesId);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return pathwaysRepository.getPathwaysWithDiagramForAllFormsOfByDbId(Long.parseLong(id), speciesId);
+    public Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Object species) {
+        Species s = speciesService.getSpecies(species);
+        if (s != null) {
+            return pathwaysRepository.getLowerLevelPathwaysForIdentifierAndSpeciesTaxId(identifier, s.getTaxId());
+        } else {
+            return pathwaysRepository.getLowerLevelPathwaysForIdentifier(identifier);
         }
-        return null;
-    }
-
-    public Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Long speciesId) {
-        return pathwaysRepository.getLowerLevelPathwaysForIdentifier(identifier, speciesId);
     }
 
     public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, String... pathways) {
