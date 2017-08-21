@@ -85,7 +85,7 @@ public class PathwaysServiceTest {
     public void getPathwaysForTest(){
         logger.info("Started testing fireworksService.getPathwaysForTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysFor("R-ALL-113592", 48887L);
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysFor("R-ALL-113592", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -96,7 +96,7 @@ public class PathwaysServiceTest {
     public void getPathwaysForAllFormsOfTest(){
         logger.info("Started testing fireworksService.getPathwaysForAllFormsOfTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForAllFormsOf("R-ALL-113592", 48887L);
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForAllFormsOf("R-ALL-113592", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -107,7 +107,7 @@ public class PathwaysServiceTest {
     public void getPathwaysWithDiagramForTest(){
         logger.info("Started testing fireworksService.getPathwaysWithDiagramForTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysWithDiagramFor("R-HSA-199420", 48887L);
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysWithDiagramFor("R-HSA-199420", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -118,7 +118,7 @@ public class PathwaysServiceTest {
     public void getPathwaysWithDiagramForAllFormsOfTest(){
         logger.info("Started testing fireworksService.getPathwaysWithDiagramForAllFormsOfTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysWithDiagramForAllFormsOf("R-HSA-199420", 48887L);
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysWithDiagramForAllFormsOf("R-HSA-199420", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -129,7 +129,7 @@ public class PathwaysServiceTest {
     public void getLowerLevelPathwaysForIdentifierTest(){
         logger.info("Started testing pathwaysService.getLowerLevelPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getLowerLevelPathwaysForIdentifier("PTEN", 48887L);
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getLowerLevelPathwaysForIdentifier("PTEN", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
