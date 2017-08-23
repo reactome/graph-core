@@ -28,25 +28,31 @@ public class SchemaDataSet {
         this.url = "https://reactome.org/PathwayBrowser/#/" + event.getStId();
         this.version = "" + version;
         this.keywords = Collections.singletonList(event.getSchemaClass());
-        for (InstanceEdit instanceEdit : event.getAuthored()) {
-            for (Person person : instanceEdit.getAuthor()) {
-                this.creator.add(new SchemaPerson(person));
+
+        if (event.getAuthored() != null) {
+            for (InstanceEdit instanceEdit : event.getAuthored()) {
+                for (Person person : instanceEdit.getAuthor()) {
+                    this.creator.add(new SchemaPerson(person));
+                }
             }
         }
         this.includedInDataCatalog = new SchemaDataCatalog();
         for (SchemaDataDownloadType schemaDataDownloadType : SchemaDataDownloadType.values()) {
             this.distribution.add(new SchemaDataDownload(schemaDataDownloadType, event));
         }
-        for (Publication publication : event.getLiteratureReference()) {
-            String str;
-            if (publication instanceof LiteratureReference) {
-                str = ((LiteratureReference) publication).getUrl();
-            } else if (publication instanceof Book) {
-                str = ((Book) publication).getISBN();
-            } else {
-                str = publication.getDisplayName();
+
+        if (event.getLiteratureReference() != null) {
+            for (Publication publication : event.getLiteratureReference()) {
+                String str;
+                if (publication instanceof LiteratureReference) {
+                    str = ((LiteratureReference) publication).getUrl();
+                } else if (publication instanceof Book) {
+                    str = ((Book) publication).getISBN();
+                } else {
+                    str = publication.getDisplayName();
+                }
+                if (str != null) this.citation.add(str);
             }
-            if (str != null) this.citation.add(str);
         }
     }
 
