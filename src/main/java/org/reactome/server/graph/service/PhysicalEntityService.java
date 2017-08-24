@@ -38,4 +38,14 @@ public class PhysicalEntityService {
         }
         return null;
     }
+
+    public Collection<PhysicalEntity> getComplexSubunitsNoStructures(Object identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return physicalEntityRepository.getComplexSubunitsNoStructures(id);
+        } else if (DatabaseObjectUtils.isDbId(id)){
+            return physicalEntityRepository.getComplexSubunitsNoStructures(Long.parseLong(id));
+        }
+        return null;
+    }
 }

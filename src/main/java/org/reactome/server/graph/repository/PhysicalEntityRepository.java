@@ -20,9 +20,15 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
     @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOf(String stId);
 
-    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN pe")
+    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunits(Long dbId);
 
-    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN pe")
+    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunits(String stId);
+
+    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
+    Collection<PhysicalEntity> getComplexSubunitsNoStructures(Long dbId);
+
+    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
+    Collection<PhysicalEntity> getComplexSubunitsNoStructures(String stId);
 }
