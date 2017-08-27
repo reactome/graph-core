@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.repository.PathwaysRepository;
@@ -35,7 +36,7 @@ public class PathwaysService {
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysFor(String identifier, Object species) {
+    public Collection<Pathway> getPathwaysFor(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
 
@@ -55,7 +56,7 @@ public class PathwaysService {
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysForAllFormsOf(String identifier, Object species) {
+    public Collection<Pathway> getPathwaysForAllFormsOf(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
 
@@ -75,7 +76,7 @@ public class PathwaysService {
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysWithDiagramFor(String identifier, Object species) {
+    public Collection<Pathway> getPathwaysWithDiagramFor(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
 
@@ -96,7 +97,7 @@ public class PathwaysService {
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getPathwaysWithDiagramForAllFormsOf(String identifier, Object species) {
+    public Collection<Pathway> getPathwaysWithDiagramForAllFormsOf(String identifier, Object species) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
 
@@ -116,7 +117,7 @@ public class PathwaysService {
         return null;
     }
 
-    public Collection<SimpleDatabaseObject> getLowerLevelPathwaysForIdentifier(String identifier, Object species) {
+    public Collection<Pathway> getLowerLevelPathwaysForIdentifier(String identifier, Object species) {
         Species s = speciesService.getSpecies(species);
         if (s != null) {
             return pathwaysRepository.getLowerLevelPathwaysForIdentifierAndSpeciesTaxId(identifier, s.getTaxId());
