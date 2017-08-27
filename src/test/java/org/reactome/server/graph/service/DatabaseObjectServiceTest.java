@@ -3,6 +3,8 @@ package org.reactome.server.graph.service;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
+import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +26,16 @@ import static org.junit.Assert.assertEquals;
  */
 public class DatabaseObjectServiceTest extends BaseTest {
 
+    private static final Long homoSapiens = 48887L;
     private static final Long dbId = 5205685L;
     private static final String stId = "R-HSA-5205685";
 
     private static final List<Long> dbIds = Arrays.asList(1640170L, 73886L, 1500620L);
     private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-1500620");
     private static final List<Object> ids = Arrays.asList(1640170L, 73886L, 1500620L, "R-HSA-199420");
+
+    @Autowired
+    private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -58,6 +64,24 @@ public class DatabaseObjectServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void findHomoSapiensTest() throws Exception {
+
+        logger.info("Started testing databaseObjectService.findHomoSapiensTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = advancedDatabaseObjectRepository.findById(homoSapiens, RelationshipDirection.OUTGOING);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(homoSapiens.toString());
+        time = System.currentTimeMillis() - start;
+        logger.info("GkInstance execution time: " + time + "ms");
+
+        assertEquals(databaseObjectExpected.getDisplayName(), databaseObjectObserved.getDisplayName());
+        logger.info("Finished");
+    }
     @Test
     public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
 
