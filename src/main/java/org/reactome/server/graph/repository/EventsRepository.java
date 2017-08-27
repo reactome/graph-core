@@ -14,10 +14,18 @@ import java.util.Collection;
 @Repository
 public interface EventsRepository extends GraphRepository<DatabaseObject> {
 
-    @Query("MATCH ancestors=(n:Event{stId:{0}})<-[r:hasEvent*]-(:TopLevelPathway) RETURN Nodes(ancestors)")
+    @Query(" MATCH (n:TopLevelPathway{stId:{0}}) " +
+            "RETURN [n] as nodes " +
+            "UNION " +
+            "MATCH ancestors=((n:Event{stId:{0}})<-[r:hasEvent*]-(:TopLevelPathway)) " +
+            "RETURN NODES(ancestors) AS nodes")
     Collection<Collection<Pathway>> getEventAncestorsByStId(String stId);
 
-    @Query("MATCH ancestors=(n:Event{dbId:{0}})<-[r:hasEvent*]-(:TopLevelPathway) RETURN Nodes(ancestors)")
+    @Query(" MATCH (n:TopLevelPathway{dbId:{0}}) " +
+            "RETURN [n] as nodes " +
+            "UNION " +
+            "MATCH ancestors=((n:Event{dbId:{0}})<-[r:hasEvent*]-(:TopLevelPathway)) " +
+            "RETURN NODES(ancestors) AS nodes")
     Collection<Collection<Pathway>> getEventAncestorsByDbId(Long dbId);
 
 }
