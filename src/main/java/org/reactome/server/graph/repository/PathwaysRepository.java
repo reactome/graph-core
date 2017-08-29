@@ -28,7 +28,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "MATCH (:ReactionLikeEvent{stId:{0}})<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p " +
             "UNION " +
-            "MATCH (:Pathway{stId:{0}}) " +
+            "MATCH (p:Pathway{stId:{0}}) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForByStId(String stId);
 
