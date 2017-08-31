@@ -68,7 +68,9 @@ public class AdvancedDatabaseObjectRepository {
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
 
     public <T extends DatabaseObject> T findById(Long dbId, Integer limit) {
-        String query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC LIMIT {limit}";
+        String query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
+                       "OPTIONAL MATCH (n)-[r]-(m) " +
+                       "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC LIMIT {limit}";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         map.put("limit", limit);
@@ -80,7 +82,9 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     public <T extends DatabaseObject> T findById(String stId, Integer limit) {
-        String query = "MATCH (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC LIMIT {limit}";
+        String query = "MATCH (n:DatabaseObject{stId:{stId}}) " +
+                       "OPTIONAL MATCH (n)-[r]-(m) " +
+                       "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC LIMIT {limit}";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         map.put("limit", limit);
@@ -94,7 +98,10 @@ public class AdvancedDatabaseObjectRepository {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId) {
-        String query = "Match (n:DatabaseObject{dbId:{dbId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) RETURN n,r1,m,r2,o";
+        String query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
+                       "OPTIONAL MATCH (n)-[r1]-(m) " +
+                       "OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) " +
+                       "RETURN n,r1,m,r2,o";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         Result result = neo4jTemplate.query(query, map);
@@ -104,7 +111,10 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectById(String stId) {
-        String query = "Match (n:DatabaseObject{stId:{stId}})-[r1]-(m) OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) RETURN n,r1,m,r2,o";
+        String query = "MATCH (n:DatabaseObject{stId:{stId}}) " +
+                       "OPTIONAL MATCH (n)-[r1]-(m) " +
+                       "OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) " +
+                       "RETURN n,r1,m,r2,o";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         Result result = neo4jTemplate.query(query, map);
@@ -119,13 +129,19 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]->(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
+                        "OPTIONAL MATCH (n)-[r]->(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             case INCOMING:
-                query = "Match (n:DatabaseObject{dbId:{dbId}})<-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
+                        "OPTIONAL MATCH (n)<-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             default: // UNDIRECTED
-                query = "Match (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
+                        "OPTIONAL MATCH (n)-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
         }
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -139,13 +155,19 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "Match (n:DatabaseObject{stId:{stId}})-[r]->(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:{stId}}) " +
+                        "OPTIONAL MATCH (n)-[r]->(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             case INCOMING:
-                query = "Match (n:DatabaseObject{stId:{stId}})<-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:{stId}})" +
+                        "OPTIONAL MATCH (n)<-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             default: // UNDIRECTED
-                query = "Match (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:{stId}})" +
+                        "OPTIONAL MATCH (n)-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
         }
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -201,13 +223,22 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "Match (n:DatabaseObject)-[r]->(m) WHERE n.dbId IN {dbIds} RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject) " +
+                        "WHERE n.dbId IN {dbIds} " +
+                        "OPTIONAL MATCH (n)-[r]->(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             case INCOMING:
-                query = "Match (n:DatabaseObject)<-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject) " +
+                        "WHERE n.dbId IN {dbIds} " +
+                        "OPTIONAL MATCH (n)<-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             default: // UNDIRECTED
-                query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.dbId IN {dbIds} RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject) " +
+                        "WHERE n.dbId IN {dbIds} " +
+                        "OPTIONAL MATCH (n)-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
         }
         Map<String, Object> map = new HashMap<>();
         map.put("dbIds", dbIds);
@@ -223,13 +254,22 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "Match (n:DatabaseObject)-[r]->(m) WHERE n.stId IN {stIds} RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject) " +
+                        "WHERE n.stId IN {stIds} " +
+                        "OPTIONAL MATCH (n)-[r]->(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             case INCOMING:
-                query = "Match (n:DatabaseObject)<-[r]-(m) WHERE n.stId IN {stIds} RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject) " +
+                        "WHERE n.stId IN {stIds} " +
+                        "OPTIONAL MATCH (n)<-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
                 break;
             default: // UNDIRECTED
-                query = "Match (n:DatabaseObject)-[r]-(m) WHERE n.stId IN {stIds} RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject) " +
+                        "WHERE n.stId IN {stIds} " +
+                        "OPTIONAL MATCH (n)-[r]-(m) " +
+                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
         }
         Map<String, Object> map = new HashMap<>();
         map.put("stIds", stIds);
