@@ -13,10 +13,14 @@ import org.springframework.stereotype.Repository;
 public interface OrthologyRepository extends GraphRepository<PhysicalEntity> {
 
     //The relationship do not have direction because that's what is needed in this case
-    @Query("MATCH (n:DatabaseObject{dbId:{0}})-[:inferredTo]-(o:DatabaseObject)-[:species]->(:Species{dbId:{1}}) RETURN DISTINCT o")
+    @Query(" MATCH (:DatabaseObject{dbId:{0}})<-[:inferredTo]-()-[:inferredTo]->(o:DatabaseObject)-[:species]->(:Species{dbId:{1}}) RETURN DISTINCT o " +
+            "UNION " +
+            "MATCH (:DatabaseObject{dbId:{0}})-[:inferredTo]-(o:DatabaseObject)-[:species]->(:Species{dbId:{1}}) RETURN DISTINCT o")
     DatabaseObject getOrthology(Long dbId, Long speciesId);
 
     //The relationship do not have direction because that's what is needed in this case
-    @Query("MATCH (n:DatabaseObject{stId:{0}})-[:inferredTo]-(o:DatabaseObject)-[:species]->(:Species{dbId:{1}}) RETURN DISTINCT o")
-    DatabaseObject getOrthology(String dbId, Long speciesId);
+    @Query(" MATCH (:DatabaseObject{stId:{0}})<-[:inferredTo]-()-[:inferredTo]->(o:DatabaseObject)-[:species]->(:Species{dbId:{1}}) RETURN DISTINCT o " +
+            "UNION " +
+            "MATCH (:DatabaseObject{stId:{0}})-[:inferredTo]-(o:DatabaseObject)-[:species]->(:Species{dbId:{1}}) RETURN DISTINCT o")
+    DatabaseObject getOrthology(String stId, Long speciesId);
 }
