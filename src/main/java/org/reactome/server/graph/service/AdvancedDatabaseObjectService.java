@@ -183,8 +183,12 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.customQueryResults(query, parametersMap);
     }
 
-    public String customQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+    public String customStringQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
         return advancedDatabaseObjectRepository.customQueryResult(query, parametersMap);
+    }
+
+    public Boolean customBooleanQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customBooleanQueryResult(query, parametersMap);
     }
 
 

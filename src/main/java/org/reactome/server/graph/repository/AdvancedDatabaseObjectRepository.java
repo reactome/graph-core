@@ -448,6 +448,24 @@ public class AdvancedDatabaseObjectRepository {
         return null;
     }
 
+    public Boolean customBooleanQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
+
+        Result result = neo4jTemplate.query(query, parametersMap);
+
+        try {
+            if (result.iterator().hasNext()) {
+                Map<String, Object> stringObjectMap = result.iterator().next();
+                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Boolean.class);
+            }
+        } catch (Throwable e) {
+            throw new CustomQueryException(e);
+        }
+
+        return null;
+    }
+
     public Collection<String> customQueryResults(String query, Map<String, Object> parametersMap) throws CustomQueryException {
         if (parametersMap == null) //noinspection unchecked
             parametersMap = Collections.EMPTY_MAP;
