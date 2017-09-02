@@ -73,11 +73,6 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
     private GO_BiologicalProcess goBiologicalProcess;
 
-//    InferredTo is orthologousEvents, Spring cant currently map the same thing twice
-//    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
-//    private Set<Event> inferredTo;
-
-    @ReactomeTransient
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private Set<Event> inferredFrom;
 
@@ -275,6 +270,7 @@ public abstract class Event extends DatabaseObject {
         this.inferredFrom = inferredFrom;
     }
 
+    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
@@ -284,6 +280,7 @@ public abstract class Event extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     public Set<Event> getOrthologousEvent() {
         return orthologousEvent;
     }
@@ -293,6 +290,7 @@ public abstract class Event extends DatabaseObject {
         this.orthologousEvent = orthologousEvent;
     }
 
+    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
     public List<Regulation> getRegulatedBy() {
         return regulatedBy;
     }
@@ -302,7 +300,8 @@ public abstract class Event extends DatabaseObject {
         this.regulatedBy = regulatedBy;
     }
 
-   public List<Event> getPrecedingEvent() {
+    @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
+    public List<Event> getPrecedingEvent() {
         return precedingEvent;
     }
 
@@ -340,6 +339,7 @@ public abstract class Event extends DatabaseObject {
         this.revised = revised;
     }
 
+    @Relationship(type = "species", direction = Relationship.OUTGOING)
     public List<Species> getSpecies() {
         return species;
     }
@@ -349,6 +349,7 @@ public abstract class Event extends DatabaseObject {
         this.species = species;
     }
 
+    @Relationship(type = "summation", direction = Relationship.OUTGOING)
     public List<Summation> getSummation() {
         return summation;
     }
