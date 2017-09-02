@@ -7,7 +7,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public abstract class AbstractModifiedResidue extends DatabaseObject {
 
-    @Relationship(type = "referenceSequence", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceSequence")
     private ReferenceSequence referenceSequence;
 
     public AbstractModifiedResidue() {}
@@ -16,7 +16,7 @@ public abstract class AbstractModifiedResidue extends DatabaseObject {
         return referenceSequence;
     }
 
-    @Relationship(type = "referenceSequence", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceSequence")
     public void setReferenceSequence(ReferenceSequence referenceSequence) {
         this.referenceSequence = referenceSequence;
     }

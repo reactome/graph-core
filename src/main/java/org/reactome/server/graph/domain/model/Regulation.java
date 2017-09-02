@@ -24,26 +24,26 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
 
-    @Relationship(type = "containedInPathway", direction = Relationship.OUTGOING)
+    @Relationship(type = "containedInPathway")
     private List<Pathway> containedInPathway;
 
     @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
 
-    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    @Relationship(type = "figure")
     private List<Figure> figure;
 
-    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    @Relationship(type = "goBiologicalProcess")
     private GO_BiologicalProcess goBiologicalProcess;
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "inferredTo")
     private List<Regulation> inferredTo;
 
     @ReactomeTransient
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private List<Regulation> inferredFrom;
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
     @ReactomeTransient
@@ -51,7 +51,7 @@ public abstract class Regulation extends DatabaseObject {
     @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class})
     private DatabaseObject regulatedEntity;
 
-    @Relationship(type = "regulator", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulator")
     @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class, PhysicalEntity.class})
     private DatabaseObject regulator;
 
@@ -61,7 +61,7 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "revised", direction = Relationship.INCOMING)
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    @Relationship(type = "summation")
     private List<Summation> summation;
 
     public Regulation() {}
@@ -96,7 +96,7 @@ public abstract class Regulation extends DatabaseObject {
         return containedInPathway;
     }
 
-    @Relationship(type = "containedInPathway", direction = Relationship.OUTGOING)
+    @Relationship(type = "containedInPathway")
     public void setContainedInPathway(List<Pathway> containedInPathway) {
         this.containedInPathway = containedInPathway;
     }
@@ -115,7 +115,7 @@ public abstract class Regulation extends DatabaseObject {
         return figure;
     }
 
-    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    @Relationship(type = "figure")
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }
@@ -124,17 +124,17 @@ public abstract class Regulation extends DatabaseObject {
         return goBiologicalProcess;
     }
 
-    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    @Relationship(type = "goBiologicalProcess")
     public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
         this.goBiologicalProcess = goBiologicalProcess;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "inferredTo")
     public List<Regulation> getInferredTo() {
         return inferredTo;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "inferredTo")
     public void setInferredTo(List<Regulation> inferredTo) {
         this.inferredTo = inferredTo;
     }
@@ -153,7 +153,7 @@ public abstract class Regulation extends DatabaseObject {
         return literatureReference;
     }
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
@@ -174,7 +174,7 @@ public abstract class Regulation extends DatabaseObject {
         return regulator;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulator")
     public void setRegulator(DatabaseObject regulator) {
         this.regulator = regulator;
     }
@@ -203,7 +203,7 @@ public abstract class Regulation extends DatabaseObject {
         return summation;
     }
 
-    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    @Relationship(type = "summation")
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
     }

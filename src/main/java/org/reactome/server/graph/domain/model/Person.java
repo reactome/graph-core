@@ -25,15 +25,15 @@ public class Person extends DatabaseObject {
     @ReactomeProperty
     private String surname;
 
-    @Relationship(type = "affiliation", direction = Relationship.OUTGOING)
+    @Relationship(type = "affiliation")
     private List<Affiliation> affiliation;
 
     @Deprecated
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
     @ReactomeTransient
-    @Relationship(type = "author", direction = Relationship.OUTGOING)
+    @Relationship(type = "author")
     private List<PublicationAuthor> publicationAuthorList;
 
     public Person() {}
@@ -82,7 +82,7 @@ public class Person extends DatabaseObject {
         return affiliation;
     }
 
-    @Relationship(type = "affiliation", direction = Relationship.OUTGOING)
+    @Relationship(type = "affiliation")
     public void setAffiliation(List<Affiliation> affiliation) {
         this.affiliation = affiliation;
     }
@@ -93,7 +93,7 @@ public class Person extends DatabaseObject {
     }
 
     @Deprecated
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }

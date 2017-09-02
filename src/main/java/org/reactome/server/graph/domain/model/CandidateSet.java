@@ -14,7 +14,7 @@ import java.util.List;
 @NodeEntity
 public class CandidateSet extends EntitySet {
 
-    @Relationship(type = "hasCandidate", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasCandidate")
     private List<PhysicalEntity> hasCandidate;
 
     public CandidateSet() {}
@@ -23,7 +23,7 @@ public class CandidateSet extends EntitySet {
         return hasCandidate;
     }
 
-    @Relationship(type = "hasCandidate", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasCandidate")
     public void setHasCandidate(List<PhysicalEntity> hasCandidate) {
         this.hasCandidate = hasCandidate;
     }

@@ -16,10 +16,10 @@ public class Taxon extends DatabaseObject {
     private String taxId;
 
     @Deprecated
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "superTaxon", direction = Relationship.OUTGOING)
+    @Relationship(type = "superTaxon")
     private Taxon superTaxon;
     
     public Taxon() {}
@@ -46,7 +46,7 @@ public class Taxon extends DatabaseObject {
     }
 
     @Deprecated
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -55,7 +55,7 @@ public class Taxon extends DatabaseObject {
         return superTaxon;
     }
 
-    @Relationship(type = "superTaxon", direction = Relationship.OUTGOING)
+    @Relationship(type = "superTaxon")
     public void setSuperTaxon(Taxon superTaxon) {
         this.superTaxon = superTaxon;
     }

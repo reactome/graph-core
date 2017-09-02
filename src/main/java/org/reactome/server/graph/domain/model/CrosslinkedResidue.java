@@ -12,7 +12,7 @@ public class CrosslinkedResidue extends TranslationalModification {
     @ReactomeProperty
     private Integer secondCoordinate;
 
-    @Relationship(type = "modification", direction = Relationship.OUTGOING)
+    @Relationship(type = "modification")
     @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})
     private DatabaseObject modification;
 
@@ -31,7 +31,7 @@ public class CrosslinkedResidue extends TranslationalModification {
         return modification;
     }
 
-    @Relationship(type = "modification", direction = Relationship.OUTGOING)
+    @Relationship(type = "modification")
     public void setModification(DatabaseObject modification) {
         if(modification == null) return;
 

@@ -11,7 +11,7 @@ public class TranslationalModification extends AbstractModifiedResidue {
     @ReactomeProperty
     private Integer coordinate;
 
-    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
+    @Relationship(type = "psiMod")
     private PsiMod psiMod;
     
     public TranslationalModification() {}
@@ -28,7 +28,7 @@ public class TranslationalModification extends AbstractModifiedResidue {
         return psiMod;
     }
 
-    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
+    @Relationship(type = "psiMod")
     public void setPsiMod(PsiMod psiMod) {
         this.psiMod = psiMod;
     }

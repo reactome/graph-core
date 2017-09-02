@@ -15,10 +15,10 @@ import java.util.Set;
 @NodeEntity
 public class CatalystActivity extends DatabaseObject  {
 
-    @Relationship(type = "activeUnit", direction = Relationship.OUTGOING)
+    @Relationship(type = "activeUnit")
     private Set<PhysicalEntity> activeUnit;
 
-    @Relationship(type = "activity", direction = Relationship.OUTGOING)
+    @Relationship(type = "activity")
     private GO_MolecularFunction activity;
 
     /**
@@ -29,10 +29,10 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     private List<ReactionLikeEvent> catalyzedEvent;
 
-    @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "physicalEntity")
     private PhysicalEntity physicalEntity;
 
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
 
     public CatalystActivity() {}
@@ -41,7 +41,7 @@ public class CatalystActivity extends DatabaseObject  {
         return activeUnit;
     }
 
-    @Relationship(type = "activeUnit", direction = Relationship.OUTGOING)
+    @Relationship(type = "activeUnit")
     public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
     }
@@ -50,7 +50,7 @@ public class CatalystActivity extends DatabaseObject  {
         return activity;
     }
 
-    @Relationship(type = "activity", direction = Relationship.OUTGOING)
+    @Relationship(type = "activity")
     public void setActivity(GO_MolecularFunction activity) {
         this.activity = activity;
     }
@@ -69,7 +69,7 @@ public class CatalystActivity extends DatabaseObject  {
         return physicalEntity;
     }
 
-    @Relationship(type = "physicalEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "physicalEntity")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
@@ -78,7 +78,7 @@ public class CatalystActivity extends DatabaseObject  {
         return regulatedBy;
     }
 
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulatedBy")
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
     }

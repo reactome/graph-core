@@ -13,7 +13,7 @@ public class ReferenceIsoform extends ReferenceGeneProduct {
     @ReactomeProperty
     private String variantIdentifier;
 
-    @Relationship(type = "isoformParent", direction = Relationship.OUTGOING)
+    @Relationship(type = "isoformParent")
     private List<ReferenceGeneProduct> isoformParent;
 
     public ReferenceIsoform() {}
@@ -30,7 +30,7 @@ public class ReferenceIsoform extends ReferenceGeneProduct {
         return isoformParent;
     }
 
-    @Relationship(type = "isoformParent", direction = Relationship.OUTGOING)
+    @Relationship(type = "isoformParent")
     public void setIsoformParent(List<ReferenceGeneProduct> isoformParent) {
         this.isoformParent = isoformParent;
     }

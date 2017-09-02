@@ -9,7 +9,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class Drug extends PhysicalEntity {
 
-    @Relationship(type = "referenceTherapeutic", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceTherapeutic")
     private ReferenceTherapeutic referenceTherapeutic;
 
     public Drug() {
@@ -20,7 +20,7 @@ public class Drug extends PhysicalEntity {
         return referenceTherapeutic;
     }
 
-    @Relationship(type = "referenceTherapeutic", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceTherapeutic")
     public void setReferenceTherapeutic(ReferenceTherapeutic referenceTherapeutic) {
         this.referenceTherapeutic = referenceTherapeutic;
     }

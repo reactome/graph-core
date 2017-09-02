@@ -9,7 +9,7 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class RNADrug extends Drug {
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     private ReferenceRNASequence referenceEntity;
 
     public RNADrug() {
@@ -20,7 +20,7 @@ public class RNADrug extends Drug {
         return referenceEntity;
     }
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     public void setReferenceEntity(ReferenceRNASequence referenceEntity) {
         this.referenceEntity = referenceEntity;
     }

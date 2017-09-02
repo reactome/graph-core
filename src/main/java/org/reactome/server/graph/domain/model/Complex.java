@@ -20,19 +20,19 @@ public class Complex extends PhysicalEntity {
     @ReactomeProperty
     private Boolean isChimeric;
 
-    @Relationship(type = "hasComponent", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasComponent")
     private Set<HasComponent> hasComponent;
 
-    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
+    @Relationship(type = "entityOnOtherCell")
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "includedLocation", direction = Relationship.OUTGOING)
+    @Relationship(type = "includedLocation")
     private List<EntityCompartment> includedLocation;
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     private List<Species> species;
 
-    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    @Relationship(type = "relatedSpecies")
     private List<Species> relatedSpecies;
 
     public Complex() {}
@@ -92,7 +92,7 @@ public class Complex extends PhysicalEntity {
         return entityOnOtherCell;
     }
 
-    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
+    @Relationship(type = "entityOnOtherCell")
     public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
         this.entityOnOtherCell = entityOnOtherCell;
     }
@@ -101,7 +101,7 @@ public class Complex extends PhysicalEntity {
         return includedLocation;
     }
 
-    @Relationship(type = "includedLocation", direction = Relationship.OUTGOING)
+    @Relationship(type = "includedLocation")
     public void setIncludedLocation(List<EntityCompartment> includedLocation) {
         this.includedLocation = includedLocation;
     }
@@ -110,7 +110,7 @@ public class Complex extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public void setSpecies(List<Species> species) {
         this.species = species;
     }
@@ -119,7 +119,7 @@ public class Complex extends PhysicalEntity {
         return relatedSpecies;
     }
 
-    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    @Relationship(type = "relatedSpecies")
     public void setRelatedSpecies(List<Species> relatedSpecies) {
         this.relatedSpecies = relatedSpecies;
     }

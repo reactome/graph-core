@@ -8,7 +8,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 @NodeEntity
 public class GroupModifiedResidue extends TranslationalModification {
 
-    @Relationship(type = "modification", direction = Relationship.OUTGOING)
+    @Relationship(type = "modification")
     @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})
     private DatabaseObject modification;
 
@@ -19,7 +19,7 @@ public class GroupModifiedResidue extends TranslationalModification {
         return modification;
     }
 
-    @Relationship(type = "modification", direction = Relationship.OUTGOING)
+    @Relationship(type = "modification")
     public void setModification(DatabaseObject modification) {
         this.modification = modification;
     }

@@ -27,7 +27,7 @@ public class ReferenceSequence extends ReferenceEntity {
     @ReactomeProperty
     private Integer sequenceLength;
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     private Species species;
 
     public ReferenceSequence() {}
@@ -100,7 +100,7 @@ public class ReferenceSequence extends ReferenceEntity {
         return species;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public void setSpecies(Species species) {
         this.species = species;
     }

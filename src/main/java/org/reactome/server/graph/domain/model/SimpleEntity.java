@@ -17,10 +17,10 @@ public class SimpleEntity extends PhysicalEntity {
     @ReactomeProperty
     private String referenceType;
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     private ReferenceMolecule referenceEntity;
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     private Species species;
 
     public SimpleEntity() {}
@@ -37,7 +37,7 @@ public class SimpleEntity extends PhysicalEntity {
         return referenceEntity;
     }
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     public void setReferenceEntity(ReferenceMolecule referenceEntity) {
         this.referenceEntity = referenceEntity;
     }
@@ -46,7 +46,7 @@ public class SimpleEntity extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public void setSpecies(Species species) {
         this.species = species;
     }

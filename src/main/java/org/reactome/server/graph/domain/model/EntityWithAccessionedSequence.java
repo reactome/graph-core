@@ -22,10 +22,10 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
     @ReactomeProperty
     private Integer startCoordinate;
 
-    @Relationship(type = "hasModifiedResidue", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasModifiedResidue")
     private List<AbstractModifiedResidue> hasModifiedResidue;
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     private ReferenceSequence referenceEntity;
 
     public EntityWithAccessionedSequence() {}
@@ -58,7 +58,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
         return hasModifiedResidue;
     }
 
-    @Relationship(type = "hasModifiedResidue", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasModifiedResidue")
     public void setHasModifiedResidue(List<AbstractModifiedResidue> hasModifiedResidue) {
         this.hasModifiedResidue = hasModifiedResidue;
     }
@@ -67,7 +67,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
         return referenceEntity;
     }
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     public void setReferenceEntity(ReferenceSequence referenceEntity) {
         this.referenceEntity = referenceEntity;
     }

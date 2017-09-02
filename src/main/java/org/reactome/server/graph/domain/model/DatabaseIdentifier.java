@@ -17,10 +17,10 @@ public class DatabaseIdentifier extends DatabaseObject {
     @ReactomeProperty
     private String url;
 
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
     public DatabaseIdentifier() {}
@@ -53,7 +53,7 @@ public class DatabaseIdentifier extends DatabaseObject {
         return crossReference;
     }
 
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -62,7 +62,7 @@ public class DatabaseIdentifier extends DatabaseObject {
         return referenceDatabase;
     }
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceDatabase")
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

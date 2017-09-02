@@ -17,7 +17,7 @@ public class Book extends Publication {
     @ReactomeProperty
     private Integer year;
 
-    @Relationship(type = "publisher", direction = Relationship.OUTGOING)
+    @Relationship(type = "publisher")
     private Affiliation publisher;
 
     public Book() {}
@@ -58,7 +58,7 @@ public class Book extends Publication {
         return publisher;
     }
 
-    @Relationship(type = "publisher", direction = Relationship.OUTGOING)
+    @Relationship(type = "publisher")
     public void setPublisher(Affiliation publisher) {
         this.publisher = publisher;
     }

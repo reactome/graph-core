@@ -27,10 +27,10 @@ public class Polymer extends PhysicalEntity {
     @ReactomeProperty
     private Integer minUnitCount;
 
-    @Relationship(type = "repeatedUnit", direction = Relationship.OUTGOING)
+    @Relationship(type = "repeatedUnit")
     private RepeatedUnit repeatedUnit;
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     private Set<Species> species;
 
     public Polymer() {}
@@ -83,7 +83,7 @@ public class Polymer extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public void setSpecies(Set<Species> species) {
         this.species = species;
     }

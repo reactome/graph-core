@@ -36,13 +36,13 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private List<InstanceEdit> authored;
 
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "compartment", direction = Relationship.OUTGOING)
+    @Relationship(type = "compartment")
     private List<Compartment> compartment;
 
-    @Relationship(type = "disease", direction = Relationship.OUTGOING)
+    @Relationship(type = "disease")
     private List<Disease> disease;
 
     @Relationship(type = "edited", direction = Relationship.INCOMING)
@@ -56,10 +56,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
     private List<Event> eventOf;
 
-    @Relationship(type = "evidenceType", direction = Relationship.OUTGOING)
+    @Relationship(type = "evidenceType")
     private EvidenceType evidenceType;
 
-    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    @Relationship(type = "figure")
     private List<Figure> figure;
 
     /**
@@ -70,29 +70,29 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "precedingEvent", direction=Relationship.INCOMING)
     private List<Event> followingEvent;
 
-    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    @Relationship(type = "goBiologicalProcess")
     private GO_BiologicalProcess goBiologicalProcess;
 
     @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     private Set<Event> inferredFrom;
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "inferredTo")
     private Set<Event> orthologousEvent;
 
     /**
      * regulatedBy is not a field of the previous RestfulApi and will be ignored until needed
      */
     @JsonIgnore
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
 
-    @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "precedingEvent")
     private List<Event> precedingEvent;
 
-    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    @Relationship(type = "relatedSpecies")
     private List<Species> relatedSpecies;
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
@@ -101,10 +101,10 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "revised", direction = Relationship.INCOMING)
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     private List<Species> species;
 
-    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    @Relationship(type = "summation")
     private List<Summation> summation;
 
     public Event() {}
@@ -180,7 +180,7 @@ public abstract class Event extends DatabaseObject {
         return crossReference;
     }
 
-    @Relationship(type = "crossReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -189,7 +189,7 @@ public abstract class Event extends DatabaseObject {
         return compartment;
     }
 
-    @Relationship(type = "compartment", direction = Relationship.OUTGOING)
+    @Relationship(type = "compartment")
     public void setCompartment(List<Compartment> compartment) {
         this.compartment = compartment;
     }
@@ -198,7 +198,7 @@ public abstract class Event extends DatabaseObject {
         return disease;
     }
 
-    @Relationship(type = "disease", direction = Relationship.OUTGOING)
+    @Relationship(type = "disease")
     public void setDisease(List<Disease> disease) {
         this.disease = disease;
     }
@@ -227,7 +227,7 @@ public abstract class Event extends DatabaseObject {
         this.eventOf = eventOf;
     }
 
-    @Relationship(type = "evidenceType", direction = Relationship.OUTGOING)
+    @Relationship(type = "evidenceType")
     public void setEvidenceType(EvidenceType evidenceType) {
         this.evidenceType = evidenceType;
     }
@@ -236,7 +236,7 @@ public abstract class Event extends DatabaseObject {
         return figure;
     }
 
-    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    @Relationship(type = "figure")
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }
@@ -255,7 +255,7 @@ public abstract class Event extends DatabaseObject {
         return goBiologicalProcess;
     }
 
-    @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
+    @Relationship(type = "goBiologicalProcess")
     public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
         this.goBiologicalProcess = goBiologicalProcess;
     }
@@ -270,42 +270,42 @@ public abstract class Event extends DatabaseObject {
         this.inferredFrom = inferredFrom;
     }
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     public List<Publication> getLiteratureReference() {
         return literatureReference;
     }
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "inferredTo")
     public Set<Event> getOrthologousEvent() {
         return orthologousEvent;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    @Relationship(type = "inferredTo")
     public void setOrthologousEvent(Set<Event> orthologousEvent) {
         this.orthologousEvent = orthologousEvent;
     }
 
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulatedBy")
     public List<Regulation> getRegulatedBy() {
         return regulatedBy;
     }
 
-    @Relationship(type = "regulatedBy", direction = Relationship.OUTGOING)
+    @Relationship(type = "regulatedBy")
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
     }
 
-    @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "precedingEvent")
     public List<Event> getPrecedingEvent() {
         return precedingEvent;
     }
 
-    @Relationship(type = "precedingEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "precedingEvent")
     public void setPrecedingEvent(List<Event> precedingEvent) {
         this.precedingEvent = precedingEvent;
     }
@@ -314,7 +314,7 @@ public abstract class Event extends DatabaseObject {
         return relatedSpecies;
     }
 
-    @Relationship(type = "relatedSpecies", direction = Relationship.OUTGOING)
+    @Relationship(type = "relatedSpecies")
     public void setRelatedSpecies(List<Species> relatedSpecies) {
         this.relatedSpecies = relatedSpecies;
     }
@@ -339,22 +339,22 @@ public abstract class Event extends DatabaseObject {
         this.revised = revised;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public List<Species> getSpecies() {
         return species;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public void setSpecies(List<Species> species) {
         this.species = species;
     }
 
-    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    @Relationship(type = "summation")
     public List<Summation> getSummation() {
         return summation;
     }
 
-    @Relationship(type = "summation", direction = Relationship.OUTGOING)
+    @Relationship(type = "summation")
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
     }

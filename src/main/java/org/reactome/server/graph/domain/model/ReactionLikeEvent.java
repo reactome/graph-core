@@ -26,25 +26,25 @@ public abstract class ReactionLikeEvent extends Event {
     @ReactomeProperty
     private String systematicName;
 
-    @Relationship(type = "catalystActivity", direction = Relationship.OUTGOING)
+    @Relationship(type = "catalystActivity")
     private List<CatalystActivity> catalystActivity;
 
-    @Relationship(type = "entityFunctionalStatus", direction = Relationship.OUTGOING)
+    @Relationship(type = "entityFunctionalStatus")
     private List<EntityFunctionalStatus> entityFunctionalStatus;
 
-    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
+    @Relationship(type = "entityOnOtherCell")
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "input", direction = Relationship.OUTGOING)
+    @Relationship(type = "input")
     private Set<Input> input;
 
-    @Relationship(type = "normalReaction", direction = Relationship.OUTGOING)
+    @Relationship(type = "normalReaction")
     private List<ReactionLikeEvent> normalReaction;
 
-    @Relationship(type = "output", direction = Relationship.OUTGOING)
+    @Relationship(type = "output")
     private Set<Output> output;
 
-    @Relationship(type = "requiredInputComponent", direction = Relationship.OUTGOING)
+    @Relationship(type = "requiredInputComponent")
     private Set<PhysicalEntity> requiredInputComponent;
 
     public ReactionLikeEvent() {
@@ -71,7 +71,7 @@ public abstract class ReactionLikeEvent extends Event {
         return catalystActivity;
     }
 
-    @Relationship(type = "catalystActivity", direction = Relationship.OUTGOING)
+    @Relationship(type = "catalystActivity")
     public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
         this.catalystActivity = catalystActivity;
     }
@@ -80,7 +80,7 @@ public abstract class ReactionLikeEvent extends Event {
         return entityFunctionalStatus;
     }
 
-    @Relationship(type = "entityFunctionalStatus", direction = Relationship.OUTGOING)
+    @Relationship(type = "entityFunctionalStatus")
     public void setEntityFunctionalStatus(List<EntityFunctionalStatus> entityFunctionalStatus) {
         this.entityFunctionalStatus = entityFunctionalStatus;
     }
@@ -89,7 +89,7 @@ public abstract class ReactionLikeEvent extends Event {
         return entityOnOtherCell;
     }
 
-    @Relationship(type = "entityOnOtherCell", direction = Relationship.OUTGOING)
+    @Relationship(type = "entityOnOtherCell")
     public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
         this.entityOnOtherCell = entityOnOtherCell;
     }
@@ -98,7 +98,7 @@ public abstract class ReactionLikeEvent extends Event {
         return normalReaction;
     }
 
-    @Relationship(type = "normalReaction", direction = Relationship.OUTGOING)
+    @Relationship(type = "normalReaction")
     public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
         this.normalReaction = normalReaction;
     }
@@ -107,7 +107,7 @@ public abstract class ReactionLikeEvent extends Event {
         return requiredInputComponent;
     }
 
-    @Relationship(type = "requiredInputComponent", direction = Relationship.OUTGOING)
+    @Relationship(type = "requiredInputComponent")
     public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
     }

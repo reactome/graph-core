@@ -23,10 +23,10 @@ public class ExternalOntology extends DatabaseObject {
     @ReactomeProperty
     private String url;
 
-    @Relationship(type = "instanceOf", direction = Relationship.OUTGOING)
+    @Relationship(type = "instanceOf")
     private List<ExternalOntology> instanceOf;
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
     public ExternalOntology() {}
@@ -83,7 +83,7 @@ public class ExternalOntology extends DatabaseObject {
         return instanceOf;
     }
 
-    @Relationship(type = "instanceOf", direction = Relationship.OUTGOING)
+    @Relationship(type = "instanceOf")
     public void setInstanceOf(List<ExternalOntology> instanceOf) {
         this.instanceOf = instanceOf;
     }
@@ -92,7 +92,7 @@ public class ExternalOntology extends DatabaseObject {
         return referenceDatabase;
     }
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceDatabase")
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

@@ -25,7 +25,7 @@ public abstract class GO_Term extends DatabaseObject{
     @ReactomeProperty
     private String url;
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
     public String getAccession() {
@@ -72,7 +72,7 @@ public abstract class GO_Term extends DatabaseObject{
         return referenceDatabase;
     }
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceDatabase")
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

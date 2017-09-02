@@ -10,7 +10,7 @@ import java.util.List;
 @NodeEntity
 public class Species extends Taxon {
 
-    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    @Relationship(type = "figure")
     private List<Figure> figure;
 
     @ReactomeProperty
@@ -22,7 +22,7 @@ public class Species extends Taxon {
         return figure;
     }
 
-    @Relationship(type = "figure", direction = Relationship.OUTGOING)
+    @Relationship(type = "figure")
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }

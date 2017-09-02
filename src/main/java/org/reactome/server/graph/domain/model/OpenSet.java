@@ -16,7 +16,7 @@ public class OpenSet extends EntitySet {
     @ReactomeProperty
     private String referenceType;
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     private ReferenceEntity referenceEntity;
 
     public OpenSet() {}
@@ -33,7 +33,7 @@ public class OpenSet extends EntitySet {
         return referenceEntity;
     }
 
-    @Relationship(type = "referenceEntity", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceEntity")
     public void setReferenceEntity(ReferenceEntity referenceEntity) {
         this.referenceEntity = referenceEntity;
     }

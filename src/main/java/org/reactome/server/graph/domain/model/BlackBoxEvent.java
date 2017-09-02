@@ -21,10 +21,10 @@ public class BlackBoxEvent extends ReactionLikeEvent {
 
     }
 
-    @Relationship(type = "hasEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasEvent")
     private List<Event> hasEvent;
 
-    @Relationship(type = "templateEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "templateEvent")
     private Event templateEvent;
 
     public BlackBoxEvent() {}
@@ -33,7 +33,7 @@ public class BlackBoxEvent extends ReactionLikeEvent {
         return hasEvent;
     }
 
-    @Relationship(type = "hasEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "hasEvent")
     public void setHasEvent(List<Event> hasEvent) {
         this.hasEvent = hasEvent;
     }
@@ -42,7 +42,7 @@ public class BlackBoxEvent extends ReactionLikeEvent {
         return templateEvent;
     }
 
-    @Relationship(type = "templateEvent", direction = Relationship.OUTGOING)
+    @Relationship(type = "templateEvent")
     public void setTemplateEvent(Event templateEvent) {
         this.templateEvent = templateEvent;
     }

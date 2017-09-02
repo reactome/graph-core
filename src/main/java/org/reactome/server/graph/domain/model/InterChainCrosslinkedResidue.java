@@ -13,7 +13,7 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
     @Relationship(type = "equivalentTo", direction = Relationship.UNDIRECTED)
     private List<InterChainCrosslinkedResidue> equivalentTo;
 
-    @Relationship(type = "secondReferenceSequence", direction = Relationship.OUTGOING)
+    @Relationship(type = "secondReferenceSequence")
     private Set<ReferenceSequence> secondReferenceSequence;
     
     public InterChainCrosslinkedResidue() {}
@@ -31,7 +31,7 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
         return secondReferenceSequence;
     }
 
-    @Relationship(type = "secondReferenceSequence", direction = Relationship.OUTGOING)
+    @Relationship(type = "secondReferenceSequence")
     public void setSecondReferenceSequence(Set<ReferenceSequence> secondReferenceSequence) {
         this.secondReferenceSequence = secondReferenceSequence;
     }

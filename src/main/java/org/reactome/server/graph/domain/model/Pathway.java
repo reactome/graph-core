@@ -22,10 +22,10 @@ public class Pathway extends Event {
     @ReactomeProperty
     private String isCanonical;
 
-    @Relationship(type="hasEvent", direction = Relationship.OUTGOING)
+    @Relationship(type="hasEvent")
     private List<Event> hasEvent;
 
-    @Relationship(type = "normalPathway", direction = Relationship.OUTGOING)
+    @Relationship(type = "normalPathway")
     private Pathway normalPathway;
 
     public Pathway() {}
@@ -58,7 +58,7 @@ public class Pathway extends Event {
         return hasEvent;
     }
 
-    @Relationship(type="hasEvent", direction = Relationship.OUTGOING)
+    @Relationship(type="hasEvent")
     public void setHasEvent(List<Event> hasEvent) {
         this.hasEvent = hasEvent;
     }
@@ -67,7 +67,7 @@ public class Pathway extends Event {
         return normalPathway;
     }
 
-    @Relationship(type = "normalPathway", direction = Relationship.OUTGOING)
+    @Relationship(type = "normalPathway")
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
     }

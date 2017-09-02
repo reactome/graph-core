@@ -9,7 +9,7 @@ import java.util.List;
 @NodeEntity
 public class ReferenceRNASequence extends ReferenceSequence {
 
-    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceGene")
     private List<ReferenceDNASequence> referenceGene;
     
     public ReferenceRNASequence() {}
@@ -18,7 +18,7 @@ public class ReferenceRNASequence extends ReferenceSequence {
         return referenceGene;
     }
 
-    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceGene")
     public void setReferenceGene(List<ReferenceDNASequence> referenceGene) {
         this.referenceGene = referenceGene;
     }

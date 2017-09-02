@@ -13,7 +13,7 @@ public class ReplacedResidue extends GeneticallyModifiedResidue {
     @ReactomeProperty
     private Integer coordinate;
 
-    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
+    @Relationship(type = "psiMod")
     private List<PsiMod> psiMod;
     
     public ReplacedResidue() {}
@@ -30,7 +30,7 @@ public class ReplacedResidue extends GeneticallyModifiedResidue {
         return psiMod;
     }
 
-    @Relationship(type = "psiMod", direction = Relationship.OUTGOING)
+    @Relationship(type = "psiMod")
     public void setPsiMod(List<PsiMod> psiMod) {
         this.psiMod = psiMod;
     }

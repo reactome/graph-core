@@ -13,7 +13,7 @@ public class Summation extends DatabaseObject {
     @ReactomeProperty
     private String text;
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
     public Summation() {}
@@ -30,7 +30,7 @@ public class Summation extends DatabaseObject {
         return literatureReference;
     }
 
-    @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
+    @Relationship(type = "literatureReference")
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }

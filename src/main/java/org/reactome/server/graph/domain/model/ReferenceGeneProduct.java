@@ -13,10 +13,10 @@ public class ReferenceGeneProduct extends ReferenceSequence {
     @ReactomeProperty
     private List<String> chain;
 
-    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceGene")
     private List<ReferenceDNASequence> referenceGene;
 
-    @Relationship(type = "referenceTranscript", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceTranscript")
     private List<ReferenceRNASequence> referenceTranscript;
 
     public ReferenceGeneProduct() {}
@@ -33,7 +33,7 @@ public class ReferenceGeneProduct extends ReferenceSequence {
         return referenceGene;
     }
 
-    @Relationship(type = "referenceGene", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceGene")
     public void setReferenceGene(List<ReferenceDNASequence> referenceGene) {
         this.referenceGene = referenceGene;
     }
@@ -42,7 +42,7 @@ public class ReferenceGeneProduct extends ReferenceSequence {
         return referenceTranscript;
     }
 
-    @Relationship(type = "referenceTranscript", direction = Relationship.OUTGOING)
+    @Relationship(type = "referenceTranscript")
     public void setReferenceTranscript(List<ReferenceRNASequence> referenceTranscript) {
         this.referenceTranscript = referenceTranscript;
     }

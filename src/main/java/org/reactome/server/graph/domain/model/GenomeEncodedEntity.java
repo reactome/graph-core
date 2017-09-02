@@ -13,7 +13,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 public class GenomeEncodedEntity extends PhysicalEntity {
 
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     private Taxon species;
 
     public GenomeEncodedEntity() {}
@@ -22,7 +22,7 @@ public class GenomeEncodedEntity extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species", direction = Relationship.OUTGOING)
+    @Relationship(type = "species")
     public void setSpecies(Taxon species) {
         this.species = species;
     }

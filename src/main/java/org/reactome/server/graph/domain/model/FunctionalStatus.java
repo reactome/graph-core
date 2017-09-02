@@ -7,10 +7,10 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class FunctionalStatus extends DatabaseObject {
 
-    @Relationship(type = "functionalStatusType", direction = Relationship.OUTGOING)
+    @Relationship(type = "functionalStatusType")
     private FunctionalStatusType functionalStatusType;
 
-    @Relationship(type = "structuralVariant", direction = Relationship.OUTGOING)
+    @Relationship(type = "structuralVariant")
     private SequenceOntology structuralVariant;
     
     public FunctionalStatus() {}
@@ -19,7 +19,7 @@ public class FunctionalStatus extends DatabaseObject {
         return functionalStatusType;
     }
 
-    @Relationship(type = "functionalStatusType", direction = Relationship.OUTGOING)
+    @Relationship(type = "functionalStatusType")
     public void setFunctionalStatusType(FunctionalStatusType functionalStatusType) {
         this.functionalStatusType = functionalStatusType;
     }
@@ -28,7 +28,7 @@ public class FunctionalStatus extends DatabaseObject {
         return structuralVariant;
     }
 
-    @Relationship(type = "structuralVariant", direction = Relationship.OUTGOING)
+    @Relationship(type = "structuralVariant")
     public void setStructuralVariant(SequenceOntology structuralVariant) {
         this.structuralVariant = structuralVariant;
     }
