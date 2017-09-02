@@ -260,6 +260,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.goCellularComponent = goCellularComponent;
     }
 
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
     public List<PhysicalEntity> getInferredTo() {
         return inferredTo;
     }

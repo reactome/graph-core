@@ -36,6 +36,13 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
     private GO_BiologicalProcess goBiologicalProcess;
 
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    private List<Regulation> inferredTo;
+
+    @ReactomeTransient
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
+    private List<Regulation> inferredFrom;
+
     @Relationship(type = "literatureReference", direction = Relationship.OUTGOING)
     private List<Publication> literatureReference;
 
@@ -120,6 +127,26 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "goBiologicalProcess", direction = Relationship.OUTGOING)
     public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
         this.goBiologicalProcess = goBiologicalProcess;
+    }
+
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    public List<Regulation> getInferredTo() {
+        return inferredTo;
+    }
+
+    @Relationship(type = "inferredTo", direction = Relationship.OUTGOING)
+    public void setInferredTo(List<Regulation> inferredTo) {
+        this.inferredTo = inferredTo;
+    }
+
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
+    public List<Regulation> getInferredFrom() {
+        return inferredFrom;
+    }
+
+    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
+    public void setInferredFrom(List<Regulation> inferredFrom) {
+        this.inferredFrom = inferredFrom;
     }
 
     public List<Publication> getLiteratureReference() {
