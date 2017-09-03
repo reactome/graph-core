@@ -23,7 +23,7 @@ public class OrthologyServiceTest extends BaseTest {
 
     @Test
     public void getOrthologyTest() {
-        logger.info("Started testing eventsService.getEventAncestorsByStIdTest");
+        logger.info("Started testing orthologyService.getOrthology");
         long start = System.currentTimeMillis();
         DatabaseObject orthology = orthologyService.getOrthology("R-HSA-6799198", 49633L);
         long time = System.currentTimeMillis() - start;
