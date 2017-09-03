@@ -100,8 +100,9 @@ public class AdvancedDatabaseObjectRepository {
     public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId) {
         String query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
                        "OPTIONAL MATCH (n)-[r1]-(m) " +
-                       "OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) " +
-                       "RETURN n,r1,m,r2,o";
+                       "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                       "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) " +
+                       "RETURN n,r1,m,r2,s,r3,o";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         Result result = neo4jTemplate.query(query, map);
@@ -113,8 +114,9 @@ public class AdvancedDatabaseObjectRepository {
     public <T extends DatabaseObject> T findEnhancedObjectById(String stId) {
         String query = "MATCH (n:DatabaseObject{stId:{stId}}) " +
                        "OPTIONAL MATCH (n)-[r1]-(m) " +
-                       "OPTIONAL MATCH (m)-[r2:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) " +
-                       "RETURN n,r1,m,r2,o";
+                       "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                       "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|catalyzedEvent|physicalEntity|crossReference|referenceGene]-(o) " +
+                       "RETURN n,r1,m,r2,s,r3,o";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         Result result = neo4jTemplate.query(query, map);
