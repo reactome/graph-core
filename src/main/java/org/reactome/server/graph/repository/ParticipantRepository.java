@@ -16,11 +16,11 @@ import java.util.Collection;
 @Repository
 public interface ParticipantRepository extends GraphRepository<PhysicalEntity> {
 
-    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|hasMember|hasComponent|hasCandidate|referenceEntity*]->(m:ReferenceEntity) " +
+    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
             "RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingReferenceEntities(Long dbId);
 
-    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
+    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
             "RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingReferenceEntities(String stId);
 
