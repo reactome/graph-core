@@ -20,7 +20,8 @@ public class Publication extends DatabaseObject {
     @Relationship(type = "author", direction = Relationship.INCOMING)
     private SortedSet<PublicationAuthor> author;
 
-    public Publication() {}
+    public Publication() {
+    }
 
     public String getTitle() {
         return title;
@@ -32,15 +33,15 @@ public class Publication extends DatabaseObject {
 
     @Relationship(type = "author", direction = Relationship.INCOMING)
     public List<Person> getAuthor() {
+        if (author == null) return null;
         List<Person> rtn = new ArrayList<>();
-        if(author ==null) return rtn;
         for (PublicationAuthor author : author) {
             rtn.add(author.getAuthor());
         }
         return rtn;
     }
 
-    public void setAuthor(List<Person> author){
+    public void setAuthor(List<Person> author) {
         this.author = new TreeSet<>();
         int order = 0;
         for (Person person : author) {
