@@ -14,21 +14,21 @@ import java.util.Collection;
 @Repository
 public interface TopLevelPathwayRepository extends GraphRepository<TopLevelPathway> {
 
-    @Query("MATCH (n:TopLevelPathway{isInferred:False}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False}) RETURN n ORDER BY LOWER(n.displayName)")
     Collection<TopLevelPathway> getTopLevelPathways();
 
-    @Query("MATCH (n:TopLevelPathway)-[:species]-(s:Species{displayName:{0}}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway)-[:species]-(s:Species{displayName:{0}}) RETURN n ORDER BY LOWER(n.displayName) ASC")
     Collection<TopLevelPathway> getTopLevelPathwaysByName(String speciesName);
 
-    @Query("MATCH (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway)-[:species]-(:Species{taxId:{0}}) RETURN n ORDER BY LOWER(n.displayName) ASC")
     Collection<TopLevelPathway> getTopLevelPathwaysByTaxId(String taxId);
 
-    @Query("MATCH (n:TopLevelPathway{isInferred:False}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False}) RETURN n ORDER BY LOWER(n.displayName)")
     Collection<TopLevelPathway> getCuratedTopLevelPathways();
 
-    @Query("MATCH (n:TopLevelPathway{isInferred:False})-[:species]-(:Species{displayName:{0}}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False})-[:species]-(:Species{displayName:{0}}) RETURN n ORDER BY LOWER(n.displayName)")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByName(String speciesName);
 
-    @Query("MATCH (n:TopLevelPathway{isInferred:False})-[:species]-(:Species{taxId:{0}}) RETURN n Order By n.displayName")
+    @Query("MATCH (n:TopLevelPathway{isInferred:False})-[:species]-(:Species{taxId:{0}}) RETURN n ORDER BY LOWER(n.displayName)")
     Collection<TopLevelPathway> getCuratedTopLevelPathwaysByTaxId(String taxId);
 }
