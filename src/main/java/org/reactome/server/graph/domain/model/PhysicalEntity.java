@@ -14,6 +14,7 @@ import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
 
 @SuppressWarnings("unused")
 @NodeEntity
@@ -51,7 +52,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
-    private Set<HasComponent> componentOf;
+    private SortedSet<HasComponent> componentOf;
 
     @ReactomeTransient
     @Relationship(type = "input", direction = Relationship.INCOMING)
@@ -205,7 +206,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
-    public void setComponentOf(Set<HasComponent> componentOf) {
+    public void setComponentOf(SortedSet<HasComponent> componentOf) {
         this.componentOf = componentOf;
     }
 

@@ -21,7 +21,7 @@ public class Complex extends PhysicalEntity {
     private Boolean isChimeric;
 
     @Relationship(type = "hasComponent")
-    private Set<HasComponent> hasComponent;
+    private SortedSet<HasComponent> hasComponent;
 
     @Relationship(type = "entityOnOtherCell")
     private List<PhysicalEntity> entityOnOtherCell;
@@ -74,6 +74,7 @@ public class Complex extends PhysicalEntity {
     public void setHasComponent(List<PhysicalEntity> hasComponent) {
         if (hasComponent == null) return;
         Map<Long, HasComponent> components = new LinkedHashMap<>();
+        int order = 0;
         for (PhysicalEntity physicalEntity : hasComponent) {
             HasComponent component = components.get(physicalEntity.getDbId());
             if (component != null) {
@@ -82,10 +83,11 @@ public class Complex extends PhysicalEntity {
                 component = new HasComponent();
                 component.setComplex(this);
                 component.setPhysicalEntity(physicalEntity);
+                component.setOrder(order++);
                 components.put(physicalEntity.getDbId(), component);
             }
         }
-        this.hasComponent = new HashSet<>(components.values());
+        this.hasComponent = new TreeSet<>(components.values());
     }
 
     public List<PhysicalEntity> getEntityOnOtherCell() {
