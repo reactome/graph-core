@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -78,20 +79,30 @@ public class AdvancedDatabaseObjectService {
         return null;
     }
 
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
-        return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction);
-    }
-
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction) {
-        return advancedDatabaseObjectRepository.findByStIds(stIds, direction);
-    }
-
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction, relationships);
     }
 
     public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
+    }
+
+    public Collection<DatabaseObject> findByIds(Collection<Object> ids, RelationshipDirection direction) {
+        Collection<DatabaseObject> rtn = new HashSet<>();
+        for (Object id : ids) {
+            DatabaseObject aux = findById(id, direction);
+            if (aux != null) rtn.add(aux);
+        }
+        return rtn;
+    }
+
+    public Collection<DatabaseObject> findByIds(Collection<Object> ids, RelationshipDirection direction, String... relationships) {
+        Collection<DatabaseObject> rtn = new HashSet<>();
+        for (Object id : ids) {
+            DatabaseObject aux = findById(id, direction, relationships);
+            if (aux != null) rtn.add(aux);
+        }
+        return rtn;
     }
 
     public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
@@ -191,5 +202,7 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.customBooleanQueryResult(query, parametersMap);
     }
 
-
+    public Number customNumbernQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customNumberQueryResult(query, parametersMap);
+    }
 }

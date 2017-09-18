@@ -221,6 +221,7 @@ public class AdvancedDatabaseObjectRepository {
         return null;
     }
 
+    /*
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
         String query;
         switch (direction) {
@@ -282,6 +283,7 @@ public class AdvancedDatabaseObjectRepository {
         }
         return databaseObjects;
     }
+    */
 
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
         String query;
@@ -460,6 +462,24 @@ public class AdvancedDatabaseObjectRepository {
             if (result.iterator().hasNext()) {
                 Map<String, Object> stringObjectMap = result.iterator().next();
                 return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Boolean.class);
+            }
+        } catch (Throwable e) {
+            throw new CustomQueryException(e);
+        }
+
+        return null;
+    }
+
+    public Number customNumberQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        if (parametersMap == null) //noinspection unchecked
+            parametersMap = Collections.EMPTY_MAP;
+
+        Result result = neo4jTemplate.query(query, parametersMap);
+
+        try {
+            if (result.iterator().hasNext()) {
+                Map<String, Object> stringObjectMap = result.iterator().next();
+                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Number.class);
             }
         } catch (Throwable e) {
             throw new CustomQueryException(e);
