@@ -31,7 +31,7 @@ public class EventsServiceTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("Raf/Map is at least in 20 different locations", pathways.size() >= 20);
+        assertTrue("Raf/Map is in several different locations. Found:" + pathways.size(), pathways.size() > 1);
         for (Collection<Pathway> pathway : pathways) {
             assertFalse("Ancestors list cannot be empty", pathway.isEmpty());
         }
@@ -45,7 +45,7 @@ public class EventsServiceTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("Raf/Map is at least in 20 different locations", pathways.size() >= 20);
+        assertTrue("Raf/Map is in several different locations. Found:" + pathways.size(), pathways.size() > 1);
         for (Collection<Pathway> pathway : pathways) {
             assertFalse("Ancestors list cannot be empty", pathway.isEmpty());
         }
