@@ -1,4 +1,4 @@
-package org.reactome.server.graph.util;
+package org.reactome.server.graph.custom;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import java.util.List;
  *
  * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
  */
+@SuppressWarnings("unused")
 public class CustomQueryResult {
     private Long dbId;
     private String name;

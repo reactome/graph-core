@@ -2,10 +2,12 @@ package org.reactome.server.graph.service;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.reactome.server.graph.custom.CustomQueryComplex;
+import org.reactome.server.graph.custom.CustomQueryPhysicalEntity;
+import org.reactome.server.graph.custom.CustomQueryResult;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
-import org.reactome.server.graph.util.CustomQueryResult;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -315,6 +317,50 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (n:ReferenceEntity) RETURN COUNT(DISTINCT n.identifier) > 1";
         Boolean check = advancedDatabaseObjectService.customBooleanQueryResult(query, null);
         assertTrue(check);
+    }
+
+    @Test
+    public void customQueryListOfCustomObjects() throws CustomQueryException {
+        // Testing a custom query that retrieves a CustomObject and one (or more) of the attributes
+        // are Lists of Number, Strings or List of Custom Objects.
+        logger.info("Started testing advancedDatabaseObjectService.customQueryListOfCustomObjects");
+
+        String query = "MATCH (pe:Complex{speciesName:{species},stId:{stId}})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(re) " +
+                       "RETURN pe.stId AS stId, pe.displayName AS displayName, COLLECT(re.dbId) as dbIds, COLLECT(re.databaseName) as databaseNames, " +
+                       "COLLECT({database:re.databaseName, identifier:re.identifier}) AS customReferences";
+
+        Map<String, Object> parametersMap = new HashMap<>();
+        parametersMap.put("species", "Homo sapiens");
+        parametersMap.put("stId", "R-HSA-1852614");
+
+        // In this test case, the relationships are mapped in the object CustomQueryComplex inside the Collection
+        Collection<CustomQueryComplex> customComplexes = advancedDatabaseObjectService.customQueryForObjects(CustomQueryComplex.class, query, parametersMap);
+
+        assertNotNull(customComplexes);
+        assertTrue(customComplexes.iterator().next().getDbIds().size() >= 9);
+        assertTrue(customComplexes.iterator().next().getCustomReferences().size() >= 9);
+        assertTrue(customComplexes.iterator().next().getDatabaseNames().size() >= 4);
+    }
+
+    @Test
+    public void customQueryCustomObjects() throws CustomQueryException {
+        // Testing a custom query that retrieves a CustomObject and one (or more) of the attributes are Custom Objects.
+        logger.info("Started testing advancedDatabaseObjectService.customQueryCustomObjects");
+
+        String query = "MATCH (pe:PhysicalEntity{speciesName:{species}, stId:{stId}})-[:referenceEntity]->(re) " +
+                       "RETURN pe.stId AS stId, pe.displayName AS displayName, {database:re.databaseName, identifier:re.identifier} AS customReference";
+
+        Map<String, Object> parametersMap = new HashMap<>();
+        parametersMap.put("species", "Homo sapiens");
+        parametersMap.put("stId", "R-HSA-141433");
+
+        // In this test case, the relationships are mapped in the object Pathway inside the Collection
+        CustomQueryPhysicalEntity customPE = advancedDatabaseObjectService.customQueryForObject(CustomQueryPhysicalEntity.class, query, parametersMap);
+
+        assertNotNull(customPE);
+        assertEquals("R-HSA-141433", customPE.getStId());
+        assertEquals("UniProt", customPE.getCustomReference().getDatabase());
+        assertEquals("Q9Y6D9", customPE.getCustomReference().getIdentifier());
     }
 
     @Test
