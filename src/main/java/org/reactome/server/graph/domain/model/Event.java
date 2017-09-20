@@ -54,7 +54,7 @@ public abstract class Event extends DatabaseObject {
     @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
-    private List<Event> eventOf;
+    private List<Pathway> eventOf;
 
     @Relationship(type = "evidenceType")
     private EvidenceType evidenceType;
@@ -218,12 +218,12 @@ public abstract class Event extends DatabaseObject {
     }
 
     @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
-    public List<Event> getEventOf() {
+    public List<Pathway> getEventOf() {
         return eventOf;
     }
 
     @Relationship(type = "hasEvent", direction=Relationship.INCOMING)
-    public void setEventOf(List<Event> eventOf) {
+    public void setEventOf(List<Pathway> eventOf) {
         this.eventOf = eventOf;
     }
 

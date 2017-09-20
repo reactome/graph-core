@@ -5,21 +5,22 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.relationship.HasMember;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Two or more entities grouped because of a shared molecular feature. The superclass for CandidateSet, DefinedSet, and OpenSet.
  */
 @SuppressWarnings("unused")
 @NodeEntity
-public abstract class EntitySet extends PhysicalEntity{
+public abstract class EntitySet extends PhysicalEntity {
 
     @ReactomeProperty
     private Boolean isOrdered;
 
     @Relationship(type = "hasMember")
-    private List<PhysicalEntity> hasMember;
+    private SortedSet<HasMember> hasMember;
 
     @Relationship(type = "species")
     private List<Species> species;
@@ -38,12 +39,32 @@ public abstract class EntitySet extends PhysicalEntity{
     }
 
     public List<PhysicalEntity> getHasMember() {
-        return hasMember;
+        List<PhysicalEntity> rtn = null;
+        if (hasMember != null) {
+            rtn = new ArrayList<>();
+            //stoichiometry does NOT need to be taken into account here
+            for (HasMember component : hasMember) {
+                rtn.add(component.getPhysicalEntity());
+            }
+        }
+        return rtn;
     }
 
     @Relationship(type = "hasMember")
     public void setHasMember(List<PhysicalEntity> hasMember) {
-        this.hasMember = hasMember;
+        if (hasMember == null) return;
+        Map<Long, HasMember> components = new LinkedHashMap<>();
+        int order = 0;
+        for (PhysicalEntity physicalEntity : hasMember) {
+            //stoichiometry does NOT need to be taken into account here
+            HasMember aux = new HasMember();
+            aux.setEntitySet(this);
+            aux.setPhysicalEntity(physicalEntity);
+            aux.setOrder(order++);
+            components.put(physicalEntity.getDbId(), aux);
+
+        }
+        this.hasMember = new TreeSet<>(components.values());
     }
 
     public List<Species> getSpecies() {

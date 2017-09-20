@@ -4,22 +4,21 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.Complex;
+import org.reactome.server.graph.domain.model.EntitySet;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 
 /**
- * HasComponent is the relationship entity of Complexes. It is needed to specify the stoichiometry and order of
- * components.
+ * HasMember is the relationship entity of EntitySets. It is needed to specify the order of members.
  */
 @SuppressWarnings("unused")
-@RelationshipEntity(type = "hasComponent")
-public class HasComponent implements Comparable {
+@RelationshipEntity(type = "hasMember")
+public class HasMember implements Comparable {
 
     @GraphId
     private Long id;
 
     @StartNode
-    private Complex complex;
+    private EntitySet entitySet;
 
     @EndNode
     private PhysicalEntity physicalEntity;
@@ -28,14 +27,22 @@ public class HasComponent implements Comparable {
 
     private int order;
 
-    public HasComponent() {}
+    public HasMember() {}
 
-    public Complex getComplex() {
-        return complex;
+    public Long getId() {
+        return id;
     }
 
-    public void setComplex(Complex complex) {
-        this.complex = complex;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public EntitySet getEntitySet() {
+        return entitySet;
+    }
+
+    public void setEntitySet(EntitySet entitySet) {
+        this.entitySet = entitySet;
     }
 
     public PhysicalEntity getPhysicalEntity() {
@@ -67,21 +74,21 @@ public class HasComponent implements Comparable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        HasComponent that = (HasComponent) o;
+        HasMember that = (HasMember) o;
 
-        if (complex != null ? !complex.equals(that.complex) : that.complex != null) return false;
+        if (entitySet != null ? !entitySet.equals(that.entitySet) : that.entitySet != null) return false;
         return physicalEntity != null ? physicalEntity.equals(that.physicalEntity) : that.physicalEntity == null;
     }
 
     @Override
     public int hashCode() {
-        int result = complex != null ? complex.hashCode() : 0;
+        int result = entitySet != null ? entitySet.hashCode() : 0;
         result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
         return result;
     }
 
     @Override
     public int compareTo(Object o) {
-        return this.order - ((HasComponent) o).order;
+        return this.order - ((HasMember) o).order;
     }
 }
