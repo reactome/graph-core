@@ -16,27 +16,45 @@ import java.util.Collection;
 @Repository
 public interface ParticipantRepository extends GraphRepository<PhysicalEntity> {
 
-    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
+    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
             "RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingReferenceEntities(Long dbId);
 
-    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
+    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
             "RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingReferenceEntities(String stId);
 
-    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
+    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
             "RETURN Distinct(m)")
     Collection<PhysicalEntity> getParticipatingPhysicalEntities(Long dbId);
 
-    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
+    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
             "RETURN Distinct(m)")
     Collection<PhysicalEntity> getParticipatingPhysicalEntities(String stId);
 
-    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity*]->(m)-[:physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) " +
-            "RETURN m.dbId AS peDbId, m.displayName AS displayName, m.simpleLabel AS schemaClass, COLLECT(DISTINCT({dbId: x.dbId, displayName: x.displayName, identifier:x.identifier, url:x.url, schemaClass:x.simpleLabel})) AS refEntities")
+    @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|regulatedBy|regulator*]->(m)-[:physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(re:ReferenceEntity) " +
+            "RETURN m.dbId AS peDbId, " +
+            "       m.displayName AS displayName, " +
+            "       m.simpleLabel AS schemaClass, " +
+            "       COLLECT(DISTINCT({" +
+            "              dbId: re.dbId, " +
+            "              displayName: re.displayName, " +
+            "              identifier: CASE WHEN re.variantIdentifier IS NOT NULL THEN re.variantIdentifier ELSE re.identifier END, " +
+            "              url: re.url, " +
+            "              schemaClass: re.simpleLabel" +
+            "       })) AS refEntities")
     Collection<Participant> getParticipants(Long dbId);
 
-    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity*]->(m)-[:physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(x:ReferenceEntity) " +
-            "RETURN m.dbId AS peDbId, m.displayName AS displayName, m.simpleLabel AS schemaClass, COLLECT(DISTINCT({dbId: x.dbId, displayName: x.displayName, identifier:x.identifier, url:x.url, schemaClass:x.simpleLabel})) AS refEntities")
+    @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|regulatedBy|regulator*]->(m)-[:physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(re:ReferenceEntity) " +
+            "RETURN m.dbId AS peDbId, " +
+            "       m.displayName AS displayName, " +
+            "       m.simpleLabel AS schemaClass, " +
+            "       COLLECT(DISTINCT({" +
+            "              dbId: re.dbId, " +
+            "              displayName: re.displayName, " +
+            "              identifier: CASE WHEN re.variantIdentifier IS NOT NULL THEN re.variantIdentifier ELSE re.identifier END, " +
+            "              url: re.url, " +
+            "              schemaClass: re.simpleLabel" +
+            "       })) AS refEntities")
     Collection<Participant> getParticipants(String stId);
 }
