@@ -573,29 +573,79 @@ public class AdvancedDatabaseObjectRepository {
     /**
      * Method that uses Java Reflection in order to set the attributes of a specific instance.
      * The attribute is handled in different ways depends on its type.
-     * The types are: Array of primitive, Collection and others.
+     * The types are: Array of primitive, Collection of [String, Number, primitives and CustomObjects] and Custom Objects.
      * A external type convert is used to convert the Result "stringObjectMap" once Neo4j returns
      * an array of Integer for a list of number and we must be able to convert it to whatever type the final user
      * has defined in his Custom Object. Obviously the type conversion is going to check the type compatibility.
+     * For that we use the jodd.TypeConverter and we are using Java Reflection for the Custom Objects - we manually instantiate
+     * them and recursively call the result list.
      */
-    private <T> void setFields(T instance, Field field, Map<String, Object> stringObjectMap) throws IllegalAccessException {
+    private <T> void setFields(T instance, Field field, Map<String, Object> stringObjectMap) throws Exception {
         String fieldName = field.getName();
         Object object = stringObjectMap.get(fieldName);
         if (object != null) {
             field.setAccessible(true);
+
+            // An array of primitives do not box automatically then we cast it manually using ArrayUtils and the attribute type
             if (field.getType().isArray() && field.getType().getComponentType().isPrimitive()) {
-                // An array of primitives do not box automatically then we cast it manually using ArrayUtils and the attribute type
                 field.set(instance, toPrimitiveArray(object, field.getType()));
             } else if (Collection.class.isAssignableFrom(field.getType())) {
                 //The returned results are normally stored in an Array, then we need to convert in case the attribute is a Collection
                 ParameterizedType stringListType = (ParameterizedType) field.getGenericType();
                 Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
-                //noinspection unchecked
-                field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
-            } else {
-                // Other fields, no problem with type conversion
+
+                // Parametrised type is String and the convertToCollection is able to convert that
+                if (stringListClass.isAssignableFrom(String.class) || Number.class.isAssignableFrom(stringListClass) || stringListClass.isPrimitive()){
+                    //noinspection unchecked
+                    field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
+                } else {
+                    // Parametrised type is a Custom Object so we have to create the list, create the objects
+                    // add them into the list and set attribute in the main class.
+                    Collection<T> customCollection;
+                    if (field.getType().isAssignableFrom(List.class)){
+                        customCollection = new ArrayList<>();
+                    } else if (field.getType().isAssignableFrom(Set.class)) {
+                        customCollection = new HashSet<>();
+                    } else {
+                        throw new Exception("Couldn't get the class name of the given collection [" + field.getType() + "]");
+                    }
+
+                    // The object returned by Neo4j is an array of LinkedHashMap.
+                    LinkedHashMap<String, Object>[] allLinkedHashMap = (LinkedHashMap<String, Object>[])object;
+                    Field[] fields = getAllFields(stringListClass);
+                    for (LinkedHashMap<String, Object> entry : allLinkedHashMap) {
+                        T customInstance = createAndPopulateObject(stringListClass, fields, entry);
+                        customCollection.add(customInstance);
+                    }
+                    // set the list in the main class
+                    field.set(instance, customCollection);
+                }
+            } else if (field.getType().isAssignableFrom(String.class) || Number.class.isAssignableFrom(field.getType()) || field.getType().isArray()){
+                // The attribute is String, Number or an array we know how to convert
                 field.set(instance, TypeConverterManager.convertType(object, field.getType()));
+            } else {
+                // The attribute is a Custom Object that needs to be instantiated.
+                Field[] customFields = getAllFields(field.getType());
+                T customInstance = createAndPopulateObject(field.getType(), customFields, (Map<String, Object>)object);
+                field.set(instance, customInstance);
             }
         }
+    }
+
+    /**
+     * This method is called in the setFields method which calls recursively in order to create and populate the objects themselves.
+     *
+     * @param clazz the class to be instantiate
+     * @param customFields attributes of given class
+     * @param object result map of the cypher query, key=String(name of attribute) value=object result of the given attribute
+     *
+     * @throws Exception in case we can't create new instances
+     */
+    private <T> T createAndPopulateObject(Class<?> clazz, Field[] customFields, Map<String, Object> object) throws Exception {
+        T customInstance = (T) clazz.newInstance();
+        for (Field customField : customFields) {
+            setFields(customInstance, customField, object);
+        }
+        return customInstance;
     }
 }
