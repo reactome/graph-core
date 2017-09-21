@@ -50,7 +50,7 @@ mvn archetype:generate \
 <dependency>
     <groupId>org.reactome.server.tools</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.0.8</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
@@ -138,7 +138,7 @@ Afterwards initialise the Reactome Graph Connection and get access the API
 <dependency>
     <groupId>org.reactome.server.tools</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.0.8</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
