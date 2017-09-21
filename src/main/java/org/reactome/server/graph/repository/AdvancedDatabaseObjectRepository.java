@@ -610,19 +610,25 @@ public class AdvancedDatabaseObjectRepository {
                         throw new Exception("Couldn't get the class name of the given collection [" + field.getType() + "]");
                     }
 
-                    // The object returned by Neo4j is an array of LinkedHashMap.
-                    LinkedHashMap<String, Object>[] allLinkedHashMap = (LinkedHashMap<String, Object>[])object;
-                    Field[] fields = getAllFields(stringListClass);
-                    for (LinkedHashMap<String, Object> entry : allLinkedHashMap) {
-                        T customInstance = createAndPopulateObject(stringListClass, fields, entry);
-                        customCollection.add(customInstance);
+                    if (object instanceof Map[]) {
+                        // The object returned by Neo4j is an array of LinkedHashMap.
+                        LinkedHashMap<String, Object>[] allLinkedHashMap = (LinkedHashMap<String, Object>[]) object;
+                        Field[] fields = getAllFields(stringListClass);
+                        for (LinkedHashMap<String, Object> entry : allLinkedHashMap) {
+                            T customInstance = createAndPopulateObject(stringListClass, fields, entry);
+                            customCollection.add(customInstance);
+                        }
                     }
                     // set the list in the main class
                     field.set(instance, customCollection);
                 }
             } else if (field.getType().isAssignableFrom(String.class) || Number.class.isAssignableFrom(field.getType()) || field.getType().isArray()){
-                // The attribute is String, Number or an array we know how to convert
-                field.set(instance, TypeConverterManager.convertType(object, field.getType()));
+                try {
+                    // The attribute is String, Number or an array we know how to convert
+                    field.set(instance, TypeConverterManager.convertType(object, field.getType()));
+                } catch (Exception ex){
+                    field.set(instance, null);
+                }
             } else {
                 // The attribute is a Custom Object that needs to be instantiated.
                 Field[] customFields = getAllFields(field.getType());
