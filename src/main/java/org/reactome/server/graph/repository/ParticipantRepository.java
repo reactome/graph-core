@@ -35,26 +35,26 @@ public interface ParticipantRepository extends GraphRepository<PhysicalEntity> {
     @Query(" MATCH (n:DatabaseObject{dbId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|regulatedBy|regulator*]->(m)-[:physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(re:ReferenceEntity) " +
             "RETURN m.dbId AS peDbId, " +
             "       m.displayName AS displayName, " +
-            "       m.simpleLabel AS schemaClass, " +
+            "       m.schemaClass AS schemaClass, " +
             "       COLLECT(DISTINCT({" +
             "              dbId: re.dbId, " +
             "              displayName: re.displayName, " +
             "              identifier: CASE WHEN re.variantIdentifier IS NOT NULL THEN re.variantIdentifier ELSE re.identifier END, " +
             "              url: re.url, " +
-            "              schemaClass: re.simpleLabel" +
+            "              schemaClass: re.schemaClass" +
             "       })) AS refEntities")
     Collection<Participant> getParticipants(Long dbId);
 
     @Query(" MATCH (n:DatabaseObject{stId:{0}})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|regulatedBy|regulator*]->(m)-[:physicalEntity|hasMember|hasComponent|hasCandidate|repeatedUnit|referenceEntity*]->(re:ReferenceEntity) " +
             "RETURN m.dbId AS peDbId, " +
             "       m.displayName AS displayName, " +
-            "       m.simpleLabel AS schemaClass, " +
+            "       m.schemaClass AS schemaClass, " +
             "       COLLECT(DISTINCT({" +
             "              dbId: re.dbId, " +
             "              displayName: re.displayName, " +
             "              identifier: CASE WHEN re.variantIdentifier IS NOT NULL THEN re.variantIdentifier ELSE re.identifier END, " +
             "              url: re.url, " +
-            "              schemaClass: re.simpleLabel" +
+            "              schemaClass: re.schemaClass" +
             "       })) AS refEntities")
     Collection<Participant> getParticipants(String stId);
 }
