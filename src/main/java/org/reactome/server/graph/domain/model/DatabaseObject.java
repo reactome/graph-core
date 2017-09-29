@@ -175,7 +175,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return "Not available";
     }
 
-    @ReactomeSchemaIgnore
+    @ReactomeSchemaIgnore //In some classes it is overridden to provide an easier-to-understand name
     public String getClassName() {
         return getClass().getSimpleName();
     }
