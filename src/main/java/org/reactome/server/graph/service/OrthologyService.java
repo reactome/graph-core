@@ -20,7 +20,7 @@ public class OrthologyService {
     @Autowired
     private OrthologyRepository orthologyRepository;
 
-    public DatabaseObject getOrthology(Object identifier, Long speciesId){
+    public Collection<DatabaseObject> getOrthology(Object identifier, Long speciesId){
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return orthologyRepository.getOrthology(id, speciesId);
@@ -30,10 +30,10 @@ public class OrthologyService {
         return null;
     }
 
-    public Map<Object, DatabaseObject> getOrthologies(Collection<Object> identifiers, Long speciesId){
-        Map<Object, DatabaseObject> rtn = new HashMap<>();
+    public Map<Object, Collection<DatabaseObject>> getOrthologies(Collection<Object> identifiers, Long speciesId){
+        Map<Object, Collection<DatabaseObject>> rtn = new HashMap<>();
         for (Object identifier : identifiers) {
-            DatabaseObject orthology = getOrthology(identifier, speciesId);
+            Collection<DatabaseObject> orthology = getOrthology(identifier, speciesId);
             if(orthology != null){
                 rtn.put(identifier, orthology);
             }
