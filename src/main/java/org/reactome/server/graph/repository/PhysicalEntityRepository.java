@@ -26,7 +26,7 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
             "WITH DISTINCT n " +
             "MATCH (n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WITH DISTINCT pe " +
-            "MATCH (c:Complex)-[:hasComponent|hasMember|hasCandidate|repeatedUnit]->(pe) " +
+            "MATCH (c:Complex)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
             "RETURN DISTINCT c")
     Collection<Complex> getComplexesFor(String identifier, String resource);
 
