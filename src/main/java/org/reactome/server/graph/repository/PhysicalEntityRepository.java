@@ -1,5 +1,6 @@
 package org.reactome.server.graph.repository;
 
+import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
@@ -19,6 +20,15 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
 
     @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOf(String stId);
+
+    @Query("MATCH (rd:ReferenceDatabase)<-[:referenceDatabase]-(n{identifier:{0}}) " +
+            "WHERE rd.displayName =~ {1} " +
+            "WITH DISTINCT n " +
+            "MATCH (n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
+            "WITH DISTINCT pe " +
+            "MATCH (c:Complex)-[:hasComponent|hasMember|hasCandidate|repeatedUnit]->(pe) " +
+            "RETURN DISTINCT c")
+    Collection<Complex> getComplexesFor(String identifier, String resource);
 
     @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunits(Long dbId);

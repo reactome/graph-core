@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service;
 
+import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.repository.PhysicalEntityRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -27,6 +28,10 @@ public class PhysicalEntityService {
             return physicalEntityRepository.getOtherFormsOf(Long.parseLong(id));
         }
         return null;
+    }
+
+    public Collection<Complex> getComplexesFor(String identifier, String resource){
+        return physicalEntityRepository.getComplexesFor(identifier, resource);
     }
 
     public Collection<PhysicalEntity> getComplexSubunits(Object identifier) {

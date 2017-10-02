@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.reactome.server.graph.config.Neo4jConfig;
+import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.slf4j.Logger;
@@ -87,6 +88,19 @@ public class PhysicalEntityServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue(otherFormsOfThisMolecule.size() >= 27);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testGetComplexesFor(){
+        logger.info("Started testing physicalEntityService.testGetComplexesFor");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Complex> complexes = physicalEntityService.getComplexesFor("P00533", "UniProt");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(complexes.size() >= 5);
         logger.info("Finished");
     }
 
