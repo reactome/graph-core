@@ -15,13 +15,13 @@ import java.util.Collection;
 @Repository
 public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity> {
 
-    @Query("Match (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
+    @Query("MATCH (n:PhysicalEntity{dbId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) WHERE NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOf(Long dbId);
 
-    @Query("Match (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) Where NOT n=k RETURN k")
+    @Query("MATCH (n:PhysicalEntity{stId:{0}})-[:referenceEntity]->(m:ReferenceEntity)<-[:referenceEntity]-(k) WHERE NOT n=k RETURN k")
     Collection<PhysicalEntity> getOtherFormsOf(String stId);
 
-    @Query("MATCH (rd:ReferenceDatabase)<-[:referenceDatabase]-(n{identifier:{0}}) " +
+    @Query(" MATCH (rd:ReferenceDatabase)<-[:referenceDatabase]-(n{identifier:{0}}) " +
             "WHERE rd.displayName =~ {1} " +
             "WITH DISTINCT n " +
             "MATCH (n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
