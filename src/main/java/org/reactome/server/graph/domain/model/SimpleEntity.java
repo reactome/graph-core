@@ -14,7 +14,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 @NodeEntity
 public class SimpleEntity extends PhysicalEntity {
 
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String referenceType;
 
     @Relationship(type = "referenceEntity")

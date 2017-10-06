@@ -6,15 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This annotation is used to mark primitive fields that should be filled during initial data import.
+ * This annotation is used to mark relationships added to improve graph traversing. Those
+ * relationship using this annotation do not exist in the original relational database.
  *
- * @author Florian Korninger <florian.korninger@ebi.ac.uk>
+ * This is currently used for data consistency check in the https://github.com/reactome/graph-importer
+ *
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ReactomeProperty {
-
-    boolean addedField() default false;
-
+public @interface ReactomeRelationship {
 }

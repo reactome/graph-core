@@ -14,7 +14,7 @@ public class DatabaseIdentifier extends DatabaseObject {
     private String databaseName;
     @ReactomeProperty
     private String identifier;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String url;
 
     @Relationship(type = "crossReference")

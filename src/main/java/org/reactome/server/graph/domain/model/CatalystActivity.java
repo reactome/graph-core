@@ -3,6 +3,7 @@ package org.reactome.server.graph.domain.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class CatalystActivity extends DatabaseObject  {
     private PhysicalEntity physicalEntity;
 
     @Relationship(type = "regulatedBy")
+    @ReactomeRelationship
     private List<Regulation> regulatedBy;
 
     public CatalystActivity() {}

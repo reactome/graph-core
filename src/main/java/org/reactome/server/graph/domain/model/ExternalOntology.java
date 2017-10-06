@@ -20,7 +20,7 @@ public class ExternalOntology extends DatabaseObject {
     private List<String> name;
     @ReactomeProperty
     private List<String> synonym;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String url;
 
     @Relationship(type = "instanceOf")

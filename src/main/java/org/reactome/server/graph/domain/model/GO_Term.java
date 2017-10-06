@@ -22,7 +22,7 @@ public abstract class GO_Term extends DatabaseObject{
     private String definition;
     @ReactomeProperty
     private String name;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String url;
 
     @Relationship(type = "referenceDatabase")

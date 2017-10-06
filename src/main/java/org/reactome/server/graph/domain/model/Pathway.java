@@ -21,7 +21,7 @@ public class Pathway extends Event {
 
     @ReactomeProperty
     private String doi;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private Boolean hasDiagram;
     @ReactomeProperty
     private String isCanonical;

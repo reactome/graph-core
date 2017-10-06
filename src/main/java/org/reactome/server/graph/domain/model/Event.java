@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
@@ -19,10 +20,10 @@ public abstract class Event extends DatabaseObject {
     @ReactomeProperty
     private String definition;
     //A simple flag to indicate if this Event object is a disease
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private Boolean isInDisease;
     //A simple flag to indicate if this Event is inferred from another
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private Boolean isInferred;
     @ReactomeProperty
     private List<String> name;
@@ -30,7 +31,7 @@ public abstract class Event extends DatabaseObject {
     private String releaseDate;
     @ReactomeProperty
     private String releaseStatus;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String speciesName;
 
     @Relationship(type = "authored", direction = Relationship.INCOMING)
@@ -86,6 +87,7 @@ public abstract class Event extends DatabaseObject {
      * regulatedBy is not a field of the previous RestfulApi and will be ignored until needed
      */
     @JsonIgnore
+    @ReactomeRelationship
     @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
 

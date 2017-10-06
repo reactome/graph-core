@@ -12,7 +12,7 @@ public class Taxon extends DatabaseObject {
 
     @ReactomeProperty
     private List<String> name;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String taxId;
 
     @Deprecated

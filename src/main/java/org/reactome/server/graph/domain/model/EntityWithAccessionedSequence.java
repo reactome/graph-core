@@ -17,7 +17,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
     @ReactomeProperty
     private Integer endCoordinate;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String referenceType;
     @ReactomeProperty
     private Integer startCoordinate;

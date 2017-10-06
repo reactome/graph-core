@@ -18,7 +18,7 @@ public class Person extends DatabaseObject {
     private String firstname;
     @ReactomeProperty
     private String initial;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String orcidId;
     @ReactomeProperty
     private String project;

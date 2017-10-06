@@ -18,7 +18,7 @@ public class ReferenceEntity extends DatabaseObject {
     private List<String> name;
     @ReactomeProperty
     private List<String> otherIdentifier;
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String url;
 
     @Relationship(type = "crossReference")

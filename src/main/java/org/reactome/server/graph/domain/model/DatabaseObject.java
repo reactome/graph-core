@@ -49,7 +49,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     private String displayName;
 
     @ApiModelProperty(value = "This is the main external identifier of a Reactome entry")
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String stId;
 
     @ApiModelProperty(value = "This is the version of the main external identifier of a Reactome entry")

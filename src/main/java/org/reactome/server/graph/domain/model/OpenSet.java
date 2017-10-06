@@ -13,7 +13,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 @NodeEntity
 public class OpenSet extends EntitySet {
 
-    @ReactomeProperty
+    @ReactomeProperty(addedField = true)
     private String referenceType;
 
     @Relationship(type = "referenceEntity")
