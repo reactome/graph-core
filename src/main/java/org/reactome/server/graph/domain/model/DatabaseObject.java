@@ -161,7 +161,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return this.dbId.compareTo(o.dbId);
     }
 
-    public String getSchemaClass() {
+    public final String getSchemaClass() {
         return getClass().getSimpleName();
     }
 
