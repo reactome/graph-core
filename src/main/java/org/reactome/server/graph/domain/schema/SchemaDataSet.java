@@ -31,8 +31,10 @@ public class SchemaDataSet {
 
         if (event.getAuthored() != null) {
             for (InstanceEdit instanceEdit : event.getAuthored()) {
-                for (Person person : instanceEdit.getAuthor()) {
-                    this.creator.add(new SchemaPerson(person));
+                if (instanceEdit != null && instanceEdit.getAuthor() != null) {
+                    for (Person person : instanceEdit.getAuthor()) {
+                        if (person != null) this.creator.add(new SchemaPerson(person));
+                    }
                 }
             }
         }
