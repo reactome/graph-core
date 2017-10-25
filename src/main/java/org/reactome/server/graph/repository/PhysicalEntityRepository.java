@@ -30,15 +30,15 @@ public interface PhysicalEntityRepository extends GraphRepository<PhysicalEntity
             "RETURN DISTINCT c")
     Collection<Complex> getComplexesFor(String identifier, String resource);
 
-    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
+    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunits(Long dbId);
 
-    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
+    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunits(String stId);
 
-    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
+    @Query("MATCH (:Complex{dbId:{0}})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunitsNoStructures(Long dbId);
 
-    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
+    @Query("MATCH (:Complex{stId:{0}})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getComplexSubunitsNoStructures(String stId);
 }
