@@ -488,7 +488,7 @@ public class AdvancedDatabaseObjectRepository {
         return null;
     }
 
-    public Collection<String> customQueryResults(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
         if (parametersMap == null) //noinspection unchecked
             parametersMap = Collections.EMPTY_MAP;
 
@@ -500,12 +500,13 @@ public class AdvancedDatabaseObjectRepository {
         try {
             for (Map<String, Object> stringObjectMap : result) {
                 // for a list of String result the important bit are the values - collect the and add into List<Object>
-                list.addAll(stringObjectMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList()));
+                for (Object o : stringObjectMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList())) {
+                    list.add(TypeConverterManager.convertType(o, clazz));
+                }
             }
 
-            // convert list of Object into a list of strings.
-            return TypeConverterManager.convertToCollection(list, List.class, String.class);
-
+            // convert list of Object into a list of clazz.
+            return TypeConverterManager.convertToCollection(list, List.class, clazz);
         } catch (Throwable e) {
             throw new CustomQueryException(e);
         }
