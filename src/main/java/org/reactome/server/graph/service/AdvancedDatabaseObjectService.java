@@ -189,9 +189,8 @@ public class AdvancedDatabaseObjectService {
         return advancedDatabaseObjectRepository.customQueryForDatabaseObjects(clazz, query, parametersMap);
     }
 
-    // --- TESTING ---- //
-    public Collection<String> customQueryResults(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        return advancedDatabaseObjectRepository.customQueryResults(query, parametersMap);
+    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customQueryResults(clazz, query, parametersMap);
     }
 
     public String customStringQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
