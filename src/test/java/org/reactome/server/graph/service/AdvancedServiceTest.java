@@ -300,7 +300,7 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void customQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN DISTINCT n.identifier AS identifier";
-        Collection<String> accessions = advancedDatabaseObjectService.customQueryResults(query, null);
+        Collection<String> accessions = advancedDatabaseObjectService.customQueryResults(String.class, query, null);
         assertNotNull(accessions);
         assertTrue(accessions.size() >= 200000);
     }
