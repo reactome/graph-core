@@ -10,7 +10,6 @@ import org.reactome.server.graph.service.helper.StoichiometryObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. The repeated unit(s) is(are) identified in the repeatedUnit slot.
@@ -31,7 +30,7 @@ public class Polymer extends PhysicalEntity {
     private RepeatedUnit repeatedUnit;
 
     @Relationship(type = "species")
-    private Set<Species> species;
+    private List<Species> species;
 
     public Polymer() {}
 
@@ -79,12 +78,12 @@ public class Polymer extends PhysicalEntity {
         }
     }
 
-    public Set<Species> getSpecies() {
+    public List<Species> getSpecies() {
         return species;
     }
 
     @Relationship(type = "species")
-    public void setSpecies(Set<Species> species) {
+    public void setSpecies(List<Species> species) {
         this.species = species;
     }
 
