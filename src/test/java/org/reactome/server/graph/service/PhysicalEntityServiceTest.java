@@ -109,7 +109,7 @@ public class PhysicalEntityServiceTest {
         logger.info("Started testing physicalEntityService.testGetComplexSubunits");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> complexSubunits = physicalEntityService.getComplexSubunits("R-HSA-5674003");
+        Collection<PhysicalEntity> complexSubunits = physicalEntityService.getPhysicalEntitySubunits("R-HSA-5674003");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

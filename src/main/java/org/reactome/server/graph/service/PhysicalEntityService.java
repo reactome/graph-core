@@ -34,22 +34,22 @@ public class PhysicalEntityService {
         return physicalEntityRepository.getComplexesFor(identifier, resource);
     }
 
-    public Collection<PhysicalEntity> getComplexSubunits(Object identifier) {
+    public Collection<PhysicalEntity> getPhysicalEntitySubunits(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getComplexSubunits(id);
+            return physicalEntityRepository.getPhysicalEntitySubunits(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getComplexSubunits(Long.parseLong(id));
+            return physicalEntityRepository.getPhysicalEntitySubunits(Long.parseLong(id));
         }
         return null;
     }
 
-    public Collection<PhysicalEntity> getComplexSubunitsNoStructures(Object identifier) {
+    public Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getComplexSubunitsNoStructures(id);
+            return physicalEntityRepository.getPhysicalEntitySubunitsNoStructures(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getComplexSubunitsNoStructures(Long.parseLong(id));
+            return physicalEntityRepository.getPhysicalEntitySubunitsNoStructures(Long.parseLong(id));
         }
         return null;
     }
