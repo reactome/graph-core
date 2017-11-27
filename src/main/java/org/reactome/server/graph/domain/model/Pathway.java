@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.HasEvent;
 
 import java.util.ArrayList;
@@ -21,8 +22,14 @@ public class Pathway extends Event {
 
     @ReactomeProperty
     private String doi;
+
     @ReactomeProperty(addedField = true)
     private Boolean hasDiagram;
+    @ReactomeTransient
+    private Integer diagramWidth;
+    @ReactomeTransient
+    private Integer diagramHeight;
+
     @ReactomeProperty
     private String isCanonical;
 
@@ -48,6 +55,26 @@ public class Pathway extends Event {
 
     public void setHasDiagram(Boolean hasDiagram) {
         this.hasDiagram = hasDiagram;
+    }
+
+    @JsonIgnore
+    @ReactomeSchemaIgnore
+    public Integer getDiagramWidth() {
+        return diagramWidth;
+    }
+
+    public void setDiagramWidth(Integer diagramWidth) {
+        this.diagramWidth = diagramWidth;
+    }
+
+    @JsonIgnore
+    @ReactomeSchemaIgnore
+    public Integer getDiagramHeight() {
+        return diagramHeight;
+    }
+
+    public void setDiagramHeight(Integer diagramHeight) {
+        this.diagramHeight = diagramHeight;
     }
 
     public String getIsCanonical() {
