@@ -6,15 +6,14 @@ import org.neo4j.ogm.annotation.Relationship;
 /**
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
+@SuppressWarnings({"unused", "WeakerAccess"})
 @NodeEntity
-public class Drug extends PhysicalEntity {
+public abstract class Drug extends PhysicalEntity {
 
     @Relationship(type = "referenceTherapeutic")
     private ReferenceTherapeutic referenceTherapeutic;
 
-    public Drug() {
-
-    }
+    public Drug() {}
 
     public ReferenceTherapeutic getReferenceTherapeutic() {
         return referenceTherapeutic;

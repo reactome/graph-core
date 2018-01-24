@@ -24,7 +24,6 @@ public abstract class GO_Term extends DatabaseObject{
     private String name;
     @ReactomeProperty(addedField = true)
     private String url;
-
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
