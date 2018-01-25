@@ -140,6 +140,7 @@ See above
 See above
 
 **Enabling graph-core Library**
+
 To enable the Graph Core library, when working with Spring, simply add the the following component-scan package to your ```mvc-dispatcher-servlet.xml```. 
 
 ```xml
