@@ -48,7 +48,7 @@ mvn archetype:generate \
 ```html
 <!-- http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/org/reactome/server/graph/graph-core/ for updates -->
 <dependency>
-    <groupId>org.reactome.server.tools</groupId>
+    <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
     <version>1.1.5</version>
 </dependency>
@@ -133,26 +133,13 @@ Afterwards initialise the Reactome Graph Connection and get access the API
 
 **Dependency** 
 
-```html
-<!-- http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/org/reactome/server/graph/graph-core/ for updates -->
-<dependency>
-    <groupId>org.reactome.server.tools</groupId>
-    <artifactId>graph-core</artifactId>
-    <version>1.1.5</version>
-</dependency>
-```
+See above
 
 **Repository**
 
-```html
-<!-- EBI repo -->
-<repository>
-    <id>pst-release</id>
-    <name>EBI Nexus Repository</name>
-    <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-</repository>
-```
+See above
 
+**Enabling graph-core Library**
 To enable the Graph Core library, when working with Spring, simply add the the following component-scan package to your ```mvc-dispatcher-servlet.xml```. 
 
 ```xml
