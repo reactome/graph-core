@@ -27,6 +27,9 @@ public class ReferenceEntity extends DatabaseObject {
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
+    @Relationship(type = "referenceEntity", direction = Relationship.INCOMING)
+    private List<PhysicalEntity> physicalEntity;
+
     public ReferenceEntity() {}
 
     public String getDatabaseName() {
@@ -85,5 +88,14 @@ public class ReferenceEntity extends DatabaseObject {
     @Relationship(type = "referenceDatabase")
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
+    }
+
+    public List<PhysicalEntity> getPhysicalEntity() {
+        return physicalEntity;
+    }
+
+    @Relationship(type = "referenceDatabase", direction = Relationship.INCOMING)
+    public void setPhysicalEntity(List<PhysicalEntity> physicalEntity) {
+        this.physicalEntity = physicalEntity;
     }
 }
