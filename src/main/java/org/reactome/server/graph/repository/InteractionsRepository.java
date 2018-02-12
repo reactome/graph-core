@@ -14,12 +14,14 @@ import java.util.Collection;
 @Repository
 public interface InteractionsRepository extends GraphRepository<Interaction> {
 
-    @Query(" MATCH (:ReferenceEntity{identifier:{0}})<-[:interactor]-(in:Interaction)-[ir:interactor]->(re:ReferenceEntity) " +
+    @Query(" MATCH (t:ReferenceEntity)<-[:interactor]-(in:Interaction)-[ir:interactor]->(re:ReferenceEntity) " +
+            "WHERE  t.variantIdentifier = {0} OR (t.variantIdentifier IS NULL AND t.identifier = {0}) " +
             "RETURN DISTINCT in, ir, re " +
             "ORDER BY in.score DESC")
     Collection<Interaction> getByAcc(String acc);
 
-    @Query(" MATCH (:ReferenceEntity{identifier:{0}})<-[:interactor]-(in:Interaction)-[ir:interactor]->(re:ReferenceEntity) " +
+    @Query(" MATCH (t:ReferenceEntity)<-[:interactor]-(in:Interaction)-[ir:interactor]->(re:ReferenceEntity) " +
+            "WHERE  t.variantIdentifier = {0} OR (t.variantIdentifier IS NULL AND t.identifier = {0}) " +
             "RETURN DISTINCT in, ir, re " +
             "ORDER BY in.score DESC " +
             "SKIP ({1} - 1) * {2} " +
@@ -27,7 +29,7 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
     Collection<Interaction> getByAcc(String acc, Integer page, Integer pageSize);
 
     @Query(" MATCH (t:ReferenceEntity)<-[:interactor]-(in:Interaction) " +
-            "WHERE t.identifier IN {0} " +
+            "WHERE t.variantIdentifier IN {0} OR (t.variantIdentifier IS NULL AND t.identifier IN {0}) " +
             "RETURN DISTINCT t.identifier AS s, COUNT(DISTINCT in) as t")
     Collection<ClassCount<String, Integer>> countByAccessions(Collection<String> accs);
 }
