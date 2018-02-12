@@ -265,22 +265,26 @@ public class DatabaseObjectUtils {
         AttributeProperties properties = new AttributeProperties();
         properties.setName(lowerFirst(method.getName().substring(3)));
         Type returnType = method.getGenericReturnType();
+        Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
         if (returnType instanceof ParameterizedType) {
             ParameterizedType type = (ParameterizedType) returnType;
             Type[] typeArguments = type.getActualTypeArguments();
             properties.setCardinality("+");
             if (typeArguments.length > 0) {
-                Class clazz = (Class) typeArguments[0];
-                properties.addAttributeClass(clazz);
+                if (annotation == null) {
+                    properties.addAttributeClass((Class) typeArguments[0]);
+                } else {
+                    for (Class<? extends DatabaseObject> clazz : ((ReactomeAllowedClasses) annotation).allowed()) {
+                        properties.addAttributeClass(clazz);
+                    }
+                }
             }
         } else {
             properties.setCardinality("1");
-            Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
             if (annotation == null) {
                 properties.addAttributeClass((Class) returnType);
             } else {
-                ReactomeAllowedClasses allocatedClasses = (ReactomeAllowedClasses) annotation;
-                for (Class<? extends DatabaseObject> clazz : allocatedClasses.allowed()) {
+                for (Class<? extends DatabaseObject> clazz : ((ReactomeAllowedClasses) annotation).allowed()) {
                     properties.addAttributeClass(clazz);
                 }
             }
