@@ -27,11 +27,11 @@ public class EventsServiceTest extends BaseTest {
     public void getEventAncestorsByStIdTest() {
         logger.info("Started testing eventsService.getEventAncestorsByStIdTest");
         long start = System.currentTimeMillis();
-        Collection<Collection<Pathway>> pathways = eventsService.getEventAncestors("R-HSA-5673001");
+        Collection<Collection<Pathway>> pathways = eventsService.getEventAncestors("R-HSA-169680");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("Raf/Map is in several different locations. Found:" + pathways.size(), pathways.size() > 1);
+        assertTrue("'IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel' is in several different locations. Found:" + pathways.size(), pathways.size() > 1);
         for (Collection<Pathway> pathway : pathways) {
             assertFalse("Ancestors list cannot be empty", pathway.isEmpty());
         }
@@ -41,11 +41,11 @@ public class EventsServiceTest extends BaseTest {
     public void getEventAncestorsByDbIdTest() {
         logger.info("Started testing eventsService.getEventAncestorsByDbIdTest");
         long start = System.currentTimeMillis();
-        Collection<Collection<Pathway>> pathways = eventsService.getEventAncestors(5673001L);
+        Collection<Collection<Pathway>> pathways = eventsService.getEventAncestors(169680L);
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("Raf/Map is in several different locations. Found:" + pathways.size(), pathways.size() > 1);
+        assertTrue("'IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel' is in several different locations. Found:" + pathways.size(), pathways.size() > 1);
         for (Collection<Pathway> pathway : pathways) {
             assertFalse("Ancestors list cannot be empty", pathway.isEmpty());
         }
