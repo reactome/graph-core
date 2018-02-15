@@ -16,15 +16,33 @@ import java.util.Collection;
 @Repository
 public interface AdvancedLinkageRepository extends GraphRepository<DatabaseObject> {
 
-    @Query("Match (n:DatabaseObject{stId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.schemaClass) AS schemaClasses, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
+    @Query(" MATCH (n:DatabaseObject{stId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
+            "RETURN DISTINCT(TYPE(r)) AS type, " +
+            "       COLLECT(m.schemaClass) AS schemaClasses, " +
+            "       COLLECT(m.displayName) AS names, " +
+            "       COLLECT(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(String stId);
 
-    @Query("Match (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) Return DISTINCT(type(r)) AS type, Collect(m.schemaClass) AS schemaClasses, Collect(m.displayName) AS names, Collect(m.stId) AS stIds")
+    @Query(" MATCH (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
+            "RETURN DISTINCT(TYPE(r)) AS type, " +
+            "       COLLECT(m.schemaClass) AS schemaClasses, " +
+            "       COLLECT(m.displayName) AS names, " +
+            "       COLLECT(m.stId) AS stIds")
     Collection<ComponentOf> getComponentsOf(Long dbId);
 
-    @Query("MATCH (d:DatabaseObject{stId:{0}})<-[rel]-(ref) WHERE NOT ref:InstanceEdit AND NOT (d)<-[:species|compartment|includedLocation|referenceDatabase|evidenceType]-(ref) RETURN DISTINCT TYPE(rel) AS referral, COLLECT(ref) AS objects LIMIT 1000")
+    @Query(" MATCH (d:DatabaseObject{stId:{0}})<-[rel]-(ref) " +
+            "WHERE NOT ref:InstanceEdit " +
+            "      AND NOT (d)<-[:species|compartment|includedLocation|referenceDatabase|evidenceType]-(ref) " +
+            "RETURN DISTINCT TYPE(rel) AS referral, " +
+            "       COLLECT(ref) AS objects " +
+            "LIMIT 1000")
     Collection<Referrals> getReferralsTo(String stId);
 
-    @Query("MATCH (d:DatabaseObject{dbId:{0}})<-[rel]-(ref) WHERE NOT ref:InstanceEdit AND NOT (d)<-[:species|compartment|includedLocation|referenceDatabase|evidenceType]-(ref) RETURN DISTINCT TYPE(rel) AS referral, COLLECT(ref) AS objects LIMIT 1000")
+    @Query(" MATCH (d:DatabaseObject{dbId:{0}})<-[rel]-(ref) " +
+            "WHERE NOT ref:InstanceEdit " +
+            "      AND NOT (d)<-[:species|compartment|includedLocation|referenceDatabase|evidenceType]-(ref) " +
+            "RETURN DISTINCT TYPE(rel) AS referral, " +
+            "       COLLECT(ref) AS objects " +
+            "LIMIT 1000")
     Collection<Referrals> getReferralsTo(Long dbId);
 }
