@@ -15,14 +15,14 @@ import java.util.Collection;
 public interface InteractionsRepository extends GraphRepository<Interaction> {
 
     @Query(" MATCH (t:ReferenceEntity)<-[:interactor]-(in:Interaction)-[ir:interactor]->(re:ReferenceEntity) " +
-            "WHERE  t.variantIdentifier = {0} OR (t.variantIdentifier IS NULL AND t.identifier = {0}) " +
+            "WHERE t.variantIdentifier = {0} OR (t.variantIdentifier IS NULL AND t.identifier = {0}) " +
             "OPTIONAL MATCH (pe:PhysicalEntity)-[r:referenceEntity]->(re) " +
             "RETURN DISTINCT in, ir, re, r, pe " +
             "ORDER BY in.score DESC")
     Collection<Interaction> getByAcc(String acc);
 
     @Query(" MATCH (t:ReferenceEntity)<-[:interactor]-(in:Interaction)-[ir:interactor]->(re:ReferenceEntity) " +
-            "WHERE  t.variantIdentifier = {0} OR (t.variantIdentifier IS NULL AND t.identifier = {0}) " +
+            "WHERE t.variantIdentifier = {0} OR (t.variantIdentifier IS NULL AND t.identifier = {0}) " +
             "OPTIONAL MATCH (pe:PhysicalEntity)-[r:referenceEntity]->(re) " +
             "RETURN DISTINCT in, ir, re, r, pe " +
             "ORDER BY in.score DESC " +
