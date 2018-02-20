@@ -26,7 +26,7 @@ public class DiagramServiceTest extends BaseTest {
     }
 
     @Test
-    public void getDiagramResultest() {
+    public void getDiagramResultTest() {
         logger.info("Started testing diagramService.getDiagramTest");
         long start = System.currentTimeMillis();
         DiagramResult dr = diagramService.getDiagramResult("R-HSA-6799198");
