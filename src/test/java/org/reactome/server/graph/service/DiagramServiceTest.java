@@ -51,7 +51,7 @@ public class DiagramServiceTest extends BaseTest {
         for (DiagramOccurrences o : dos) {
             assertNotNull(o.getPathway());
             if(o.getPathway().getStId().equals("R-HSA-5688426")){
-                assertNull("'5690771' is directly contained in '5688426'", o.getSubpathway());
+                assertNull("'R-HSA-5690771' is directly contained in 'R-HSA-5688426'", o.getSubpathway());
             }
             if(o.getPathway().getSchemaClass().equals("TopLevelPathway")){
                 assertNotNull(o.getSubpathway());
@@ -68,12 +68,12 @@ public class DiagramServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertNotNull("The diagram occurrences result object cannot be null", dos);
-        assertTrue("There are at least 3 occurrences of 'R-HSA-5690771'", dos.size() >= 3);
+        assertTrue("There are at least 3 occurrences of 'R-HSA-372542'", dos.size() >= 3);
 
         for (DiagramOccurrences o : dos) {
             assertNotNull(o.getPathway());
             if(o.getPathway().getStId().equals("R-HSA-112310")){
-                assertNull("'372542' is directly contained in '112310'", o.getSubpathway());
+                assertNull("'R-HSA-372542' is directly contained in 'R-HSA-112310'", o.getSubpathway());
             }
             if(o.getPathway().getSchemaClass().equals("TopLevelPathway")){
                 assertNotNull(o.getSubpathway());
