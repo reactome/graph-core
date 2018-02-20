@@ -1,10 +1,13 @@
 package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.domain.result.DiagramResult;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
 
 /**
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
@@ -35,4 +38,38 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
             "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height")
     DiagramResult getDiagramResult(String stId);
+
+    @Query(" MATCH path=(:Pathway)-[:hasEvent*]->(:Event{dbId:{0}}) " +
+            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
+            "WHERE SIZE(pathways) > 0 " +
+            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
+            "RETURN p as pathway, s as subpathway " +
+            "ORDER BY p.stId " +
+            "UNION " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{dbId:{0}}) " +
+            "WITH DISTINCT rle " +
+            "MATCH path=(:Pathway)-[:hasEvent*]->(rle) " +
+            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
+            "WHERE SIZE(pathways) > 0 " +
+            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
+            "RETURN p as pathway, s as subpathway " +
+            "ORDER BY p.stId")
+    Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
+
+    @Query(" MATCH path=(:Pathway)-[:hasEvent*]->(:Event{stId:{0}}) " +
+            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
+            "WHERE SIZE(pathways) > 0 " +
+            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
+            "RETURN p as pathway, s as subpathway " +
+            "ORDER BY p.stId " +
+            "UNION " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{stId:{0}}) " +
+            "WITH DISTINCT rle " +
+            "MATCH path=(:Pathway)-[:hasEvent*]->(rle) " +
+            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
+            "WHERE SIZE(pathways) > 0 " +
+            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
+            "RETURN p as pathway, s as subpathway " +
+            "ORDER BY p.stId")
+    Collection<DiagramOccurrences> getDiagramOccurrences(String stId);
 }
