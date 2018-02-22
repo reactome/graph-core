@@ -39,7 +39,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height")
     DiagramResult getDiagramResult(String stId);
 
-    @Query(" MATCH path=(:Pathway)-[:hasEvent*]->(:Event{dbId:{0}}) " +
+    @Query(" MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(:Event{dbId:{0}})) " +
             "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
             "WHERE SIZE(pathways) > 0 " +
             "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
@@ -48,7 +48,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "UNION " +
             "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{dbId:{0}}) " +
             "WITH DISTINCT rle " +
-            "MATCH path=(:Pathway)-[:hasEvent*]->(rle) " +
+            "MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(rle)) " +
             "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
             "WHERE SIZE(pathways) > 0 " +
             "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
@@ -56,7 +56,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "ORDER BY p.stId")
     Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
 
-    @Query(" MATCH path=(:Pathway)-[:hasEvent*]->(:Event{stId:{0}}) " +
+    @Query(" MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(:Event{stId:{0}})) " +
             "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
             "WHERE SIZE(pathways) > 0 " +
             "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
@@ -65,7 +65,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "UNION " +
             "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{stId:{0}}) " +
             "WITH DISTINCT rle " +
-            "MATCH path=(:Pathway)-[:hasEvent*]->(rle) " +
+            "MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(rle)) " +
             "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
             "WHERE SIZE(pathways) > 0 " +
             "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
