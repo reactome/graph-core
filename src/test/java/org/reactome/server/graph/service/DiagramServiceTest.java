@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -51,10 +50,11 @@ public class DiagramServiceTest extends BaseTest {
         for (DiagramOccurrences o : dos) {
             assertNotNull(o.getPathway());
             if(o.getPathway().getStId().equals("R-HSA-5688426")){
-                assertNull("'R-HSA-5690771' is directly contained in 'R-HSA-5688426'", o.getSubpathway());
+                assertTrue("'R-HSA-5690771' is directly contained in 'R-HSA-5688426'", o.isInDiagram());
             }
             if(o.getPathway().getSchemaClass().equals("TopLevelPathway")){
-                assertNotNull(o.getSubpathway());
+                assertNotNull(o.getSubpathways());
+                assertTrue(!o.getSubpathways().isEmpty());
             }
         }
     }
@@ -73,10 +73,11 @@ public class DiagramServiceTest extends BaseTest {
         for (DiagramOccurrences o : dos) {
             assertNotNull(o.getPathway());
             if(o.getPathway().getStId().equals("R-HSA-112310")){
-                assertNull("'R-HSA-372542' is directly contained in 'R-HSA-112310'", o.getSubpathway());
+                assertTrue("'R-HSA-372542' is directly contained in 'R-HSA-112310'", o.isInDiagram());
             }
             if(o.getPathway().getSchemaClass().equals("TopLevelPathway")){
-                assertNotNull(o.getSubpathway());
+                assertNotNull(o.getSubpathways());
+                assertTrue(!o.getSubpathways().isEmpty());
             }
         }
     }
