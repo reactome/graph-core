@@ -30,7 +30,7 @@ public class DiagramOccurrences {
         this.inDiagram = inDiagram;
     }
 
-    public List<Pathway> getSubpathwaysubpathway() {
+    public List<Pathway> getSubpathways() {
         return subpathways;
     }
 
