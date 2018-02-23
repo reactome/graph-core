@@ -40,70 +40,72 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
     DiagramResult getDiagramResult(String stId);
 
     @Query(" MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e:Event{dbId:{0}}) " +
-            "WITH COLLECT(DISTINCT p) AS pathways " +
-            "UNWIND pathways AS aux " +
-            "MATCH path=(aux)-[:hasEvent*]->(rle) " +
-            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram " +
-            "UNWIND pathways as t " +
-            "MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
-            "WHERE NOT (t)-[:hasEncapsulatedEvent*..3]->(cep) " +
-            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all " +
+            "WITH COLLECT(DISTINCT p) AS diagrammedPathways " +
+            "UNWIND diagrammedPathways AS d " +
+            "MATCH path=(d)-[:hasEvent*]->(e) " +
+            "WHERE SINGLE(p IN NODES(path) WHERE (p:Pathway) AND p.hasDiagram) " +
+            "WITH diagrammedPathways, COLLECT(DISTINCT d) AS directlyInDiagram " +
+            "UNWIND diagrammedPathways as t " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
+            "WITH directlyInDiagram, diagrammedPathways + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway) " +
-            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p)) " +
-            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ecc) AS subpathways " +
-            "ORDER BY p.dbId " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
+            "WHERE ep IN directlyInDiagram " +
+            "OPTIONAL MATCH (p)-[:hasEvent]->(sp:Pathway) " +
+            "WHERE sp IN all " +
+            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
             "UNION " +
             "MATCH (e:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{dbId:{0}}) " +
             "WITH DISTINCT e " +
             "MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e) " +
-            "WITH COLLECT(DISTINCT p) AS pathways " +
-            "UNWIND pathways AS aux " +
-            "MATCH path=(aux)-[:hasEvent*]->(rle) " +
-            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram " +
-            "UNWIND pathways as t " +
-            "MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
-            "WHERE NOT (t)-[:hasEncapsulatedEvent*..3]->(cep) " +
-            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all " +
+            "WITH COLLECT(DISTINCT p) AS diagrammedPathways " +
+            "UNWIND diagrammedPathways AS d " +
+            "MATCH path=(d)-[:hasEvent*]->(e) " +
+            "WHERE SINGLE(p IN NODES(path) WHERE (p:Pathway) AND p.hasDiagram) " +
+            "WITH diagrammedPathways, COLLECT(DISTINCT d) AS directlyInDiagram " +
+            "UNWIND diagrammedPathways as t " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
+            "WITH directlyInDiagram, diagrammedPathways + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway) " +
-            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p)) " +
-            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ecc) AS subpathways " +
-            "ORDER BY p.dbId")
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
+            "WHERE ep IN directlyInDiagram " +
+            "OPTIONAL MATCH (p)-[:hasEvent]->(sp:Pathway) " +
+            "WHERE sp IN all " +
+            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways")
     Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
 
     @Query(" MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e:Event{stId:{0}}) " +
-            "WITH COLLECT(DISTINCT p) AS pathways " +
-            "UNWIND pathways AS aux " +
-            "MATCH path=(aux)-[:hasEvent*]->(rle) " +
-            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram " +
-            "UNWIND pathways as t " +
+            "WITH COLLECT(DISTINCT p) AS diagrammedPathways " +
+            "UNWIND diagrammedPathways AS d " +
+            "MATCH path=(d)-[:hasEvent*]->(e) " +
+            "WHERE SINGLE(p IN NODES(path) WHERE (p:Pathway) AND p.hasDiagram) " +
+            "WITH diagrammedPathways, COLLECT(DISTINCT d) AS directlyInDiagram " +
+            "UNWIND diagrammedPathways as t " +
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
-            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all " +
+            "WITH directlyInDiagram, diagrammedPathways + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway) " +
-            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p)) " +
-            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ecc) AS subpathways " +
-            "ORDER BY p.dbId " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
+            "WHERE ep IN directlyInDiagram " +
+            "OPTIONAL MATCH (p)-[:hasEvent]->(sp:Pathway) " +
+            "WHERE sp IN all " +
+            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
             "UNION " +
             "MATCH (e:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{stId:{0}}) " +
             "WITH DISTINCT e " +
             "MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e) " +
-            "WITH COLLECT(DISTINCT p) AS pathways " +
-            "UNWIND pathways AS aux " +
-            "MATCH path=(aux)-[:hasEvent*]->(rle) " +
-            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram " +
-            "UNWIND pathways as t " +
+            "WITH COLLECT(DISTINCT p) AS diagrammedPathways " +
+            "UNWIND diagrammedPathways AS d " +
+            "MATCH path=(d)-[:hasEvent*]->(e) " +
+            "WHERE SINGLE(p IN NODES(path) WHERE (p:Pathway) AND p.hasDiagram) " +
+            "WITH diagrammedPathways, COLLECT(DISTINCT d) AS directlyInDiagram " +
+            "UNWIND diagrammedPathways as t " +
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
-            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all " +
+            "WITH directlyInDiagram, diagrammedPathways + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway) " +
-            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p)) " +
-            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ecc) AS subpathways " +
-            "ORDER BY p.dbId")
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
+            "WHERE ep IN directlyInDiagram " +
+            "OPTIONAL MATCH (p)-[:hasEvent]->(sp:Pathway) " +
+            "WHERE sp IN all " +
+            "RETURN DISTINCT p as diagram, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways")
     Collection<DiagramOccurrences> getDiagramOccurrences(String stId);
 }
