@@ -34,7 +34,7 @@ public class DiagramOccurrences {
         return subpathways;
     }
 
-    public void setSubpathway(List<Pathway> subpathways) {
+    public void setSubpathways(List<Pathway> subpathways) {
         this.subpathways = subpathways;
     }
 }
