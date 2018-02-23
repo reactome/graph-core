@@ -39,37 +39,73 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height")
     DiagramResult getDiagramResult(String stId);
 
-    @Query(" MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(e:Event{dbId:{0}})) " +
-            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
-            "WHERE SIZE(pathways) > 0 " +
-            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
-            "RETURN p as pathway, s as subpathway " +
-            "ORDER BY p.stId " +
-            "UNION " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{dbId:{0}}) " +
-            "WITH DISTINCT rle " +
-            "MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(rle)) " +
-            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
-            "WHERE SIZE(pathways) > 0 " +
-            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
-            "RETURN p as pathway, s as subpathway " +
+    @Query(" MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e:Event{dbId:{0}}})" +
+            "WITH COLLECT(DISTINCT p) AS pathways" +
+            "UNWIND pathways AS aux" +
+            "MATCH path=(aux)-[:hasEvent*]->(rle)" +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram)" +
+            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram" +
+            "UNWIND pathways as t" +
+            "MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t)" +
+            "WHERE NOT (t)-[:hasEncapsulatedEvent*..3]->(cep)" +
+            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all" +
+            "UNWIND all as p" +
+            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway)" +
+            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p))" +
+            "RETURN DISTINCT p.schemaClass, p.stId, p.displayName, p IN directlyInDiagram, COLLECT(DISTINCT ecc.stId) AS InEncapsulated" +
+            "ORDER BY p.stId" +
+            "UNION" +
+            "MATCH (e:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{dbId:{0}}})" +
+            "WITH DISTINCT e" +
+            "MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e)" +
+            "WITH COLLECT(DISTINCT p) AS pathways" +
+            "UNWIND pathways AS aux" +
+            "MATCH path=(aux)-[:hasEvent*]->(rle)" +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram)" +
+            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram" +
+            "UNWIND pathways as t" +
+            "MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t)" +
+            "WHERE NOT (t)-[:hasEncapsulatedEvent*..3]->(cep)" +
+            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all" +
+            "UNWIND all as p" +
+            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway)" +
+            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p))" +
+            "RETURN DISTINCT p.schemaClass, p.stId, p.displayName, p IN directlyInDiagram, COLLECT(DISTINCT ecc.stId) AS InEncapsulated" +
             "ORDER BY p.stId")
     Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
 
-    @Query(" MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(e:Event{stId:{0}})) " +
-            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
-            "WHERE SIZE(pathways) > 0 " +
-            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
-            "RETURN p as pathway, s as subpathway " +
-            "ORDER BY p.stId " +
-            "UNION " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{stId:{0}}) " +
-            "WITH DISTINCT rle " +
-            "MATCH path=allShortestPaths((p:Pathway)-[:hasEvent|hasEncapsulatedEvent*]->(rle)) " +
-            "WITH FILTER(p IN NODES(path) WHERE (p:Pathway) AND NOT p.hasDiagram IS NULL AND p.hasDiagram) AS pathways " +
-            "WHERE SIZE(pathways) > 0 " +
-            "WITH DISTINCT HEAD(pathways) as p, HEAD(TAIL(pathways)) as s " +
-            "RETURN p as pathway, s as subpathway " +
+    @Query(" MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e:Event{stId:{0}}})" +
+            "WITH COLLECT(DISTINCT p) AS pathways" +
+            "UNWIND pathways AS aux" +
+            "MATCH path=(aux)-[:hasEvent*]->(rle)" +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram)" +
+            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram" +
+            "UNWIND pathways as t" +
+            "MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t)" +
+            "WHERE NOT (t)-[:hasEncapsulatedEvent*..3]->(cep)" +
+            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all" +
+            "UNWIND all as p" +
+            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway)" +
+            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p))" +
+            "RETURN DISTINCT p.schemaClass, p.stId, p.displayName, p IN directlyInDiagram, COLLECT(DISTINCT ecc.stId) AS InEncapsulated" +
+            "ORDER BY p.stId" +
+            "UNION" +
+            "MATCH (e:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(t:DatabaseObject{stId:{0}}})" +
+            "WITH DISTINCT e" +
+            "MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(e)" +
+            "WITH COLLECT(DISTINCT p) AS pathways" +
+            "UNWIND pathways AS aux" +
+            "MATCH path=(aux)-[:hasEvent*]->(rle)" +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram)" +
+            "WITH pathways, COLLECT(DISTINCT aux) AS directlyInDiagram" +
+            "UNWIND pathways as t" +
+            "MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t)" +
+            "WHERE NOT (t)-[:hasEncapsulatedEvent*..3]->(cep)" +
+            "WITH directlyInDiagram, pathways + COLLECT(DISTINCT cep) AS all" +
+            "UNWIND all as p" +
+            "OPTIONAL MATCH (p)-[:hasEvent|hasEncapsulatedEvent]->(ecc:Pathway)" +
+            "WHERE ecc IN all AND (NOT p IN directlyInDiagram OR NOT (ecc)-[:hasEncapsulatedEvent]->(p))" +
+            "RETURN DISTINCT p.schemaClass, p.stId, p.displayName, p IN directlyInDiagram, COLLECT(DISTINCT ecc.stId) AS InEncapsulated" +
             "ORDER BY p.stId")
     Collection<DiagramOccurrences> getDiagramOccurrences(String stId);
 }
