@@ -3,12 +3,16 @@ package org.reactome.server.graph.domain.result;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
+import java.util.List;
+
 @QueryResult
 public class DiagramOccurrences {
 
     private Pathway pathway;
 
-    private Pathway subpathway;
+    private boolean inDiagram;
+
+    private List<Pathway> subpathways;
 
     public Pathway getPathway() {
         return pathway;
@@ -18,11 +22,19 @@ public class DiagramOccurrences {
         this.pathway = pathway;
     }
 
-    public Pathway getSubpathway() {
-        return subpathway;
+    public boolean isInDiagram() {
+        return inDiagram;
     }
 
-    public void setSubpathway(Pathway subpathway) {
-        this.subpathway = subpathway;
+    public void setInDiagram(boolean inDiagram) {
+        this.inDiagram = inDiagram;
+    }
+
+    public List<Pathway> getSubpathwaysubpathway() {
+        return subpathways;
+    }
+
+    public void setSubpathwaysubpathway(List<Pathway> subpathways) {
+        this.subpathways = subpathways;
     }
 }
