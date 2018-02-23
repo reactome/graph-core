@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.relationship.HasEncapsulatedEvent;
 import org.reactome.server.graph.domain.relationship.HasEvent;
 
 import java.util.ArrayList;
@@ -35,6 +37,10 @@ public class Pathway extends Event {
 
     @Relationship(type = "hasEvent")
     private SortedSet<HasEvent> hasEvent;
+
+    @ReactomeRelationship
+    @Relationship(type = "hasEncapsulatedEvent")
+    private SortedSet<HasEncapsulatedEvent> hasEncapsulatedEvent;
 
     @Relationship(type = "normalPathway")
     private Pathway normalPathway;
@@ -105,6 +111,31 @@ public class Pathway extends Event {
             aux.setEvent(event);
             aux.setOrder(order++);
             this.hasEvent.add(aux);
+        }
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonIgnore
+    @Relationship(type = "hasEncapsulatedEvent")
+    public List<Event> getHasEncapsulatedEvent() {
+        if (hasEncapsulatedEvent == null) return null;
+        List<Event> rtn = new ArrayList<>();
+        for (HasEncapsulatedEvent hee : hasEncapsulatedEvent) {
+            rtn.add(hee.getEvent());
+        }
+        return rtn;
+    }
+
+    @Relationship(type = "hasEncapsulatedEvent")
+    public void setHasEncapsulatedEvent(List<Event> hasEncapsulatedEvent) {
+        this.hasEncapsulatedEvent = new TreeSet<>();
+        int order = 0;
+        for (Event event : hasEncapsulatedEvent) {
+            HasEncapsulatedEvent aux = new HasEncapsulatedEvent();
+            aux.setPathway(this);
+            aux.setEvent(event);
+            aux.setOrder(order++);
+            this.hasEncapsulatedEvent.add(aux);
         }
     }
 
