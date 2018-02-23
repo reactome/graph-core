@@ -8,18 +8,18 @@ import java.util.List;
 @QueryResult
 public class DiagramOccurrences {
 
-    private Pathway pathway;
+    private Pathway diagram;
 
     private boolean inDiagram;
 
     private List<Pathway> subpathways;
 
-    public Pathway getPathway() {
-        return pathway;
+    public Pathway getDiagram() {
+        return diagram;
     }
 
-    public void setPathway(Pathway pathway) {
-        this.pathway = pathway;
+    public void setDiagram(Pathway diagram) {
+        this.diagram = diagram;
     }
 
     public boolean isInDiagram() {

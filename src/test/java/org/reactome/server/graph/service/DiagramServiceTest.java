@@ -48,11 +48,11 @@ public class DiagramServiceTest extends BaseTest {
         assertTrue("There are at least 6 occurrences of 'R-HSA-5690771'", dos.size() >= 6);
 
         for (DiagramOccurrences o : dos) {
-            assertNotNull(o.getPathway());
-            if(o.getPathway().getStId().equals("R-HSA-5688426")){
+            assertNotNull(o.getDiagram());
+            if(o.getDiagram().getStId().equals("R-HSA-5688426")){
                 assertTrue("'R-HSA-5690771' is directly contained in 'R-HSA-5688426'", o.isInDiagram());
             }
-            if(o.getPathway().getSchemaClass().equals("TopLevelPathway")){
+            if(o.getDiagram().getSchemaClass().equals("TopLevelPathway")){
                 assertNotNull(o.getSubpathways());
                 assertTrue(!o.getSubpathways().isEmpty());
             }
@@ -71,11 +71,11 @@ public class DiagramServiceTest extends BaseTest {
         assertTrue("There are at least 3 occurrences of 'R-HSA-372542'", dos.size() >= 3);
 
         for (DiagramOccurrences o : dos) {
-            assertNotNull(o.getPathway());
-            if(o.getPathway().getStId().equals("R-HSA-112310")){
+            assertNotNull(o.getDiagram());
+            if(o.getDiagram().getStId().equals("R-HSA-112310")){
                 assertTrue("'R-HSA-372542' is directly contained in 'R-HSA-112310'", o.isInDiagram());
             }
-            if(o.getPathway().getSchemaClass().equals("TopLevelPathway")){
+            if(o.getDiagram().getSchemaClass().equals("TopLevelPathway")){
                 assertNotNull(o.getSubpathways());
                 assertTrue(!o.getSubpathways().isEmpty());
             }
