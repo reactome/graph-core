@@ -39,7 +39,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height")
     DiagramResult getDiagramResult(String stId);
 
-    @Query(" MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
+    @Query(" OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True, dbId:{0}}) " +
             "WITH COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS diagrammedPathways " +
             "UNWIND diagrammedPathways AS d " +
@@ -59,7 +59,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
     Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
 
-    @Query(" MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
+    @Query(" OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True, stId:{0}}) " +
             "WITH COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS diagrammedPathways " +
             "UNWIND diagrammedPathways AS d " +
