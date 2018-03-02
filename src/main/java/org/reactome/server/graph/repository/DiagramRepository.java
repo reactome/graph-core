@@ -15,28 +15,50 @@ import java.util.Collection;
 @Repository
 public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
 
-    @Query(" MATCH (e:Pathway{dbId:{0}, hasDiagram:True}) " +
-            "RETURN e.stId As diagramStId, [] AS events, e.diagramWidth AS width, e.diagramHeight AS height  " +
+    @Query(" MATCH (d:Pathway{dbId:{0}, hasDiagram:True}) " +
+            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+            "WHERE NOT (d:TopLevelPathway) " +
+            "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(:Pathway{dbId:{0}, hasDiagram:False})-[:hasEvent*]->(r:ReactionLikeEvent) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "RETURN d.stId as diagramStId, COLLECT(DISTINCT r.stId) AS events, d.diagramWidth AS width, d.diagramHeight AS height " +
+            "WITH DISTINCT d, COLLECT(DISTINCT r.stId) AS events " +
+            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+            "WHERE NOT (d:TopLevelPathway) " +
+            "RETURN d.stId as diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(r:ReactionLikeEvent{dbId:{0}}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height")
+            "WITH DISTINCT d " +
+            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+            "WHERE NOT (d:TopLevelPathway) " +
+            "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "ORDER BY level LIMIT 1")
     DiagramResult getDiagramResult(Long dbId);
 
-    @Query(" MATCH (e:Pathway{stId:{0}, hasDiagram:True}) " +
-            "RETURN e.stId As diagramStId, [] AS events, e.diagramWidth AS width, e.diagramHeight AS height " +
+    @Query(" MATCH (d:Pathway{stId:{0}, hasDiagram:True}) " +
+            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+            "WHERE NOT (d:TopLevelPathway) " +
+            "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(:Pathway{stId:{0}, hasDiagram:False})-[:hasEvent*]->(r:ReactionLikeEvent) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "RETURN d.stId as diagramStId, COLLECT(DISTINCT r.stId) AS events, d.diagramWidth AS width, d.diagramHeight AS height " +
+            "WITH DISTINCT d, COLLECT(DISTINCT r.stId) AS events " +
+            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+            "WHERE NOT (d:TopLevelPathway) " +
+            "RETURN d.stId as diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(r:ReactionLikeEvent{stId:{0}}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height")
+            "WITH DISTINCT d " +
+            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+            "WHERE NOT (d:TopLevelPathway) " +
+            "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "ORDER BY level LIMIT 1")
     DiagramResult getDiagramResult(String stId);
 
     @Query(" OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
