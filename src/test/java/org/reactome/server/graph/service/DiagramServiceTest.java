@@ -28,12 +28,18 @@ public class DiagramServiceTest extends BaseTest {
     public void getDiagramResultTest() {
         logger.info("Started testing diagramService.getDiagramTest");
         long start = System.currentTimeMillis();
-        DiagramResult dr = diagramService.getDiagramResult("R-HSA-6799198");
+        DiagramResult dr1 = diagramService.getDiagramResult("R-HSA-6799198");
+        DiagramResult dr2 = diagramService.getDiagramResult(6799198L);
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull("The diagram result object cannot be null", dr);
-        assertTrue("The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'", dr.getDiagramStId().equals("R-HSA-163200"));
+        assertNotNull("The diagram result object cannot be null", dr1);
+        assertTrue("The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'", dr1.getDiagramStId().equals("R-HSA-163200"));
+        assertTrue("", dr1.getEvents().size() == 1 && dr1.getEvents().get(0).equals("R-HSA-6799198"));
+
+        assertNotNull("The diagram result object cannot be null", dr2);
+        assertTrue("The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'", dr2.getDiagramStId().equals("R-HSA-163200"));
+        assertTrue("", dr2.getEvents().size() == 1 && dr2.getEvents().get(0).equals("R-HSA-6799198"));
     }
 
     @Test
@@ -68,7 +74,7 @@ public class DiagramServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertNotNull("The diagram occurrences result object cannot be null", dos);
-        assertTrue("There are at least 3 occurrences of 'R-HSA-372542'", dos.size() >= 3);
+        assertTrue("There are at least 2 occurrences of 'R-HSA-372542'", dos.size() >= 2);
 
         for (DiagramOccurrences o : dos) {
             assertNotNull(o.getDiagram());

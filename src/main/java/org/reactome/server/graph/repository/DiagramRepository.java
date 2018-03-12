@@ -16,86 +16,80 @@ import java.util.Collection;
 public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
 
     @Query(" MATCH (d:Pathway{dbId:{0}, hasDiagram:True}) " +
-            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
-            "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
-            "ORDER BY level LIMIT 1 " +
+            "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, 1 AS level " +
             "UNION " +
-            "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(:Pathway{dbId:{0}, hasDiagram:False})-[:hasEvent*]->(r:ReactionLikeEvent) " +
+            "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(s:Pathway{dbId:{0}, hasDiagram:False}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT d, COLLECT(DISTINCT r.stId) AS events " +
+            "WITH DISTINCT d, s " +
             "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
             "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId as diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "RETURN d.stId as diagramStId, [s.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
             "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(r:ReactionLikeEvent{dbId:{0}}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT d " +
+            "WITH DISTINCT d, r " +
             "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
             "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "RETURN d.stId as diagramStId, [r.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
             "ORDER BY level LIMIT 1")
     DiagramResult getDiagramResult(Long dbId);
 
     @Query(" MATCH (d:Pathway{stId:{0}, hasDiagram:True}) " +
-            "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
-            "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
-            "ORDER BY level LIMIT 1 " +
+            "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, 1 AS level " +
             "UNION " +
-            "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(:Pathway{stId:{0}, hasDiagram:False})-[:hasEvent*]->(r:ReactionLikeEvent) " +
+            "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(s:Pathway{stId:{0}, hasDiagram:False}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT d, COLLECT(DISTINCT r.stId) AS events " +
+            "WITH DISTINCT d, s " +
             "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
             "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId as diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "RETURN d.stId as diagramStId, [s.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
             "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(r:ReactionLikeEvent{stId:{0}}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT d " +
+            "WITH DISTINCT d, r " +
             "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
             "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId as diagramStId, [{0}] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "RETURN d.stId as diagramStId, [r.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
             "ORDER BY level LIMIT 1")
     DiagramResult getDiagramResult(String stId);
 
-    @Query(" OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
+    @Query(" OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True, dbId:{0}}) " +
-            "WITH COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS diagrammedPathways " +
-            "UNWIND diagrammedPathways AS d " +
-            "MATCH path=(d)-[:hasEvent*]->(e) " +
-            "WHERE SINGLE(p IN NODES(path) WHERE (p:Pathway) AND p.hasDiagram) " +
-            "WITH diagrammedPathways, COLLECT(DISTINCT d) AS directlyInDiagram " +
-            "UNWIND diagrammedPathways as t " +
-            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
-            "WITH directlyInDiagram, diagrammedPathways + COLLECT(DISTINCT cep) AS all " +
+            "WITH COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS directlyInDiagram " +
+            "UNWIND directlyInDiagram AS d " +
+            "OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(d) " +
+            "WITH directlyInDiagram, directlyInDiagram + COLLECT(DISTINCT p) AS hlds " +
+            "UNWIND hlds AS d " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(d) " +
+            "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
-            "WHERE ep IN directlyInDiagram " +
-            "OPTIONAL MATCH (p)-[:hasEvent]->(sp:Pathway) " +
-            "WHERE sp IN all " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent*..3]->(ep:Pathway) " +
+            "WHERE ep IN all " +
+            "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
+            "WHERE SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) AND sp IN directlyInDiagram " +
             "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
             "WHERE inDiagram OR SIZE(subpathways)>0 " +
             "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
     Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
 
-    @Query(" OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
+    @Query(" OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True, stId:{0}}) " +
-            "WITH COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS diagrammedPathways " +
-            "UNWIND diagrammedPathways AS d " +
-            "MATCH path=(d)-[:hasEvent*]->(e) " +
-            "WHERE SINGLE(p IN NODES(path) WHERE (p:Pathway) AND p.hasDiagram) " +
-            "WITH diagrammedPathways, COLLECT(DISTINCT d) AS directlyInDiagram " +
-            "UNWIND diagrammedPathways as t " +
-            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(t) " +
-            "WITH directlyInDiagram, diagrammedPathways + COLLECT(DISTINCT cep) AS all " +
+            "WITH COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS directlyInDiagram " +
+            "UNWIND directlyInDiagram AS d " +
+            "OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(d) " +
+            "WITH directlyInDiagram, directlyInDiagram + COLLECT(DISTINCT p) AS hlds " +
+            "UNWIND hlds AS d " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(d) " +
+            "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
-            "WHERE ep IN directlyInDiagram " +
-            "OPTIONAL MATCH (p)-[:hasEvent]->(sp:Pathway) " +
-            "WHERE sp IN all " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent*..3]->(ep:Pathway) " +
+            "WHERE ep IN all " +
+            "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
+            "WHERE SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) AND sp IN directlyInDiagram " +
             "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
             "WHERE inDiagram OR SIZE(subpathways)>0 " +
             "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
