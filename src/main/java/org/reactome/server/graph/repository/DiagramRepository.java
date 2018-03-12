@@ -66,7 +66,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(d) " +
             "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent*..3]->(ep:Pathway) " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) AND sp IN directlyInDiagram " +
@@ -86,7 +86,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(d) " +
             "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
-            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent*..3]->(ep:Pathway) " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) AND sp IN directlyInDiagram " +
