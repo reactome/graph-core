@@ -2,14 +2,14 @@ package org.reactome.server.graph.service;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.domain.result.DiagramResult;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
@@ -88,4 +88,35 @@ public class DiagramServiceTest extends BaseTest {
         }
     }
 
+    @Test
+    public void getDiagramOccurrencesTest3(){
+        logger.info("Started testing diagramService.getDiagramOccurrencesTest3");
+        long start = System.currentTimeMillis();
+        Collection<DiagramOccurrences> dos = diagramService.getDiagramOccurrences("R-HSA-879382");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertNotNull("The diagram occurrences result object cannot be null", dos);
+        assertTrue("There are at least 20 occurrences of 'R-HSA-879382'", dos.size() >= 20);
+
+        for (DiagramOccurrences o : dos) {
+            assertNotNull(o.getDiagram());
+            if(o.getDiagram().getStId().equals("R-HSA-168164")){
+                assertFalse("'R-HSA-879382' is not directly contained in 'R-HSA-168164'", o.isInDiagram());
+                assertFalse("", o.getSubpathways().isEmpty());
+                boolean found = false;
+                for (Pathway pathway : o.getSubpathways()) {
+                    found |= (pathway.getStId().equals("R-HSA-445989"));
+                }
+                assertTrue("'R-HSA-879382' is contained in 'R-HSA-445989'",found);
+            }if(o.getDiagram().getStId().equals("R-HSA-168928")){
+                assertTrue("'R-HSA-879382' not directly contained in 'R-HSA-168928'", o.isInDiagram());
+                assertTrue("", o.getSubpathways().isEmpty());
+            }
+            if(o.getDiagram().getSchemaClass().equals("TopLevelPathway")){
+                assertNotNull(o.getSubpathways());
+                assertTrue(!o.getSubpathways().isEmpty());
+            }
+        }
+    }
 }
