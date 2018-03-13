@@ -3,16 +3,15 @@ package org.reactome.server.graph.service;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.model.NegativeRegulation;
-import org.reactome.server.graph.domain.model.PositiveRegulation;
+import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
@@ -77,6 +76,40 @@ public class LazyLoadingTest extends BaseTest {
         for (DatabaseObject negativeRegulation : p.getNegativelyRegulatedBy()) {
             assumeTrue(negativeRegulation instanceof NegativeRegulation);
         }
+
+        logger.info("Finished");
+    }
+
+    @Test
+    public void lazyLoadingRepeatedUnitOfTest() {
+
+        logger.info("Testing Lazy Loading for Polymer RepeatedUnit");
+
+        PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-5682854");
+        List<Polymer> targets = dbObj.getRepeatedUnitOf();
+
+        boolean found = false;
+        for (Polymer polymer : targets) {
+            found |= polymer.getStId().equals("R-HSA-5682839");
+        }
+        assertTrue("'R-HSA-5682839' has 'R-HSA-5682854' as repeated Unit", found);
+
+        logger.info("Finished");
+    }
+
+    @Test
+    public void lazyLoadingComponentOfTest() {
+
+        logger.info("Testing Lazy Loading for Complex ComponentOf");
+
+        PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-377733");
+        List<Complex> targets = dbObj.getComponentOf();
+
+        boolean found = false;
+        for (Complex complex : targets) {
+            found |= complex.getStId().equals("R-HSA-375305");
+        }
+        assertTrue("'R-HSA-375305' has 'R-HSA-377733' as hasComponent", found);
 
         logger.info("Finished");
     }

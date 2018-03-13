@@ -13,12 +13,14 @@ import org.reactome.server.graph.domain.model.Polymer;
  */
 @SuppressWarnings("unused")
 @RelationshipEntity(type = "repeatedUnit")
-public class RepeatedUnit {
+public class RepeatedUnit implements Comparable {
 
     @GraphId
     private Long id;
 
     private Integer stoichiometry = 1;
+
+    private Integer order;
 
     @StartNode
     private Polymer polymer;
@@ -33,6 +35,14 @@ public class RepeatedUnit {
 
     public void setStoichiometry(Integer stoichiometry) {
         this.stoichiometry = stoichiometry;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public Polymer getPolymer() {
@@ -67,5 +77,10 @@ public class RepeatedUnit {
         int result = polymer != null ? polymer.hashCode() : 0;
         result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return this.order - ((RepeatedUnit) o).order;
     }
 }
