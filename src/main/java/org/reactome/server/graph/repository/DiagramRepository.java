@@ -63,13 +63,13 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(d) " +
             "WITH directlyInDiagram, directlyInDiagram + COLLECT(DISTINCT p) AS hlds " +
             "UNWIND hlds AS d " +
-            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(d) " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(d) " +
             "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
             "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
-            "WHERE SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) AND sp IN directlyInDiagram " +
+            "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
             "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
             "WHERE inDiagram OR SIZE(subpathways)>0 " +
             "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
@@ -83,13 +83,13 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(d) " +
             "WITH directlyInDiagram, directlyInDiagram + COLLECT(DISTINCT p) AS hlds " +
             "UNWIND hlds AS d " +
-            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent*..3]->(d) " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(d) " +
             "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all as p " +
             "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
-            "WHERE SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) AND sp IN directlyInDiagram " +
+            "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
             "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
             "WHERE inDiagram OR SIZE(subpathways)>0 " +
             "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
