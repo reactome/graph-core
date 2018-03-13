@@ -113,4 +113,21 @@ public class LazyLoadingTest extends BaseTest {
 
         logger.info("Finished");
     }
+
+    @Test
+    public void lazyLoadingConsumedByEventTest() {
+
+        logger.info("Testing Lazy Loading for Complex ComponentOf");
+
+        PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-375305");
+        List<Event> targets = dbObj.getConsumedByEvent();
+
+        boolean found = false;
+        for (Event event : targets) {
+            found |= event.getStId().equals("R-HSA-141409");
+        }
+        assertTrue("'R-HSA-375305' has 'R-HSA-141409' as input", found);
+
+        logger.info("Finished");
+    }
 }

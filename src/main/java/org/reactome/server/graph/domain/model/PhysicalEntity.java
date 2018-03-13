@@ -224,6 +224,16 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.consumedByEvent = consumedByEvent;
     }
 
+    public void setConsumedByEvent(List<Event> consumedByEvent) {
+        this.consumedByEvent = new TreeSet<>();
+        for (Event e : consumedByEvent) {
+            Input input = new Input();
+            input.setEvent(e);
+            input.setPhysicalEntity(this);
+            input.setStoichiometry(1); //This is an assumption!
+        }
+    }
+
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
     }
