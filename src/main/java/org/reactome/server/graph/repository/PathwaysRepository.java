@@ -194,6 +194,27 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysForIdentifierAndSpeciesTaxId(String identifier, String taxId);
 
+    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway))  " +
+            "OPTIONAL MATCH (p2:Pathway{dbId:{0}})  " +
+            "WITH COLLECT(DISTINCT p1) + COLLECT(DISTINCT p2) AS ps " +
+            "UNWIND ps AS p " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(p) " +
+            "WITH ps + COLLECT(DISTINCT cep) AS all " +
+            "UNWIND all AS p " +
+            "RETURN DISTINCT p.stId, p.displayName")
+    Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Long dbId);
+
+    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway))  " +
+            "OPTIONAL MATCH (p2:Pathway{stId:{0}})  " +
+            "WITH COLLECT(DISTINCT p1) + COLLECT(DISTINCT p2) AS ps " +
+            "UNWIND ps AS p " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(p) " +
+            "WITH ps + COLLECT(DISTINCT cep) AS all " +
+            "UNWIND all AS p " +
+            "RETURN DISTINCT p.stId, p.displayName")
+    Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(String stId);
 
     @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
             "WHERE p.stId IN {1} " +
