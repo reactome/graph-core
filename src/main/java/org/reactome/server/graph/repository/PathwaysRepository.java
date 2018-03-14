@@ -202,7 +202,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(p) " +
             "WITH ps + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all AS p " +
-            "RETURN DISTINCT p.stId, p.displayName")
+            "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Long dbId);
 
     @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
@@ -213,7 +213,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(p) " +
             "WITH ps + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all AS p " +
-            "RETURN DISTINCT p.stId, p.displayName")
+            "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(String stId);
 
     @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
