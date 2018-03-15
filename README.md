@@ -15,7 +15,7 @@ In the Reactome Graph project Neo4j, a Java implemented, open source, transactio
 
 #### Main project components used:
 
-* Spring Data Neo4j - version: 4.1.8.RELEASE
+* Spring Data Neo4j - version: 4.1.11.RELEASE
 * AspectJ
 
 ## Project usage
@@ -50,7 +50,7 @@ mvn archetype:generate \
 <dependency>
     <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
 </dependency>
 ```
 
