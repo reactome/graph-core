@@ -117,6 +117,16 @@ public class PathwaysService {
         return null;
     }
 
+    public Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Object identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return pathwaysRepository.getLowerLevelPathwaysIncludingEncapsulation(id);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return pathwaysRepository.getLowerLevelPathwaysIncludingEncapsulation(Long.parseLong(id));
+        }
+        return null;
+    }
+
     public Collection<Pathway> getLowerLevelPathwaysForIdentifier(String identifier, Object species) {
         Species s = speciesService.getSpecies(species);
         if (s != null) {

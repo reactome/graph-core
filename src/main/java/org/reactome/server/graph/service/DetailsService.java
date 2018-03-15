@@ -68,21 +68,22 @@ public class DetailsService {
         Object id = databaseObject.getStId();
         if (databaseObject.getStId() == null) id = databaseObject.getDbId();
 
-        /**
-         * If the databaseObject is a Regulation, we get the StId from the Regulator and query again
-         */
-        if (databaseObject instanceof Regulation) {
-            id = ((Regulation) databaseObject).getRegulator().getStId();
-        }
-
         PathwayBrowserNode node;
         node = hierarchyService.getLocationsInPathwayBrowser(id, directParticipants, true);
 
+        DatabaseObject leaf = null;
         if (databaseObject instanceof CatalystActivity) {
-            PhysicalEntity physicalEntity = ((CatalystActivity) databaseObject).getPhysicalEntity();
-            node.setName(physicalEntity.getDisplayName());
-            node.setStId(physicalEntity.getStId());
-            node.setType(physicalEntity.getSchemaClass());
+            leaf = ((CatalystActivity) databaseObject).getPhysicalEntity();
+        } else if (databaseObject instanceof EntityFunctionalStatus) {
+            leaf = ((EntityFunctionalStatus) databaseObject).getPhysicalEntity();
+        } else if (databaseObject instanceof Regulation) {
+            leaf = ((Regulation) databaseObject).getRegulator();
+        }
+
+        if(leaf!=null){
+            node.setName(leaf.getDisplayName());
+            node.setStId(leaf.getStId());
+            node.setType(leaf.getSchemaClass());
         }
         return node;
     }

@@ -11,10 +11,7 @@ import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 @SuppressWarnings("unused")
 @NodeEntity
@@ -210,9 +207,31 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.componentOf = componentOf;
     }
 
+    public void setComponentOf(List<PhysicalEntity> componentOf) {
+        this.componentOf = new TreeSet<>();
+        int order = 0;
+        for (PhysicalEntity pe : componentOf) {
+            HasComponent hc = new HasComponent();
+            hc.setPhysicalEntity(this);
+            hc.setComplex((Complex) pe);
+            hc.setOrder(order++);
+            this.componentOf.add(hc);
+        }
+    }
+
     @Relationship(type = "input", direction = Relationship.INCOMING)
     public void setConsumedByEvent(Set<Input> consumedByEvent) {
         this.consumedByEvent = consumedByEvent;
+    }
+
+    public void setConsumedByEvent(List<Event> consumedByEvent) {
+        this.consumedByEvent = new TreeSet<>();
+        for (Event e : consumedByEvent) {
+            Input input = new Input();
+            input.setEvent(e);
+            input.setPhysicalEntity(this);
+            input.setStoichiometry(1); //This is an assumption!
+        }
     }
 
     public List<DatabaseIdentifier> getCrossReference() {
@@ -304,6 +323,18 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
     public void setRepeatedUnitOf(Set<RepeatedUnit> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
+    }
+
+    public void setRepeatedUnitOf(List<PhysicalEntity> repeatedUnitOf) {
+        this.repeatedUnitOf = new TreeSet<>();
+        int order = 0;
+        for (PhysicalEntity pe : repeatedUnitOf) {
+            RepeatedUnit ru = new RepeatedUnit();
+            ru.setPhysicalEntity(this);
+            ru.setPolymer((Polymer) pe);
+            ru.setOrder(order++);
+            this.repeatedUnitOf.add(ru);
+        }
     }
 
     public List<Publication> getLiteratureReference() {

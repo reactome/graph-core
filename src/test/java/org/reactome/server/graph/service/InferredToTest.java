@@ -30,36 +30,36 @@ public class InferredToTest extends BaseTest {
     public void getManuallyInferredToForComplexTest() {
         logger.info("Started testing InferredToTest.getManuallyInferredToForComplex");
         long start = System.currentTimeMillis();
-        Complex complex = databaseObjectService.findById("R-HSA-5663272");
+        Complex complex = databaseObjectService.findById("R-HSA-5682892");
         Collection<PhysicalEntity> inferredTo = complex.getInferredTo();
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull("The inferredTo for complex 'R-HSA-5663272' cannot be null", inferredTo);
+        assertNotNull("The inferredTo for complex 'R-HSA-5682892' cannot be null", inferredTo);
         PhysicalEntity aux = null;
         for (PhysicalEntity pe : inferredTo) {
-            if (pe.getStId().equals("R-MMU-5667076")) aux = pe;
+            if (pe.getStId().equals("R-MMU-5682892")) aux = pe;
         }
 
-        assertNotNull("The complex 'R-HSA-5663272' should be manually inferredTo 'R-MMU-5667076'", aux);
+        assertNotNull("The complex 'R-HSA-5682892' should be manually inferredTo 'R-MMU-5682892'", aux);
     }
 
     @Test
     public void getManuallyInferredToForReactionTest() {
         logger.info("Started testing InferredToTest.getManuallyInferredToForReaction");
         long start = System.currentTimeMillis();
-        Reaction reaction = databaseObjectService.findById("R-HSA-5663258");
+        Reaction reaction = databaseObjectService.findById("R-HSA-73577");
         Collection<Event> inferredTo = reaction.getOrthologousEvent();
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull("The orthologous events for reaction 'R-HSA-5663258' cannot be null", inferredTo);
+        assertNotNull("The orthologous events for reaction 'R-HSA-73577' cannot be null", inferredTo);
         Event aux = null;
         for (Event pe : inferredTo) {
-            if (pe.getStId().equals("R-MMU-5667074")) aux = pe;
+            if (pe.getStId().equals("R-MMU-73577")) aux = pe;
         }
 
-        assertNotNull("The reaction 'R-HSA-5663258' should be manually inferredTo 'R-MMU-5667074'", aux);
+        assertNotNull("The reaction 'R-HSA-73577' should be manually inferredTo 'R-MMU-73577'", aux);
     }
 
     @Test
