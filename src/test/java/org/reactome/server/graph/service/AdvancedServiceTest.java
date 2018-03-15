@@ -61,7 +61,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findEnhancedPathwayByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Event pathwayObserved = advancedDatabaseObjectService.findEnhancedObjectById(1368139L);
+        Event pathwayObserved = advancedDatabaseObjectService.findEnhancedObjectById(2993780L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
