@@ -41,7 +41,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     private List<CatalystActivity> catalystActivities;
 
     @Relationship(type = "compartment")
-    private List<EntityCompartment> compartment;
+    private List<Compartment> compartment;
 
     /**
      * ComponentOf is not a field of the previous RestfulApi and will be ignored until needed
@@ -193,12 +193,12 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.catalystActivities = catalystActivities;
     }
 
-    public List<EntityCompartment> getCompartment() {
+    public List<Compartment> getCompartment() {
         return compartment;
     }
 
     @Relationship(type = "compartment")
-    public void setCompartment(List<EntityCompartment> compartment) {
+    public void setCompartment(List<Compartment> compartment) {
         this.compartment = compartment;
     }
 
@@ -224,13 +224,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.consumedByEvent = consumedByEvent;
     }
 
-    public void setConsumedByEvent(List<Event> consumedByEvent) {
+    public void setConsumedByEvent(List<Event> events) {
         this.consumedByEvent = new TreeSet<>();
-        for (Event e : consumedByEvent) {
+        for (Event e : events) {
             Input input = new Input();
             input.setEvent(e);
             input.setPhysicalEntity(this);
-            input.setStoichiometry(1); //This is an assumption!
+            input.setStoichiometry(1);
+            this.consumedByEvent.add(input);
         }
     }
 
@@ -369,6 +370,17 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "output", direction = Relationship.INCOMING)
     public void setProducedByEvent(Set<Output> producedByEvent) {
         this.producedByEvent = producedByEvent;
+    }
+
+    public void setProducedByEvent(List<Event> events) {
+        this.producedByEvent = new TreeSet<>();
+        for (Event event : events) {
+            Output output = new Output();
+            output.setEvent(event);
+            output.setPhysicalEntity(this);
+            output.setStoichiometry(1);
+            this.producedByEvent.add(output);
+        }
     }
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)

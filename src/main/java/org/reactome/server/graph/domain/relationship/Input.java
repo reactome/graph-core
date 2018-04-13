@@ -5,8 +5,8 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.PhysicalEntity;
 
 /**
  * Input is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
@@ -14,7 +14,7 @@ import org.reactome.server.graph.domain.model.Event;
  */
 @SuppressWarnings("unused")
 @RelationshipEntity(type = "input")
-public class Input {
+public class Input implements Comparable {
 
     @JsonIgnore
     @GraphId
@@ -70,5 +70,10 @@ public class Input {
         int result = event != null ? event.hashCode() : 0;
         result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }

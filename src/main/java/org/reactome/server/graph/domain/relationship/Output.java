@@ -13,7 +13,7 @@ import org.reactome.server.graph.domain.model.PhysicalEntity;
  * outputs.
  */
 @RelationshipEntity(type = "output")
-public class Output {
+public class Output implements Comparable {
 
     @SuppressWarnings("unused")
     @JsonIgnore
@@ -71,5 +71,10 @@ public class Output {
         int result = event != null ? event.hashCode() : 0;
         result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }
