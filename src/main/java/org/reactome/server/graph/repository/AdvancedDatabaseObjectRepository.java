@@ -3,6 +3,7 @@ package org.reactome.server.graph.repository;
 import jodd.typeconverter.TypeConverterManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
@@ -390,7 +391,7 @@ public class AdvancedDatabaseObjectRepository {
                 Object value = map.get(field);
                 if (value == null) continue;
                 //1st -> Check whether the setter method is present
-                Method setFieldMethod = setters.get(field);
+                Method setFieldMethod = setters.get("set" + StringUtils.capitalize(field));
                 if (setFieldMethod != null) {
                     // If the setter exists, it is invoked
                     setFieldMethod.setAccessible(true);
