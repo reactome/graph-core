@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -542,14 +541,99 @@ public class AdvancedDatabaseObjectRepository {
         }
     }
 
+	public <T> Collection<T> customQuery(Class<T> clazz, String query, Map<String, Object> parameters) {
+		if (parameters == null)
+			parameters = Collections.EMPTY_MAP;
+
+		final Result result = neo4jTemplate.query(query, parameters);
+
+		try {
+			final Collection<T> collection = new LinkedList<>();
+			for (Map<String, Object> map : result)
+				collection.add(cast(clazz, null, map));
+			return collection;
+		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+        return null;
+	}
+
     /**
-     * Neo4j results always return the Object (wrapper)
-     * as an Array (if it is collection). However if we are
-     * mapping an object which attribute is a int[] e.g then it
-     * does not 'boxing', then this method checks the type
-     * and return the proper Array of primitive .
+     *
+     * @param target target class for source
+     * @param innerClass if target class is Collection (or any subclass), the class for the elements of the collection
+     * @param source source object, compatible with target
+     * @return an object of class T extracted from source
+     * @throws InstantiationException if target class or innerType cannot be instantiated
+     * @throws IllegalAccessException if any of the setter/fields of target/innerType is not accesible
      */
-    private Object toPrimitiveArray(Object value, Class type) {
+	private <T> T cast(Class<T> target, Class innerClass, Object source) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+		// Source	Target		Action
+		// object	object		target.class.cast(object)
+		// map 		object      mapToInstance(map, object)
+		// map 		map 		target.class.cast(object)
+		// list		list 		[for object in source : instance(target.innerClass, object)]
+		// array 	list 		[for object in source : instance(target.innerClass, object)]
+    	if (target.isInstance(source))
+    		return target.cast(source);
+    	else if (Map.class.isInstance(source))
+    		return mapToInstance(target, (Map) source);
+    	else if (Object[].class.isInstance(source)) {
+    	    final List list = new LinkedList();
+            for (Object object : (Object[]) source)
+                list.add(cast(innerClass, null, object));
+            return target.cast(list);
+	    } else if (Collection.class.isInstance(source)) {
+            final List list = new LinkedList();
+            for (Object object : (Collection) source)
+                list.add(cast(innerClass, null, object));
+            return target.cast(list);
+        } else return target.cast(source);
+	}
+
+    private <T> T mapToInstance(Class<T> target, Map map) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+        final T instance = target.newInstance();
+        final List<Method> methods = getSetters(target);
+        for (Method method : methods) {
+            method.setAccessible(true);
+            final String propertyName = getPropertyName(method.getName());
+            final Object object = map.get(propertyName);
+            if (object != null) {
+                final Class subTarget = method.getParameterTypes()[0];
+                final Class innerClass = getInnerClass(method);
+                final Object value = cast(subTarget, innerClass, object);
+                method.invoke(instance, value);
+            }
+        }
+        return instance;
+    }
+
+    private Class getInnerClass(Method method) {
+        final Type paramType = method.getGenericParameterTypes()[0];
+        return paramType instanceof ParameterizedType
+                ? (Class) ((ParameterizedType) paramType).getActualTypeArguments()[0]
+                : null;
+    }
+
+    private String getPropertyName(String setter) {
+        final String name = setter.replaceFirst("set", "");
+        return name.substring(0, 1).toLowerCase() + name.substring(1);
+    }
+
+    private <T> List<Method> getSetters(Class<T> target) {
+	    return Arrays.stream(target.getMethods())
+                .filter(method -> method.getName().startsWith("set"))
+                .filter(method -> method.getParameterCount() == 1)
+                .collect(Collectors.toList());
+    }
+
+	/**
+	 * Neo4j results always return the Object (wrapper) as an Array (if it is
+	 * collection). However if we are mapping an object which attribute is a
+	 * int[] e.g then it does not 'boxing', then this method checks the type and
+	 * return the proper Array of primitive .
+	 */
+	private Object toPrimitiveArray(Object value, Class type) {
         if (type == byte[].class) {
             return ArrayUtils.toPrimitive((Byte[]) value);
         } else if (type == short[].class) {

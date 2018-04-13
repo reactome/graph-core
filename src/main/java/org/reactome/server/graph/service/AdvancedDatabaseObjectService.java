@@ -204,4 +204,14 @@ public class AdvancedDatabaseObjectService {
     public Number customNumbernQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
         return advancedDatabaseObjectRepository.customNumberQueryResult(query, parametersMap);
     }
+
+    public <T> T singletonCustomQuery(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+        final Collection<T> collection = customQuery(clazz, query, parameters);
+        return collection.isEmpty() ? null : collection.iterator().next();
+    }
+
+    public <T> Collection<T> customQuery(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+        return advancedDatabaseObjectRepository.customQuery(clazz, query, parameters);
+    }
+
 }
