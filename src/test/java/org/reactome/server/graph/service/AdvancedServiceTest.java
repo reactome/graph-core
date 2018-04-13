@@ -61,11 +61,11 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findEnhancedPathwayByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Event pathwayObserved = advancedDatabaseObjectService.findEnhancedObjectById(2993780L);
+        ReactionLikeEvent rleObserved = advancedDatabaseObjectService.findEnhancedObjectById(2993780L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertFalse(pathwayObserved.getDisplayName() + " should have regulators", pathwayObserved.getRegulatedBy().isEmpty());
+        assertFalse(rleObserved.getDisplayName() + " should have regulators", rleObserved.getRegulatedBy().isEmpty());
         logger.info("Finished");
     }
 

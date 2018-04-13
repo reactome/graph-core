@@ -3,16 +3,12 @@ package org.reactome.server.graph.service;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.ogm.model.Result;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -107,55 +103,55 @@ public class GeneralServiceTest extends BaseTest {
 
     // ------------------------------------------- Save and Delete -----------------------------------------------------
 
-    @Test
-    public void saveAndDeleteTest() {
-        Pathway pathway = new Pathway();
-        pathway.setDbId(111111111111L);
-        pathway.setStId("R-HSA-111111111111");
-        pathway.setDisplayName("TestPathway");
-
-        long count = schemaService.countEntries(Pathway.class);
-        generalService.save(pathway);
-        long countAfterSave = schemaService.countEntries(Pathway.class);
-        assertEquals(count + 1, countAfterSave);
-
-        generalService.delete(111111111111L);
-
-        long countAfterDelete = schemaService.countEntries(Pathway.class);
-        assertEquals(count, countAfterDelete);
-    }
-
-    @Test
-    public void saveAndDeleteWithDepthTest() {
-        Pathway pathway = new Pathway();
-        pathway.setDbId(111111111111L);
-        pathway.setStId("R-HSA-111111111111");
-        pathway.setDisplayName("TestPathway");
-
-        Pathway pathway2 = new Pathway();
-        pathway2.setDbId(111111111112L);
-        pathway2.setStId("R-HSA-111111111112");
-        pathway2.setDisplayName("TestPathway2");
-
-        Pathway pathway3 = new Pathway();
-        pathway3.setDbId(111111111113L);
-        pathway3.setStId("R-HSA-111111111113");
-        pathway3.setDisplayName("TestPathway3");
-
-        List<Event> hasEvent = new ArrayList<>();
-        hasEvent.add(pathway2);
-        hasEvent.add(pathway3);
-        pathway.setHasEvent(hasEvent);
-
-        long count = schemaService.countEntries(Pathway.class);
-        generalService.save(pathway, 1);
-        long countAfterSave = schemaService.countEntries(Pathway.class);
-        assertEquals(count + 3, countAfterSave);
-        // delete will delete all relationships, nevertheless the other Nodes will still be present
-        generalService.delete(111111111111L);
-        generalService.delete(111111111112L);
-        generalService.delete(111111111113L);
-        long countAfterDelete = schemaService.countEntries(Pathway.class);
-        assertEquals(count, countAfterDelete);
-    }
+//    @Test
+//    public void saveAndDeleteTest() {
+//        Pathway pathway = new Pathway();
+//        pathway.setDbId(111111111111L);
+//        pathway.setStId("R-HSA-111111111111");
+//        pathway.setDisplayName("TestPathway");
+//
+//        long count = schemaService.countEntries(Pathway.class);
+//        generalService.save(pathway);
+//        long countAfterSave = schemaService.countEntries(Pathway.class);
+//        assertEquals(count + 1, countAfterSave);
+//
+//        generalService.delete(111111111111L);
+//
+//        long countAfterDelete = schemaService.countEntries(Pathway.class);
+//        assertEquals(count, countAfterDelete);
+//    }
+//
+//    @Test
+//    public void saveAndDeleteWithDepthTest() {
+//        Pathway pathway = new Pathway();
+//        pathway.setDbId(111111111111L);
+//        pathway.setStId("R-HSA-111111111111");
+//        pathway.setDisplayName("TestPathway");
+//
+//        Pathway pathway2 = new Pathway();
+//        pathway2.setDbId(111111111112L);
+//        pathway2.setStId("R-HSA-111111111112");
+//        pathway2.setDisplayName("TestPathway2");
+//
+//        Pathway pathway3 = new Pathway();
+//        pathway3.setDbId(111111111113L);
+//        pathway3.setStId("R-HSA-111111111113");
+//        pathway3.setDisplayName("TestPathway3");
+//
+//        List<Event> hasEvent = new ArrayList<>();
+//        hasEvent.add(pathway2);
+//        hasEvent.add(pathway3);
+//        pathway.setHasEvent(hasEvent);
+//
+//        long count = schemaService.countEntries(Pathway.class);
+//        generalService.save(pathway, 1);
+//        long countAfterSave = schemaService.countEntries(Pathway.class);
+//        assertEquals(count + 3, countAfterSave);
+//        // delete will delete all relationships, nevertheless the other Nodes will still be present
+//        generalService.delete(111111111111L);
+//        generalService.delete(111111111112L);
+//        generalService.delete(111111111113L);
+//        long countAfterDelete = schemaService.countEntries(Pathway.class);
+//        assertEquals(count, countAfterDelete);
+//    }
 }

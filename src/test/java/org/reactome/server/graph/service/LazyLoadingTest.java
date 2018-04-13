@@ -65,15 +65,15 @@ public class LazyLoadingTest extends BaseTest {
     public void lazyLoadingPositiveAndNegativeRegulatorsTest() {
         logger.info("Testing Lazy Loading Positive And Negative Regulators");
 
-        Event p = dbs.findById("R-HSA-71670");
+        ReactionLikeEvent rle = dbs.findById("R-HSA-71670");
 
-        assumeFalse(p.getPositivelyRegulatedBy().isEmpty());
-        for (DatabaseObject positiveRegulation : p.getPositivelyRegulatedBy()) {
+        assumeFalse(rle.getPositivelyRegulatedBy().isEmpty());
+        for (DatabaseObject positiveRegulation : rle.getPositivelyRegulatedBy()) {
             assumeTrue(positiveRegulation instanceof PositiveRegulation);
         }
 
-        assumeFalse(p.getNegativelyRegulatedBy().isEmpty());
-        for (DatabaseObject negativeRegulation : p.getNegativelyRegulatedBy()) {
+        assumeFalse(rle.getNegativelyRegulatedBy().isEmpty());
+        for (DatabaseObject negativeRegulation : rle.getNegativelyRegulatedBy()) {
             assumeTrue(negativeRegulation instanceof NegativeRegulation);
         }
 
