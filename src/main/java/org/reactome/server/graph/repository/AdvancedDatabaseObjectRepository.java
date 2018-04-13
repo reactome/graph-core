@@ -4,7 +4,6 @@ import jodd.typeconverter.TypeConverterManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,31 +27,6 @@ public class AdvancedDatabaseObjectRepository {
 
     @Autowired
     private Neo4jOperations neo4jTemplate;
-
-//    The following two methods were thought to provide order in the lists of attributes, but now is done with the
-//    relationship objects in the model side (instead of with Cypher)
-//    public <T extends DatabaseObject> T findById(Long dbId) {
-//        String query = "MATCH (n:DatabaseObject{dbId:{dbId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("dbId", dbId);
-//        neo4jTemplate.clear();
-//        Result result = neo4jTemplate.query(query, map, true);
-//        if (result != null && result.iterator().hasNext()) {
-//            return (T) result.iterator().next().get("n");
-//        }
-//        return null;
-//    }
-//
-//    public <T extends DatabaseObject> T findById(String stId) {
-//        String query = "MATCH (n:DatabaseObject{stId:{stId}})-[r]-(m) RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("stId", stId);
-//        neo4jTemplate.clear();
-//        Result result = neo4jTemplate.query(query, map, true);
-//        if (result != null && result.iterator().hasNext())
-//            return (T) result.iterator().next().get("n");
-//        return null;
-//    }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
@@ -220,70 +194,6 @@ public class AdvancedDatabaseObjectRepository {
         return null;
     }
 
-    /*
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction) {
-        String query;
-        switch (direction) {
-            case OUTGOING:
-                query = "MATCH (n:DatabaseObject) " +
-                        "WHERE n.dbId IN {dbIds} " +
-                        "OPTIONAL MATCH (n)-[r]->(m) " +
-                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-                break;
-            case INCOMING:
-                query = "MATCH (n:DatabaseObject) " +
-                        "WHERE n.dbId IN {dbIds} " +
-                        "OPTIONAL MATCH (n)<-[r]-(m) " +
-                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-                break;
-            default: // UNDIRECTED
-                query = "MATCH (n:DatabaseObject) " +
-                        "WHERE n.dbId IN {dbIds} " +
-                        "OPTIONAL MATCH (n)-[r]-(m) " +
-                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("dbIds", dbIds);
-        Result result = neo4jTemplate.query(query, map);
-        Set<DatabaseObject> databaseObjects = new HashSet<>();
-        for (Map<String, Object> stringObjectMap : result) {
-            databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
-        }
-        return databaseObjects;
-    }
-
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction) {
-        String query;
-        switch (direction) {
-            case OUTGOING:
-                query = "MATCH (n:DatabaseObject) " +
-                        "WHERE n.stId IN {stIds} " +
-                        "OPTIONAL MATCH (n)-[r]->(m) " +
-                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-                break;
-            case INCOMING:
-                query = "MATCH (n:DatabaseObject) " +
-                        "WHERE n.stId IN {stIds} " +
-                        "OPTIONAL MATCH (n)<-[r]-(m) " +
-                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-                break;
-            default: // UNDIRECTED
-                query = "MATCH (n:DatabaseObject) " +
-                        "WHERE n.stId IN {stIds} " +
-                        "OPTIONAL MATCH (n)-[r]-(m) " +
-                        "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC";
-        }
-        Map<String, Object> map = new HashMap<>();
-        map.put("stIds", stIds);
-        Result result = neo4jTemplate.query(query, map);
-        Set<DatabaseObject> databaseObjects = new HashSet<>();
-        for (Map<String, Object> stringObjectMap : result) {
-            databaseObjects.add((DatabaseObject) stringObjectMap.get("n"));
-        }
-        return databaseObjects;
-    }
-    */
-
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
@@ -387,175 +297,178 @@ public class AdvancedDatabaseObjectRepository {
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
 
-    public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        Collection<T> instancesResult = new ArrayList<>();
-        Result result = neo4jTemplate.query(query, parametersMap);
-        Field[] fields = getAllFields(clazz);
-
-        try {
-            for (Map<String, Object> stringObjectMap : result) {
-                T instance = clazz.newInstance();
-                for (Field field : fields) {
-                    setFields(instance, field, stringObjectMap);
-                }
-                instancesResult.add(instance);
-            }
-        } catch (Throwable e) {
-            throw new CustomQueryException(e);
-        }
-
-        return instancesResult;
-    }
-
-    public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        Result result = neo4jTemplate.query(query, parametersMap);
-        Field[] fields = getAllFields(clazz);
-
-        try {
-            if (result.iterator().hasNext()) {
-                Map<String, Object> stringObjectMap = result.iterator().next();
-                T instance = clazz.newInstance();
-                for (Field field : fields) {
-                    setFields(instance, field, stringObjectMap);
-                }
-                return instance;
-            }
-        } catch (Throwable e) {
-            throw new CustomQueryException(e);
-        }
-
-        return null;
-    }
-
-    public String customQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        Result result = neo4jTemplate.query(query, parametersMap);
-
-        try {
-            if (result.iterator().hasNext()) {
-                Map<String, Object> stringObjectMap = result.iterator().next();
-                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), String.class);
-            }
-        } catch (Throwable e) {
-            throw new CustomQueryException(e);
-        }
-
-        return null;
-    }
-
-    public Boolean customBooleanQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        Result result = neo4jTemplate.query(query, parametersMap);
-
-        try {
-            if (result.iterator().hasNext()) {
-                Map<String, Object> stringObjectMap = result.iterator().next();
-                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Boolean.class);
-            }
-        } catch (Throwable e) {
-            throw new CustomQueryException(e);
-        }
-
-        return null;
-    }
-
-    public Number customNumberQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        Result result = neo4jTemplate.query(query, parametersMap);
-
-        try {
-            if (result.iterator().hasNext()) {
-                Map<String, Object> stringObjectMap = result.iterator().next();
-                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Number.class);
-            }
-        } catch (Throwable e) {
-            throw new CustomQueryException(e);
-        }
-
-        return null;
-    }
-
-    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        // result is an ArrayList which each position has a Map<String, Object> and the map.key is the label we have
-        // present in the query MATCH ... RETURN n.dbId as identifier, then "identifier" and the Object is List
-        Result result = neo4jTemplate.query(query, parametersMap);
-
-        List<Object> list = new ArrayList<>();
-        try {
-            for (Map<String, Object> stringObjectMap : result) {
-                // for a list of String result the important bit are the values - collect the and add into List<Object>
-                for (Object o : stringObjectMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList())) {
-                    list.add(TypeConverterManager.convertType(o, clazz));
-                }
-            }
-
-            // convert list of Object into a list of clazz.
-            return TypeConverterManager.convertToCollection(list, List.class, clazz);
-        } catch (Throwable e) {
-            throw new CustomQueryException(e);
-        }
-    }
-
-
-
-    public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (!DatabaseObject.class.isAssignableFrom(clazz))
-            throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
-
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        try {
-            return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, parametersMap);
-        } catch (RuntimeException e) {
-            throw new CustomQueryException(e);
-        }
-    }
-
-    public <T extends DatabaseObject> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-        if (!DatabaseObject.class.isAssignableFrom(clazz))
-            throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
-
-        if (parametersMap == null) //noinspection unchecked
-            parametersMap = Collections.EMPTY_MAP;
-
-        try {
-            return neo4jTemplate.queryForObject(clazz, query, parametersMap);
-        } catch (RuntimeException e) {
-            throw new CustomQueryException(e);
-        }
-    }
+//    public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        Collection<T> instancesResult = new ArrayList<>();
+//        Result result = neo4jTemplate.query(query, parametersMap);
+//        Field[] fields = getAllFields(clazz);
+//
+//        try {
+//            for (Map<String, Object> stringObjectMap : result) {
+//                T instance = clazz.newInstance();
+//                for (Field field : fields) {
+//                    setFields(instance, field, stringObjectMap);
+//                }
+//                instancesResult.add(instance);
+//            }
+//        } catch (Throwable e) {
+//            throw new CustomQueryException(e);
+//        }
+//
+//        return instancesResult;
+//    }
+//
+//    public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        Result result = neo4jTemplate.query(query, parametersMap);
+//        Field[] fields = getAllFields(clazz);
+//
+//        try {
+//            if (result.iterator().hasNext()) {
+//                Map<String, Object> stringObjectMap = result.iterator().next();
+//                T instance = clazz.newInstance();
+//                for (Field field : fields) {
+//                    setFields(instance, field, stringObjectMap);
+//                }
+//                return instance;
+//            }
+//        } catch (Throwable e) {
+//            throw new CustomQueryException(e);
+//        }
+//
+//        return null;
+//    }
+//
+//    public String customQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        Result result = neo4jTemplate.query(query, parametersMap);
+//
+//        try {
+//            if (result.iterator().hasNext()) {
+//                Map<String, Object> stringObjectMap = result.iterator().next();
+//                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), String.class);
+//            }
+//        } catch (Throwable e) {
+//            throw new CustomQueryException(e);
+//        }
+//
+//        return null;
+//    }
+//
+//    public Boolean customBooleanQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        Result result = neo4jTemplate.query(query, parametersMap);
+//
+//        try {
+//            if (result.iterator().hasNext()) {
+//                Map<String, Object> stringObjectMap = result.iterator().next();
+//                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Boolean.class);
+//            }
+//        } catch (Throwable e) {
+//            throw new CustomQueryException(e);
+//        }
+//
+//        return null;
+//    }
+//
+//    public Number customNumberQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        Result result = neo4jTemplate.query(query, parametersMap);
+//
+//        try {
+//            if (result.iterator().hasNext()) {
+//                Map<String, Object> stringObjectMap = result.iterator().next();
+//                return TypeConverterManager.convertType(stringObjectMap.values().iterator().next(), Number.class);
+//            }
+//        } catch (Throwable e) {
+//            throw new CustomQueryException(e);
+//        }
+//
+//        return null;
+//    }
+//
+//    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        // result is an ArrayList which each position has a Map<String, Object> and the map.key is the label we have
+//        // present in the query MATCH ... RETURN n.dbId as identifier, then "identifier" and the Object is List
+//        Result result = neo4jTemplate.query(query, parametersMap);
+//
+//        List<Object> list = new ArrayList<>();
+//        try {
+//            for (Map<String, Object> stringObjectMap : result) {
+//                // for a list of String result the important bit are the values - collect the and add into List<Object>
+//                for (Object o : stringObjectMap.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toList())) {
+//                    list.add(TypeConverterManager.convertType(o, clazz));
+//                }
+//            }
+//
+//            // convert list of Object into a list of clazz.
+//            return TypeConverterManager.convertToCollection(list, List.class, clazz);
+//        } catch (Throwable e) {
+//            throw new CustomQueryException(e);
+//        }
+//    }
+//
+//
+//
+//    public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (!DatabaseObject.class.isAssignableFrom(clazz))
+//            throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
+//
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        try {
+//            return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, parametersMap);
+//        } catch (RuntimeException e) {
+//            throw new CustomQueryException(e);
+//        }
+//    }
+//
+//    public <T extends DatabaseObject> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
+//        if (!DatabaseObject.class.isAssignableFrom(clazz))
+//            throw new CustomQueryException(clazz.getSimpleName() + " does not belong to our data model");
+//
+//        if (parametersMap == null) //noinspection unchecked
+//            parametersMap = Collections.EMPTY_MAP;
+//
+//        try {
+//            return neo4jTemplate.queryForObject(clazz, query, parametersMap);
+//        } catch (RuntimeException e) {
+//            throw new CustomQueryException(e);
+//        }
+//    }
 
 	public <T> Collection<T> customQuery(Class<T> clazz, String query, Map<String, Object> parameters) {
-		if (parameters == null)
-			parameters = Collections.EMPTY_MAP;
+		if (parameters == null) parameters = Collections.EMPTY_MAP;
 
-		final Result result = neo4jTemplate.query(query, parameters);
+        if (DatabaseObject.class.isAssignableFrom(clazz)) {
+            return (Collection<T>) neo4jTemplate.queryForObjects(clazz, query, parameters);
+        } else {
+            final Result result = neo4jTemplate.query(query, parameters);
 
-		try {
-			final Collection<T> collection = new LinkedList<>();
-			for (Map<String, Object> map : result)
-				collection.add(cast(clazz, null, map));
-			return collection;
-		} catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-        return null;
+            try {
+                final Collection<T> collection = new LinkedList<>();
+                for (Map<String, Object> map : result)
+                    collection.add(cast(clazz, null, map));
+                return collection;
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 	}
 
     /**
@@ -567,45 +480,57 @@ public class AdvancedDatabaseObjectRepository {
      * @throws InstantiationException if target class or innerType cannot be instantiated
      * @throws IllegalAccessException if any of the setter/fields of target/innerType is not accesible
      */
-	private <T> T cast(Class<T> target, Class innerClass, Object source) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+	private <T> T cast(Class<T> target, Class innerClass, Object source) throws IllegalAccessException, InvocationTargetException {
 		// Source	Target		Action
 		// object	object		target.class.cast(object)
 		// map 		object      mapToInstance(map, object)
 		// map 		map 		target.class.cast(object)
 		// list		list 		[for object in source : instance(target.innerClass, object)]
 		// array 	list 		[for object in source : instance(target.innerClass, object)]
-    	if (target.isInstance(source))
-    		return target.cast(source);
-    	else if (Map.class.isInstance(source))
-    		return mapToInstance(target, (Map) source);
-    	else if (Object[].class.isInstance(source)) {
-    	    final List list = new LinkedList();
-            for (Object object : (Object[]) source)
-                list.add(cast(innerClass, null, object));
-            return target.cast(list);
-	    } else if (Collection.class.isInstance(source)) {
-            final List list = new LinkedList();
-            for (Object object : (Collection) source)
-                list.add(cast(innerClass, null, object));
-            return target.cast(list);
-        } else return target.cast(source);
+        try {
+            if (target.isInstance(source)) {
+                return target.cast(source);
+            } else if (Map.class.isInstance(source)) {
+                return mapToInstance(target, (Map) source);
+            } else if (Object[].class.isInstance(source)) {
+                final List list = new LinkedList();
+                for (Object object : (Object[]) source)
+                    list.add(cast(innerClass, null, object));
+                return target.cast(list);
+            } else if (Collection.class.isInstance(source)) {
+                final List list = new LinkedList();
+                for (Object object : (Collection) source)
+                    list.add(cast(innerClass, null, object));
+                return target.cast(list);
+            } else{
+                return target.cast(source);
+            }
+        } catch (NullPointerException e) {
+            return null;
+        } catch (ClassCastException e) {
+            return TypeConverterManager.convertType(source, target);
+        }
 	}
 
-    private <T> T mapToInstance(Class<T> target, Map map) throws IllegalAccessException, InstantiationException, InvocationTargetException {
-        final T instance = target.newInstance();
-        final List<Method> methods = getSetters(target);
-        for (Method method : methods) {
-            method.setAccessible(true);
-            final String propertyName = getPropertyName(method.getName());
-            final Object object = map.get(propertyName);
-            if (object != null) {
-                final Class subTarget = method.getParameterTypes()[0];
-                final Class innerClass = getInnerClass(method);
-                final Object value = cast(subTarget, innerClass, object);
-                method.invoke(instance, value);
+    private <T> T mapToInstance(Class<T> target, Map map) throws IllegalAccessException, InvocationTargetException {
+	    try {
+            final T instance = target.newInstance();
+            final List<Method> methods = getSetters(target);
+            for (Method method : methods) {
+                method.setAccessible(true);
+                final String propertyName = getPropertyName(method.getName());
+                final Object object = map.get(propertyName);
+                if (object != null) {
+                    final Class subTarget = method.getParameterTypes()[0];
+                    final Class innerClass = getInnerClass(method);
+                    final Object value = cast(subTarget, innerClass, object);
+                    method.invoke(instance, value);
+                }
             }
+            return instance;
+        } catch (InstantiationException e) {
+            return TypeConverterManager.convertType(map.keySet().iterator().hasNext(), target);
         }
-        return instance;
     }
 
     private Class getInnerClass(Method method) {

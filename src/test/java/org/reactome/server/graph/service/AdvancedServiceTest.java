@@ -245,7 +245,7 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (p:Pathway{dbId:{dbId}})-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ";
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("dbId", 1640170);
-        CustomQueryResult customQueryResult = advancedDatabaseObjectService.customQueryForObject(CustomQueryResult.class, query, parametersMap);
+        CustomQueryResult customQueryResult = advancedDatabaseObjectService.getCustomQueryResult(CustomQueryResult.class, query, parametersMap);
         assertEquals(4, customQueryResult.getEvents().size());
         assertEquals(4, customQueryResult.getEventsArray().length);
         assertEquals(4, customQueryResult.getEventsPrimitiveArray().length);
@@ -256,7 +256,7 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.customQueryForObjects");
 
         String query = "MATCH (p:Pathway)-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ORDER BY p.dbId LIMIT 20";
-        Collection<CustomQueryResult> customQueryResultList = advancedDatabaseObjectService.customQueryForObjects(CustomQueryResult.class, query, null);
+        Collection<CustomQueryResult> customQueryResultList = advancedDatabaseObjectService.getCustomQueryResults(CustomQueryResult.class, query, null);
         assertNotNull(customQueryResultList);
         assertEquals(20, customQueryResultList.size());
         assertTrue(customQueryResultList.iterator().next().getEvents().size() > 0);
@@ -271,7 +271,7 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (p:Pathway{dbId:{dbId}}) RETURN p";
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("dbId", 1640170);
-        Pathway pathway = advancedDatabaseObjectService.customQueryForDatabaseObject(Pathway.class, query, parametersMap);
+        Pathway pathway = advancedDatabaseObjectService.getCustomQueryResult(Pathway.class, query, parametersMap);
         assertNotNull(pathway);
 
         // by default, lazy loading is disabled in our tests, enable here for a particular test
@@ -291,7 +291,7 @@ public class AdvancedServiceTest extends BaseTest {
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("dbId", 1640170);
         // In this test case, the relationships are mapped in the object Pathway inside the Collection
-        Collection<Pathway> pathways = advancedDatabaseObjectService.customQueryForDatabaseObjects(Pathway.class, query, parametersMap);
+        Collection<Pathway> pathways = advancedDatabaseObjectService.getCustomQueryResults(Pathway.class, query, parametersMap);
         assertNotNull(pathways);
         assertEquals(5, pathways.size());
         assertEquals(4, pathways.iterator().next().getHasEvent().size());
@@ -300,7 +300,7 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void customQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN DISTINCT n.identifier AS identifier";
-        Collection<String> accessions = advancedDatabaseObjectService.customQueryResults(String.class, query, null);
+        Collection<String> accessions = advancedDatabaseObjectService.getCustomQueryResults(String.class, query, null);
         assertNotNull(accessions);
         assertTrue(accessions.size() >= 200000);
     }
@@ -308,14 +308,14 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void customStringQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN COUNT(n.identifier)";
-        String pathways = advancedDatabaseObjectService.customStringQueryResult(query, null);
+        String pathways = advancedDatabaseObjectService.getCustomQueryResult(String.class, query, null);
         assertNotNull(pathways);
     }
 
     @Test
     public void customBooleanQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN COUNT(DISTINCT n.identifier) > 1";
-        Boolean check = advancedDatabaseObjectService.customBooleanQueryResult(query, null);
+        Boolean check = advancedDatabaseObjectService.getCustomQueryResult(Boolean.class, query, null);
         assertTrue(check);
     }
 
@@ -334,7 +334,7 @@ public class AdvancedServiceTest extends BaseTest {
         parametersMap.put("stId", "R-HSA-1852614");
 
         // In this test case, the relationships are mapped in the object CustomQueryComplex inside the Collection
-        Collection<CustomQueryComplex> customComplexes = advancedDatabaseObjectService.customQueryForObjects(CustomQueryComplex.class, query, parametersMap);
+        Collection<CustomQueryComplex> customComplexes = advancedDatabaseObjectService.getCustomQueryResults(CustomQueryComplex.class, query, parametersMap);
 
         assertNotNull(customComplexes);
         assertTrue(customComplexes.iterator().next().getDbIds().size() >= 9);
@@ -355,7 +355,7 @@ public class AdvancedServiceTest extends BaseTest {
         parametersMap.put("stId", "R-HSA-141433");
 
         // In this test case, the relationships are mapped in the object Pathway inside the Collection
-        CustomQueryPhysicalEntity customPE = advancedDatabaseObjectService.customQueryForObject(CustomQueryPhysicalEntity.class, query, parametersMap);
+        CustomQueryPhysicalEntity customPE = advancedDatabaseObjectService.getCustomQueryResult(CustomQueryPhysicalEntity.class, query, parametersMap);
 
         assertNotNull(customPE);
         assertEquals("R-HSA-141433", customPE.getStId());
