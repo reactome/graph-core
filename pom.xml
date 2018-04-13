@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.1.7</version>
+    <version>1.1.8</version>
     <name>ReactomeGraphCore</name>
 
     <description>
@@ -21,21 +21,21 @@
 
     <developers>
         <developer>
-            <id>fkorn</id>
-            <name>Florian Korninger</name>
-            <email>fkorn@ebi.ac.uk</email>
+            <id>fabregat</id>
+            <name>Antonio Fabregat</name>
+            <email>fabregat@ebi.ac.uk</email>
             <organization>http://www.ebi.ac.uk/</organization>
         </developer>
         <developer>
-            <id>gviteri</id>
+        <id>gviteri</id>
             <name>Guilherme Viteri</name>
             <email>gviteri@ebi.ac.uk</email>
             <organization>http://www.ebi.ac.uk/</organization>
         </developer>
         <developer>
-            <id>fabregat</id>
-            <name>Antonio Fabregat</name>
-            <email>fabregat@ebi.ac.uk</email>
+            <id>fkorn</id>
+            <name>Florian Korninger</name>
+            <email>fkorn@ebi.ac.uk</email>
             <organization>http://www.ebi.ac.uk/</organization>
         </developer>
     </developers>
