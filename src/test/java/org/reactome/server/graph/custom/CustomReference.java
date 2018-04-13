@@ -14,9 +14,10 @@ public class CustomReference {
         return database;
     }
 
-    public void setDatabase(String database) {
-        this.database = database;
-    }
+//    Commented out in purpose so the marshaller uses the field -> FOR TEST PURPOSES!
+//    public void setDatabase(String database) {
+//        this.database = database;
+//    }
 
     public String getIdentifier() {
         return identifier;

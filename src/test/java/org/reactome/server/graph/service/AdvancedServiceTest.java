@@ -308,7 +308,7 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void customStringQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN COUNT(n.identifier)";
-        String pathways = advancedDatabaseObjectService.getCustomQueryResult(String.class, query, null);
+        Integer pathways = advancedDatabaseObjectService.getCustomQueryResult(Integer.class, query, null);
         assertNotNull(pathways);
     }
 
@@ -317,6 +317,10 @@ public class AdvancedServiceTest extends BaseTest {
         String query = "MATCH (n:ReferenceEntity) RETURN COUNT(DISTINCT n.identifier) > 1";
         Boolean check = advancedDatabaseObjectService.getCustomQueryResult(Boolean.class, query, null);
         assertTrue(check);
+
+        query = "MATCH (n:ReferenceEntity) RETURN COUNT(DISTINCT n.identifier) < 1";
+        check = advancedDatabaseObjectService.getCustomQueryResult(Boolean.class, query, null);
+        assertFalse(check);
     }
 
     @Test
