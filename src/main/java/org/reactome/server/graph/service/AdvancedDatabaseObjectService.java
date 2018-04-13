@@ -116,104 +116,10 @@ public class AdvancedDatabaseObjectService {
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
 
     public <T> T getCustomQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
-        final Iterable<T> collection = getCustomQueryResults(clazz, query, parameters);
-        return collection.iterator().hasNext() ? collection.iterator().next() : null ;
+        return advancedDatabaseObjectRepository.customQueryResult(clazz, query, parameters);
     }
 
     public <T> Collection<T> getCustomQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
-        return advancedDatabaseObjectRepository.customQuery(clazz, query, parameters);
+        return advancedDatabaseObjectRepository.customQueryResults(clazz, query, parameters);
     }
-
-//    /**
-//     * Executes the specified Cypher query with the given parameters against the underlying Neo4j database and returns
-//     * the result automatically marshalled using Reflection and 3rd Party Library based on the given custom result.
-//     *
-//     * @param clazz         your custom object, the one that maps the Cypher Query result
-//     * @param query         your cypher query <code>MATCH (p:Pathway{dbId:{dbId}}) RETURN p</code>
-//     * @param <T>           your expected type
-//     * @param parametersMap cypher query parameters:
-//     *                      <code>
-//     *                      Map<String, Object> parametersMap = new HashMap<>();
-//     *                      parametersMap.put("dbId", 1640170);
-//     *                      </code>.
-//     *                      assign null if your does not have parameters
-//     * @throws CustomQueryException in case of Java Reflection related to automatic mapping or any Cypher query Runtime Exception
-//     */
-//    public <T> T customQueryForObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customQueryForObject(clazz, query, parametersMap);
-//    }
-//
-//    /**
-//     * Executes the specified Cypher query with the given parameters against the underlying Neo4j database and returns
-//     * the result automatically marshalled using Reflection and 3rd Party Library based on the given custom result.
-//     *
-//     * @param clazz         your custom object, the one that maps the Cypher Query result
-//     * @param query         your cypher query <code>MATCH (p:Pathway{dbId:{dbId}}) RETURN p</code>
-//     * @param <T>           your expected type
-//     * @param parametersMap cypher query parameters
-//     *                      <code>
-//     *                      Map<String, Object> parametersMap = new HashMap<>();
-//     *                      parametersMap.put("dbId", 1640170);
-//     *                      </code>.
-//     *                      assign null if your does not have parameters
-//     * @throws CustomQueryException in case of Java Reflection related to automatic mapping or any Cypher query Runtime Exception
-//     */
-//    public <T> Collection<T> customQueryForObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customQueryForObjects(clazz, query, parametersMap);
-//    }
-//
-//    /**
-//     * Runs the specified Cypher query with the given parameters against the underlying Neo4j database and returns the
-//     * result marshalled as an object of the requested type.
-//     *
-//     * @param clazz         a class which is part of Reactome Database. All objects that extend DatabaseObject
-//     * @param query         your cypher query <code>MATCH (p:Pathway{dbId:{dbId}}) RETURN p</code>
-//     * @param parametersMap cypher query parameters:
-//     *                      <code>
-//     *                      Map<String, Object> parametersMap = new HashMap<>();
-//     *                      parametersMap.put("dbId", 1640170);
-//     *                      </code>.
-//     *                      assign null if your does not have parameters
-//     * @throws CustomQueryException in case of any Cypher query Runtime Exception
-//     */
-//    public <T extends DatabaseObject> T customQueryForDatabaseObject(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customQueryForDatabaseObject(clazz, query, parametersMap);
-//    }
-//
-//    /**
-//     * Runs the specified Cypher query with the given parameters against the underlying Neo4j database and returns the
-//     * result automatically as a group of objects of the requested type.
-//     *
-//     * @param clazz         a class which is part of Reactome Database. All objects that extend DatabaseObject
-//     * @param query         your cypher query <code>MATCH (p:Pathway{dbId:{dbId}}) RETURN p</code>
-//     * @param parametersMap cypher query parameters:
-//     *                      <code>
-//     *                      Map<String, Object> parametersMap = new HashMap<>();
-//     *                      parametersMap.put("dbId", 1640170);
-//     *                      </code>.
-//     *                      assign null if your does not have parameters
-//     * @throws CustomQueryException in case of any Cypher query Runtime Exception
-//     */
-//    public <T> Collection<T> customQueryForDatabaseObjects(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customQueryForDatabaseObjects(clazz, query, parametersMap);
-//    }
-//
-//    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customQueryResults(clazz, query, parametersMap);
-//    }
-//
-//    public String customStringQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customQueryResult(query, parametersMap);
-//    }
-//
-//    public Boolean customBooleanQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customBooleanQueryResult(query, parametersMap);
-//    }
-//
-//    public Number customNumbernQueryResult(String query, Map<String, Object> parametersMap) throws CustomQueryException {
-//        return advancedDatabaseObjectRepository.customNumberQueryResult(query, parametersMap);
-//    }
-
-
-
 }
