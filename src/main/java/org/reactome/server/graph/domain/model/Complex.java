@@ -23,11 +23,14 @@ public class Complex extends PhysicalEntity {
     @Relationship(type = "hasComponent")
     private SortedSet<HasComponent> hasComponent;
 
+    @ReactomeProperty
+    private Boolean stoichiometryKnown;
+
     @Relationship(type = "entityOnOtherCell")
     private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "includedLocation")
-    private List<EntityCompartment> includedLocation;
+    private List<Compartment> includedLocation;
 
     @Relationship(type = "species")
     private List<Species> species;
@@ -90,6 +93,14 @@ public class Complex extends PhysicalEntity {
         this.hasComponent = new TreeSet<>(components.values());
     }
 
+    public Boolean getStoichiometryKnown() {
+        return stoichiometryKnown;
+    }
+
+    public void setStoichiometryKnown(Boolean stoichiometryKnown) {
+        this.stoichiometryKnown = stoichiometryKnown;
+    }
+
     public List<PhysicalEntity> getEntityOnOtherCell() {
         return entityOnOtherCell;
     }
@@ -99,12 +110,12 @@ public class Complex extends PhysicalEntity {
         this.entityOnOtherCell = entityOnOtherCell;
     }
 
-    public List<EntityCompartment> getIncludedLocation() {
+    public List<Compartment> getIncludedLocation() {
         return includedLocation;
     }
 
     @Relationship(type = "includedLocation")
-    public void setIncludedLocation(List<EntityCompartment> includedLocation) {
+    public void setIncludedLocation(List<Compartment> includedLocation) {
         this.includedLocation = includedLocation;
     }
 

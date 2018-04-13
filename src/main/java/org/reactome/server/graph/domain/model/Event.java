@@ -1,15 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -82,14 +79,6 @@ public abstract class Event extends DatabaseObject {
 
     @Relationship(type = "inferredTo")
     private Set<Event> orthologousEvent;
-
-    /**
-     * regulatedBy is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
-    @ReactomeRelationship
-    @Relationship(type = "regulatedBy")
-    private List<Regulation> regulatedBy;
 
     @Relationship(type = "precedingEvent")
     private List<Event> precedingEvent;
@@ -292,16 +281,6 @@ public abstract class Event extends DatabaseObject {
         this.orthologousEvent = orthologousEvent;
     }
 
-    @Relationship(type = "regulatedBy")
-    public List<Regulation> getRegulatedBy() {
-        return regulatedBy;
-    }
-
-    @Relationship(type = "regulatedBy")
-    public void setRegulatedBy(List<Regulation> regulatedBy) {
-        this.regulatedBy = regulatedBy;
-    }
-
     @Relationship(type = "precedingEvent")
     public List<Event> getPrecedingEvent() {
         return precedingEvent;
@@ -361,52 +340,4 @@ public abstract class Event extends DatabaseObject {
         this.summation = summation;
     }
 
-
-    @ReactomeSchemaIgnore
-    @JsonGetter("positivelyRegulatedBy")
-    public List<PositiveRegulation> getPositivelyRegulatedBy() {
-        List<PositiveRegulation> rtn = new ArrayList<>();
-        try {
-            for (Regulation regulation : getRegulatedBy()) {
-                if (regulation instanceof PositiveRegulation && !(regulation instanceof Requirement)) {
-                    rtn.add((PositiveRegulation) regulation);
-                }
-            }
-        } catch (NullPointerException ex) {
-            //Nothing here;
-        }
-        return rtn.isEmpty() ? null : rtn;
-    }
-
-    @ReactomeSchemaIgnore
-    @JsonGetter("requirements")
-    public List<Requirement> getRequirements() {
-        List<Requirement> rtn = new ArrayList<>();
-        try {
-            for (Regulation regulation : getRegulatedBy()) {
-                if (regulation instanceof Requirement) {
-                    rtn.add((Requirement) regulation);
-                }
-            }
-        } catch (NullPointerException ex) {
-            //Nothing here
-        }
-        return rtn.isEmpty() ? null : rtn;
-    }
-
-    @ReactomeSchemaIgnore
-    @JsonGetter("negativelyRegulatedBy")
-    public List<NegativeRegulation> getNegativelyRegulatedBy() {
-        List<NegativeRegulation> rtn = new ArrayList<>();
-        try {
-            for (Regulation regulation : getRegulatedBy()) {
-                if (regulation instanceof NegativeRegulation) {
-                    rtn.add((NegativeRegulation) regulation);
-                }
-            }
-        } catch (NullPointerException ex){
-            //Nothing here
-        }
-        return rtn.isEmpty() ? null : rtn;
-    }
 }
