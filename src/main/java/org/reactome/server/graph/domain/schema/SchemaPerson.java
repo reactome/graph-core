@@ -12,7 +12,7 @@ public class SchemaPerson extends SchemaCreator {
 
     private String givenName;
     private String familyName;
-    private List<SchemaOrganisation> affiliation = new ArrayList<>();
+    private List<SchemaOrganization> affiliation = new ArrayList<>();
     private String url; //For the orcidId
 
     SchemaPerson(Person person) {
@@ -20,7 +20,7 @@ public class SchemaPerson extends SchemaCreator {
         this.familyName = person.getSurname();
         if(person.getAffiliation()!=null) {
             for (Affiliation a : person.getAffiliation()) {
-                this.affiliation.add(new SchemaOrganisation(a));
+                this.affiliation.add(new SchemaOrganization(a));
             }
         }
         url = "http://europepmc.org/authors/" + person.getOrcidId();
@@ -34,7 +34,7 @@ public class SchemaPerson extends SchemaCreator {
         return familyName;
     }
 
-    public List<SchemaOrganisation> getAffiliation() {
+    public List<SchemaOrganization> getAffiliation() {
         return affiliation;
     }
 
