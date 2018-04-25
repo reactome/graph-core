@@ -97,7 +97,7 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    // ------------------------------------ Query by Class (pageing) -----------------------------------------------
+    // ------------------------------------ Query by Class (paging) -----------------------------------------------
 
     @Test
     public void getByClassWithPagingTest() {
