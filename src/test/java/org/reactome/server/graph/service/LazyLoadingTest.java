@@ -9,6 +9,7 @@ import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -62,20 +63,23 @@ public class LazyLoadingTest extends BaseTest {
     @Test
     @Deprecated
     @SuppressWarnings("deprecation")
-    public void lazyLoadingPositiveAndNegativeRegulatorsTest() {
+    public void lazyLoadingRegulationsTest() {
         logger.info("Testing Lazy Loading Positive And Negative Regulators");
 
         ReactionLikeEvent rle = dbs.findById("R-HSA-71670");
 
-        assumeFalse(rle.getPositivelyRegulatedBy().isEmpty());
-        for (DatabaseObject positiveRegulation : rle.getPositivelyRegulatedBy()) {
-            assumeTrue(positiveRegulation instanceof PositiveRegulation);
+        assumeFalse(rle.getRegulatedBy().isEmpty());
+        List<PositiveRegulation> positiveRegulations = new ArrayList<>();
+        List<NegativeRegulation> negativeRegulations = new ArrayList<>();
+        for (Regulation regulation : rle.getRegulatedBy()) {
+            if(regulation instanceof  PositiveRegulation){
+                positiveRegulations.add((PositiveRegulation) regulation);
+            } else {
+                negativeRegulations.add((NegativeRegulation) regulation);
+            }
         }
-
-        assumeFalse(rle.getNegativelyRegulatedBy().isEmpty());
-        for (DatabaseObject negativeRegulation : rle.getNegativelyRegulatedBy()) {
-            assumeTrue(negativeRegulation instanceof NegativeRegulation);
-        }
+        assumeFalse(positiveRegulations.isEmpty());
+        assumeFalse(negativeRegulations.isEmpty());
 
         logger.info("Finished");
     }
