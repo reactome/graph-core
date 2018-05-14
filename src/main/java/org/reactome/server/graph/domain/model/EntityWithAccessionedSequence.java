@@ -5,8 +5,9 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.relationship.HasModifiedResidue;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * A protein, RNA, or DNA molecule or fragment thereof in a specified cellular compartment and specific post-translational state. Must be linked to an external database reference, given as the value of referenceSequence. An EWAS typically corresponds to the entire protein or polynucleotide described in the external database. Fragments are defined by setting the first and last residue using the numbering scheme of the external database, entered as startCoordinate and endCoordinate values. Values of 1 and -1 respectively indicate that the true start and end are unconfirmed. EWAS instances are specific to a subcellular compartment; if the same molecule is found in two cellular components it will have two EWASes. EWAS instances by default define an unmodified protein sequence, any post-translational modification (PTM), such as phosphorylation, requires a new EWAS instance. The location and type of any PTM are defined in the hasModifiedResidue slot
@@ -23,7 +24,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
     private Integer startCoordinate;
 
     @Relationship(type = "hasModifiedResidue")
-    private List<AbstractModifiedResidue> hasModifiedResidue;
+    private SortedSet<HasModifiedResidue> hasModifiedResidue;
 
     @Relationship(type = "referenceEntity")
     private ReferenceSequence referenceEntity;
@@ -55,12 +56,34 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
     }
 
     public List<AbstractModifiedResidue> getHasModifiedResidue() {
-        return hasModifiedResidue;
+        List<AbstractModifiedResidue> rtn = new ArrayList<>();
+        if (hasModifiedResidue != null) {
+            for (HasModifiedResidue modifiedResidue : hasModifiedResidue) {
+                for (int i = 0; i < modifiedResidue.getStoichiometry(); i++) {
+                    rtn.add(modifiedResidue.getAbstractModifiedResidue());
+                }
+            }
+        }
+        return rtn;
     }
 
-    @Relationship(type = "hasModifiedResidue")
     public void setHasModifiedResidue(List<AbstractModifiedResidue> hasModifiedResidue) {
-        this.hasModifiedResidue = hasModifiedResidue;
+        if (hasModifiedResidue == null) return;
+        int order = 0;
+        Map<Long, HasModifiedResidue> map = new HashMap<>();
+        for (AbstractModifiedResidue abstractModifiedResidue : hasModifiedResidue) {
+            HasModifiedResidue hmr = map.get(abstractModifiedResidue.getDbId());
+            if (hmr != null) {
+                hmr.setStoichiometry(hmr.getStoichiometry() + 1);
+            } else {
+                hmr = new HasModifiedResidue();
+                hmr.setEntityWithAccessionedSequence(this);
+                hmr.setAbstractModifiedResidue(abstractModifiedResidue);
+                hmr.setOrder(order++);
+                map.put(abstractModifiedResidue.getDbId(), hmr);
+            }
+        }
+        this.hasModifiedResidue = new TreeSet<>(map.values());
     }
 
     public ReferenceSequence getReferenceEntity() {
