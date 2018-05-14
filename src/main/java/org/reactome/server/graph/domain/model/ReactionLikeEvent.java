@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
@@ -53,7 +52,6 @@ public abstract class ReactionLikeEvent extends Event {
 
     public ReactionLikeEvent() {
     }
-
 
     public Boolean getIsChimeric() {
         return isChimeric;
@@ -217,53 +215,4 @@ public abstract class ReactionLikeEvent extends Event {
     public String getClassName() {
         return "Reaction";
     }
-
-    @ReactomeSchemaIgnore
-    @JsonGetter("positivelyRegulatedBy")
-    public List<PositiveRegulation> getPositivelyRegulatedBy() {
-        List<PositiveRegulation> rtn = new ArrayList<>();
-        try {
-            for (Regulation regulation : getRegulatedBy()) {
-                if (regulation instanceof PositiveRegulation && !(regulation instanceof Requirement)) {
-                    rtn.add((PositiveRegulation) regulation);
-                }
-            }
-        } catch (NullPointerException ex) {
-            //Nothing here;
-        }
-        return rtn.isEmpty() ? null : rtn;
-    }
-
-    @ReactomeSchemaIgnore
-    @JsonGetter("requirements")
-    public List<Requirement> getRequirements() {
-        List<Requirement> rtn = new ArrayList<>();
-        try {
-            for (Regulation regulation : getRegulatedBy()) {
-                if (regulation instanceof Requirement) {
-                    rtn.add((Requirement) regulation);
-                }
-            }
-        } catch (NullPointerException ex) {
-            //Nothing here
-        }
-        return rtn.isEmpty() ? null : rtn;
-    }
-
-    @ReactomeSchemaIgnore
-    @JsonGetter("negativelyRegulatedBy")
-    public List<NegativeRegulation> getNegativelyRegulatedBy() {
-        List<NegativeRegulation> rtn = new ArrayList<>();
-        try {
-            for (Regulation regulation : getRegulatedBy()) {
-                if (regulation instanceof NegativeRegulation) {
-                    rtn.add((NegativeRegulation) regulation);
-                }
-            }
-        } catch (NullPointerException ex){
-            //Nothing here
-        }
-        return rtn.isEmpty() ? null : rtn;
-    }
-
 }
