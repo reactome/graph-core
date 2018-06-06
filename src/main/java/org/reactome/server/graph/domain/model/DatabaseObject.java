@@ -103,6 +103,15 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     }
 
     @ReactomeSchemaIgnore
+    public String getStIdVersion() {
+        return stIdVersion;
+    }
+
+    public void setStIdVersion(String stIdVersion) {
+        this.stIdVersion = stIdVersion;
+    }
+
+    @ReactomeSchemaIgnore
     public String getOldStId() {
         return oldStId;
     }
