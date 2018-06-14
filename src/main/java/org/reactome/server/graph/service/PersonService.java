@@ -78,6 +78,17 @@ public class PersonService {
         }
     }
 
+    public Collection<Pathway> getReviewedPathways(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
+        } else if (DatabaseObjectUtils.isOrcidId(id)){
+            return personRepository.getReviewedPathwaysByOrcidId(id);
+        } else {
+            return null;
+        }
+    }
+
     public Collection<PersonAuthorReviewer> getAuthorsReviewers(){
         return personRepository.getAuthorsReviewers();
     }

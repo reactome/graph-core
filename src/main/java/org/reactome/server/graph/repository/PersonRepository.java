@@ -48,6 +48,12 @@ public interface PersonRepository extends GraphRepository<Person>{
     @Query("MATCH (n:Person{dbId:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
     Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId);
 
+    @Query("MATCH (n:Person{orcidId:{0}})-[r:author]->(m:InstanceEdit)-[e:reviewed]->(k:Pathway) RETURN k")
+    Collection<Pathway> getReviewedPathwaysByOrcidId(String orcidId);
+
+    @Query("MATCH (n:Person{dbId:{0}})-[r:author]->(m:InstanceEdit)-[e:reviewed]->(k:Pathway) RETURN k")
+    Collection<Pathway> getReviewedPathwaysByDbId(Long dbId);
+
     @Query("MATCH (n:Person{eMailAddress:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
     @Deprecated
     Collection<Pathway> getAuthoredPathwaysByEmail(String email);

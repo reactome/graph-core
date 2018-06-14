@@ -147,6 +147,32 @@ public class PersonServiceTest extends BaseTest {
     }
 
     @Test
+    public void getReviewedPathwaysByOrcidIdTest() {
+        logger.info("Started testing personService.getReviewedPathwaysByOrcidId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> pathways = personService.getReviewedPathways("0000-0001-5807-0069");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(pathways.size() >= 14);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getReviewedPathwaysByDbIdTest() {
+        logger.info("Started testing personService.getReviewedPathwaysByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<Pathway> pathways = personService.getReviewedPathways(391309L);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(pathways.size() >= 14);
+        logger.info("Finished");
+    }
+
+    @Test
     public void getAuthorsReviewersTest(){
         logger.info("Started testing personService.getAuthorsReviewers");
         long start, time;
