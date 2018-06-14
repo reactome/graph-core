@@ -46,7 +46,7 @@ public class DetailsService {
             if (directParticipants == null) directParticipants = false;
             Set<PathwayBrowserNode> leaves = getLocationsInThePathwayBrowserHierarchy(databaseObject, directParticipants);
             contentDetails.setNodes(leaves);
-            contentDetails.setComponentOf(advancedLinkageService.getComponentsOf(databaseObject.getStId()));
+            contentDetails.setComponentOf(advancedLinkageService.getComponentsOf(databaseObject.getDbId()));
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOf(databaseObject.getDbId()));
         }
         return contentDetails;
