@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
+import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.reactome.server.graph.repository.PersonRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +76,10 @@ public class PersonService {
         } else {
             return null;
         }
+    }
+
+    public Collection<PersonAuthorReviewer> getAuthorsReviewers(){
+        return personRepository.getAuthorsReviewers();
     }
 
 }

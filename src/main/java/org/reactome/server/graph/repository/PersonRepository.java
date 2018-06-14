@@ -3,6 +3,7 @@ package org.reactome.server.graph.repository;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
+import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
@@ -50,4 +51,12 @@ public interface PersonRepository extends GraphRepository<Person>{
     @Query("MATCH (n:Person{eMailAddress:{0}})-[r:author]->(m:InstanceEdit)-[e:authored]->(k:Pathway) RETURN k")
     @Deprecated
     Collection<Pathway> getAuthoredPathwaysByEmail(String email);
+
+    @Query(" MATCH (per:Person) " +
+            "OPTIONAL MATCH (per)-[:author|authored*]->(ap:Pathway) " +
+            "OPTIONAL MATCH (per)-[:author|reviewed*]->(rp:Pathway) " +
+            "WITH DISTINCT per, SIZE(COLLECT(DISTINCT ap)) AS aps, SIZE(COLLECT(DISTINCT rp)) AS rps " +
+            "WHERE aps > 0 OR rps > 0 " +
+            "RETURN per AS person, aps AS authored, rps AS reviewed")
+    Collection<PersonAuthorReviewer> getAuthorsReviewers();
 }

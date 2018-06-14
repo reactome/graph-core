@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
+import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -142,6 +143,19 @@ public class PersonServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue(pathways.size() >= 65);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getAuthorsReviewersTest(){
+        logger.info("Started testing personService.getAuthorsReviewers");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<PersonAuthorReviewer> objs = personService.getAuthorsReviewers();
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(objs.size() >= 600);
         logger.info("Finished");
     }
 
