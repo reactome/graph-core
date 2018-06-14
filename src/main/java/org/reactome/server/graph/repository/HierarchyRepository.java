@@ -284,7 +284,7 @@ public class HierarchyRepository {
      */
     private Result getLocationsInPathwayBrowserByDbIdRaw(Long dbId) {
         String query = "" +
-                "MATCH (n:DatabaseObject{stId:{dbId}}) " +
+                "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
                 "RETURN n, COLLECT(EXTRACT(rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
