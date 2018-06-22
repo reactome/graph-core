@@ -23,7 +23,7 @@ public interface PersonRepository extends GraphRepository<Person>{
     @Query("MATCH (n:Person)-[r]->(m) WHERE n.surname in {0} OR n.firstname in {0} AND NOT (m:InstanceEdit) RETURN n, r, m")
     Collection<Person> queryPersonByName(String[] name);
 
-    @Query("MATCH (n:Person{orcidId:{0}})-[r]->(m) WHERE NOT (m:InstanceEdit) RETURN n, r, m")
+    @Query("MATCH (n:Person{orcidId:{0}})-[r]->(m) WHERE n.project IS NULL AND NOT (m:InstanceEdit) RETURN n, r, m")
     Person findPersonByOrcidId(String orcidId);
 
     @Query("MATCH (n:Person{dbId:{0}})-[r]->(m) WHERE NOT (m:InstanceEdit) RETURN n, r, m")
@@ -51,6 +51,7 @@ public interface PersonRepository extends GraphRepository<Person>{
     Collection<Pathway> getReviewedPathwaysByDbId(Long dbId);
 
     @Query(" MATCH (per:Person) " +
+            "WHERE per.project IS NULL " +
             "OPTIONAL MATCH (per)-[:author|authored*]->(ap:Pathway) " +
             "OPTIONAL MATCH (per)-[:author|reviewed*]->(rp:Pathway) " +
             "WITH DISTINCT per, SIZE(COLLECT(DISTINCT ap)) AS aps, SIZE(COLLECT(DISTINCT rp)) AS rps " +
