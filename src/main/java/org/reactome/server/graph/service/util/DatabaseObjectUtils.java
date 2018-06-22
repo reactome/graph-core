@@ -189,7 +189,7 @@ public class DatabaseObjectUtils {
 
 
     public static boolean isOrcidId(String id) {
-        Pattern p = Pattern.compile("(\\d{4})-(\\d{4})-(\\d{4})-(\\d{4})");
+        Pattern p = Pattern.compile("(\\d{4})-(\\d{4})-(\\d{4})-(\\d{3}[0-9X])");
         return p.matcher(id).matches();
     }
 
