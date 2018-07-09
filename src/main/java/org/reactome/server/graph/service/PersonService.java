@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.reactome.server.graph.repository.PersonRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -78,12 +79,34 @@ public class PersonService {
         }
     }
 
+    public Collection<ReactionLikeEvent> getAuthoredReactions(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
+        } else if (DatabaseObjectUtils.isOrcidId(id)){
+            return personRepository.getAuthoredReactionsByOrcidId(id);
+        } else {
+            return null;
+        }
+    }
+
     public Collection<Pathway> getReviewedPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
             return personRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
             return personRepository.getReviewedPathwaysByOrcidId(id);
+        } else {
+            return null;
+        }
+    }
+
+    public Collection<ReactionLikeEvent> getReviewedReactions(Object identifier) {
+        String id = identifier.toString();
+        if (DatabaseObjectUtils.isDbId(id)) {
+            return personRepository.getReviewedReactionsByDbId(Long.valueOf(id));
+        } else if (DatabaseObjectUtils.isOrcidId(id)){
+            return personRepository.getReviewedReactionsByOrcidId(id);
         } else {
             return null;
         }

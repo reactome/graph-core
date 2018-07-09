@@ -3,6 +3,7 @@ package org.reactome.server.graph.repository;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
@@ -44,18 +45,33 @@ public interface PersonRepository extends GraphRepository<Person>{
     @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(p:Pathway) RETURN p")
     Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId);
 
+    @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(rle:ReactionLikeEvent) RETURN rle")
+    Collection<ReactionLikeEvent> getAuthoredReactionsByOrcidId(String orcidId);
+
+    @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(rle:ReactionLikeEvent) RETURN rle")
+    Collection<ReactionLikeEvent> getAuthoredReactionsByDbId(Long dbId);
+
     @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(p:Pathway) RETURN p")
     Collection<Pathway> getReviewedPathwaysByOrcidId(String orcidId);
 
     @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(p:Pathway) RETURN p")
     Collection<Pathway> getReviewedPathwaysByDbId(Long dbId);
 
-    @Query(" MATCH (per:Person) " +
+    @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(rle:ReactionLikeEvent) RETURN rle")
+    Collection<ReactionLikeEvent> getReviewedReactionsByOrcidId(String orcidId);
+
+    @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(rle:ReactionLikeEvent) RETURN rle")
+    Collection<ReactionLikeEvent> getReviewedReactionsByDbId(Long dbId);
+
+    @Query(" MATCH (per:Person)-[:author]->(ie:InstanceEdit) " +
             "WHERE per.project IS NULL " +
-            "OPTIONAL MATCH (per)-[:author|authored*]->(ap:Pathway) " +
-            "OPTIONAL MATCH (per)-[:author|reviewed*]->(rp:Pathway) " +
-            "WITH DISTINCT per, SIZE(COLLECT(DISTINCT ap)) AS aps, SIZE(COLLECT(DISTINCT rp)) AS rps " +
-            "WHERE aps > 0 OR rps > 0 " +
-            "RETURN per AS person, aps AS authored, rps AS reviewed")
+            "WITH DISTINCT per, ie " +
+            "OPTIONAL MATCH (ie)-[:authored]->(ap:Pathway) " +
+            "OPTIONAL MATCH (ie)-[:authored]->(ar:ReactionLikeEvent) " +
+            "OPTIONAL MATCH (ie)-[:reviewed]->(rp:Pathway) " +
+            "OPTIONAL MATCH (ie)-[:reviewed]->(rr:ReactionLikeEvent) " +
+            "WITH DISTINCT per, SIZE(COLLECT(DISTINCT ap)) AS aps, SIZE(COLLECT(DISTINCT ar)) AS ars, SIZE(COLLECT(DISTINCT rp)) AS rps, SIZE(COLLECT(DISTINCT rr)) AS rrs " +
+            "WHERE aps > 0 OR ars > 0 OR rps > 0 OR rrs > 0 " +
+            "RETURN per AS person, aps AS authoredPathway, rps AS reviewedPathways, ars AS authoredReactions, rrs AS reviewedReactions")
     Collection<PersonAuthorReviewer> getAuthorsReviewers();
 }

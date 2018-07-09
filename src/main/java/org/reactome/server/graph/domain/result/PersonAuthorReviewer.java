@@ -7,18 +7,29 @@ import org.springframework.data.neo4j.annotation.QueryResult;
 public class PersonAuthorReviewer {
 
     private Person person;
-    private Long authored;
-    private Long reviewed;
+    private Long authoredPathways;
+    private Long authoredReactions;
+    private Long reviewedPathways;
+    private Long reviewedReactions;
+
 
     public Person getPerson() {
         return person;
     }
 
-    public Long getAuthored() {
-        return authored;
+    public Long getAuthoredPathways() {
+        return authoredPathways;
     }
 
-    public Long getReviewed() {
-        return reviewed;
+    public Long getAuthoredReactions() {
+        return authoredReactions;
+    }
+
+    public Long getReviewedPathways() {
+        return reviewedPathways;
+    }
+
+    public Long getReviewedReactions() {
+        return reviewedReactions;
     }
 }

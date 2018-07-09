@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -147,6 +148,32 @@ public class PersonServiceTest extends BaseTest {
     }
 
     @Test
+    public void getAuthoredReactionsByOrcidIdTest() {
+        logger.info("Started testing personService.getAuthoredReactionsByOrcidId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<ReactionLikeEvent> reactions = personService.getAuthoredReactions("0000-0001-5193-0855");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(reactions.size() >= 1495);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getAuthoredReactionsByDbIdTest() {
+        logger.info("Started testing personService.getAuthoredReactionsByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<ReactionLikeEvent> pathways = personService.getAuthoredReactions(203835L);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(pathways.size() >= 1495);
+        logger.info("Finished");
+    }
+
+    @Test
     public void getReviewedPathwaysByOrcidIdTest() {
         logger.info("Started testing personService.getReviewedPathwaysByOrcidId");
         long start, time;
@@ -169,6 +196,32 @@ public class PersonServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue(pathways.size() >= 14);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getReviewedReactionsByOrcidIdTest() {
+        logger.info("Started testing personService.getReviewedReactionsByOrcidId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<ReactionLikeEvent> reactions = personService.getReviewedReactions("0000-0001-5193-0855");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(reactions.size() >= 19);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getReviewedReactionsByDbIdTest() {
+        logger.info("Started testing personService.getReviewedReactionsByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<ReactionLikeEvent> reactions = personService.getReviewedReactions(203835L);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(reactions.size() >= 19);
         logger.info("Finished");
     }
 
