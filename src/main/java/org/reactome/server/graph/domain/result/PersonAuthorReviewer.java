@@ -8,8 +8,8 @@ public class PersonAuthorReviewer {
 
     private Person person;
     private Long authoredPathways;
-    private Long authoredReactions;
     private Long reviewedPathways;
+    private Long authoredReactions;
     private Long reviewedReactions;
 
 
@@ -21,12 +21,12 @@ public class PersonAuthorReviewer {
         return authoredPathways;
     }
 
-    public Long getAuthoredReactions() {
-        return authoredReactions;
-    }
-
     public Long getReviewedPathways() {
         return reviewedPathways;
+    }
+
+    public Long getAuthoredReactions() {
+        return authoredReactions;
     }
 
     public Long getReviewedReactions() {
