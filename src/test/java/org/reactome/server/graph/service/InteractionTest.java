@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactome.server.graph.domain.model.Interaction;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.model.UndirectedInteraction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +55,15 @@ public class InteractionTest extends BaseTest {
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
         assertFalse("There should not be any PE pointing to P60484-1", found);
+    }
+
+    @Test
+    public void getLowerLevelPathwaysTest(){
+        logger.info("Started testing interactionsService.getDiagrammedLowerLevelPathways");
+        long start = System.currentTimeMillis();
+        Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+        assertTrue("There should more than 2 pathways for Q9BXM7-1", pathways.size() > 2);
     }
 }

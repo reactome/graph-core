@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.Interaction;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.ClassCount;
 import org.reactome.server.graph.repository.InteractionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,5 +79,9 @@ public class InteractionsService {
             rtn.put(classCount.s, classCount.t);
         }
         return rtn;
+    }
+
+    public Collection<Pathway> getLowerLevelPathways(String acc, String speciesName){
+        return interactionsRepository.getLowerLevelPathways(acc, speciesName);
     }
 }
