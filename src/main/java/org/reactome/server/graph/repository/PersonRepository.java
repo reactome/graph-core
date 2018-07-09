@@ -72,6 +72,6 @@ public interface PersonRepository extends GraphRepository<Person>{
             "OPTIONAL MATCH (ie)-[:reviewed]->(rr:ReactionLikeEvent) " +
             "WITH DISTINCT per, SIZE(COLLECT(DISTINCT ap)) AS aps, SIZE(COLLECT(DISTINCT ar)) AS ars, SIZE(COLLECT(DISTINCT rp)) AS rps, SIZE(COLLECT(DISTINCT rr)) AS rrs " +
             "WHERE aps > 0 OR ars > 0 OR rps > 0 OR rrs > 0 " +
-            "RETURN per AS person, aps AS authoredPathway, rps AS reviewedPathways, ars AS authoredReactions, rrs AS reviewedReactions")
+            "RETURN per AS person, aps AS authoredPathways, rps AS reviewedPathways, ars AS authoredReactions, rrs AS reviewedReactions")
     Collection<PersonAuthorReviewer> getAuthorsReviewers();
 }
