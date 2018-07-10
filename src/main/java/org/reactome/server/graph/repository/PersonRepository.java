@@ -50,28 +50,44 @@ public interface PersonRepository extends GraphRepository<Person>{
     @Query("MATCH (:Person{eMailAddress:{0}})-[:author]-(pub:Publication) RETURN pub")
     Collection<Publication> getPublicationsOfPersonByEmail(String email);
 
-    @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(p:Pathway) RETURN p")
+    @Query(" MATCH (:Person{orcidId:{0}})-[:author]->(ie:InstanceEdit)-[:authored]->(p:Pathway) " +
+            "WITH DISTINCT ie, p ORDER BY ie.dateTime DESC " +
+            "RETURN p")
     Collection<Pathway> getAuthoredPathwaysByOrcidId(String orcidId);
 
-    @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(p:Pathway) RETURN p")
+    @Query(" MATCH (:Person{dbId:{0}})-[:author]->(ie:InstanceEdit)-[:authored]->(p:Pathway) " +
+            "WITH DISTINCT ie, p ORDER BY ie.dateTime DESC " +
+            "RETURN p")
     Collection<Pathway> getAuthoredPathwaysByDbId(Long dbId);
 
-    @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(rle:ReactionLikeEvent) RETURN rle")
+    @Query(" MATCH (:Person{orcidId:{0}})-[:author]->(ie:InstanceEdit)-[:authored]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT ie, rle ORDER BY ie.dateTime DESC " +
+            "RETURN rle")
     Collection<ReactionLikeEvent> getAuthoredReactionsByOrcidId(String orcidId);
 
-    @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:authored]->(rle:ReactionLikeEvent) RETURN rle")
+    @Query(" MATCH (:Person{dbId:{0}})-[:author]->(ie:InstanceEdit)-[:authored]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT ie, rle ORDER BY ie.dateTime DESC " +
+            "RETURN rle")
     Collection<ReactionLikeEvent> getAuthoredReactionsByDbId(Long dbId);
 
-    @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(p:Pathway) RETURN p")
+    @Query(" MATCH (:Person{orcidId:{0}})-[:author]->(ie:InstanceEdit)-[:reviewed]->(p:Pathway) " +
+            "WITH DISTINCT ie, p ORDER BY ie.dateTime DESC " +
+            "RETURN p")
     Collection<Pathway> getReviewedPathwaysByOrcidId(String orcidId);
 
-    @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(p:Pathway) RETURN p")
+    @Query(" MATCH (:Person{dbId:{0}})-[:author]->(ie:InstanceEdit)-[:reviewed]->(p:Pathway) " +
+            "WITH DISTINCT ie, p ORDER BY ie.dateTime DESC " +
+            "RETURN p")
     Collection<Pathway> getReviewedPathwaysByDbId(Long dbId);
 
-    @Query("MATCH (:Person{orcidId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(rle:ReactionLikeEvent) RETURN rle")
+    @Query(" MATCH (:Person{orcidId:{0}})-[:author]->(ie:InstanceEdit)-[:reviewed]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT ie, rle ORDER BY ie.dateTime DESC " +
+            "RETURN rle")
     Collection<ReactionLikeEvent> getReviewedReactionsByOrcidId(String orcidId);
 
-    @Query("MATCH (:Person{dbId:{0}})-[:author]->(:InstanceEdit)-[:reviewed]->(rle:ReactionLikeEvent) RETURN rle")
+    @Query(" MATCH (:Person{dbId:{0}})-[:author]->(ie:InstanceEdit)-[:reviewed]->(rle:ReactionLikeEvent) " +
+            "WITH DISTINCT ie, rle ORDER BY ie.dateTime DESC " +
+            "RETURN rle")
     Collection<ReactionLikeEvent> getReviewedReactionsByDbId(Long dbId);
 
     @Query(" MATCH (per:Person)-[:author]->(ie:InstanceEdit) " +
