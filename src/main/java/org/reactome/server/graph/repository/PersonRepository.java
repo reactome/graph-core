@@ -18,16 +18,27 @@ import java.util.Collection;
 @Repository
 public interface PersonRepository extends GraphRepository<Person>{
 
-    @Query("MATCH (n:Person)-[r]->(m) WHERE n.surname in {0} AND n.firstname in {0} AND NOT (m:InstanceEdit) RETURN n, r, m")
+    @Query(" MATCH (n:Person) " +
+            "WHERE n.surname in {0} AND n.firstname in {0} " +
+            "OPTIONAL MATCH (n)-[r]->(m) WHERE NOT (m:InstanceEdit) " +
+            "RETURN n, r, m")
     Collection<Person> findPersonByName(String[] name);
 
-    @Query("MATCH (n:Person)-[r]->(m) WHERE n.surname in {0} OR n.firstname in {0} AND NOT (m:InstanceEdit) RETURN n, r, m")
+    @Query(" MATCH (n:Person) " +
+            "WHERE n.surname in {0} OR n.firstname in {0} " +
+            "OPTIONAL MATCH (n)-[r]->(m) WHERE NOT (m:InstanceEdit) " +
+            "RETURN n, r, m")
     Collection<Person> queryPersonByName(String[] name);
 
-    @Query("MATCH (n:Person{orcidId:{0}})-[r]->(m) WHERE n.project IS NULL AND NOT (m:InstanceEdit) RETURN n, r, m")
+    @Query(" MATCH (n:Person{orcidId:{0}}) " +
+            "WHERE n.project IS NULL " +
+            "OPTIONAL MATCH (n)-[r]->(m) WHERE NOT (m:InstanceEdit) " +
+            "RETURN n, r, m")
     Person findPersonByOrcidId(String orcidId);
 
-    @Query("MATCH (n:Person{dbId:{0}})-[r]->(m) WHERE NOT (m:InstanceEdit) RETURN n, r, m")
+    @Query(" MATCH (n:Person{dbId:{0}}) " +
+            "OPTIONAL MATCH (n)-[r]->(m) WHERE NOT (m:InstanceEdit) " +
+            "RETURN n, r, m")
     Person findPersonByDbId(Long dbId);
 
     @Query("MATCH (:Person{orcidId:{0}})-[:author]-(pub:Publication) RETURN pub")
