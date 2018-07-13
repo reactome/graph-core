@@ -56,14 +56,17 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WITH DISTINCT pe " +
             "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT p, COLLECT(DISTINCT pe) AS entities " +
-            "OPTIONAL MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(p:Pathway)  " +
+            "WITH COLLECT(DISTINCT p) AS ps, COLLECT(DISTINCT pe.stId) AS entities " +
+            "UNWIND ps AS p " +
+            "OPTIONAL MATCH (d:Pathway{hasDiagram:True})-[:hasEvent*]->(p)  " +
             "WITH entities, p + COLLECT(DISTINCT d) AS all " +
             "UNWIND all AS p " +
-            "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
-            "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH aux=(p)-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
-            "WHERE SINGLE(x IN NODES(aux) WHERE (x:Pathway) AND x.hasDiagram) AND pe IN entities " +
-            "RETURN DISTINCT p AS diagram, false AS inDiagram, COLLECT(pe) + COLLECT(DISTINCT sp) AS occurrences")
+            "OPTIONAL MATCH p1=(p)-[:hasEvent*]->(sp:Pathway{hasDiagram:True}) " +
+            "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(p1)) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "OPTIONAL MATCH p2=(p)-[:hasEvent*]->(rle:ReactionLikeEvent) " +
+            "WHERE SINGLE(x IN NODES(p2) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "OPTIONAL MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
+            "WHERE pe.stId IN entities  " +
+            "RETURN DISTINCT p.stId AS diagram, p.displayName, false AS inDiagram, COLLECT(pe.stId) + COLLECT(DISTINCT sp.stId) AS occurrences")
     Collection<DiagramOccurrences> getDiagramOccurrences(String identifier);
 }
