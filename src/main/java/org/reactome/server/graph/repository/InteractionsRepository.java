@@ -56,7 +56,7 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WITH DISTINCT pe " +
             "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH COLLECT(DISTINCT p) AS ps, COLLECT(DISTINCT pe.stId) AS entities " +
+            "WITH COLLECT(DISTINCT p) AS ps, COLLECT(DISTINCT pe) AS entities " +
             "UNWIND ps AS p " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True})-[:hasEvent*]->(p)  " +
             "WITH entities, p + COLLECT(DISTINCT d) AS all " +
@@ -66,7 +66,7 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "OPTIONAL MATCH p2=(p)-[:hasEvent*]->(rle:ReactionLikeEvent) " +
             "WHERE SINGLE(x IN NODES(p2) WHERE (x:Pathway) AND x.hasDiagram) " +
             "OPTIONAL MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
-            "WHERE pe.stId IN entities  " +
-            "RETURN DISTINCT p.stId AS diagram, p.displayName, false AS inDiagram, COLLECT(pe.stId) + COLLECT(DISTINCT sp.stId) AS occurrences")
+            "WHERE pe IN entities  " +
+            "RETURN DISTINCT p AS diagram, false AS inDiagram, COLLECT(pe) + COLLECT(DISTINCT sp) AS occurrences")
     Collection<DiagramOccurrences> getDiagramOccurrences(String identifier);
 }
