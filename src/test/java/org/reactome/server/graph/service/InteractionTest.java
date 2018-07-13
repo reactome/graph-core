@@ -85,6 +85,6 @@ public class InteractionTest extends BaseTest {
         Collection<DiagramOccurrences> pathways = interactionsService.getDiagramOccurrences("Q9BXM7-1");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("There should more than 10 diagram occurrences for Q9BXM7-1", pathways.size() > 3);
+        assertTrue("There should more than 3 diagram occurrences for Q9BXM7-1", pathways.size() > 3);
     }
 }
