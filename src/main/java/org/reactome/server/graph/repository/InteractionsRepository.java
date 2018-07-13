@@ -56,17 +56,12 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WITH DISTINCT pe " +
             "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH COLLECT(DISTINCT p) AS ps, COLLECT(DISTINCT pe) AS entities " +
-            "UNWIND ps AS p " +
+            "WITH p, COLLECT(DISTINCT pe) AS entities " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True})-[:hasEvent*]->(p)  " +
-            "WITH entities, p + COLLECT(DISTINCT d) AS all " +
-            "UNWIND all AS p " +
-            "OPTIONAL MATCH p1=(p)-[:hasEvent*]->(sp:Pathway{hasDiagram:True}) " +
+            "WITH p, entities, p + COLLECT(DISTINCT d) AS all " +
+            "UNWIND all AS d " +
+            "OPTIONAL MATCH p1=(d)-[:hasEvent*]->(sp:Pathway{hasDiagram:True}) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(p1)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH p2=(p)-[:hasEvent*]->(rle:ReactionLikeEvent) " +
-            "WHERE SINGLE(x IN NODES(p2) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe) " +
-            "WHERE pe IN entities  " +
-            "RETURN DISTINCT p AS diagram, false AS inDiagram, COLLECT(pe) + COLLECT(DISTINCT sp) AS occurrences")
+            "RETURN DISTINCT p AS diagram, false AS inDiagram, CASE WHEN d=p THEN entities ELSE COLLECT(DISTINCT sp) END AS occurrences")
     Collection<DiagramOccurrences> getDiagramOccurrences(String identifier);
 }
