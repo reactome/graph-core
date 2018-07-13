@@ -2,7 +2,7 @@ package org.reactome.server.graph.service;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.reactome.server.graph.domain.model.Pathway;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.domain.result.DiagramResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,8 +59,8 @@ public class DiagramServiceTest extends BaseTest {
                 assertTrue("'R-HSA-5690771' is directly contained in 'R-HSA-5688426'", o.isInDiagram());
             }
             if(o.getDiagram().getSchemaClass().equals("TopLevelPathway")){
-                assertNotNull(o.getSubpathways());
-                assertTrue(!o.getSubpathways().isEmpty());
+                assertNotNull(o.getOccurrences());
+                assertTrue(!o.getOccurrences().isEmpty());
             }
         }
     }
@@ -82,8 +82,8 @@ public class DiagramServiceTest extends BaseTest {
                 assertTrue("'R-HSA-372542' is directly contained in 'R-HSA-112310'", o.isInDiagram());
             }
             if(o.getDiagram().getSchemaClass().equals("TopLevelPathway")){
-                assertNotNull(o.getSubpathways());
-                assertTrue(!o.getSubpathways().isEmpty());
+                assertNotNull(o.getOccurrences());
+                assertTrue(!o.getOccurrences().isEmpty());
             }
         }
     }
@@ -103,19 +103,19 @@ public class DiagramServiceTest extends BaseTest {
             assertNotNull(o.getDiagram());
             if(o.getDiagram().getStId().equals("R-HSA-168164")){
                 assertFalse("'R-HSA-879382' is not directly contained in 'R-HSA-168164'", o.isInDiagram());
-                assertFalse("", o.getSubpathways().isEmpty());
+                assertFalse("", o.getOccurrences().isEmpty());
                 boolean found = false;
-                for (Pathway pathway : o.getSubpathways()) {
-                    found |= (pathway.getStId().equals("R-HSA-445989"));
+                for (DatabaseObject dbObj : o.getOccurrences()) {
+                    found |= (dbObj.getStId().equals("R-HSA-445989"));
                 }
                 assertTrue("'R-HSA-879382' is contained in 'R-HSA-445989'",found);
             }if(o.getDiagram().getStId().equals("R-HSA-168928")){
                 assertTrue("'R-HSA-879382' not directly contained in 'R-HSA-168928'", o.isInDiagram());
-                assertTrue("", o.getSubpathways().isEmpty());
+                assertTrue("", o.getOccurrences().isEmpty());
             }
             if(o.getDiagram().getSchemaClass().equals("TopLevelPathway")){
-                assertNotNull(o.getSubpathways());
-                assertTrue(!o.getSubpathways().isEmpty());
+                assertNotNull(o.getOccurrences());
+                assertTrue(!o.getOccurrences().isEmpty());
             }
         }
     }

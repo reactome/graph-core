@@ -65,14 +65,14 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "UNWIND hlds AS d " +
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(d) " +
             "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
-            "UNWIND all as p " +
+            "UNWIND all AS p " +
             "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
-            "WHERE inDiagram OR SIZE(subpathways)>0 " +
-            "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
+            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS occurrences " +
+            "WHERE inDiagram OR SIZE(occurrences) > 0 " +
+            "RETURN DISTINCT p AS diagram, inDiagram, occurrences")
     Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId);
 
     @Query(" OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
@@ -85,13 +85,13 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "UNWIND hlds AS d " +
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(d) " +
             "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
-            "UNWIND all as p " +
+            "UNWIND all AS p " +
             "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
-            "WHERE inDiagram OR SIZE(subpathways)>0 " +
-            "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
+            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS occurrences " +
+            "WHERE inDiagram OR SIZE(occurrences) > 0 " +
+            "RETURN DISTINCT p AS diagram, inDiagram, occurrences")
     Collection<DiagramOccurrences> getDiagramOccurrences(String stId);
 }

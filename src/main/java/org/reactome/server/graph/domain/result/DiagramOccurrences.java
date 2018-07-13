@@ -1,7 +1,7 @@
 package org.reactome.server.graph.domain.result;
 
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
-import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.List;
@@ -13,9 +13,7 @@ public class DiagramOccurrences {
 
     private boolean inDiagram;
 
-    private List<Pathway> subpathways;
-
-    private List<PhysicalEntity> entities;
+    private List<DatabaseObject> occurrences;
 
     public Pathway getDiagram() {
         return diagram;
@@ -33,19 +31,11 @@ public class DiagramOccurrences {
         this.inDiagram = inDiagram;
     }
 
-    public List<Pathway> getSubpathways() {
-        return subpathways;
+    public List<DatabaseObject> getOccurrences() {
+        return occurrences;
     }
 
-    public void setSubpathways(List<Pathway> subpathways) {
-        this.subpathways = subpathways;
-    }
-
-    public List<PhysicalEntity> getEntities() {
-        return entities;
-    }
-
-    public void setEntities(List<PhysicalEntity> entities) {
-        this.entities = entities;
+    public void setOccurrences(List<DatabaseObject> occurrences) {
+        this.occurrences = occurrences;
     }
 }
