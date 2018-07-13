@@ -62,7 +62,7 @@ public class InteractionTest extends BaseTest {
     public void getLowerLevelPathwaysTest(){
         logger.info("Started testing interactionsService.getLowerLevelPathways");
         long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
+        Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
         assertTrue("There should more than 2 pathways for Q9BXM7-1", pathways.size() > 2);
@@ -85,6 +85,6 @@ public class InteractionTest extends BaseTest {
         Collection<DiagramOccurrences> pathways = interactionsService.getDiagramOccurrences("Q9BXM7-1");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("There should more than 10 diagram occurrences for Q9BXM7-1", pathways.size() > 10);
+        assertTrue("There should more than 10 diagram occurrences for Q9BXM7-1", pathways.size() > 3);
     }
 }
