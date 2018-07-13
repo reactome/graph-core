@@ -6,6 +6,7 @@ import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.model.UndirectedInteraction;
+import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -59,11 +60,31 @@ public class InteractionTest extends BaseTest {
 
     @Test
     public void getLowerLevelPathwaysTest(){
-        logger.info("Started testing interactionsService.getDiagrammedLowerLevelPathways");
+        logger.info("Started testing interactionsService.getLowerLevelPathways");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
         assertTrue("There should more than 2 pathways for Q9BXM7-1", pathways.size() > 2);
+    }
+
+    @Test
+    public void getDiagrammedLowerLevelPathwaysTest(){
+        logger.info("Started testing interactionsService.getDiagrammedLowerLevelPathways");
+        long start = System.currentTimeMillis();
+        Collection<Pathway> pathways = interactionsService.getDiagrammedLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+        assertTrue("There should more than 2 pathways for Q9BXM7-1", pathways.size() > 2);
+    }
+
+    @Test
+    public void getDiagramOccurrencesTest(){
+        logger.info("Started testing interactionsService.getDiagramOccurrences");
+        long start = System.currentTimeMillis();
+        Collection<DiagramOccurrences> pathways = interactionsService.getDiagramOccurrences("Q9BXM7-1");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+        assertTrue("There should more than 10 diagram occurrences for Q9BXM7-1", pathways.size() > 10);
     }
 }

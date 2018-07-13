@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.ClassCount;
+import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.repository.InteractionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,5 +84,13 @@ public class InteractionsService {
 
     public Collection<Pathway> getLowerLevelPathways(String acc, String speciesName){
         return interactionsRepository.getLowerLevelPathways(acc, speciesName);
+    }
+
+    public Collection<Pathway> getDiagrammedLowerLevelPathways(String acc, String speciesName){
+        return interactionsRepository.getDiagrammedLowerLevelPathways(acc, speciesName);
+    }
+
+    public Collection<DiagramOccurrences> getDiagramOccurrences(String identifier){
+        return interactionsRepository.getDiagramOccurrences(identifier);
     }
 }

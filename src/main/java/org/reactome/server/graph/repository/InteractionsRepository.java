@@ -3,6 +3,7 @@ package org.reactome.server.graph.repository;
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.ClassCount;
+import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
@@ -42,4 +43,33 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WHERE p.speciesName = {1} AND SINGLE(e IN NODES(path) WHERE (e:Pathway)) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathways(String acc, String speciesName);
+
+    @Query(" MATCH (a:ReferenceEntity)<-[:interactor]-()-[:interactor]->(b:ReferenceEntity) " +
+            "WHERE a.identifier = {0} OR a.variantIdentifier = {0} " +
+            "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(b) " +
+            "WHERE p.speciesName = {1} AND SINGLE(e IN NODES(path) WHERE (e:Pathway) AND e.hasDiagram) " +
+            "RETURN DISTINCT p")
+    Collection<Pathway> getDiagrammedLowerLevelPathways(String acc, String speciesName);
+
+    @Query(" MATCH (re:ReferenceEntity)<-[:interactor]-()-[:interactor]->()<-[:referenceEntity]-(pe:PhysicalEntity) " +
+            "WHERE re.identifier = {0} OR re.variantIdentifier = {0} " +
+            "WITH DISTINCT pe " +
+            "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(pe) " +
+            "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "WITH COLLECT(DISTINCT p) AS directlyInDiagram " +
+            "UNWIND directlyInDiagram AS d " +
+            "OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(d) " +
+            "WITH directlyInDiagram, directlyInDiagram + COLLECT(DISTINCT p) AS hlds " +
+            "UNWIND hlds AS d " +
+            "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(d) " +
+            "WITH directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
+            "UNWIND all as p " +
+            "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
+            "WHERE ep IN all " +
+            "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
+            "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS subpathways " +
+            "WHERE inDiagram OR SIZE(subpathways) > 0 " +
+            "RETURN DISTINCT p AS diagram, inDiagram, subpathways")
+    Collection<DiagramOccurrences> getDiagramOccurrences(String identifier);
 }
