@@ -82,9 +82,17 @@ public class InteractionTest extends BaseTest {
     public void getDiagramOccurrencesTest(){
         logger.info("Started testing interactionsService.getDiagramOccurrences");
         long start = System.currentTimeMillis();
-        Collection<DiagramOccurrences> pathways = interactionsService.getDiagramOccurrences("Q9BXM7-1");
+        Collection<DiagramOccurrences> occurrences = interactionsService.getDiagramOccurrences("Q9BXM7-1");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("There should more than 3 diagram occurrences for Q9BXM7-1", pathways.size() > 3);
+        assertTrue("There should more than 3 diagram occurrences for Q9BXM7-1", occurrences.size() > 3);
+        boolean found = false;
+        for (DiagramOccurrences item : occurrences) {
+            if(item.getDiagram().getStId().equals("R-HSA-1428517")){
+                found = true;
+                assertFalse("There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'", item.getOccurrences().isEmpty());
+            }
+        }
+        assertTrue("There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'", found);
     }
 }

@@ -70,8 +70,8 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
             "OPTIONAL MATCH (p)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(re:ReferenceEntity) " +
             "WHERE p IN directlyInDiagram AND re IN res " +
-            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT pe) AS pes, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS pathwaysOcurrences " +
-            "WHERE inDiagram OR SIZE(pes) > 0 OR SIZE(pathwaysOcurrences) > 0 " +
-            "RETURN DISTINCT p AS diagram, inDiagram, pathwaysOcurrences + pes AS occurrences")
+            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT pe) AS pes, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS pathwaysOccurrences " +
+            "WHERE inDiagram OR SIZE(pes) > 0 OR SIZE(pathwaysOccurrences) > 0 " +
+            "RETURN DISTINCT p AS diagram, inDiagram, pathwaysOccurrences AS occurrences, pes AS interactsWith")
     Collection<DiagramOccurrences> getDiagramOccurrences(String identifier);
 }

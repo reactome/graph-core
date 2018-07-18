@@ -15,27 +15,21 @@ public class DiagramOccurrences {
 
     private List<DatabaseObject> occurrences;
 
+    private List<DatabaseObject> interactsWith;
+
     public Pathway getDiagram() {
         return diagram;
-    }
-
-    public void setDiagram(Pathway diagram) {
-        this.diagram = diagram;
     }
 
     public boolean isInDiagram() {
         return inDiagram;
     }
 
-    public void setInDiagram(boolean inDiagram) {
-        this.inDiagram = inDiagram;
-    }
-
     public List<DatabaseObject> getOccurrences() {
         return occurrences;
     }
 
-    public void setOccurrences(List<DatabaseObject> occurrences) {
-        this.occurrences = occurrences;
+    public List<DatabaseObject> getInteractsWith() {
+        return interactsWith;
     }
 }
