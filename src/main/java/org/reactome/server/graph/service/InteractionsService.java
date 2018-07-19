@@ -82,8 +82,8 @@ public class InteractionsService {
         return rtn;
     }
 
-    public Collection<Pathway> getLowerLevelPathways(String acc){
-        return interactionsRepository.getLowerLevelPathways(acc);
+    public Collection<Pathway> getLowerLevelPathways(String acc, String speciesName){
+        return interactionsRepository.getLowerLevelPathways(acc, speciesName);
     }
 
     public Collection<Pathway> getDiagrammedLowerLevelPathways(String acc, String speciesName){

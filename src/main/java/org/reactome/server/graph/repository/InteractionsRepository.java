@@ -40,9 +40,9 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
     @Query(" MATCH (a:ReferenceEntity)<-[:interactor]-()-[:interactor]->(b:ReferenceEntity) " +
             "WHERE a.identifier = {0} OR a.variantIdentifier = {0} " +
             "MATCH path=(p:Pathway)-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(b) " +
-            "WHERE SINGLE(e IN NODES(path) WHERE (e:Pathway)) " +
+            "WHERE p.speciesName = {1} AND SINGLE(e IN NODES(path) WHERE (e:Pathway)) " +
             "RETURN DISTINCT p")
-    Collection<Pathway> getLowerLevelPathways(String acc);
+    Collection<Pathway> getLowerLevelPathways(String acc, String speciesName);
 
     @Query(" MATCH (a:ReferenceEntity)<-[:interactor]-()-[:interactor]->(b:ReferenceEntity) " +
             "WHERE a.identifier = {0} OR a.variantIdentifier = {0} " +
