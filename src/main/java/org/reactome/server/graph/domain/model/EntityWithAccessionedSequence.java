@@ -56,8 +56,9 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
     }
 
     public List<AbstractModifiedResidue> getHasModifiedResidue() {
-        List<AbstractModifiedResidue> rtn = new ArrayList<>();
+        List<AbstractModifiedResidue> rtn = null;
         if (hasModifiedResidue != null) {
+            rtn = new ArrayList<>();
             for (HasModifiedResidue modifiedResidue : hasModifiedResidue) {
                 for (int i = 0; i < modifiedResidue.getStoichiometry(); i++) {
                     rtn.add(modifiedResidue.getAbstractModifiedResidue());

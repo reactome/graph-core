@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
@@ -131,6 +131,23 @@ public class LazyLoadingTest extends BaseTest {
             found |= event.getStId().equals("R-HSA-141409");
         }
         assertTrue("'R-HSA-375305' has 'R-HSA-141409' as input", found);
+
+        logger.info("Finished");
+    }
+
+    @Test
+    public void lazyLoadingHasModifiedResidueTest(){
+        logger.info("Testing Lazy Loading for EWAS HasModifiedResidue");
+
+        long start, time;
+        start = System.currentTimeMillis();
+        EntityWithAccessionedSequence ewas = dbs.findByIdNoRelations ("R-HSA-507936");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        List<AbstractModifiedResidue> amrs = ewas.getHasModifiedResidue();
+        assertNotNull(amrs);
+        assertFalse(amrs.isEmpty());
 
         logger.info("Finished");
     }
