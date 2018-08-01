@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.1.11-SNAPSHOT</version>
+    <version>1.1.11</version>
     <name>ReactomeGraphCore</name>
 
     <description>
