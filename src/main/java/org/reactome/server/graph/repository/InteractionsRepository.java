@@ -56,22 +56,22 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WITH DISTINCT pe, COLLECT(DISTINCT re) AS res " +
             "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH res, COLLECT(DISTINCT p) AS directlyInDiagram " +
-            "UNWIND directlyInDiagram AS d " +
+            "WITH res, COLLECT(DISTINCT p) AS interactorInDiagram " +
+            "UNWIND interactorInDiagram AS d " +
             "OPTIONAL MATCH (p:Pathway{hasDiagram:True})-[:hasEvent*]->(d) " +
-            "WITH res, directlyInDiagram, directlyInDiagram + COLLECT(DISTINCT p) AS hlds " +
+            "WITH res, interactorInDiagram, interactorInDiagram + COLLECT(DISTINCT p) AS hlds " +
             "UNWIND hlds AS d " +
             "OPTIONAL MATCH (cep:Pathway)-[:hasEncapsulatedEvent]->(d) " +
-            "WITH res, directlyInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
+            "WITH res, interactorInDiagram, hlds + COLLECT(DISTINCT cep) AS all " +
             "UNWIND all AS p " +
             "OPTIONAL MATCH (p)-[:hasEncapsulatedEvent]->(ep:Pathway) " +
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH (p)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(re:ReferenceEntity) " +
-            "WHERE p IN directlyInDiagram AND re IN res " +
-            "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT pe) AS pes, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS pathwaysOccurrences " +
-            "WHERE inDiagram OR SIZE(pes) > 0 OR SIZE(pathwaysOccurrences) > 0 " +
-            "RETURN DISTINCT p AS diagram, inDiagram, pathwaysOccurrences AS occurrences, pes AS interactsWith")
+            "OPTIONAL MATCH aux=(p)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(re:ReferenceEntity) " +
+            "WHERE p IN interactorInDiagram AND re IN res AND SINGLE(x IN NODES(aux) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "WITH p, COLLECT(DISTINCT pe) AS pes, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS pathwaysOccurrences " +
+            "WHERE SIZE(pes) > 0 OR SIZE(pathwaysOccurrences) > 0 " +
+            "RETURN DISTINCT p AS diagram, false AS inDiagram, pathwaysOccurrences AS occurrences, pes AS interactsWith")
     Collection<DiagramOccurrences> getDiagramOccurrences(String identifier);
 }
