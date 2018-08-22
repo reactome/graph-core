@@ -113,8 +113,8 @@ public class DatabaseObjectUtils {
 
                 if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
                         && methodName.startsWith("get")
-                        && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
+                        && !methodName.startsWith("getSuperclass")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getAttributeProperties(method);
@@ -124,7 +124,7 @@ public class DatabaseObjectUtils {
                 }
             }
 
-            /** Didn't find the field in the given class. Check the Superclass. **/
+            // Didn't find the field in the given class. Check the Superclass.
             clazz = clazz.getSuperclass();
         }
         return propertiesList;
@@ -151,8 +151,8 @@ public class DatabaseObjectUtils {
                 String methodName = method.getName();
                 if (method.getAnnotation(ReactomeSchemaIgnore.class) == null
                         && methodName.startsWith("get")
-                        && !methodName.startsWith("getSuper")
                         && !methodName.equals("getClass")
+                        && !methodName.startsWith("getSuperclass")
 //                        && !methodName.equals("getClassName")
 //                        && !methodName.equals("getId")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
