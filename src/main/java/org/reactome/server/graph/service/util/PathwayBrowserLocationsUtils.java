@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
@@ -214,5 +215,34 @@ public abstract class PathwayBrowserLocationsUtils {
         }
 
         return tree;
+    }
+
+    public static Set<PathwayBrowserNode> enrichPathwayBrowserNode(Set<PathwayBrowserNode> nodes) {
+        for (PathwayBrowserNode node : nodes) {
+            enrichPathwayBrowserNode(node, new ArrayList<>());
+        }
+        return nodes;
+    }
+
+    private static void enrichPathwayBrowserNode(PathwayBrowserNode node, List<String> path) {
+        /*Building the Url for the current entry*/
+        StringBuilder url = new StringBuilder();
+        url.append(PATHWAY_BROWSER_URL);
+        url.append(node.getStId());
+
+        boolean unique = node.getParent() == null || node.getParent().size() == 1;
+        if (!unique && !path.isEmpty()) {
+            url.append(PATH);
+            url.append(StringUtils.join(path, ","));
+        }
+        path.add(node.getStId());
+
+        node.setUrl(url.toString());
+
+        if (node.getChildren() != null) {
+            for (PathwayBrowserNode child : node.getChildren()) {
+                enrichPathwayBrowserNode(child, path);
+            }
+        }
     }
 }

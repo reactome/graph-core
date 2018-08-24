@@ -9,6 +9,7 @@ import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -50,6 +51,11 @@ public class DetailsService {
             contentDetails.setOtherFormsOfThisMolecule(physicalEntityService.getOtherFormsOf(databaseObject.getDbId()));
         }
         return contentDetails;
+    }
+
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+        Set<PathwayBrowserNode> rtn = hierarchyService.getLocationInPathwayBrowserForPathways(pathways);
+        return PathwayBrowserLocationsUtils.enrichPathwayBrowserNode(rtn);
     }
 
     private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean directParticipants) {

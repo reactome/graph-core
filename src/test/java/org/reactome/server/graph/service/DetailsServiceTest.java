@@ -3,7 +3,12 @@ package org.reactome.server.graph.service;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.reactome.server.graph.service.helper.ContentDetails;
+import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,5 +48,18 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
+
+    @Test
+    public void getLocationInPathwayBrowserForPathwaysTest() {
+        logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        List<Long> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L);
+        Set<PathwayBrowserNode> node = detailsService.getLocationInPathwayBrowserForPathways(pathways);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, node.size());
+    }
 
 }
