@@ -54,7 +54,7 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
-        List<Long> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L);
+        List<String> pathways = Arrays.asList("R-HSA-212165", "R-HSA-5250913", "R-HSA-5250941", "R-HSA-73886", "R-HSA-74160");
         Set<PathwayBrowserNode> node = detailsService.getLocationInPathwayBrowserForPathways(pathways);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");

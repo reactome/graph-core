@@ -217,14 +217,16 @@ public abstract class PathwayBrowserLocationsUtils {
         return tree;
     }
 
-    public static Set<PathwayBrowserNode> enrichPathwayBrowserNode(Set<PathwayBrowserNode> nodes) {
+    public static Set<PathwayBrowserNode> enrichPathwayBrowserNode(Set<PathwayBrowserNode> nodes, List<?> pathways) {
         for (PathwayBrowserNode node : nodes) {
-            enrichPathwayBrowserNode(node, new ArrayList<>());
+            enrichPathwayBrowserNode(node, pathways, new ArrayList<>());
         }
         return nodes;
     }
 
-    private static void enrichPathwayBrowserNode(PathwayBrowserNode node, List<String> path) {
+    private static void enrichPathwayBrowserNode(PathwayBrowserNode node, List<?> pathways, List<String> path) {
+        node.setHighlighted(pathways.contains(node.getStId()));
+
         /*Building the Url for the current entry*/
         StringBuilder url = new StringBuilder();
         url.append(PATHWAY_BROWSER_URL);
@@ -241,7 +243,7 @@ public abstract class PathwayBrowserLocationsUtils {
 
         if (node.getChildren() != null) {
             for (PathwayBrowserNode child : node.getChildren()) {
-                enrichPathwayBrowserNode(child, path);
+                enrichPathwayBrowserNode(child, pathways, path);
             }
         }
     }

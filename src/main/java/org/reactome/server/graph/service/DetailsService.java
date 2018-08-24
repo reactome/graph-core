@@ -53,9 +53,9 @@ public class DetailsService {
         return contentDetails;
     }
 
-    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<String> pathways){
         Set<PathwayBrowserNode> rtn = hierarchyService.getLocationInPathwayBrowserForPathways(pathways);
-        return PathwayBrowserLocationsUtils.enrichPathwayBrowserNode(rtn);
+        return PathwayBrowserLocationsUtils.enrichPathwayBrowserNode(rtn, pathways);
     }
 
     private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean directParticipants) {
