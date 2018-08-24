@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by:
@@ -41,6 +43,10 @@ public class HierarchyService {
             return hierarchyRepository.getLocationsInPathwayBrowser(Long.parseLong(id), omitNonDisplayableItems);
         }
         return null;
+    }
+
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+        return hierarchyRepository.getLocationInPathwayBrowserForPathways(pathways);
     }
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------

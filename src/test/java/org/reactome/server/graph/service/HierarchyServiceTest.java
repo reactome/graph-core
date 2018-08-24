@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -85,6 +88,20 @@ public class HierarchyServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(2, node.getChildren().size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getLocationInPathwayBrowserForPathwaysTest(){
+        logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        List<Long> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L);
+        Set<PathwayBrowserNode> node = hierarchyService.getLocationInPathwayBrowserForPathways(pathways);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, node.size());
         logger.info("Finished");
     }
 

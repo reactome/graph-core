@@ -5,17 +5,18 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.exception.CustomQueryException;
+import org.reactome.server.graph.repository.util.HierarchyBranch;
+import org.reactome.server.graph.service.AdvancedDatabaseObjectService;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
+import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -27,6 +28,9 @@ public class HierarchyRepository {
 
     @Autowired
     private Neo4jOperations neo4jTemplate;
+
+    @Autowired
+    private AdvancedDatabaseObjectService ados;
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
 
@@ -58,6 +62,16 @@ public class HierarchyRepository {
     public PathwayBrowserNode getLocationsInPathwayBrowserDirectParticipants(Long dbId, Boolean omitNonDisplayableItems) {
         Result result = getLocationsInPathwayBrowserForInteractorByDbIdRaw(dbId);
         return parseResult(result, omitNonDisplayableItems);
+    }
+
+    /**
+     * Used to build the locations in the Pathway Browser for the EHLD containing a given icon
+     * @param pathways list of pathways (can contain Pathway objects, dbIds, stIds - or a combination of them)
+     * @return a set of PathwayBrowserNode
+     */
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+        Collection<HierarchyBranch> branches = getLocationInPathwayBrowserForPathwaysRaw(pathways);
+        return mergeBranches(branches);
     }
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
@@ -139,6 +153,28 @@ public class HierarchyRepository {
             }
         }
         return root;
+    }
+
+    private Set<PathwayBrowserNode> mergeBranches(Collection<HierarchyBranch> branches){
+        Map<String, PathwayBrowserNode> nodes = new HashMap<>();
+
+        Set<PathwayBrowserNode> rtn = new HashSet<>();
+        for (HierarchyBranch branch : branches) {
+            List<Pathway> pathways = branch.getPathways();
+            Pathway p = pathways.get(0);
+            PathwayBrowserNode node = nodes.getOrDefault(p.getStId(), createNode(p));
+            nodes.put(node.getStId(), node);
+            rtn.add(node);
+            for (int i = 1 ; i < pathways.size(); i++) {
+                Pathway pathway = pathways.get(i);
+                PathwayBrowserNode child = nodes.getOrDefault(pathway.getStId(), createNode(pathway));
+                nodes.put(child.getStId(), child);
+                node.addChild(child);
+                child.addParent(node);
+                node = child;
+            }
+        }
+        return rtn;
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
@@ -330,5 +366,36 @@ public class HierarchyRepository {
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         return neo4jTemplate.query(query, map);
+    }
+
+    private Collection<HierarchyBranch> getLocationInPathwayBrowserForPathwaysRaw(List<?> pathways) {
+        String query = "" +
+                "MATCH (p:Pathway) " +
+                "WHERE p.dbId IN {dbIds} OR p.stId IN {stIds}" +
+                "OPTIONAL MATCH path=(:TopLevelPathway)-[:hasEvent*]->(p) " +
+                "WITH p, NODES(path) AS branch " +
+                "RETURN CASE WHEN SIZE(branch) > 0 THEN branch ELSE [p] END AS branch";
+        List<String> stIds = new ArrayList<>();
+        List<Long> dbIds = new ArrayList<>();
+        for (Object aux : pathways) {
+            if (aux instanceof DatabaseObject){
+                dbIds.add(((DatabaseObject) aux).getDbId());
+            } else {
+                String identifier = String.valueOf(aux);
+                if (DatabaseObjectUtils.isStId(identifier)) {
+                    stIds.add(identifier);
+                } else {
+                    dbIds.add(Long.valueOf(identifier));
+                }
+            }
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("stIds", stIds);
+        params.put("dbIds", dbIds);
+        try {
+            return ados.getCustomQueryResults(HierarchyBranch.class, query, params);
+        } catch (CustomQueryException ex){
+            return null;
+        }
     }
 }
