@@ -50,7 +50,7 @@ mvn archetype:generate \
 <dependency>
     <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.1.11</dependency>
+    <version>1.1.12</dependency>
 ```
 
 **Repository**
