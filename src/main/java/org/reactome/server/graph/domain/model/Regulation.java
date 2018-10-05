@@ -2,7 +2,6 @@ package org.reactome.server.graph.domain.model;
 
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
-import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 
@@ -48,12 +47,10 @@ public abstract class Regulation extends DatabaseObject {
 
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
-    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class})
-    private DatabaseObject regulatedEntity;
+    private ReactionLikeEvent regulatedEntity;
 
     @Relationship(type = "regulator")
-    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class, PhysicalEntity.class})
-    private DatabaseObject regulator;
+    private PhysicalEntity regulator;
 
     @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     private List<InstanceEdit> reviewed;
@@ -159,23 +156,21 @@ public abstract class Regulation extends DatabaseObject {
     }
 
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
-    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class})
-    public DatabaseObject getRegulatedEntity() {
+    public ReactionLikeEvent getRegulatedEntity() {
         return regulatedEntity;
     }
 
     @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
-    public void setRegulatedEntity(DatabaseObject regulatedEntity) {
+    public void setRegulatedEntity(ReactionLikeEvent regulatedEntity) {
         this.regulatedEntity = regulatedEntity;
     }
 
-    @ReactomeAllowedClasses(allowed = {CatalystActivity.class, Event.class, PhysicalEntity.class})
-    public DatabaseObject getRegulator() {
+    public PhysicalEntity getRegulator() {
         return regulator;
     }
 
     @Relationship(type = "regulator")
-    public void setRegulator(DatabaseObject regulator) {
+    public void setRegulator(PhysicalEntity regulator) {
         this.regulator = regulator;
     }
 
