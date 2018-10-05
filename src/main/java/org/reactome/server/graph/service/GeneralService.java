@@ -1,17 +1,11 @@
 package org.reactome.server.graph.service;
 
 import org.neo4j.ogm.model.Result;
+import org.reactome.server.graph.domain.model.DBInfo;
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.ReferenceEntity;
-import org.reactome.server.graph.domain.model.Species;
-import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
-import org.reactome.server.graph.repository.GeneralTemplateRepository;
 import org.reactome.server.graph.repository.GeneralRepository;
-import org.reactome.server.graph.service.helper.RelationshipDirection;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.reactome.server.graph.repository.GeneralTemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,12 +28,8 @@ public class GeneralService {
     @Autowired
     private GeneralTemplateRepository generalTemplateRepository;
 
-    public Integer getDBVersion() {
-        return generalRepository.getDBVersion();
-    }
-
-    public String getDBName() {
-        return generalRepository.getDBName();
+    public DBInfo getDBInfo() {
+        return generalRepository.getDBInfo();
     }
 
     // Gets all schema classes and their counts

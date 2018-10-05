@@ -55,7 +55,7 @@ public class GeneralServiceTest extends BaseTest {
         logger.info("Started testing genericService.getReleaseVersion");
         long start, time;
         start = System.currentTimeMillis();
-        Integer dBVersionObserved = generalService.getDBVersion();
+        Integer dBVersionObserved = generalService.getDBInfo().getVersion();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -73,7 +73,7 @@ public class GeneralServiceTest extends BaseTest {
         logger.info("Started testing genericService.getReleaseVersion");
         long start, time;
         start = System.currentTimeMillis();
-        String dBNameObserved = generalService.getDBName();
+        String dBNameObserved = generalService.getDBInfo().getName();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

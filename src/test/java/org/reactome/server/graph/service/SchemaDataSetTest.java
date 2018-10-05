@@ -65,7 +65,7 @@ public class SchemaDataSetTest extends BaseTest {
         logger.info("Testing schema.org DataSet.");
 
         Event eventObserved = dbs.findByIdNoRelations(stId);
-        SchemaDataSet schemaDataSet = new SchemaDataSet(eventObserved, generalService.getDBVersion());
+        SchemaDataSet schemaDataSet = new SchemaDataSet(eventObserved, generalService.getDBInfo().getVersion());
 
         ObjectMapper mapper = new ObjectMapper();
         try {

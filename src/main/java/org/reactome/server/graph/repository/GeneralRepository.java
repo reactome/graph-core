@@ -1,5 +1,6 @@
 package org.reactome.server.graph.repository;
 
+import org.reactome.server.graph.domain.model.DBInfo;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.springframework.data.neo4j.annotation.Query;
@@ -17,12 +18,9 @@ import java.util.Collection;
 @Repository
 public interface GeneralRepository extends GraphRepository<DatabaseObject> {
 
-    @Query("MATCH (n) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
+    @Query(" MATCH (n:DatabaseObject) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
     Collection<SchemaClassCount> getSchemaClassCounts();
 
-    @Query("Match (n:DBInfo) RETURN n.version LIMIT 1")
-    Integer getDBVersion();
-
-    @Query("Match (n:DBInfo) RETURN n.name LIMIT 1")
-    String getDBName();
+    @Query("MATCH (db:DBInfo) RETURN db LIMIT 1")
+    DBInfo getDBInfo();
 }
