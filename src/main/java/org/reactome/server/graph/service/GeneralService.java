@@ -28,8 +28,11 @@ public class GeneralService {
     @Autowired
     private GeneralTemplateRepository generalTemplateRepository;
 
+    private static DBInfo dbInfo = null;
+
     public DBInfo getDBInfo() {
-        return generalRepository.getDBInfo();
+        if(dbInfo == null) dbInfo = generalRepository.getDBInfo();
+        return dbInfo;
     }
 
     // Gets all schema classes and their counts
