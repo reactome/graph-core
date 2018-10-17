@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -187,6 +188,28 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeSchemaIgnore //In some classes it is overridden to provide an easier-to-understand name
     public String getClassName() {
         return getClass().getSimpleName();
+    }
+
+    @ReactomeSchemaIgnore
+    public <T> T getSingleValue(String methodName) {
+        try {
+            Method method = getClass().getMethod(methodName);
+            //noinspection unchecked
+            return (T) method.invoke(this);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            return null;
+        }
+    }
+
+    @ReactomeSchemaIgnore
+    public <T> Collection<T> getMultiValue(String methodName) {
+        try {
+            Method method = this.getClass().getMethod(methodName);
+            //noinspection unchecked
+            return (Collection<T>) method.invoke(this);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            return new ArrayList<>();
+        }
     }
 
     @ReactomeSchemaIgnore
