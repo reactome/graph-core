@@ -8,8 +8,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. The repeated unit(s) is(are) identified in the repeatedUnit slot.
@@ -27,7 +26,7 @@ public class Polymer extends PhysicalEntity {
     private Integer minUnitCount;
 
     @Relationship(type = "repeatedUnit")
-    private RepeatedUnit repeatedUnit;
+    private SortedSet<RepeatedUnit> repeatedUnit;
 
     @Relationship(type = "species")
     private List<Species> species;
@@ -51,31 +50,48 @@ public class Polymer extends PhysicalEntity {
     }
 
     @JsonIgnore
-    public StoichiometryObject fetchRepeatedUnit() {
+    public List<StoichiometryObject> fetchRepeatedUnit() {
+        List<StoichiometryObject> objects = new ArrayList<>();
         if(repeatedUnit!=null) {
-            return new StoichiometryObject(repeatedUnit.getStoichiometry(), repeatedUnit.getPhysicalEntity());
+            for (RepeatedUnit aux : repeatedUnit) {
+                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
+            }
+            Collections.sort(objects);
         }
-        return null;
+
+        return objects;
     }
 
     public List<PhysicalEntity> getRepeatedUnit() {
         List<PhysicalEntity> rtn = null;
-        if(repeatedUnit!=null){
+        if (this.repeatedUnit != null) {
             rtn = new ArrayList<>();
-            for (int i = 0; i < repeatedUnit.getStoichiometry(); i++) {
-                rtn.add(repeatedUnit.getPhysicalEntity());
+            for (RepeatedUnit repeatedUnit : this.repeatedUnit) {
+                for (int i = 0; i < repeatedUnit.getStoichiometry(); i++) {
+                    rtn.add(repeatedUnit.getPhysicalEntity());
+                }
             }
         }
         return rtn;
     }
 
     public void setRepeatedUnit(List<PhysicalEntity> repeatedUnit) {
-        if (repeatedUnit != null && repeatedUnit.isEmpty()) {
-            this.repeatedUnit = new RepeatedUnit();
-            this.repeatedUnit.setPolymer(this);
-            this.repeatedUnit.setPhysicalEntity(repeatedUnit.get(0));
-            this.repeatedUnit.setStoichiometry(repeatedUnit.size());
+        if (repeatedUnit == null) return;
+        Map<Long, RepeatedUnit> repeatedUnits = new LinkedHashMap<>();
+        int order = 0;
+        for (PhysicalEntity physicalEntity : repeatedUnit) {
+            RepeatedUnit re = repeatedUnits.get(physicalEntity.getDbId());
+            if (re != null) {
+                re.setStoichiometry(re.getStoichiometry() + 1);
+            } else {
+                re = new RepeatedUnit();
+                re.setPolymer(this);
+                re.setPhysicalEntity(physicalEntity);
+                re.setOrder(order++);
+                repeatedUnits.put(physicalEntity.getDbId(), re);
+            }
         }
+        this.repeatedUnit = new TreeSet<>(repeatedUnits.values());
     }
 
     public List<Species> getSpecies() {
@@ -86,14 +102,6 @@ public class Polymer extends PhysicalEntity {
     public void setSpecies(List<Species> species) {
         this.species = species;
     }
-
-/*   public void setSpecies(Species species) {
-        Set<Species> speciesSet = new HashSet<>();
-        speciesSet.add(species);
-        this.species = speciesSet;
-    }
-
-*/
 
     @ReactomeSchemaIgnore
     @Override
