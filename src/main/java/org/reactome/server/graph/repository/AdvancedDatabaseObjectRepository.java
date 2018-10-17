@@ -25,8 +25,12 @@ import java.util.*;
 @Repository
 public class AdvancedDatabaseObjectRepository {
 
+    private final Neo4jOperations neo4jTemplate;
+
     @Autowired
-    private Neo4jOperations neo4jTemplate;
+    public AdvancedDatabaseObjectRepository(Neo4jOperations neo4jTemplate) {
+        this.neo4jTemplate = neo4jTemplate;
+    }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
@@ -304,7 +308,7 @@ public class AdvancedDatabaseObjectRepository {
             return neo4jTemplate.queryForObject(clazz, query, parameters);
         }
 
-        if (ClassUtils.isPrimitiveOrWrapper(clazz) || String.class.isAssignableFrom(clazz) ) {
+        if (ClassUtils.isPrimitiveOrWrapper(clazz) || String.class.isAssignableFrom(clazz)) {
             final Result result = neo4jTemplate.query(query, parameters);
             if (result.iterator().hasNext()) {
                 Map<String, Object> stringObjectMap = result.iterator().next();
@@ -314,8 +318,8 @@ public class AdvancedDatabaseObjectRepository {
             }
         }
 
-        final Collection<T> collection  = customQueryResults(clazz, query, parameters);
-        return collection.iterator().hasNext() ? collection.iterator().next() : null ;
+        final Collection<T> collection = customQueryResults(clazz, query, parameters);
+        return collection.iterator().hasNext() ? collection.iterator().next() : null;
     }
 
     public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
@@ -338,39 +342,36 @@ public class AdvancedDatabaseObjectRepository {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new CustomQueryException(e);
         }
-	}
+    }
 
     /**
-     *
-     * @param target target class for source
+     * @param target     target class for source
      * @param innerClass if target class is Collection (or any subclass), the class for the elements of the collection
-     * @param source source object, compatible with target
+     * @param source     source object, compatible with target
      * @return an object of class T extracted from source
      * @throws IllegalAccessException if any of the setter/fields of target/innerType is not accesible
      */
-	private <T> T cast(Class<T> target, Class innerClass, Object source) throws IllegalAccessException, InvocationTargetException, CustomQueryException {
-		// Source	Target		Action
-		// object	object		target.class.cast(object)
-		// map 		object      mapToInstance(map, object)
-		// map 		map 		target.class.cast(object)
-		// list		list 		[for object in source : instance(target.innerClass, object)]
-		// array 	list 		[for object in source : instance(target.innerClass, object)]
+    private <T> T cast(Class<T> target, Class innerClass, Object source) throws IllegalAccessException, InvocationTargetException, CustomQueryException {
+        // Source	Target		Action
+        // object	object		target.class.cast(object)
+        // map 		object      mapToInstance(map, object)
+        // map 		map 		target.class.cast(object)
+        // list		list 		[for object in source : instance(target.innerClass, object)]
+        // array 	list 		[for object in source : instance(target.innerClass, object)]
         try {
-            if (target.isInstance(source)) {
-                return target.cast(source);
-            } else if (Map.class.isInstance(source)) {
+            if (source instanceof Map) {
                 return mapToInstance(target, (Map) source);
-            } else if (Object[].class.isInstance(source)) {
+            } else if (source instanceof Object[]) {
                 final List list = new LinkedList();
                 for (Object object : (Object[]) source)
                     list.add(cast(innerClass, null, object));
                 return target.cast(list);
-            } else if (Collection.class.isInstance(source)) {
+            } else if (source instanceof Collection) {
                 final List list = new LinkedList();
                 for (Object object : (Collection) source)
                     list.add(cast(innerClass, null, object));
                 return target.cast(list);
-            } else{
+            } else {
                 return target.cast(source);
             }
         } catch (NullPointerException e) {
@@ -378,13 +379,31 @@ public class AdvancedDatabaseObjectRepository {
         } catch (ClassCastException e) {
             return TypeConverterManager.convertType(source, target);
         }
-	}
+    }
 
     private <T> T mapToInstance(Class<T> target, Map map) throws IllegalAccessException, InvocationTargetException, CustomQueryException {
-	    try {
-            final T instance = target.newInstance();
-            final Map<String, Method> setters = getSetters(target);
-            final Map<String, Field> fields = getAllFields(target);
+        try {
+
+            final T instance;
+            final Map<String, Method> setters;
+            final Map<String, Field> fields;
+
+            if (DatabaseObject.class.isAssignableFrom(target)) {
+                try {
+                    map = (Map) map.get("data");
+                    String sc = (String) map.remove("schemaClass");
+                    Class<?> clazz = Class.forName(DatabaseObject.class.getPackage().getName() + "." + sc);
+                    instance = (T) clazz.newInstance();
+                    setters = getSetters(clazz);
+                    fields = getAllFields(clazz);
+                } catch (ClassNotFoundException e) {
+                    throw new CustomQueryException(e);
+                }
+            } else {
+                instance = target.newInstance();
+                setters = getSetters(target);
+                fields = getAllFields(target);
+            }
 
             for (Object key : map.keySet()) {
                 String field = String.valueOf(key);
@@ -403,7 +422,7 @@ public class AdvancedDatabaseObjectRepository {
                     // The setter does not exist
                     //2nd -> Check whether there is a field with the same name
                     Field classField = fields.get(field);
-                    if(classField==null) throw new CustomQueryException(String.format("NoSuchFieldException: '%s'.'%s'", target.getSimpleName(), field));
+                    if (classField == null) throw new CustomQueryException(String.format("NoSuchFieldException: '%s'.'%s'", target.getSimpleName(), field));
                     classField.setAccessible(true);
                     final Class subTarget = classField.getType();
                     final Class innerClass = getInnerClass(classField);
@@ -414,13 +433,13 @@ public class AdvancedDatabaseObjectRepository {
             }
             return instance;
         } catch (InstantiationException e) {
-	        throw new CustomQueryException(e);
+            throw new CustomQueryException(e);
         }
     }
 
 
     private Class getInnerClass(Field field) {
-	    final Type paramType = field.getGenericType();
+        final Type paramType = field.getGenericType();
         return paramType instanceof ParameterizedType
                 ? (Class) ((ParameterizedType) paramType).getActualTypeArguments()[0]
                 : null;
@@ -434,7 +453,7 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     private Map<String, Field> getAllFields(Class<?> type) {
-	    Map<String, Field> map = new HashMap<>();
+        Map<String, Field> map = new HashMap<>();
         for (Field field : type.getDeclaredFields()) {
             map.put(field.getName(), field);
         }
@@ -457,13 +476,12 @@ public class AdvancedDatabaseObjectRepository {
         return map;
     }
 
-	/**
-	 * Neo4j results always return the Object (wrapper) as an Array (if it is
-	 * collection). However if we are mapping an object which attribute is a
-	 * int[] e.g then it does not 'boxing', then this method checks the type and
-	 * return the proper Array of primitive .
-	 */
-	private Object toPrimitiveArray(Object value, Class type) {
+    /**
+     * Neo4j results always return the Object (wrapper) as an Array (if it is collection). However if we are mapping
+     * an object which attribute is a int[] e.g then it does not 'boxing', then this method checks the type and
+     * return the proper Array of primitive
+     */
+    private Object toPrimitiveArray(Object value, Class type) {
         if (type == byte[].class) {
             return ArrayUtils.toPrimitive((Byte[]) value);
         } else if (type == short[].class) {
@@ -510,14 +528,14 @@ public class AdvancedDatabaseObjectRepository {
                 Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
 
                 // Parametrised type is String and the convertToCollection is able to convert that
-                if (stringListClass.isAssignableFrom(String.class) || Number.class.isAssignableFrom(stringListClass) || stringListClass.isPrimitive()){
+                if (stringListClass.isAssignableFrom(String.class) || Number.class.isAssignableFrom(stringListClass) || stringListClass.isPrimitive()) {
                     //noinspection unchecked
                     field.set(instance, TypeConverterManager.convertToCollection(object, (Class<? extends Collection>) field.getType(), stringListClass));
                 } else {
                     // Parametrised type is a Custom Object so we have to create the list, create the objects
                     // add them into the list and set attribute in the main class.
                     Collection<T> customCollection;
-                    if (field.getType().isAssignableFrom(List.class)){
+                    if (field.getType().isAssignableFrom(List.class)) {
                         customCollection = new ArrayList<>();
                     } else if (field.getType().isAssignableFrom(Set.class)) {
                         customCollection = new HashSet<>();
@@ -537,17 +555,17 @@ public class AdvancedDatabaseObjectRepository {
                     // set the list in the main class
                     field.set(instance, customCollection);
                 }
-            } else if (field.getType().isAssignableFrom(String.class) || Number.class.isAssignableFrom(field.getType()) || field.getType().isArray()){
+            } else if (field.getType().isAssignableFrom(String.class) || Number.class.isAssignableFrom(field.getType()) || field.getType().isArray()) {
                 try {
                     // The attribute is String, Number or an array we know how to convert
                     field.set(instance, TypeConverterManager.convertType(object, field.getType()));
-                } catch (Exception ex){
+                } catch (Exception ex) {
                     field.set(instance, null);
                 }
             } else {
                 // The attribute is a Custom Object that needs to be instantiated.
                 Collection<Field> customFields = getAllFields(field.getType()).values();
-                T customInstance = createAndPopulateObject(field.getType(), customFields, (Map<String, Object>)object);
+                T customInstance = createAndPopulateObject(field.getType(), customFields, (Map<String, Object>) object);
                 field.set(instance, customInstance);
             }
         }
@@ -556,10 +574,9 @@ public class AdvancedDatabaseObjectRepository {
     /**
      * This method is called in the setFields method which calls recursively in order to create and populate the objects themselves.
      *
-     * @param clazz the class to be instantiate
+     * @param clazz        the class to be instantiate
      * @param customFields attributes of given class
-     * @param object result map of the cypher query, key=String(name of attribute) value=object result of the given attribute
-     *
+     * @param object       result map of the cypher query, key=String(name of attribute) value=object result of the given attribute
      * @throws Exception in case we can't create new instances
      */
     private <T> T createAndPopulateObject(Class<?> clazz, Collection<Field> customFields, Map<String, Object> object) throws Exception {
