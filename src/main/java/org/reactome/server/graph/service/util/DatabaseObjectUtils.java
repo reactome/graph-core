@@ -72,7 +72,7 @@ public class DatabaseObjectUtils {
 
                 try {
                     Object object = method.invoke(databaseObject);
-                    if (object == null || object.equals("")) continue;
+                    if (isEmpty(object)) continue;
 
                     // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {
@@ -168,7 +168,9 @@ public class DatabaseObjectUtils {
     }
 
     public static String getIdentifier(Object id) {
-        if (id instanceof String) {
+        if (id instanceof DatabaseObject) {
+            return "" + ((DatabaseObject) id).getDbId();
+        } else if (id instanceof String) {
             String aux = trimId((String) id);
             if (aux.startsWith("REACT_")) { //In case the provided identifier is an OLD style one, we translate to the new one
                 String stId = databaseObjectRepository.findNewStId(aux);
@@ -225,6 +227,21 @@ public class DatabaseObjectUtils {
             return str;
         }
         return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    /**
+     * @param object an object
+     * @return true the object is null, an empty list or an empty string
+     */
+    private static boolean isEmpty(Object object){
+        if (object == null) return true;
+
+        if (object instanceof Collection){
+            Collection c = (Collection) object;
+            return c.isEmpty();
+        }
+
+        return object.equals("");
     }
 
     private static String trimId(String id) {
