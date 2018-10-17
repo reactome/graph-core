@@ -38,10 +38,13 @@ public class PhysicalEntityServiceTest {
     private static final String stId = "R-HSA-199420";
 
     @Autowired
-    private PhysicalEntityService physicalEntityService;
+    private GeneralService generalService;
 
     @Autowired
-    private GeneralService generalService;
+    private DatabaseObjectService dos;
+
+    @Autowired
+    private PhysicalEntityService physicalEntityService;
 
     @BeforeClass
     public static void setUpClass() {
@@ -84,6 +87,21 @@ public class PhysicalEntityServiceTest {
         long start, time;
         start = System.currentTimeMillis();
         Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(stId);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(otherFormsOfThisMolecule.size() >= 27);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void testGetOtherFormsOfThisMoleculeByPhysicalEntity() throws InvocationTargetException, IllegalAccessException {
+
+        logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
+        long start, time;
+        start = System.currentTimeMillis();
+        PhysicalEntity pe = dos.findById(stId);
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(pe);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
