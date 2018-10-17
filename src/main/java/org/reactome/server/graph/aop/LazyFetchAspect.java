@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
@@ -32,9 +32,7 @@ public class LazyFetchAspect {
 
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
-        if (!enableAOP) {
-            return pjp.proceed();
-        }
+        if (!enableAOP) return pjp.proceed();
 
          // Target is the whole object that originated this pointcut.
         DatabaseObject databaseObject = (DatabaseObject) pjp.getTarget();
@@ -45,7 +43,7 @@ public class LazyFetchAspect {
 
          // Get the relationship that is annotated in the attribute
         Relationship relationship = getRelationship(method.getName(), databaseObject.getClass());
-        if (relationship != null && !databaseObject.preventLazyLoading && !databaseObject.isLoaded) {
+        if (relationship != null && !databaseObject.preventLazyLoading) { // && !databaseObject.isLoaded) {
              // Check whether the object has been loaded.
              // pjp.proceed() has the result of the invoked method.
             if (pjp.proceed() == null) {
@@ -57,8 +55,13 @@ public class LazyFetchAspect {
                     ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
                     Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
                     String clazz = type.getSimpleName();
-                    // querying the graph and fill the collection
-                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    // querying the graph and fill the collection if it hasn't been fully loaded before
+                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = databaseObject.isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    if (lazyLoadedObjectAsCollection == null) {
+                        //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
+                        if (List.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new ArrayList<>();
+                        if (Set.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new HashSet<>();
+                    }
                     if (lazyLoadedObjectAsCollection != null) {
                         // invoke the setter in order to set the object in the target
                         databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObjectAsCollection);
@@ -86,6 +89,7 @@ public class LazyFetchAspect {
      * AspectJ pointcut for all the getters that return a Collection of DatabaseObject
      * or instance of DatabaseObject.
      */
+    @SuppressWarnings("SingleElementAnnotation")
     @Pointcut("execution(public java.util.Collection<org.reactome.server.graph.domain.model.DatabaseObject+>+ org.reactome.server.graph.domain.model.*.get*(..))" +
             "|| execution(public org.reactome.server.graph.domain.model.DatabaseObject+ org.reactome.server.graph.domain.model.*.get*(..))")
     public void modelGetter() {
@@ -99,13 +103,14 @@ public class LazyFetchAspect {
      * @return the Relationship annotation
      */
     private Relationship getRelationship(String methodName, Class<?> _clazz) {
-        methodName = methodName.substring(3, methodName.length()); // crop, remove 'get'
+        methodName = methodName.substring(3); // crop, remove 'get'
         char c[] = methodName.toCharArray();
         c[0] = Character.toLowerCase(c[0]); // lower the first char
 
         String attribute = new String(c);
 
          // Look up for the given attribute in the class and after superclasses.
+        //noinspection ClassGetClass
         while (_clazz != null && !_clazz.getClass().equals(Object.class)) {
             for (Field field : _clazz.getDeclaredFields()) {
                 if (field.getAnnotation(Relationship.class) != null) {
@@ -122,6 +127,7 @@ public class LazyFetchAspect {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public Boolean getEnableAOP() {
         return enableAOP;
     }
