@@ -7,7 +7,6 @@ import javax.annotation.Nonnull;
 @SuppressWarnings("unused")
 public class StoichiometryObject implements Comparable<StoichiometryObject> {
 
-
     private Integer stoichiometry;
 
     private DatabaseObject object;
@@ -25,8 +24,9 @@ public class StoichiometryObject implements Comparable<StoichiometryObject> {
         this.stoichiometry = stoichiometry;
     }
 
-    public DatabaseObject getObject() {
-        return object;
+    public <T extends DatabaseObject> T getObject() {
+        //noinspection unchecked
+        return (T) object;
     }
 
     public void setObject(DatabaseObject object) {
