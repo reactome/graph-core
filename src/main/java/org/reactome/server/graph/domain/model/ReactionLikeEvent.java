@@ -25,6 +25,8 @@ public abstract class ReactionLikeEvent extends Event {
     private Boolean isChimeric;
     @ReactomeProperty
     private String systematicName;
+    @ReactomeProperty
+    private String category;
 
     @Relationship(type = "catalystActivity")
     private List<CatalystActivity> catalystActivity;
@@ -67,6 +69,14 @@ public abstract class ReactionLikeEvent extends Event {
 
     public void setSystematicName(String systematicName) {
         this.systematicName = systematicName;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public List<CatalystActivity> getCatalystActivity() {
