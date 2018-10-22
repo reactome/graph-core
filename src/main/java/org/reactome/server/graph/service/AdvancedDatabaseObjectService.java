@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -115,8 +116,24 @@ public class AdvancedDatabaseObjectService {
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
 
+    public void customQuery(String query) {
+        customQuery(query, Collections.emptyMap());
+    }
+
+    public void customQuery(String query, Map<String, Object> parameters) {
+        advancedDatabaseObjectRepository.customQuery(query, parameters);
+    }
+
+    public <T> T getCustomQueryResult(Class<T> clazz, String query) throws CustomQueryException {
+        return getCustomQueryResult(clazz, query, Collections.emptyMap());
+    }
+
     public <T> T getCustomQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
         return advancedDatabaseObjectRepository.customQueryResult(clazz, query, parameters);
+    }
+
+    public <T> Collection<T> getCustomQueryResults(Class<T> clazz, String query) throws CustomQueryException {
+        return getCustomQueryResults(clazz, query, Collections.emptyMap());
     }
 
     public <T> Collection<T> getCustomQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {

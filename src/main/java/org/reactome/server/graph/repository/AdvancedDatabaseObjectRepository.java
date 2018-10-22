@@ -301,6 +301,10 @@ public class AdvancedDatabaseObjectRepository {
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
 
+    public void customQuery(String query, Map<String, Object> parameters){
+        neo4jTemplate.query(query, parameters);
+    }
+
     public <T> T customQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
         if (parameters == null) parameters = Collections.EMPTY_MAP;
 
