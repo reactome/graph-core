@@ -190,7 +190,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return getClass().getSimpleName();
     }
 
-    //@ReactomeSchemaIgnore
     public <T> T fetchSingleValue(String methodName) {
         try {
             Method method = getClass().getMethod(methodName);
@@ -201,7 +200,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         }
     }
 
-    //@ReactomeSchemaIgnore
     public <T> Collection<T> fetchMultiValue(String methodName) {
         try {
             Method method = this.getClass().getMethod(methodName);
