@@ -151,4 +151,15 @@ public class LazyLoadingTest extends BaseTest {
 
         logger.info("Finished");
     }
+
+    @Test
+    public void lazyLoadingEventOf(){
+        logger.info("Started testing databaseObjectService.lazyLoadingEventOf");
+        long start = System.currentTimeMillis();
+        ReactionLikeEvent rle = dbs.findById("R-HSA-5205661");
+        logger.info("GraphDb execution time: " + (System.currentTimeMillis() - start) + "ms");
+
+        assertFalse("'R-HSA-5205661 is 'at least' an event of 'R-HSA-5205647'", rle.getEventOf().isEmpty());
+        logger.info("Finished");
+    }
 }

@@ -27,6 +27,7 @@ public class LazyFetchAspect {
 
     private Boolean enableAOP = true;
 
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
     @Autowired
     private AdvancedDatabaseObjectService advancedDatabaseObjectService;
 
@@ -55,8 +56,11 @@ public class LazyFetchAspect {
                     ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
                     Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
                     String clazz = type.getSimpleName();
+                    // DatabaseObject.isLoaded only works for OUTGOING relationships
+                    //noinspection EqualsBetweenInconvertibleTypes
+                    boolean isLoaded = databaseObject.isLoaded && relationship.equals(Relationship.OUTGOING);
                     // querying the graph and fill the collection if it hasn't been fully loaded before
-                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = databaseObject.isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
                     if (lazyLoadedObjectAsCollection == null) {
                         //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
                         if (List.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new ArrayList<>();
