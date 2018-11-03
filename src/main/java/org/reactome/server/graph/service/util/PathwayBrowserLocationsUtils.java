@@ -7,7 +7,10 @@ import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 /**
@@ -43,13 +46,7 @@ public abstract class PathwayBrowserLocationsUtils {
     }
 
     public static Set<PathwayBrowserNode> removeOrphans(Set<PathwayBrowserNode> leaves) {
-        Iterator<PathwayBrowserNode> it = leaves.iterator();
-        while (it.hasNext()) {
-            PathwayBrowserNode node = it.next();
-            if (node.getType() == null || !node.getType().equals(TopLevelPathway.class.getSimpleName())) {
-                it.remove();
-            }
-        }
+        leaves.removeIf(n -> n.getType() == null || !n.getType().equals(TopLevelPathway.class.getSimpleName()));
         return leaves;
     }
 
@@ -76,37 +73,6 @@ public abstract class PathwayBrowserLocationsUtils {
 
         return newAvailableSpecies;
     }
-
-
-//    todo decide to remove
-//    private static Set<PathwayBrowserNode> visited;
-//
-//    public static Set<PathwayBrowserNode> convertParentsToChildren(Set<PathwayBrowserNode> roots) {
-//        visited = new HashSet<>();
-//        for (PathwayBrowserNode root : roots) {
-//            convertParentsToChildren(root);
-//            root.setChildren(root.getParent());
-//            root.setParent(null);
-//            System.out.println();
-//        }
-//        return roots;
-//    }
-//
-//    private static void convertParentsToChildren (PathwayBrowserNode x) {
-//        if (x.getParent() != null && !x.getParent().isEmpty()) {
-//            for (PathwayBrowserNode pathwayBrowserNode : x.getParent()) {
-//                if (visited.contains(pathwayBrowserNode)) continue;
-//                convertParentsToChildren(pathwayBrowserNode);
-//                visited.add(pathwayBrowserNode);
-//                if (pathwayBrowserNode.getParent()!= null) {
-//                    pathwayBrowserNode.setChildren(pathwayBrowserNode.getParent());
-//                    pathwayBrowserNode.setParent(null);
-//                }
-//            }
-//        }
-//    }
-
-
 
     /**
      * Generating individual Trees from a leaf
