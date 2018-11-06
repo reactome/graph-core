@@ -33,6 +33,9 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "physicalEntity")
     private PhysicalEntity physicalEntity;
 
+    @Relationship(type = "literatureReference")
+    private List<Publication> literatureReference;
+
     @Relationship(type = "regulatedBy")
     @ReactomeRelationship
     private List<Regulation> regulatedBy;
@@ -74,6 +77,15 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "physicalEntity")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
+    }
+
+    public List<Publication> getLiteratureReference() {
+        return literatureReference;
+    }
+
+    @Relationship(type = "literatureReference")
+    public void setLiteratureReference(List<Publication> literatureReference) {
+        this.literatureReference = literatureReference;
     }
 
     public List<Regulation> getRegulatedBy() {
