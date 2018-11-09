@@ -27,6 +27,10 @@ public class Pathway extends Event {
 
     @ReactomeProperty(addedField = true)
     private Boolean hasDiagram;
+
+    @ReactomeProperty
+    private Boolean hasEHLD;
+
     @ReactomeTransient
     private Integer diagramWidth;
     @ReactomeTransient
@@ -61,6 +65,14 @@ public class Pathway extends Event {
 
     public void setHasDiagram(Boolean hasDiagram) {
         this.hasDiagram = hasDiagram;
+    }
+
+    public Boolean getHasEHLD() {
+        return hasEHLD;
+    }
+
+    public void setHasEHLD(Boolean hasEHLD) {
+        this.hasEHLD = hasEHLD;
     }
 
     @JsonIgnore

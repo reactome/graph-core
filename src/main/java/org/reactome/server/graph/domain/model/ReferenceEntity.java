@@ -3,6 +3,7 @@ package org.reactome.server.graph.domain.model;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class ReferenceEntity extends DatabaseObject {
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
+    @ReactomeRelationship
     @Relationship(type = "referenceEntity", direction = Relationship.INCOMING)
     private List<PhysicalEntity> physicalEntity;
 
