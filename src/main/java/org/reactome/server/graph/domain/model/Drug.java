@@ -8,24 +8,12 @@ import org.neo4j.ogm.annotation.Relationship;
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
 @NodeEntity
-public class Drug extends PhysicalEntity {
+public abstract class Drug extends PhysicalEntity {
 
     @Relationship(type = "referenceEntity")
     private ReferenceTherapeutic referenceEntity;
 
-    @Relationship(type = "drugType")
-    private DrugType drugType;
-
     public Drug() {}
-
-    public DrugType getDrugType() {
-        return drugType;
-    }
-
-    @Relationship(type = "drugType")
-    public void setDrugType(DrugType drugType) {
-        this.drugType = drugType;
-    }
 
     public ReferenceTherapeutic getReferenceEntity() {
         return referenceEntity;
