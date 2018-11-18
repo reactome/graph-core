@@ -19,6 +19,7 @@ public class Participant {
     private Long peDbId;
     private String displayName;
     private String schemaClass;
+    private String icon;
     private Collection<Object> refEntities;
 
     public Participant() {
@@ -46,6 +47,14 @@ public class Participant {
 
     public void setSchemaClass(String schemaClass) {
         this.schemaClass = schemaClass;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public Collection<Object> getRefEntities() {
