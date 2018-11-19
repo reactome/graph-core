@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
@@ -12,11 +11,10 @@ import org.reactome.server.graph.domain.model.Publication;
  * @author Luanne Misquitta
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
+@SuppressWarnings("unused")
 @RelationshipEntity(type = "author")
 public class PublicationAuthor implements Comparable {
 
-    @SuppressWarnings("unused")
-    @JsonIgnore
     @GraphId
     private Long id;
 

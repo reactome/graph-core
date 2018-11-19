@@ -6,10 +6,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
-import org.reactome.server.graph.domain.relationship.HasComponent;
-import org.reactome.server.graph.domain.relationship.Input;
-import org.reactome.server.graph.domain.relationship.Output;
-import org.reactome.server.graph.domain.relationship.RepeatedUnit;
+import org.reactome.server.graph.domain.relationship.*;
 
 import java.util.*;
 
@@ -41,7 +38,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     private List<CatalystActivity> catalystActivities;
 
     @Relationship(type = "compartment")
-    private List<Compartment> compartment;
+    private SortedSet<HasCompartment<PhysicalEntity>> compartment;
 
     /**
      * ComponentOf is not a field of the previous RestfulApi and will be ignored until needed
@@ -194,12 +191,29 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     public List<Compartment> getCompartment() {
-        return compartment;
+        if(compartment == null) return null;
+        List<Compartment> rtn = new ArrayList<>();
+        for (HasCompartment<PhysicalEntity> c : compartment) {
+            rtn.add(c.getCompartment());
+        }
+        return rtn;
     }
 
     @Relationship(type = "compartment")
-    public void setCompartment(List<Compartment> compartment) {
+    public void setCompartment(SortedSet<HasCompartment<PhysicalEntity>> compartment) {
         this.compartment = compartment;
+    }
+
+    public void setCompartment(List<Compartment> compartment) {
+        this.compartment = new TreeSet<>();
+        int order = 0;
+        for (Compartment c : compartment) {
+            HasCompartment<PhysicalEntity> hc = new HasCompartment<>();
+            hc.setSource(this);
+            hc.setCompartment(c);
+            hc.setOrder(order++);
+            this.compartment.add(hc);
+        }
     }
 
     @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
@@ -224,11 +238,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.consumedByEvent = consumedByEvent;
     }
 
-    public void setConsumedByEvent(List<Event> events) {
+    public void setConsumedByEvent(List<ReactionLikeEvent> events) {
         this.consumedByEvent = new TreeSet<>();
-        for (Event e : events) {
+        for (ReactionLikeEvent rle : events) {
             Input input = new Input();
-            input.setEvent(e);
+            input.setReactionLikeEvent(rle);
             input.setPhysicalEntity(this);
             input.setStoichiometry(1);
             this.consumedByEvent.add(input);
@@ -372,11 +386,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.producedByEvent = producedByEvent;
     }
 
-    public void setProducedByEvent(List<Event> events) {
+    public void setProducedByEvent(List<ReactionLikeEvent> events) {
         this.producedByEvent = new TreeSet<>();
-        for (Event event : events) {
+        for (ReactionLikeEvent rle : events) {
             Output output = new Output();
-            output.setEvent(event);
+            output.setReactionLikeEvent(rle);
             output.setPhysicalEntity(this);
             output.setStoichiometry(1);
             this.producedByEvent.add(output);
@@ -439,11 +453,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     @Relationship(type = "input", direction = Relationship.INCOMING)
-    public List<Event> getConsumedByEvent() {
-        List<Event> rtn = new ArrayList<>();
+    public List<ReactionLikeEvent> getConsumedByEvent() {
+        List<ReactionLikeEvent> rtn = new ArrayList<>();
         if(consumedByEvent!=null) {
             for (Input aux : consumedByEvent) {
-                    rtn.add(aux.getEvent());
+                    rtn.add(aux.getReactionLikeEvent());
             }
             return rtn;
         }
@@ -451,11 +465,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     @Relationship(type = "output", direction = Relationship.INCOMING)
-    public List<Event> getProducedByEvent() {
-        List<Event> rtn = new ArrayList<>();
+    public List<ReactionLikeEvent> getProducedByEvent() {
+        List<ReactionLikeEvent> rtn = new ArrayList<>();
         if(producedByEvent!=null) {
             for (Output aux : producedByEvent) {
-                    rtn.add(aux.getEvent());
+                    rtn.add(aux.getReactionLikeEvent());
             }
             return rtn;
         }

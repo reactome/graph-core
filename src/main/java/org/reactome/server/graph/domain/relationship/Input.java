@@ -1,34 +1,49 @@
 package org.reactome.server.graph.domain.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 
 /**
- * Input is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
- * inputs.
+ * Input relationship of ReactionLikeEvent. It is needed to specify the stoichiometry and order of inputs.
  */
 @SuppressWarnings("unused")
 @RelationshipEntity(type = "input")
 public class Input implements Comparable {
 
-    @JsonIgnore
     @GraphId
     private Long id;
 
+    @StartNode
+    private ReactionLikeEvent rle;
+
+    @EndNode
+    private PhysicalEntity target;
+
     private Integer stoichiometry = 1;
 
-    @JsonIgnore
-    @StartNode
-    private Event event;
-    @EndNode
-    private PhysicalEntity physicalEntity;
+    private int order;
 
     public Input() {}
+
+    public PhysicalEntity getPhysicalEntity() {
+        return target;
+    }
+
+    public void setPhysicalEntity(PhysicalEntity physicalEntity) {
+        this.target = physicalEntity;
+    }
+
+    public ReactionLikeEvent getReactionLikeEvent() {
+        return rle;
+    }
+
+    public void setReactionLikeEvent(ReactionLikeEvent event) {
+        this.rle = event;
+    }
 
     public Integer getStoichiometry() {
         return stoichiometry;
@@ -38,20 +53,12 @@ public class Input implements Comparable {
         this.stoichiometry = stoichiometry;
     }
 
-    public PhysicalEntity getPhysicalEntity() {
-        return physicalEntity;
+    public int getOrder() {
+        return order;
     }
 
-    public void setPhysicalEntity(PhysicalEntity physicalEntity) {
-        this.physicalEntity = physicalEntity;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     @Override
@@ -59,21 +66,21 @@ public class Input implements Comparable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Input input = (Input) o;
+        Input that = (Input) o;
 
-        if (event != null ? !event.equals(input.event) : input.event != null) return false;
-        return physicalEntity != null ? physicalEntity.equals(input.physicalEntity) : input.physicalEntity == null;
+        if (rle != null ? !rle.equals(that.rle) : that.rle != null) return false;
+        return target != null ? target.equals(that.target) : that.target == null;
     }
 
     @Override
     public int hashCode() {
-        int result = event != null ? event.hashCode() : 0;
-        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
+        int result = rle != null ? rle.hashCode() : 0;
+        result = 31 * result + (target != null ? target.hashCode() : 0);
         return result;
     }
 
     @Override
     public int compareTo(Object o) {
-        return 0;
+        return this.order - ((Input) o).order;
     }
 }

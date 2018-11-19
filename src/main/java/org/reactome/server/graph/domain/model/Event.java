@@ -6,9 +6,9 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.relationship.HasCompartment;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @NodeEntity
@@ -38,7 +38,7 @@ public abstract class Event extends DatabaseObject {
     private List<DatabaseIdentifier> crossReference;
 
     @Relationship(type = "compartment")
-    private List<Compartment> compartment;
+    private SortedSet<HasCompartment<Event>> compartment;
 
     @Relationship(type = "disease")
     private List<Disease> disease;
@@ -177,12 +177,29 @@ public abstract class Event extends DatabaseObject {
     }
 
     public List<Compartment> getCompartment() {
-        return compartment;
+        if(compartment == null) return null;
+        List<Compartment> rtn = new ArrayList<>();
+        for (HasCompartment<Event> c : compartment) {
+            rtn.add(c.getCompartment());
+        }
+        return rtn;
     }
 
     @Relationship(type = "compartment")
-    public void setCompartment(List<Compartment> compartment) {
+    public void setCompartment(SortedSet<HasCompartment<Event>> compartment) {
         this.compartment = compartment;
+    }
+
+    public void setCompartment(List<Compartment> compartment) {
+        this.compartment = new TreeSet<>();
+        int order = 0;
+        for (Compartment c : compartment) {
+            HasCompartment<Event> hc = new HasCompartment<>();
+            hc.setSource(this);
+            hc.setCompartment(c);
+            hc.setOrder(order++);
+            this.compartment.add(hc);
+        }
     }
 
     public List<Disease> getDisease() {

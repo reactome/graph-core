@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
@@ -12,10 +11,9 @@ import org.reactome.server.graph.domain.model.Pathway;
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @RelationshipEntity(type = "hasEncapsulatedEvent")
+@SuppressWarnings("unused")
 public class HasEncapsulatedEvent implements Comparable {
 
-    @SuppressWarnings("unused")
-    @JsonIgnore
     @GraphId
     private Long id;
 
@@ -26,8 +24,6 @@ public class HasEncapsulatedEvent implements Comparable {
     private Event event;
 
     private int order;
-
-    private int stoichiometry;
 
     public Long getId() {
         return id;

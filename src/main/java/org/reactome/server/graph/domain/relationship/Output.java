@@ -1,49 +1,40 @@
 package org.reactome.server.graph.domain.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 
 /**
- * Output is the relationship entity of ReactionLikeEvent. It is needed to specify the stoichiometry (stoichiometry) of
- * outputs.
+ * Output relationship of ReactionLikeEvent. It is needed to specify the stoichiometry and order of outputs.
  */
+@SuppressWarnings("unused")
 @RelationshipEntity(type = "output")
 public class Output implements Comparable {
 
-    @SuppressWarnings("unused")
-    @JsonIgnore
     @GraphId
     private Long id;
 
-    private Integer stoichiometry = 1;
-
-    @JsonIgnore
     @StartNode
-    private Event event;
+    private ReactionLikeEvent rle;
+
     @EndNode
     private PhysicalEntity physicalEntity;
 
+    private Integer stoichiometry = 1;
+
+    private int order;
+
     public Output() {}
 
-    public Integer getStoichiometry() {
-        return stoichiometry;
+    public ReactionLikeEvent getReactionLikeEvent() {
+        return rle;
     }
 
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
+        this.rle = reactionLikeEvent;
     }
 
     public PhysicalEntity getPhysicalEntity() {
@@ -54,6 +45,23 @@ public class Output implements Comparable {
         this.physicalEntity = physicalEntity;
     }
 
+
+    public Integer getStoichiometry() {
+        return stoichiometry;
+    }
+
+    public void setStoichiometry(Integer stoichiometry) {
+        this.stoichiometry = stoichiometry;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -62,13 +70,13 @@ public class Output implements Comparable {
         Output output = (Output) o;
 
         //noinspection SimplifiableIfStatement
-        if (event != null ? !event.equals(output.event) : output.event != null) return false;
+        if (rle != null ? !rle.equals(output.rle) : output.rle != null) return false;
         return physicalEntity != null ? physicalEntity.equals(output.physicalEntity) : output.physicalEntity == null;
     }
 
     @Override
     public int hashCode() {
-        int result = event != null ? event.hashCode() : 0;
+        int result = rle != null ? rle.hashCode() : 0;
         result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
         return result;
     }

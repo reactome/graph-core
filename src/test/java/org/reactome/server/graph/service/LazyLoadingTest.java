@@ -124,7 +124,7 @@ public class LazyLoadingTest extends BaseTest {
         logger.info("Testing Lazy Loading for Complex ComponentOf");
 
         PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-375305");
-        List<Event> targets = dbObj.getConsumedByEvent();
+        List<ReactionLikeEvent> targets = dbObj.getConsumedByEvent();
 
         boolean found = false;
         for (Event event : targets) {

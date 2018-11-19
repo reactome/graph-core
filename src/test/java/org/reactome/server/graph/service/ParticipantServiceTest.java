@@ -80,7 +80,7 @@ public class ParticipantServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(23, participants.size());
+        assertEquals(9, participants.size());
         logger.info("Finished");
     }
 }

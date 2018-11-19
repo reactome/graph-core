@@ -5,6 +5,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 
@@ -30,7 +31,7 @@ public class Complex extends PhysicalEntity {
     private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "includedLocation")
-    private List<Compartment> includedLocation;
+    private SortedSet<HasCompartment<Complex>> includedLocation;
 
     @Relationship(type = "species")
     private List<Species> species;
@@ -111,12 +112,29 @@ public class Complex extends PhysicalEntity {
     }
 
     public List<Compartment> getIncludedLocation() {
-        return includedLocation;
+        if (includedLocation == null) return null;
+        List<Compartment> rtn = new ArrayList<>();
+        for (HasCompartment<Complex> c : includedLocation) {
+            rtn.add(c.getCompartment());
+        }
+        return rtn;
     }
 
     @Relationship(type = "includedLocation")
-    public void setIncludedLocation(List<Compartment> includedLocation) {
+    public void setIncludedLocation(SortedSet<HasCompartment<Complex>> includedLocation) {
         this.includedLocation = includedLocation;
+    }
+
+    public void setIncludedLocation(List<Compartment> includedLocation) {
+        this.includedLocation = new TreeSet<>();
+        int order = 0;
+        for (Compartment c : includedLocation) {
+            HasCompartment<Complex> hc = new HasCompartment<>();
+            hc.setSource(this);
+            hc.setCompartment(c);
+            hc.setOrder(order++);
+            this.includedLocation.add(hc);
+        }
     }
 
     public List<Species> getSpecies() {

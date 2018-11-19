@@ -167,7 +167,7 @@ public abstract class ReactionLikeEvent extends Event {
             Input input = map.get(physicalEntity.getDbId());
             if (input == null) {
                 input = new Input();
-                input.setEvent(this);
+                input.setReactionLikeEvent(this);
                 input.setPhysicalEntity(physicalEntity);
                 map.put(physicalEntity.getDbId(), input);
             } else {
@@ -210,7 +210,7 @@ public abstract class ReactionLikeEvent extends Event {
             Output output = map.get(physicalEntity.getDbId());
             if (output == null) {
                 output = new Output();
-                output.setEvent(this);
+                output.setReactionLikeEvent(this);
                 output.setPhysicalEntity(physicalEntity);
                 map.put(physicalEntity.getDbId(), output);
             } else {
