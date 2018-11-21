@@ -10,7 +10,7 @@ import org.reactome.server.graph.domain.relationship.HasMember;
 import java.util.*;
 
 /**
- * Two or more entities grouped because of a shared molecular feature. The superclass for CandidateSet, DefinedSet, and OpenSet.
+ * Two or more entities grouped because of a shared molecular feature. The superclass for CandidateSet and DefinedSet.
  */
 @SuppressWarnings("unused")
 @NodeEntity
@@ -90,7 +90,7 @@ public abstract class EntitySet extends PhysicalEntity {
     @JsonIgnore
     public String getExplanation() {
         return "Two or more entities grouped because of a shared molecular feature. " +
-                "The superclass for CandidateSet, DefinedSet, and OpenSet";
+                "The superclass for CandidateSet and DefinedSet";
     }
 
     @ReactomeSchemaIgnore
