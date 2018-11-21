@@ -18,19 +18,18 @@ public abstract class Regulation extends DatabaseObject {
     private String releaseDate;
 
     @ReactomeProperty
-    private List<String> name;
+    @Relationship(type = "activeUnit")
+    private List<PhysicalEntity> activeUnit;
+
+    @ReactomeProperty
+    @Relationship(type = "activity")
+    private GO_MolecularFunction activity;
 
     @Relationship(type = "authored", direction = Relationship.INCOMING)
     private InstanceEdit authored;
 
-    @Relationship(type = "containedInPathway")
-    private List<Pathway> containedInPathway;
-
     @Relationship(type = "edited", direction = Relationship.INCOMING)
     private List<InstanceEdit> edited;
-
-    @Relationship(type = "figure")
-    private List<Figure> figure;
 
     @Relationship(type = "goBiologicalProcess")
     private GO_BiologicalProcess goBiologicalProcess;
@@ -71,12 +70,24 @@ public abstract class Regulation extends DatabaseObject {
         this.releaseDate = releaseDate;
     }
 
-    public List<String> getName() {
-        return name;
+    @Relationship(type = "activeUnit")
+    public List<PhysicalEntity> getActiveUnit() {
+        return activeUnit;
     }
 
-    public void setName(List<String> name) {
-        this.name = name;
+    @Relationship(type = "activeUnit")
+    public void setActiveUnit(List<PhysicalEntity> activeUnit) {
+        this.activeUnit = activeUnit;
+    }
+
+    @Relationship(type = "activity")
+    public GO_MolecularFunction getActivity() {
+        return activity;
+    }
+
+    @Relationship(type = "activity")
+    public void setActivity(GO_MolecularFunction activity) {
+        this.activity = activity;
     }
 
     @Relationship(type = "authored", direction = Relationship.INCOMING)
@@ -89,15 +100,6 @@ public abstract class Regulation extends DatabaseObject {
         this.authored = authored;
     }
 
-    public List<Pathway> getContainedInPathway() {
-        return containedInPathway;
-    }
-
-    @Relationship(type = "containedInPathway")
-    public void setContainedInPathway(List<Pathway> containedInPathway) {
-        this.containedInPathway = containedInPathway;
-    }
-
     @Relationship(type = "edited", direction = Relationship.INCOMING)
     public List<InstanceEdit> getEdited() {
         return edited;
@@ -106,15 +108,6 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "edited", direction = Relationship.INCOMING)
     public void setEdited(List<InstanceEdit> edited) {
         this.edited = edited;
-    }
-
-    public List<Figure> getFigure() {
-        return figure;
-    }
-
-    @Relationship(type = "figure")
-    public void setFigure(List<Figure> figure) {
-        this.figure = figure;
     }
 
     public GO_BiologicalProcess getGoBiologicalProcess() {
