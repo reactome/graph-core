@@ -41,7 +41,7 @@ public abstract class ReactionLikeEvent extends Event {
     private Set<Input> input;
 
     @Relationship(type = "normalReaction")
-    private List<ReactionLikeEvent> normalReaction;
+    private ReactionLikeEvent normalReaction;
 
     @Relationship(type = "output")
     private Set<Output> output;
@@ -106,12 +106,12 @@ public abstract class ReactionLikeEvent extends Event {
         this.entityOnOtherCell = entityOnOtherCell;
     }
 
-    public List<ReactionLikeEvent> getNormalReaction() {
+    public ReactionLikeEvent getNormalReaction() {
         return normalReaction;
     }
 
     @Relationship(type = "normalReaction")
-    public void setNormalReaction(List<ReactionLikeEvent> normalReaction) {
+    public void setNormalReaction(ReactionLikeEvent normalReaction) {
         this.normalReaction = normalReaction;
     }
 
