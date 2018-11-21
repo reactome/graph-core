@@ -20,10 +20,12 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(s:Pathway{dbId:{0}, hasDiagram:False}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT d, s " +
+            "OPTIONAL MATCH aux=(s)-[:hasEvent*]->(rle:ReactionLikeEvent) " +
+            "WHERE NONE(x IN NODES(aux) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "WITH DISTINCT d, s, COLLECT(DISTINCT rle.stId) AS events " +
             "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
             "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId as diagramStId, [s.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "RETURN d.stId as diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
             "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(r:ReactionLikeEvent{dbId:{0}}) " +
@@ -40,10 +42,12 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(s:Pathway{stId:{0}, hasDiagram:False}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "WITH DISTINCT d, s " +
+            "OPTIONAL MATCH aux=(s)-[:hasEvent*]->(rle:ReactionLikeEvent) " +
+            "WHERE NONE(x IN NODES(aux) WHERE (x:Pathway) AND x.hasDiagram) " +
+            "WITH DISTINCT d, s, COLLECT(DISTINCT rle.stId) AS events " +
             "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
             "WHERE NOT (d:TopLevelPathway) " +
-            "RETURN d.stId as diagramStId, [s.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
+            "RETURN d.stId as diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
             "ORDER BY level LIMIT 1 " +
             "UNION " +
             "MATCH path=(d:Pathway{hasDiagram:True})-[:hasEvent*]->(r:ReactionLikeEvent{stId:{0}}) " +

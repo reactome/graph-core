@@ -35,11 +35,11 @@ public class DiagramServiceTest extends BaseTest {
 
         assertNotNull("The diagram result object cannot be null", dr1);
         assertTrue("The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'", dr1.getDiagramStId().equals("R-HSA-163200"));
-        assertTrue("", dr1.getEvents().size() == 1 && dr1.getEvents().get(0).equals("R-HSA-6799198"));
+        assertTrue("", dr1.getEvents().size() == 13 && dr1.getEvents().contains("R-HSA-5690023"));
 
         assertNotNull("The diagram result object cannot be null", dr2);
         assertTrue("The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'", dr2.getDiagramStId().equals("R-HSA-163200"));
-        assertTrue("", dr2.getEvents().size() == 1 && dr2.getEvents().get(0).equals("R-HSA-6799198"));
+        assertTrue("", dr2.getEvents().size() == 13 && dr2.getEvents().contains("R-HSA-5690023"));
     }
 
     @Test
