@@ -294,7 +294,9 @@ public class AdvancedServiceTest extends BaseTest {
         Collection<Pathway> pathways = advancedDatabaseObjectService.getCustomQueryResults(Pathway.class, query, parametersMap);
         assertNotNull(pathways);
         assertEquals(5, pathways.size());
-        assertEquals(4, pathways.iterator().next().getHasEvent().size());
+        lazyFetchAspect.setEnableAOP(true);
+        assertEquals(2, pathways.iterator().next().getHasEvent().size());
+        lazyFetchAspect.setEnableAOP(false);
     }
 
     @Test
