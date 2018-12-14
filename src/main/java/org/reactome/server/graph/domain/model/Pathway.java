@@ -29,7 +29,7 @@ public class Pathway extends Event {
     private Boolean hasDiagram;
 
     @ReactomeProperty
-    private Boolean hasEHLD;
+    private Boolean hasEHLD = false;
 
     @ReactomeTransient
     private Integer diagramWidth;
