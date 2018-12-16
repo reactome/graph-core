@@ -20,11 +20,9 @@ import java.util.HashSet;
 @SuppressWarnings("WeakerAccess")
 public class PathwaysService {
 
-    @Autowired
-    public PathwaysRepository pathwaysRepository;
+    private PathwaysRepository pathwaysRepository;
 
-    @Autowired
-    public SpeciesService speciesService;
+    private SpeciesService speciesService;
 
     public Collection<Event> getContainedEvents(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
@@ -117,6 +115,7 @@ public class PathwaysService {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
@@ -177,5 +176,15 @@ public class PathwaysService {
             return pathwaysRepository.getDiagramEntitiesForIdentifierByDbId(Long.parseLong(pathway), identifier);
         }
         return null;
+    }
+
+    @Autowired
+    public void setPathwaysRepository(PathwaysRepository pathwaysRepository) {
+        this.pathwaysRepository = pathwaysRepository;
+    }
+
+    @Autowired
+    public void setSpeciesService(SpeciesService speciesService) {
+        this.speciesService = speciesService;
     }
 }
