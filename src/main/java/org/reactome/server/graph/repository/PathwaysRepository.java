@@ -22,7 +22,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
     @Query("MATCH (:Pathway{dbId:{0}})-[:hasEvent*]->(e:Event) RETURN e")
     Collection<Event> getContainedEventsByDbId(Long dbId);
 
-    @Query(" MATCH (:DatabaseObject{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway) " +
+    @Query(" MATCH (:DatabaseObject{stId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p " +
             "UNION " +
             "MATCH (:ReactionLikeEvent{stId:{0}})<-[:hasEvent]-(p:Pathway) " +
@@ -32,7 +32,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForByStId(String stId);
 
-    @Query(" MATCH (:DatabaseObject{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
+    @Query(" MATCH (:DatabaseObject{stId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
             "RETURN DISTINCT p " +
             "UNION " +
             "MATCH (:ReactionLikeEvent{stId:{0}})<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
@@ -43,7 +43,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
     Collection<Pathway> getPathwaysForByStIdAndSpeciesTaxId(String stId, String taxId);
 
 
-    @Query(" MATCH (:DatabaseObject{dbId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway) " +
+    @Query(" MATCH (:DatabaseObject{dbId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p " +
             "UNION " +
             "MATCH (:ReactionLikeEvent{dbId:{0}})<-[:hasEvent]-(p:Pathway) " +
@@ -53,7 +53,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForByDbId(Long dbId);
 
-    @Query(" MATCH (:DatabaseObject{dbId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
+    @Query(" MATCH (:DatabaseObject{dbId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-()<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
             "RETURN DISTINCT p " +
             "UNION " +
             "MATCH (:ReactionLikeEvent{dbId:{0}})<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
@@ -66,31 +66,31 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
 
     @Query(" MATCH (:DatabaseObject{stId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForAllFormsOfByStId(String stId);
 
     @Query(" MATCH (:DatabaseObject{stId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForAllFormsOfByStIdAndSpeciesTaxId(String stId, String taxId);
 
 
     @Query(" MATCH (:DatabaseObject{dbId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForAllFormsOfByDbId(Long dbId);
 
     @Query(" MATCH (:DatabaseObject{dbId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(:Species{taxId:{1}}) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId(Long dbId, String taxId);
 
 
-    @Query(" MATCH (:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
+    @Query(" MATCH (:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m " +
             "UNION " +
@@ -103,7 +103,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT m")
     Collection<Pathway> getPathwaysWithDiagramForByStId(String stId);
 
-    @Query(" MATCH (:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
+    @Query(" MATCH (:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m " +
             "UNION " +
@@ -117,7 +117,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
     Collection<Pathway> getPathwaysWithDiagramForByStIdAndSpeciesTaxId(String stId, String taxId);
 
 
-    @Query(" MATCH (:PhysicalEntity{dbId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
+    @Query(" MATCH (:PhysicalEntity{dbId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m " +
             "UNION " +
@@ -130,7 +130,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT m")
     Collection<Pathway> getPathwaysWithDiagramForByDbId(Long dbId);
 
-    @Query(" MATCH (:PhysicalEntity{dbId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
+    @Query(" MATCH (:PhysicalEntity{dbId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m " +
             "UNION " +
@@ -146,14 +146,14 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
 
     @Query(" MATCH (:PhysicalEntity{stId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m")
     Collection<Pathway> getPathwaysWithDiagramForAllFormsOfByStId(String stId);
 
     @Query(" MATCH (:PhysicalEntity{stId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m")
     Collection<Pathway> getPathwaysWithDiagramForAllFormsOfByStIdAndSpeciesTaxId(String stId, String taxId);
@@ -161,14 +161,14 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
 
     @Query(" MATCH (:PhysicalEntity{dbId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m")
     Collection<Pathway> getPathwaysWithDiagramForAllFormsOfByDbId(Long dbId);
 
     @Query(" MATCH (:PhysicalEntity{dbId:{0}})-[:regulator|hasComponent|repeatedUnit|hasMember|hasCandidate|referenceEntity*]->(re:ReferenceEntity) " +
             "WITH re " +
-            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
+            "MATCH (re)<-[:referenceEntity]-(:PhysicalEntity)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(r:ReactionLikeEvent)<-[:hasEvent*]-(p:Pathway{hasDiagram:True})-[:species]->(Species{taxId:{1}}) " +
             "WITH r, HEAD(COLLECT(p)) AS m " +
             "RETURN DISTINCT m")
     Collection<Pathway> getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId(Long dbId, String taxId);
@@ -177,24 +177,24 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
     @Query(" MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
             "WITH DISTINCT pe " +
-            "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
+            "MATCH (pe)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p " +
             "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
-            "MATCH (pe:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
+            "MATCH (pe:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysForIdentifier(String identifier);
 
     @Query(" MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
             "WITH DISTINCT pe " +
-            "MATCH (pe)<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{taxId:{1}}) " +
+            "MATCH (pe)<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{taxId:{1}}) " +
             "RETURN DISTINCT p " +
             "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
-            "MATCH (pe:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{taxId:{1}}) " +
+            "MATCH (pe:PhysicalEntity{stId:{0}})<-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output*]-(:ReactionLikeEvent)<-[:hasEvent]-(p:Pathway)-[:species]->(s:Species{taxId:{1}}) " +
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysForIdentifierAndSpeciesTaxId(String identifier, String taxId);
 
-    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
+    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{dbId:{0}}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway))  " +
             "OPTIONAL MATCH (p2:Pathway{dbId:{0}})  " +
             "WITH COLLECT(DISTINCT p1) + COLLECT(DISTINCT p2) AS ps " +
@@ -205,7 +205,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Long dbId);
 
-    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
+    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(:DatabaseObject{stId:{0}}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway))  " +
             "OPTIONAL MATCH (p2:Pathway{stId:{0}})  " +
             "WITH COLLECT(DISTINCT p1) + COLLECT(DISTINCT p2) AS ps " +
@@ -216,26 +216,26 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(String stId);
 
-    @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
+    @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
             "WHERE p.stId IN {1} " +
             "WITH DISTINCT p, pe " +
             "MATCH (pe)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n)-->(rd:ReferenceDatabase) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
             "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels " +
             "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
-            "MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:{0}}) " +
+            "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:{0}}) " +
             "WHERE p.stId IN {1} " +
             "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels")
     Collection<SimpleDatabaseObject> getPathwaysForIdentifierByStId(String identifier, Collection<String> pathways);
 
-    @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
+    @Query(" MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
             "WHERE p.dbId IN {1} " +
             "WITH DISTINCT p, pe " +
             "MATCH (pe)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n)-->(rd:ReferenceDatabase) " +
             "WHERE n.identifier = {0} OR {0} IN n.name OR {0} IN n.geneName " +
             "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels " +
             "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
-            "MATCH (p:Pathway)-[:regulatedBy|regulator|physicalEntity|entityFunctionalStatus|catalystActivity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:{0}}) " +
+            "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:{0}}) " +
             "WHERE p.dbId IN {1} " +
             "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels")
     Collection<SimpleDatabaseObject> getPathwaysForIdentifierByDbId(String identifier, Collection<Long> pathways);
@@ -248,7 +248,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "UNWIND ps AS p " +
             "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
             "WITH DISTINCT rle " +
-            "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]-(rle) " +
+            "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]-(rle) " +
             "WHERE n.identifier = {1} OR {1} IN n.name OR {1} IN n.geneName " +
             "RETURN DISTINCT pe.dbId AS dbId, pe.stId AS stId, pe.displayName AS displayName, labels(pe) AS labels " +
             "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
@@ -259,7 +259,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "UNWIND ps AS p " +
             "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
             "WITH DISTINCT rle " +
-            "MATCH (rle)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
+            "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
             "WITH DISTINCT pe " +
             "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(a:PhysicalEntity) " +
             "WITH DISTINCT pe, COLLECT(DISTINCT a.stId) AS participants " +
@@ -274,7 +274,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "UNWIND ps AS p " +
             "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
             "WITH DISTINCT rle " +
-            "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]-(rle) " +
+            "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]-(rle) " +
             "WHERE n.identifier = {1} OR {1} IN n.name OR {1} IN n.geneName " +
             "RETURN DISTINCT pe.dbId AS dbId, pe.stId AS stId, pe.displayName AS displayName, labels(pe) AS labels " +
             "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
@@ -285,7 +285,7 @@ public interface PathwaysRepository extends GraphRepository<DatabaseObject> {
             "UNWIND ps AS p " +
             "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
             "WITH DISTINCT rle " +
-            "MATCH (rle)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
+            "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
             "WITH DISTINCT pe " +
             "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(a:PhysicalEntity) " +
             "WITH DISTINCT pe, COLLECT(DISTINCT a.stId) AS participants " +

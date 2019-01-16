@@ -20,16 +20,14 @@ import java.util.Set;
 @SuppressWarnings("WeakerAccess")
 public class DetailsService {
 
-    @Autowired
     private DetailsRepository detailsRepository;
-    @Autowired
+
     private AdvancedLinkageService advancedLinkageService;
-    @Autowired
+
     private PhysicalEntityService physicalEntityService;
-    @Autowired
+
     private HierarchyService hierarchyService;
 
-//    @Transactional
     public ContentDetails getContentDetails(Object identifier, Boolean directParticipants) {
 
         ContentDetails contentDetails = new ContentDetails();
@@ -81,7 +79,7 @@ public class DetailsService {
         if (databaseObject instanceof CatalystActivity) {
             leaf = ((CatalystActivity) databaseObject).getPhysicalEntity();
         } else if (databaseObject instanceof EntityFunctionalStatus) {
-            leaf = ((EntityFunctionalStatus) databaseObject).getPhysicalEntity();
+            leaf = ((EntityFunctionalStatus) databaseObject).getDiseaseEntity();
         } else if (databaseObject instanceof Regulation) {
             leaf = ((Regulation) databaseObject).getRegulator();
         }
@@ -92,5 +90,25 @@ public class DetailsService {
             node.setType(leaf.getSchemaClass());
         }
         return node;
+    }
+
+    @Autowired
+    public void setDetailsRepository(DetailsRepository detailsRepository) {
+        this.detailsRepository = detailsRepository;
+    }
+
+    @Autowired
+    public void setAdvancedLinkageService(AdvancedLinkageService advancedLinkageService) {
+        this.advancedLinkageService = advancedLinkageService;
+    }
+
+    @Autowired
+    public void setPhysicalEntityService(PhysicalEntityService physicalEntityService) {
+        this.physicalEntityService = physicalEntityService;
+    }
+
+    @Autowired
+    public void setHierarchyService(HierarchyService hierarchyService) {
+        this.hierarchyService = hierarchyService;
     }
 }

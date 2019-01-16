@@ -20,7 +20,7 @@ public interface MappingRepository extends GraphRepository<Event> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
             "RETURN DISTINCT rle " +
             "ORDER BY rle.stId")
     Collection<ReactionLikeEvent> getReactionsLikeEvent(String databaseName, String identifier);
@@ -30,7 +30,7 @@ public interface MappingRepository extends GraphRepository<Event> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (:Species{taxId:{2}})<-[:species]-(rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (:Species{taxId:{2}})<-[:species]-(rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
             "RETURN DISTINCT rle " +
             "ORDER BY rle.stId")
     Collection<ReactionLikeEvent> getReactionsLikeEvent(String databaseName, String identifier, String taxId);
@@ -40,7 +40,7 @@ public interface MappingRepository extends GraphRepository<Event> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
             "WITH DISTINCT rle " +
             "MATCH (p:Pathway)-[:hasEvent]->(rle) " +
             "RETURN DISTINCT p " +
@@ -52,7 +52,7 @@ public interface MappingRepository extends GraphRepository<Event> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
             "WITH DISTINCT rle " +
             "MATCH (:Species{taxId:{2}})<-[:species]-(p:Pathway)-[:hasEvent]->(rle) " +
             "RETURN DISTINCT p " +
