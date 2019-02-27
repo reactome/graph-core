@@ -26,10 +26,8 @@ public class HierarchyRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(DetailsRepository.class);
 
-    @Autowired
     private Neo4jOperations neo4jTemplate;
 
-    @Autowired
     private AdvancedDatabaseObjectService ados;
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
@@ -304,7 +302,7 @@ public class HierarchyRepository {
     private Result getLocationsInPathwayBrowserByStIdRaw(String stId) {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:{stId}}) " +
-                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
+                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
                 "RETURN n, COLLECT(EXTRACT(rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -321,7 +319,7 @@ public class HierarchyRepository {
     private Result getLocationsInPathwayBrowserByDbIdRaw(Long dbId) {
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
-                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
+                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
                 "RETURN n, COLLECT(EXTRACT(rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -341,7 +339,7 @@ public class HierarchyRepository {
     private Result getLocationsInPathwayBrowserForInteractorByStIdRaw(String stId) {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:{stId}}) " +
-                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-() " +
+                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|input|output|hasEvent*]-() " +
                 "RETURN n, COLLECT(EXTRACT(rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
@@ -361,7 +359,7 @@ public class HierarchyRepository {
     private Result getLocationsInPathwayBrowserForInteractorByDbIdRaw(Long dbId) {
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
-                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|entityFunctionalStatus|input|output|hasEvent*]-() " +
+                "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|input|output|hasEvent*]-() " +
                 "RETURN n, COLLECT(EXTRACT(rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ])) as nodePairCollection";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -397,5 +395,15 @@ public class HierarchyRepository {
         } catch (CustomQueryException ex){
             return null;
         }
+    }
+
+    @Autowired
+    public void setNeo4jTemplate(Neo4jOperations neo4jTemplate) {
+        this.neo4jTemplate = neo4jTemplate;
+    }
+
+    @Autowired
+    public void setAdos(AdvancedDatabaseObjectService ados) {
+        this.ados = ados;
     }
 }

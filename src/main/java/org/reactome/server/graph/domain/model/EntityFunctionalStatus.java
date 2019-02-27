@@ -12,9 +12,13 @@ public class EntityFunctionalStatus extends DatabaseObject {
     @Relationship(type = "functionalStatus")
     private List<FunctionalStatus> functionalStatus;
 
-    @Relationship(type = "physicalEntity")
-    private PhysicalEntity physicalEntity;
-    
+    //Formerly "physicalEntity"
+    @Relationship(type = "diseaseEntity")
+    private PhysicalEntity diseaseEntity;
+
+    @Relationship(type = "normalEntity")
+    private PhysicalEntity normalEntity;
+
     public EntityFunctionalStatus() {}
 
     public List<FunctionalStatus> getFunctionalStatus() {
@@ -26,12 +30,21 @@ public class EntityFunctionalStatus extends DatabaseObject {
         this.functionalStatus = functionalStatus;
     }
 
-    public PhysicalEntity getPhysicalEntity() {
-        return physicalEntity;
+    public PhysicalEntity getDiseaseEntity() {
+        return diseaseEntity;
     }
 
-    @Relationship(type = "physicalEntity")
-    public void setPhysicalEntity(PhysicalEntity physicalEntity) {
-        this.physicalEntity = physicalEntity;
+    @Relationship(type = "diseaseEntity")
+    public void setDiseaseEntity(PhysicalEntity diseaseEntity) {
+        this.diseaseEntity = diseaseEntity;
+    }
+
+    public PhysicalEntity getNormalEntity() {
+        return normalEntity;
+    }
+
+    @Relationship(type = "normalEntity")
+    public void setNormalEntity(PhysicalEntity normalEntity) {
+        this.normalEntity = normalEntity;
     }
 }

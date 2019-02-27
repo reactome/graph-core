@@ -54,7 +54,7 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
     @Query(" MATCH (i:ReferenceEntity)<-[:interactor]-()-[:interactor]->(re:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
             "WHERE i.identifier = {0} OR i.variantIdentifier = {0} " +
             "WITH DISTINCT pe, COLLECT(DISTINCT re) AS res " +
-            "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe) " +
+            "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
             "WITH res, COLLECT(DISTINCT p) AS interactorInDiagram " +
             "UNWIND interactorInDiagram AS d " +
@@ -68,7 +68,7 @@ public interface InteractionsRepository extends GraphRepository<Interaction> {
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH aux=(p)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(re:ReferenceEntity) " +
+            "OPTIONAL MATCH aux=(p)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(re:ReferenceEntity) " +
             "WHERE p IN interactorInDiagram AND re IN res AND SINGLE(x IN NODES(aux) WHERE (x:Pathway) AND x.hasDiagram) " +
             "WITH p, COLLECT(DISTINCT pe) AS pes, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS pathwaysOccurrences " +
             "WHERE SIZE(pes) > 0 OR SIZE(pathwaysOccurrences) > 0 " +

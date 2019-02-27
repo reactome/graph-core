@@ -64,7 +64,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "WHERE re.trivial IS NULL " +
             "WITH COLLECT(DISTINCT pe) AS interactors, i + COLLECT(DISTINCT pe) AS objs " +
             "UNWIND objs as obj " +
-            "OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(obj) " +
+            "OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(obj) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True, dbId:{0}}) " +
             "WITH interactors, COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS directlyInDiagram " +
@@ -79,7 +79,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH (p)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
+            "OPTIONAL MATCH (p)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
             "WHERE p IN directlyInDiagram AND pe IN interactors " +
             "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS occurrences, COLLECT(DISTINCT pe) AS interactsWith " +
             "WHERE inDiagram OR SIZE(occurrences) > 0 " +
@@ -91,7 +91,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "WHERE re.trivial IS NULL " +
             "WITH COLLECT(DISTINCT pe) AS interactors, i + COLLECT(DISTINCT pe) AS objs " +
             "UNWIND objs as obj " +
-            "OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(obj) " +
+            "OPTIONAL MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(obj) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
             "OPTIONAL MATCH (d:Pathway{hasDiagram:True, stId:{0}}) " +
             "WITH interactors, COLLECT(DISTINCT p) + COLLECT(DISTINCT d) AS directlyInDiagram " +
@@ -106,7 +106,7 @@ public interface DiagramRepository extends GraphRepository<PhysicalEntity> {
             "WHERE ep IN all " +
             "OPTIONAL MATCH path=(p)-[:hasEvent*]->(sp:Pathway) " +
             "WHERE sp IN all AND SINGLE(x IN TAIL(NODES(path)) WHERE (x:Pathway) AND x.hasDiagram) " +
-            "OPTIONAL MATCH (p)-[:hasEvent|input|output|catalystActivity|entityFunctionalStatus|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
+            "OPTIONAL MATCH (p)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
             "WHERE p IN directlyInDiagram AND pe IN interactors " +
             "WITH p, p IN directlyInDiagram AS inDiagram, COLLECT(DISTINCT ep) + COLLECT(DISTINCT sp) AS occurrences, COLLECT(DISTINCT pe) AS interactsWith " +
             "WHERE inDiagram OR SIZE(occurrences) > 0 " +
