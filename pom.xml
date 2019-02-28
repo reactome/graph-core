@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.1.18</version>
+    <version>1.1.19-SNAPSHOT</version>
     <name>ReactomeGraphCore</name>
 
     <description>
@@ -71,6 +71,8 @@
         <pmd.version>3.6</pmd.version>
         <!--will be set as system properties during testing phase-->
 
+        <!-- Test dependencies -->
+        <reactome.base>1.2.19</reactome.base>
     </properties>
 
     <dependencies>
@@ -154,7 +156,7 @@
         <dependency>
             <groupId>org.reactome.base</groupId>
             <artifactId>reactome-base</artifactId>
-            <version>1.2.15</version>
+            <version>${reactome.base}</version>
             <scope>test</scope>
         </dependency>
 
