@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 
@@ -8,17 +7,16 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 @NodeEntity
 public class PsiMod extends ExternalOntology {
 
-    @JsonIgnore
-    @ReactomeProperty(addedField = true)
-    private String abbreviation;
+    @ReactomeProperty
+    private String label;
 
     public PsiMod() {}
 
-    public String getAbbreviation() {
-        return abbreviation;
+    public String getLabel() {
+        return label;
     }
 
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
