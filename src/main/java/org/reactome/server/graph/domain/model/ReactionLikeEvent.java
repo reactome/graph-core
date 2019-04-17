@@ -31,6 +31,9 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "catalystActivity")
     private List<CatalystActivity> catalystActivity;
 
+    @Relationship(type = "catalystActivityReference")
+    private CatalystActivityReference catalystActivityReference;
+
     @Relationship(type = "entityFunctionalStatus")
     private List<EntityFunctionalStatus> entityFunctionalStatus;
 
@@ -46,11 +49,14 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "output")
     private Set<Output> output;
 
-    @Relationship(type = "requiredInputComponent")
-    private Set<PhysicalEntity> requiredInputComponent;
-
     @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
+
+    @Relationship(type = "regulationReference")
+    private List<RegulationReference> regulationReference;
+
+    @Relationship(type = "requiredInputComponent")
+    private Set<PhysicalEntity> requiredInputComponent;
 
     public ReactionLikeEvent() {
     }
@@ -88,6 +94,16 @@ public abstract class ReactionLikeEvent extends Event {
         this.catalystActivity = catalystActivity;
     }
 
+    @Relationship(type = "catalystActivityReference")
+    public CatalystActivityReference getCatalystActivityReference() {
+        return catalystActivityReference;
+    }
+
+    @Relationship(type = "catalystActivityReference")
+    public void setCatalystActivityReference(CatalystActivityReference catalystActivityReference) {
+        this.catalystActivityReference = catalystActivityReference;
+    }
+
     public List<EntityFunctionalStatus> getEntityFunctionalStatus() {
         return entityFunctionalStatus;
     }
@@ -115,15 +131,6 @@ public abstract class ReactionLikeEvent extends Event {
         this.normalReaction = normalReaction;
     }
 
-    public Set<PhysicalEntity> getRequiredInputComponent() {
-        return requiredInputComponent;
-    }
-
-    @Relationship(type = "requiredInputComponent")
-    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
-        this.requiredInputComponent = requiredInputComponent;
-    }
-
     @Relationship(type = "regulatedBy")
     public List<Regulation> getRegulatedBy() {
         return regulatedBy;
@@ -132,6 +139,25 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "regulatedBy")
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
+    }
+
+    @Relationship(type = "regulationReference")
+    public List<RegulationReference> getRegulationReference() {
+        return regulationReference;
+    }
+
+    @Relationship(type = "regulationReference")
+    public void setRegulationReference(List<RegulationReference> regulationReference) {
+        this.regulationReference = regulationReference;
+    }
+
+    public Set<PhysicalEntity> getRequiredInputComponent() {
+        return requiredInputComponent;
+    }
+
+    @Relationship(type = "requiredInputComponent")
+    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
+        this.requiredInputComponent = requiredInputComponent;
     }
 
     @JsonIgnore
