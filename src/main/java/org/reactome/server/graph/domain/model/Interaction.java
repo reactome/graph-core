@@ -19,6 +19,8 @@ public abstract class Interaction extends DatabaseObject {
     @ReactomeProperty
     private List<String> accession;
     @ReactomeProperty
+    private List<String> pubmed;
+    @ReactomeProperty
     private String url;
 
 //    private List<String> type;
@@ -57,6 +59,14 @@ public abstract class Interaction extends DatabaseObject {
 
     public void setAccession(List<String> accession) {
         this.accession = accession;
+    }
+
+    public List<String> getPubmed() {
+        return pubmed;
+    }
+
+    public void setPubmed(List<String> pubmed) {
+        this.pubmed = pubmed;
     }
 
     public String getUrl() {
