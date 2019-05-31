@@ -18,6 +18,9 @@ public class GO_CellularComponent extends GO_Term {
     @Relationship(type = "instanceOf")
     private List<GO_CellularComponent> instanceOf;
 
+    @Relationship(type = "surroundedBy")
+    private List<GO_CellularComponent> surroundedBy;
+
     public GO_CellularComponent() {}
 
     public List<GO_CellularComponent> getComponentOf() {
@@ -45,5 +48,14 @@ public class GO_CellularComponent extends GO_Term {
     @Relationship(type = "instanceOf")
     public void setInstanceOf(List<GO_CellularComponent> instanceOf) {
         this.instanceOf = instanceOf;
+    }
+
+    public List<GO_CellularComponent> getSurroundedBy() {
+        return surroundedBy;
+    }
+
+    @Relationship(type = "surroundedBy")
+    public void setSurroundedBy(List<GO_CellularComponent> surroundedBy) {
+        this.surroundedBy = surroundedBy;
     }
 }
