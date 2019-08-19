@@ -41,6 +41,7 @@ public class Publication extends DatabaseObject {
         return rtn;
     }
 
+    @Relationship(type = "author", direction = Relationship.INCOMING)
     public void setAuthor(List<Person> author) {
         this.author = new TreeSet<>();
         int order = 0;
