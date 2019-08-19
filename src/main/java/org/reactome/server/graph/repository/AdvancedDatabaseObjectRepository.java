@@ -78,7 +78,7 @@ public class AdvancedDatabaseObjectRepository {
         String query = "MATCH (n:DatabaseObject{dbId:{dbId}}) " +
                        "OPTIONAL MATCH (n)-[r1]-(m) " +
                        "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                       "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene]-(o) " +
+                       "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference]-(o) " +
                        "RETURN n,r1,m,r2,s,r3,o";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
@@ -92,7 +92,7 @@ public class AdvancedDatabaseObjectRepository {
         String query = "MATCH (n:DatabaseObject{stId:{stId}}) " +
                        "OPTIONAL MATCH (n)-[r1]-(m) " +
                        "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                       "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene]-(o) " +
+                       "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference]-(o) " +
                        "RETURN n,r1,m,r2,s,r3,o";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);

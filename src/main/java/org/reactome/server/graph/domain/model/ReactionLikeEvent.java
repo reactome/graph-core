@@ -141,7 +141,6 @@ public abstract class ReactionLikeEvent extends Event {
         this.regulatedBy = regulatedBy;
     }
 
-    @Relationship(type = "regulationReference")
     public List<RegulationReference> getRegulationReference() {
         return regulationReference;
     }
