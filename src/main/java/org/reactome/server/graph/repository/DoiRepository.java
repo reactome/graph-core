@@ -1,13 +1,15 @@
 package org.reactome.server.graph.repository;
 
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.PathwayResult;
 import org.springframework.data.neo4j.annotation.Query;
+import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 
 @Repository
-public interface DoiRepository {
+public interface DoiRepository extends GraphRepository<DatabaseObject> {
 
     @Query("MATCH (p:Pathway)" +
             "WHERE EXISTS(p.doi)" +
