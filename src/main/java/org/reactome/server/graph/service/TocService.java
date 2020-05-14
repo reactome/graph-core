@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.result.PathwayResult;
+import org.reactome.server.graph.repository.DoiRepository;
 import org.reactome.server.graph.repository.TocRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class TocService {
         this.tocRepository = tocRepository;
     }
 
-    public Collection<PathwayResult> getAllTocPathways() {
+    public Collection<PathwayResult> getAllTocPathway() {
         Collection<PathwayResult> rtn;
         try {
             rtn = tocRepository.getTocPathways();

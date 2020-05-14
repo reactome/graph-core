@@ -18,7 +18,6 @@ public class DoiService {
         this.doiRepository = doiRepository;
     }
 
-
     public Collection<PathwayResult> getAllDoiPathway() {
         Collection<PathwayResult> rtn;
         try {
