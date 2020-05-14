@@ -18,6 +18,11 @@ public class DoiService {
         this.doiRepository = doiRepository;
     }
 
+
+    /**
+     * Retrieve all pathways which the doi value is not null, and all the authors, reviewers, editors are
+     * related to this pathway, sub pathway and reactions.
+     */
     public Collection<PathwayResult> getAllDoiPathway() {
         Collection<PathwayResult> rtn;
         try {
