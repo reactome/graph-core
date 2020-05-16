@@ -26,6 +26,7 @@ public class TocService {
      */
     public Collection<PathwayResult> getAllTocPathway() {
         Collection<PathwayResult> rtn;
+        //todo Why do you add try catch?????
         try {
             rtn = tocRepository.getTocPathways();
         } catch (Exception e) {

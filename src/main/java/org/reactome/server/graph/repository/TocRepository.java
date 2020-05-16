@@ -14,7 +14,7 @@ public interface TocRepository extends GraphRepository<DatabaseObject> {
     @Query("MATCH (p:TopLevelPathway{isInferred:false}) " +
             "MATCH (p)-[:hasEvent]->(subs:Pathway) " +
             "MATCH (p)-[:hasEvent*]->(otherp:Event) " +
-            "OPTIONAL MATCH (subs)<-[:revised]-(re:InstanceEdit) " +
+            "OPTIONAL MATCH (p)<-[:revised]-(re:InstanceEdit) " +
             "OPTIONAL MATCH (otherp)<-[:authored | :revised]-(:InstanceEdit)<-[:author]-(atrs:Person) " +
             "OPTIONAL MATCH (otherp)<-[:reviewed]-(:InstanceEdit)<-[:author]-(rvwd:Person) " +
             "OPTIONAL MATCH (otherp)<-[:edited]-(:InstanceEdit)<-[:author]-(edtd:Person) " +
