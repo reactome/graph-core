@@ -13,6 +13,7 @@ public interface TocRepository extends GraphRepository<DatabaseObject> {
 
     @Query("MATCH (p:TopLevelPathway{isInferred:false}) " +
             "MATCH (p)-[:hasEvent]->(subs:Pathway) " +
+            "WITH  COLLECT(distinct subs) AS subPathway, p " +
             "MATCH (p)-[:hasEvent*]->(otherp:Event) " +
             "OPTIONAL MATCH (p)<-[:revised]-(re:InstanceEdit) " +
             "OPTIONAL MATCH (otherp)<-[:authored | :revised]-(:InstanceEdit)<-[:author]-(atrs:Person) " +
@@ -24,7 +25,7 @@ public interface TocRepository extends GraphRepository<DatabaseObject> {
             "WITH collect(distinct tatrs) + collect(distinct atrs) AS allAuthors,  " +
             "collect(distinct trvwd) + collect(distinct rvwd) AS allReviewers,  " +
             "collect(distinct tedtd) + collect(distinct edtd) AS allEditors,  " +
-            "p, re, subs  " +
+            "p, re, subPathway  " +
             "UNWIND allAuthors AS totalAtrs " +
             "UNWIND allReviewers AS totalRvwd " +
             "UNWIND allEditors AS totalEdtd " +
@@ -35,7 +36,7 @@ public interface TocRepository extends GraphRepository<DatabaseObject> {
             "collect(distinct totalEdtd) AS editors,  " +
             "collect(distinct totalAtrs) AS authors,  " +
             "p.releaseStatus AS releaseStatus,  " +
-            "collect(distinct subs) AS subPathway  " +
+            "subPathway  " +
             "ORDER BY toLower(p.displayName)")
     Collection<PathwayResult> getTocPathways();
 }
