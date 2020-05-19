@@ -5,7 +5,7 @@ import org.reactome.server.graph.repository.DoiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.Collection;
 
 @Service
@@ -24,12 +24,8 @@ public class DoiService {
      * related to this pathway, sub pathway and reactions.
      */
     public Collection<PathwayResult> getAllDoiPathway() {
-        Collection<PathwayResult> rtn;
-        try {
-            rtn = doiRepository.getDoiPathways();
-        } catch (Exception e) {
-            rtn = new ArrayList<>();
-        }
+
+        Collection<PathwayResult> rtn = doiRepository.getDoiPathways();
         return rtn;
     }
 }

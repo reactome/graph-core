@@ -5,7 +5,6 @@ import org.reactome.server.graph.repository.TocRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
@@ -18,20 +17,14 @@ public class TocService {
         this.tocRepository = tocRepository;
     }
 
-
     /**
      * Retrieve all top level pathways and the first hierarchy sub pathways, fetch all the authors, reviewers, editors are
      * related to this pathway, sub pathway and reactions.
-     * Note: authors contains revised
+     * Note: authors contains revised person
      */
     public Collection<PathwayResult> getAllTocPathway() {
-        Collection<PathwayResult> rtn;
-        //todo Why do you add try catch?????
-        try {
-            rtn = tocRepository.getTocPathways();
-        } catch (Exception e) {
-            rtn = new ArrayList<>();
-        }
+
+        Collection<PathwayResult> rtn = tocRepository.getTocPathways();
         return rtn;
     }
 }
