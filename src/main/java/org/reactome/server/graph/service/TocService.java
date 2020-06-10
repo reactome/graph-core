@@ -23,8 +23,6 @@ public class TocService {
      * Note: authors contains revised person
      */
     public Collection<PathwayResult> getAllTocPathway() {
-
-        Collection<PathwayResult> rtn = tocRepository.getTocPathways();
-        return rtn;
+        return tocRepository.getTocPathways();
     }
 }

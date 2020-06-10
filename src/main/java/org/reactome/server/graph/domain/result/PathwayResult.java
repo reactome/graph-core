@@ -13,16 +13,11 @@ public class PathwayResult {
     private String stId;
     private String species;
     private String releaseDate;
-
     private String reviseDate;
     private String releaseStatus;
-
-
     private Collection<Person> authors;
     private Collection<Person> reviewers;
     private Collection<Person> editors;
-
-
     private Collection<Pathway> subPathway;
 
     public PathwayResult() {

@@ -5,7 +5,6 @@ import org.reactome.server.graph.repository.DoiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import java.util.Collection;
 
 @Service
@@ -18,14 +17,11 @@ public class DoiService {
         this.doiRepository = doiRepository;
     }
 
-
     /**
      * Retrieve all pathways which the doi value is not null, and all the authors, reviewers, editors are
      * related to this pathway, sub pathway and reactions.
      */
     public Collection<PathwayResult> getAllDoiPathway() {
-
-        Collection<PathwayResult> rtn = doiRepository.getDoiPathways();
-        return rtn;
+        return doiRepository.getDoiPathways();
     }
 }
