@@ -14,11 +14,19 @@ public interface DoiRepository extends GraphRepository<DatabaseObject> {
     @Query("MATCH (p:Pathway)" +
             "WHERE EXISTS(p.doi)" +
             "OPTIONAL MATCH (p)<-[:revised]-(re:InstanceEdit)" +
-            "OPTIONAL MATCH (p)-[:reviewed]-(:InstanceEdit)" +
-            "OPTIONAL MATCH (p)-[:hasEvent*]->(rle:ReactionLikeEvent)" +
-            "OPTIONAL MATCH (rle)<-[:authored]-(:InstanceEdit)<-[:author]-(rlea:Person)" +
-            "OPTIONAL MATCH (rle)<-[:reviewed]-(:InstanceEdit)<-[:author]-(rler:Person)" +
-            "OPTIONAL MATCH (rle)<-[:edited]-(:InstanceEdit)<-[:author]-(rlee:Person)" +
+            "OPTIONAL MATCH (p)<-[:authored | revised]-(:InstanceEdit)<-[:author]-(patrs:Person)" +
+            "OPTIONAL MATCH (p)<-[:reviewed]-(:InstanceEdit)<-[:author]-(prvwd:Person)" +
+            "OPTIONAL MATCH (p)<-[:edited]-(:InstanceEdit)<-[:author]-(pedtd:Person)" +
+            "OPTIONAL MATCH (p)-[:hasEvent*]->(e:Event)" +
+            "OPTIONAL MATCH (e)<-[:authored]-(:InstanceEdit)<-[:author]-(rlea:Person)" +
+            "OPTIONAL MATCH (e)<-[:reviewed]-(:InstanceEdit)<-[:author]-(rler:Person)" +
+            "OPTIONAL MATCH (e)<-[:edited]-(:InstanceEdit)<-[:author]-(rlee:Person)" +
+            "WITH collect(distinct patrs) + collect(distinct rlea) AS allAuthors, " +
+            "collect(distinct prvwd) + collect(distinct rler) AS allReviewers, " +
+            "collect(distinct pedtd) + collect(distinct rlee) AS allEditors, p, re " +
+            "UNWIND (CASE allAuthors WHEN [] then [null] else allAuthors end) AS totalAtrs " +
+            "UNWIND (CASE allReviewers WHEN [] then [null] else allReviewers end) AS totalRvwd " +
+            "UNWIND (CASE allEditors WHEN [] then [null] else allEditors end) AS totalEdtd " +
             "RETURN p.displayName AS displayName, " +
             "p.doi AS doi, " +
             "p.stId AS stId, " +
@@ -26,9 +34,9 @@ public interface DoiRepository extends GraphRepository<DatabaseObject> {
             "p.releaseDate AS releaseDate, " +
             "p.releaseStatus AS releaseStatus, " +
             "max(re.dateTime) AS reviseDate, " +
-            "collect(distinct rlea) AS authors, " +
-            "collect(distinct rler) AS reviewers, " +
-            "collect(distinct rlee) AS editors " +
-            "ORDER BY toLower(p.displayName)")
+            "collect(distinct totalAtrs) AS authors, " +
+            "collect(distinct totalRvwd) AS reviewers, " +
+            "collect(distinct totalEdtd) AS editors " +
+            "ORDER BY toLower(p.displayName) ")
     Collection<PathwayResult> getDoiPathways();
 }
