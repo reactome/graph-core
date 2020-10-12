@@ -50,7 +50,7 @@
         <spring.test.version>4.3.11.RELEASE</spring.test.version>
         <spring.version>4.3.11.RELEASE</spring.version>
         <aspectj.version>1.8.10</aspectj.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <logback.version>1.2.3</logback.version>
         <reflection.version>0.9.10</reflection.version>
         <swagger.annotations.version>1.5.6</swagger.annotations.version>
