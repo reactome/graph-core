@@ -58,4 +58,18 @@ public interface MappingRepository extends GraphRepository<Event> {
             "RETURN DISTINCT p " +
             "ORDER BY p.stId")
     Collection<Pathway> getPathways(String databaseName, String identifier, String taxId);
+
+    @Query(" MATCH (p:Pathway)-[:goBiologicalProcess*]->(go:GO_BiologicalProcess) " +
+            "WHERE go.accession = {0} " +
+            "RETURN DISTINCT p " +
+            "ORDER BY p.stId")
+    Collection<Pathway> getGoPathways(String identifier);
+
+    @Query(" MATCH (p:Pathway)-[:goBiologicalProcess*]->(go:GO_BiologicalProcess) " +
+            "WHERE go.accession = {0} " +
+            "WITH DISTINCT p " +
+            "MATCH (p)-[:species]->(:Species{taxId: {1}}) " +
+            "RETURN p " +
+            "ORDER BY p.stId")
+    Collection<Pathway> getGoPathways(String identifier, String taxId);
 }
