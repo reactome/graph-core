@@ -51,6 +51,21 @@ public class MappingService {
         return new ArrayList<>();
     }
 
+    public Collection<Pathway> getGoPathways(String identifier) {
+        if (identifier != null && !identifier.isEmpty()) {
+            return mappingRepository.getGoPathways(identifier);
+        }
+        return new ArrayList<>();
+    }
+
+    public Collection<Pathway> getGoPathways(String identifier, Object species) {
+        Species s = speciesService.getSpecies(species);
+        if (s != null  && identifier != null && !identifier.isEmpty()) {
+            return mappingRepository.getGoPathways(identifier, s.getTaxId());
+        }
+        return new ArrayList<>();
+    }
+
     @Autowired
     public void setMappingRepository(MappingRepository mappingRepository) {
         this.mappingRepository = mappingRepository;
