@@ -20,14 +20,16 @@ public interface AdvancedLinkageRepository extends GraphRepository<DatabaseObjec
             "RETURN DISTINCT(TYPE(r)) AS type, " +
             "       COLLECT(m.schemaClass) AS schemaClasses, " +
             "       COLLECT(m.displayName) AS names, " +
-            "       COLLECT(m.stId) AS stIds")
+            "       COLLECT(m.stId) AS stIds," +
+            "       COLLECT(m.speciesName) as species")
     Collection<ComponentOf> getComponentsOf(String stId);
 
     @Query(" MATCH (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
             "RETURN DISTINCT(TYPE(r)) AS type, " +
             "       COLLECT(m.schemaClass) AS schemaClasses, " +
             "       COLLECT(m.displayName) AS names, " +
-            "       COLLECT(m.stId) AS stIds")
+            "       COLLECT(m.stId) AS stIds," +
+            "       COLLECT(m.speciesName) as species")
     Collection<ComponentOf> getComponentsOf(Long dbId);
 
     @Query(" MATCH (d:DatabaseObject{stId:{0}})<-[rel]-(ref) " +
