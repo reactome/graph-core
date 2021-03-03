@@ -134,11 +134,7 @@ public class DatabaseObjectUtils {
         String packageName = DatabaseObject.class.getPackage().getName();
 
         Class target = Class.forName(packageName + "." + className);
-        Collection<Class> targets = new LinkedList<>();
-        while (target != null && !target.getClass().equals(Object.class)) {
-            targets.add(target);
-            target = target.getSuperclass();
-        }
+        Set<Class> targets = extractSuperClasses(target, true);
 
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends DatabaseObject>> classes = reflections.getSubTypesOf(DatabaseObject.class);
@@ -165,6 +161,16 @@ public class DatabaseObjectUtils {
             }
         }
         return propertiesList;
+    }
+
+    private static Set<Class> extractSuperClasses(Class target, boolean includeTargetClass) {
+        Set<Class> targets = new HashSet<>();
+        if (!includeTargetClass) target = target.getSuperclass();
+        while (target != null && !target.getClass().equals(Object.class)) {
+            targets.add(target);
+            target = target.getSuperclass();
+        }
+        return targets;
     }
 
     public static String getIdentifier(Object id) {

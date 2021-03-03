@@ -3,6 +3,7 @@ package org.reactome.server.graph.service.helper;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 
 import javax.annotation.Nonnull;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,8 +16,11 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
 
     private String name;
     private String cardinality;
-    private List<AttributeClass> attributeClasses = new LinkedList<>();
+    private final List<AttributeClass> attributeClasses = new LinkedList<>();
     private Class<? extends DatabaseObject> origin;
+    private static final Comparator<AttributeProperties> comparator = Comparator
+            .comparing(AttributeProperties::getName)
+            .thenComparing(attr -> attr.getOrigin().getName());
 
     public String getName() {
         return name;
@@ -52,6 +56,6 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
 
     @Override
     public int compareTo(@Nonnull AttributeProperties o) {
-        return this.name.compareTo(o.name);
+        return comparator.compare(this, o);
     }
 }
