@@ -60,7 +60,7 @@ public class DatabaseObjectUtils {
     }
 
     @SuppressWarnings("unused")
-    public static Map<String, Object> getAllFields(DatabaseObject databaseObject) {
+    public static Map<String, Object> getAllFields(DatabaseObject databaseObject, boolean displayNullFields) {
         Method[] methods = databaseObject.getClass().getMethods();
         Map<String, Object> map = new TreeMap<>();
         for (Method method : methods) {
@@ -72,7 +72,7 @@ public class DatabaseObjectUtils {
 
                 try {
                     Object object = method.invoke(databaseObject);
-                    if (isEmpty(object)) continue;
+                    if (!displayNullFields && isEmpty(object)) continue;
 
                     // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {

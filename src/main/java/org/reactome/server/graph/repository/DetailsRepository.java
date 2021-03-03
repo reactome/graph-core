@@ -27,12 +27,15 @@ public class DetailsRepository {
                 "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
                 "OPTIONAL MATCH (m:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
                 "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
-                "RETURN n,r,m,l,e,t,z,u,i,o,p";
+                "OPTIONAL MATCH (m:EntityFunctionalStatus)-[q:diseaseEntity|normalEntity|functionalStatus]-(s)-[a:functionalStatusType|structuralVariant]-(b)" +
+                "RETURN n,r,m,l,e,t,z,u,i,o,p,q,s,a,b";
         Map<String, Object> map = new HashMap<>();
         map.put("stId", stId);
         Result result = neo4jTemplate.query(query, map);
-        if (result != null && result.iterator().hasNext())
-            return (DatabaseObject) result.iterator().next().get("n");
+        if (result != null && result.iterator().hasNext()) {
+            DatabaseObject n = (DatabaseObject) result.iterator().next().get("n");
+            return n;
+        }
         return null;
     }
 
@@ -42,7 +45,8 @@ public class DetailsRepository {
                 "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
                 "OPTIONAL MATCH (m:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
                 "OPTIONAL MATCH (m:CatalystActivity)-[o:catalystActivity|physicalEntity|activity]-(p)" +
-                "RETURN n,r,m,l,e,t,z,u,i,o,p";
+                "OPTIONAL MATCH (m:EntityFunctionalStatus)-[q:diseaseEntity|normalEntity|functionalStatus]-(s)-[a:functionalStatusType|structuralVariant]-(b)" +
+                "RETURN n,r,m,l,e,t,z,u,i,o,p,q,s,a,b";
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
         Result result = neo4jTemplate.query(query, map);

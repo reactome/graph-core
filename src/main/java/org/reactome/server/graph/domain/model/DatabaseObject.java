@@ -10,6 +10,7 @@ import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.result.DatabaseObjectLike;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -31,7 +32,7 @@ import java.util.Collection;
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
 @NodeEntity
-public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject> {
+public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject>, DatabaseObjectLike {
 
     @ReactomeTransient
     public transient boolean isLoaded = false;
@@ -220,7 +221,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeSchemaIgnore
     @JsonIgnore
     public <T extends DatabaseObject> T preventLazyLoading(boolean preventLazyLoading) {
-        if(this.preventLazyLoading == preventLazyLoading) return (T) this;
+        if (this.preventLazyLoading == preventLazyLoading) return (T) this;
 
         this.preventLazyLoading = preventLazyLoading;
 

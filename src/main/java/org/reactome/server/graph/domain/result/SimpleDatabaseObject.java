@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 @SuppressWarnings("unused")
 @QueryResult
-public class SimpleDatabaseObject {
+public class SimpleDatabaseObject implements DatabaseObjectLike {
 
     private Long dbId;
 

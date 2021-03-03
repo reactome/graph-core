@@ -18,8 +18,10 @@ public class ComponentOf {
     private List<String> names;
     private List<String> stIds;
     private List<String> schemaClasses;
+    private List<String> species;
 
-    public ComponentOf() {}
+    public ComponentOf() {
+    }
 
     public String getType() {
         return type;
@@ -53,22 +55,35 @@ public class ComponentOf {
         this.schemaClasses = schemaClasses;
     }
 
-    public void sortByName(){
+    public List<String> getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(List<String> species) {
+        this.species = species;
+    }
+
+    public void sortByName() {
         List<String> sortedList = new ArrayList<>(names.size());
         for (int i = 0; i < names.size(); i++) {
-            String sortingLine = names.get(i).concat("###").concat(stIds.get(i)).concat("###").concat(schemaClasses.get(i));
+            String sortingLine = names.get(i)
+                    .concat("###").concat(stIds.get(i))
+                    .concat("###").concat(species.get(i))
+                    .concat("###").concat(schemaClasses.get(i));
             sortedList.add(sortingLine);
         }
 
-        Collections.sort(sortedList, String::compareToIgnoreCase);
+        sortedList.sort(String::compareToIgnoreCase);
         stIds.clear();
         schemaClasses.clear();
+        species.clear();
         names.clear();
         for (String sortedLine : sortedList) {
             String[] items = sortedLine.split("###");
             names.add(items[0]);
             stIds.add(items[1]);
-            schemaClasses.add(items[2]);
+            species.add(items[2]);
+            schemaClasses.add(items[3]);
         }
     }
 }
