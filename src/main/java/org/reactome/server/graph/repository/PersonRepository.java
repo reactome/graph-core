@@ -31,7 +31,6 @@ public interface PersonRepository extends GraphRepository<Person>{
     Collection<Person> queryPersonByName(String[] name);
 
     @Query(" MATCH (n:Person{orcidId:{0}}) " +
-            "WHERE n.project IS NULL " +
             "OPTIONAL MATCH (n)-[r]->(m) WHERE NOT (m:InstanceEdit) " +
             "RETURN n, r, m")
     Person findPersonByOrcidId(String orcidId);
@@ -91,7 +90,6 @@ public interface PersonRepository extends GraphRepository<Person>{
     Collection<ReactionLikeEvent> getReviewedReactionsByDbId(Long dbId);
 
     @Query(" MATCH (per:Person)-[:author]->(ie:InstanceEdit) " +
-            "WHERE per.project IS NULL " +
             "WITH DISTINCT per, ie " +
             "OPTIONAL MATCH (ie)-[:authored]->(ap:Pathway) " +
             "OPTIONAL MATCH (ie)-[:authored]->(ar:ReactionLikeEvent) " +
