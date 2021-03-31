@@ -1,6 +1,6 @@
 package org.reactome.server.graph.domain.result;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
+
 
 /**
  * Created by:
@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.annotation.QueryResult;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 05.06.16.
  */
-@QueryResult
+
 @SuppressWarnings("unused")
 public class SimpleReferenceObject {
 

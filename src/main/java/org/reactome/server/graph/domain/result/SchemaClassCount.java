@@ -1,6 +1,6 @@
 package org.reactome.server.graph.domain.result;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
+
 
 import java.util.Collection;
 
@@ -13,7 +13,7 @@ import java.util.Collection;
  * Object for retrieving all different labels and their counts from the graph
  */
 @SuppressWarnings("unused")
-@QueryResult
+
 public class SchemaClassCount {
 
     private int count;

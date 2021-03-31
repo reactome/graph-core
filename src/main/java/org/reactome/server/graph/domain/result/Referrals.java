@@ -1,7 +1,6 @@
 package org.reactome.server.graph.domain.result;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.List;
 
@@ -9,7 +8,7 @@ import java.util.List;
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 @SuppressWarnings("unused")
-@QueryResult
+
 public class Referrals {
 
     private String referral;

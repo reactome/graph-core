@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class ReferenceGeneProduct extends ReferenceSequence {
 
     @ReactomeProperty
@@ -33,7 +33,6 @@ public class ReferenceGeneProduct extends ReferenceSequence {
         return referenceGene;
     }
 
-    @Relationship(type = "referenceGene")
     public void setReferenceGene(List<ReferenceDNASequence> referenceGene) {
         this.referenceGene = referenceGene;
     }
@@ -42,7 +41,6 @@ public class ReferenceGeneProduct extends ReferenceSequence {
         return referenceTranscript;
     }
 
-    @Relationship(type = "referenceTranscript")
     public void setReferenceTranscript(List<ReferenceRNASequence> referenceTranscript) {
         this.referenceTranscript = referenceTranscript;
     }

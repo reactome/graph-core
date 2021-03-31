@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.reactome.server.graph.domain.relationship.HasComponent;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
@@ -15,7 +15,7 @@ import java.util.*;
  * An entity formed by the association of two or more component entities (these components can themselves be complexes). Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components. At least one component must be specified.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Complex extends PhysicalEntity {
 
     @ReactomeProperty
@@ -31,7 +31,7 @@ public class Complex extends PhysicalEntity {
     private List<PhysicalEntity> entityOnOtherCell;
 
     @Relationship(type = "includedLocation")
-    private SortedSet<HasCompartment<Complex>> includedLocation;
+    private SortedSet<HasCompartment> includedLocation;
 
     @Relationship(type = "species")
     private List<Species> species;
@@ -106,7 +106,6 @@ public class Complex extends PhysicalEntity {
         return entityOnOtherCell;
     }
 
-    @Relationship(type = "entityOnOtherCell")
     public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
         this.entityOnOtherCell = entityOnOtherCell;
     }
@@ -114,14 +113,13 @@ public class Complex extends PhysicalEntity {
     public List<Compartment> getIncludedLocation() {
         if (includedLocation == null) return null;
         List<Compartment> rtn = new ArrayList<>();
-        for (HasCompartment<Complex> c : includedLocation) {
+        for (HasCompartment c : includedLocation) {
             rtn.add(c.getCompartment());
         }
         return rtn;
     }
 
-    @Relationship(type = "includedLocation")
-    public void setIncludedLocation(SortedSet<HasCompartment<Complex>> includedLocation) {
+    public void setIncludedLocation(SortedSet<HasCompartment> includedLocation) {
         this.includedLocation = includedLocation;
     }
 
@@ -129,8 +127,8 @@ public class Complex extends PhysicalEntity {
         this.includedLocation = new TreeSet<>();
         int order = 0;
         for (Compartment c : includedLocation) {
-            HasCompartment<Complex> hc = new HasCompartment<>();
-            hc.setSource(this);
+            HasCompartment hc = new HasCompartment();
+//            hc.setSource(this);
             hc.setCompartment(c);
             hc.setOrder(order++);
             this.includedLocation.add(hc);
@@ -141,7 +139,6 @@ public class Complex extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species")
     public void setSpecies(List<Species> species) {
         this.species = species;
     }
@@ -150,7 +147,6 @@ public class Complex extends PhysicalEntity {
         return relatedSpecies;
     }
 
-    @Relationship(type = "relatedSpecies")
     public void setRelatedSpecies(List<Species> relatedSpecies) {
         this.relatedSpecies = relatedSpecies;
     }

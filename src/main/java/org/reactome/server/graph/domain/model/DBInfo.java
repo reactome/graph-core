@@ -1,14 +1,14 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
 
-@NodeEntity
+@Node
 public class DBInfo {
 
     @JsonIgnore
-    @GraphId
+    @Id
     private Long id;
 
     private String name;

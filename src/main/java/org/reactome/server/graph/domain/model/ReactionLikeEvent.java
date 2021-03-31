@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public abstract class ReactionLikeEvent extends Event {
 
     @ReactomeProperty
@@ -89,17 +89,14 @@ public abstract class ReactionLikeEvent extends Event {
         return catalystActivity;
     }
 
-    @Relationship(type = "catalystActivity")
     public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
         this.catalystActivity = catalystActivity;
     }
 
-    @Relationship(type = "catalystActivityReference")
     public CatalystActivityReference getCatalystActivityReference() {
         return catalystActivityReference;
     }
 
-    @Relationship(type = "catalystActivityReference")
     public void setCatalystActivityReference(CatalystActivityReference catalystActivityReference) {
         this.catalystActivityReference = catalystActivityReference;
     }
@@ -108,7 +105,6 @@ public abstract class ReactionLikeEvent extends Event {
         return entityFunctionalStatus;
     }
 
-    @Relationship(type = "entityFunctionalStatus")
     public void setEntityFunctionalStatus(List<EntityFunctionalStatus> entityFunctionalStatus) {
         this.entityFunctionalStatus = entityFunctionalStatus;
     }
@@ -117,7 +113,6 @@ public abstract class ReactionLikeEvent extends Event {
         return entityOnOtherCell;
     }
 
-    @Relationship(type = "entityOnOtherCell")
     public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
         this.entityOnOtherCell = entityOnOtherCell;
     }
@@ -126,17 +121,14 @@ public abstract class ReactionLikeEvent extends Event {
         return normalReaction;
     }
 
-    @Relationship(type = "normalReaction")
     public void setNormalReaction(ReactionLikeEvent normalReaction) {
         this.normalReaction = normalReaction;
     }
 
-    @Relationship(type = "regulatedBy")
     public List<Regulation> getRegulatedBy() {
         return regulatedBy;
     }
 
-    @Relationship(type = "regulatedBy")
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
     }
@@ -145,7 +137,6 @@ public abstract class ReactionLikeEvent extends Event {
         return regulationReference;
     }
 
-    @Relationship(type = "regulationReference")
     public void setRegulationReference(List<RegulationReference> regulationReference) {
         this.regulationReference = regulationReference;
     }
@@ -154,7 +145,6 @@ public abstract class ReactionLikeEvent extends Event {
         return requiredInputComponent;
     }
 
-    @Relationship(type = "requiredInputComponent")
     public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
     }

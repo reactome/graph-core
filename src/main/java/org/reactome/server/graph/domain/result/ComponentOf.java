@@ -1,8 +1,8 @@
 package org.reactome.server.graph.domain.result;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by:
@@ -11,7 +11,7 @@ import java.util.*;
  * @since 18.04.16.
  */
 @SuppressWarnings("unused")
-@QueryResult
+
 public class ComponentOf {
 
     private String type;

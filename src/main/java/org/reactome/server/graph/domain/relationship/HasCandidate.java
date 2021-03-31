@@ -1,26 +1,23 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.EntitySet;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.RelationshipProperties;
+import org.springframework.data.neo4j.core.schema.TargetNode;
+
+import java.util.Objects;
 
 /**
  * HasCandidate is the relationship entity of CandidateSets. It is needed to specify the order of members.
  */
-@SuppressWarnings("unused")
-@RelationshipEntity(type = "hasCandidate")
-public class HasCandidate implements Comparable {
+@RelationshipProperties
+public class HasCandidate implements Comparable<HasCandidate> {
 
-    @GraphId
+    @Id @GeneratedValue
     private Long id;
 
-    @StartNode
-    private EntitySet entitySet;
-
-    @EndNode
+    @TargetNode
     private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
@@ -35,14 +32,6 @@ public class HasCandidate implements Comparable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public EntitySet getEntitySet() {
-        return entitySet;
-    }
-
-    public void setEntitySet(EntitySet entitySet) {
-        this.entitySet = entitySet;
     }
 
     public PhysicalEntity getPhysicalEntity() {
@@ -73,22 +62,17 @@ public class HasCandidate implements Comparable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         HasCandidate that = (HasCandidate) o;
-
-        if (entitySet != null ? !entitySet.equals(that.entitySet) : that.entitySet != null) return false;
-        return physicalEntity != null ? physicalEntity.equals(that.physicalEntity) : that.physicalEntity == null;
+        return Objects.equals(physicalEntity, ((HasCandidate) o).physicalEntity);
     }
 
     @Override
     public int hashCode() {
-        int result = entitySet != null ? entitySet.hashCode() : 0;
-        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
-        return result;
+        return Objects.hash(physicalEntity);
     }
 
     @Override
-    public int compareTo(Object o) {
-        return this.order - ((HasCandidate) o).order;
+    public int compareTo(HasCandidate o) {
+        return this.order - o.order;
     }
 }

@@ -1,9 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 import java.util.Set;
@@ -12,7 +12,7 @@ import java.util.Set;
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the exact active component of a complex or set.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class CatalystActivity extends DatabaseObject  {
 
     @Relationship(type = "activeUnit")
@@ -26,7 +26,7 @@ public class CatalystActivity extends DatabaseObject  {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
+    @Relationship(type = "catalystActivity", direction = Relationship.Direction.INCOMING)
     private List<ReactionLikeEvent> catalyzedEvent;
 
     @Relationship(type = "physicalEntity")
@@ -41,7 +41,6 @@ public class CatalystActivity extends DatabaseObject  {
         return activeUnit;
     }
 
-    @Relationship(type = "activeUnit")
     public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
     }
@@ -50,17 +49,14 @@ public class CatalystActivity extends DatabaseObject  {
         return activity;
     }
 
-    @Relationship(type = "activity")
     public void setActivity(GO_MolecularFunction activity) {
         this.activity = activity;
     }
 
-    @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     public List<ReactionLikeEvent> getCatalyzedEvent() {
         return catalyzedEvent;
     }
 
-    @Relationship(type = "catalystActivity", direction = Relationship.INCOMING)
     public void setCatalyzedEvent(List<ReactionLikeEvent> catalyzedEvent) {
         this.catalyzedEvent = catalyzedEvent;
     }
@@ -69,7 +65,6 @@ public class CatalystActivity extends DatabaseObject  {
         return physicalEntity;
     }
 
-    @Relationship(type = "physicalEntity")
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
@@ -78,7 +73,6 @@ public class CatalystActivity extends DatabaseObject  {
         return literatureReference;
     }
 
-    @Relationship(type = "literatureReference")
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }

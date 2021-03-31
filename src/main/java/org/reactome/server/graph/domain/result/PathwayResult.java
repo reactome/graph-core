@@ -2,11 +2,10 @@ package org.reactome.server.graph.domain.result;
 
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
-import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Collection;
 
-@QueryResult
+
 public class PathwayResult {
     private String displayName;
     private String doi;

@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import io.swagger.annotations.ApiModelProperty;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.result.DatabaseObjectLike;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
@@ -31,17 +33,17 @@ import java.util.Collection;
  */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
-@NodeEntity
+@Node
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject>, DatabaseObjectLike {
 
     @ReactomeTransient
-    public transient boolean isLoaded = false;
+    public transient Boolean isLoaded = false;
 
     @ReactomeTransient
-    public transient boolean preventLazyLoading = false;
+    public transient Boolean preventLazyLoading = false;
 
     @JsonIgnore
-    @GraphId
+    @Id @GeneratedValue
     private Long id;
 
     @ApiModelProperty(value = "This is the main internal identifier of a Reactome entry", required = true)
@@ -61,11 +63,11 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     private transient String oldStId;
 
     @ApiModelProperty(value = "Instance that created this entry")
-    @Relationship(type = "created", direction = Relationship.INCOMING)
+    @Relationship(type = "created", direction = Relationship.Direction.INCOMING)
     private InstanceEdit created;
 
     @ApiModelProperty(value = "Last instance that modified this entry")
-    @Relationship(type = "modified", direction = Relationship.INCOMING)
+    @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
 
     public DatabaseObject() {
@@ -122,22 +124,18 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.oldStId = oldStId;
     }
 
-    @Relationship(type = "created", direction = Relationship.INCOMING)
     public InstanceEdit getCreated() {
         return created;
     }
 
-    @Relationship(type = "created", direction = Relationship.INCOMING)
     public void setCreated(InstanceEdit created) {
         this.created = created;
     }
 
-    @Relationship(type = "modified", direction = Relationship.INCOMING)
     public InstanceEdit getModified() {
         return modified;
     }
 
-    @Relationship(type = "modified", direction = Relationship.INCOMING)
     public void setModified(InstanceEdit modified) {
         this.modified = modified;
     }
@@ -156,7 +154,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         if (o == null || getClass() != o.getClass()) return false;
 
         DatabaseObject that = (DatabaseObject) o;
-        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stId != null ? stId.equals(that.stId) : that.stId == null && !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null));
+        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stId != null ? stId.equals(that.stId) : that.stId == null && Objects.equals(displayName, that.displayName));
     }
 
     @Override

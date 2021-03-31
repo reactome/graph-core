@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class ReferenceSequence extends ReferenceEntity {
 
     @ReactomeProperty
@@ -100,7 +100,6 @@ public class ReferenceSequence extends ReferenceEntity {
         return species;
     }
 
-    @Relationship(type = "species")
     public void setSpecies(Species species) {
         this.species = species;
     }

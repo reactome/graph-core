@@ -2,11 +2,10 @@ package org.reactome.server.graph.domain.result;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Pathway;
-import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.List;
 
-@QueryResult
+
 public class DiagramOccurrences {
 
     private Pathway diagram;

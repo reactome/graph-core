@@ -1,14 +1,14 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.HasEncapsulatedEvent;
 import org.reactome.server.graph.domain.relationship.HasEvent;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.TreeSet;
  * A collection of related Events. These events can be ReactionLikeEvents or Pathways
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Pathway extends Event {
 
     @ReactomeProperty
@@ -103,7 +103,6 @@ public class Pathway extends Event {
         this.isCanonical = isCanonical;
     }
 
-    @Relationship(type = "hasEvent")
     public List<Event> getHasEvent() {
         if (hasEvent == null) return null;
         List<Event> rtn = new ArrayList<>();
@@ -113,13 +112,12 @@ public class Pathway extends Event {
         return rtn;
     }
 
-    @Relationship(type = "hasEvent")
     public void setHasEvent(List<Event> hasEvent) {
         this.hasEvent = new TreeSet<>();
         int order = 0;
         for (Event event : hasEvent) {
             HasEvent aux = new HasEvent();
-            aux.setPathway(this);
+//            aux.setPathway(this);
             aux.setEvent(event);
             aux.setOrder(order++);
             this.hasEvent.add(aux);
@@ -128,7 +126,6 @@ public class Pathway extends Event {
 
     @ReactomeSchemaIgnore
     @JsonIgnore
-    @Relationship(type = "hasEncapsulatedEvent")
     public List<Event> getHasEncapsulatedEvent() {
         if (hasEncapsulatedEvent == null) return null;
         List<Event> rtn = new ArrayList<>();
@@ -138,13 +135,12 @@ public class Pathway extends Event {
         return rtn;
     }
 
-    @Relationship(type = "hasEncapsulatedEvent")
     public void setHasEncapsulatedEvent(List<Event> hasEncapsulatedEvent) {
         this.hasEncapsulatedEvent = new TreeSet<>();
         int order = 0;
         for (Event event : hasEncapsulatedEvent) {
             HasEncapsulatedEvent aux = new HasEncapsulatedEvent();
-            aux.setPathway(this);
+//            aux.setPathway(this);
             aux.setEvent(event);
             aux.setOrder(order++);
             this.hasEncapsulatedEvent.add(aux);
@@ -155,7 +151,6 @@ public class Pathway extends Event {
         return normalPathway;
     }
 
-    @Relationship(type = "normalPathway")
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
     }

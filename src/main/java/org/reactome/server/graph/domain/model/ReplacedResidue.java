@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class ReplacedResidue extends GeneticallyModifiedResidue {
 
     @ReactomeProperty
@@ -30,7 +30,6 @@ public class ReplacedResidue extends GeneticallyModifiedResidue {
         return psiMod;
     }
 
-    @Relationship(type = "psiMod")
     public void setPsiMod(List<PsiMod> psiMod) {
         this.psiMod = psiMod;
     }

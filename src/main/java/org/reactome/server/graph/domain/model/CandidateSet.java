@@ -1,10 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.HasCandidate;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ import java.util.*;
  * A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. At least one hasCandidate value is required; hasMember values are optional.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class CandidateSet extends EntitySet {
 
     @Relationship(type = "hasCandidate")
@@ -32,7 +32,6 @@ public class CandidateSet extends EntitySet {
         return rtn;
     }
 
-    @Relationship(type = "hasCandidate")
     public void setHasCandidate(List<PhysicalEntity> hasCandidate) {
         if (hasCandidate == null) return;
         Map<Long, HasCandidate> components = new LinkedHashMap<>();
@@ -40,7 +39,7 @@ public class CandidateSet extends EntitySet {
         for (PhysicalEntity physicalEntity : hasCandidate) {
             //stoichiometry does NOT need to be taken into account here
             HasCandidate aux = new HasCandidate();
-            aux.setEntitySet(this);
+//            aux.setEntitySet(this);
             aux.setPhysicalEntity(physicalEntity);
             aux.setOrder(order++);
             components.put(physicalEntity.getDbId(), aux);

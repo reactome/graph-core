@@ -1,10 +1,10 @@
 package org.reactome.server.graph.domain.result;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
+
 
 import java.util.List;
 
-@QueryResult
+
 public class DiagramResult {
 
     private String diagramStId;

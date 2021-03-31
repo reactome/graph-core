@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class ReferenceIsoform extends ReferenceGeneProduct {
 
     @ReactomeProperty
@@ -30,7 +30,6 @@ public class ReferenceIsoform extends ReferenceGeneProduct {
         return isoformParent;
     }
 
-    @Relationship(type = "isoformParent")
     public void setIsoformParent(List<ReferenceGeneProduct> isoformParent) {
         this.isoformParent = isoformParent;
     }

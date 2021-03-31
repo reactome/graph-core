@@ -1,18 +1,18 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 /**
  * Defines a change of state for one or more molecular entities. Most reactions in Reactome involve either: a) the interaction of entities to form a complex, or b) the movement of entities between compartments, or c) the chemical conversion of entities as part of a metabolic process. Reactions have a molecular balance between input and output entities.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Reaction extends ReactionLikeEvent {
 
-    @Relationship(type = "reverseReaction", direction = Relationship.UNDIRECTED)
+    @Relationship(type = "reverseReaction") // TODO , direction = Relationship.UNDIRECTED)
     private Reaction reverseReaction;
 
     public Reaction() {}
@@ -21,7 +21,6 @@ public class Reaction extends ReactionLikeEvent {
         return reverseReaction;
     }
 
-    @Relationship(type = "reverseReaction", direction = Relationship.UNDIRECTED)
     public void setReverseReaction(Reaction reverseReaction) {
         this.reverseReaction = reverseReaction;
     }

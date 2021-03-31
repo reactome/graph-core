@@ -1,14 +1,14 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
-@NodeEntity
-public class TopLevelPathway extends Pathway{
+@Node
+public class TopLevelPathway extends Pathway {
 
     public TopLevelPathway() {}
 

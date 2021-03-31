@@ -1,8 +1,8 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 /**
  * Created by:
@@ -11,7 +11,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
  * @since 14.04.16.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public abstract class GO_Term extends DatabaseObject{
 
     @ReactomeProperty
@@ -71,7 +71,6 @@ public abstract class GO_Term extends DatabaseObject{
         return referenceDatabase;
     }
 
-    @Relationship(type = "referenceDatabase")
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }

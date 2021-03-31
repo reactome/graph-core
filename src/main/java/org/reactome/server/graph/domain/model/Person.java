@@ -1,17 +1,17 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.PublicationAuthor;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Person extends DatabaseObject {
 
     @ReactomeProperty
@@ -82,7 +82,6 @@ public class Person extends DatabaseObject {
         return affiliation;
     }
 
-    @Relationship(type = "affiliation")
     public void setAffiliation(List<Affiliation> affiliation) {
         this.affiliation = affiliation;
     }
@@ -93,7 +92,6 @@ public class Person extends DatabaseObject {
     }
 
     @Deprecated
-    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }

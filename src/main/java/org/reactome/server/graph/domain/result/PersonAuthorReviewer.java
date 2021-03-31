@@ -1,9 +1,9 @@
 package org.reactome.server.graph.domain.result;
 
 import org.reactome.server.graph.domain.model.Person;
-import org.springframework.data.neo4j.annotation.QueryResult;
 
-@QueryResult
+
+
 public class PersonAuthorReviewer {
 
     private Person person;

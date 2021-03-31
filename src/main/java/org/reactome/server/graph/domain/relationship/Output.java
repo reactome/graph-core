@@ -1,41 +1,41 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.RelationshipProperties;
+import org.springframework.data.neo4j.core.schema.TargetNode;
+
+import java.util.Objects;
 
 /**
  * Output relationship of ReactionLikeEvent. It is needed to specify the stoichiometry and order of outputs.
  */
-@SuppressWarnings("unused")
-@RelationshipEntity(type = "output")
-public class Output implements Comparable {
+@RelationshipProperties
+public class Output implements Comparable<Output> {
 
-    @GraphId
+    @Id @GeneratedValue
     private Long id;
 
-    @StartNode
-    private ReactionLikeEvent rle;
-
-    @EndNode
+    @TargetNode
     private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
 
     private int order;
 
-    public Output() {}
+    private ReactionLikeEvent reactionLikeEvent;
 
     public ReactionLikeEvent getReactionLikeEvent() {
-        return rle;
+        return reactionLikeEvent;
     }
 
     public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
-        this.rle = reactionLikeEvent;
+        this.reactionLikeEvent = reactionLikeEvent;
     }
+
+    public Output() {}
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
@@ -44,7 +44,6 @@ public class Output implements Comparable {
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
     }
-
 
     public Integer getStoichiometry() {
         return stoichiometry;
@@ -66,23 +65,16 @@ public class Output implements Comparable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Output output = (Output) o;
-
-        //noinspection SimplifiableIfStatement
-        if (rle != null ? !rle.equals(output.rle) : output.rle != null) return false;
-        return physicalEntity != null ? physicalEntity.equals(output.physicalEntity) : output.physicalEntity == null;
+        return Objects.equals(physicalEntity, ((Output) o).physicalEntity);
     }
 
     @Override
     public int hashCode() {
-        int result = rle != null ? rle.hashCode() : 0;
-        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
-        return result;
+        return Objects.hash(physicalEntity);
     }
 
     @Override
-    public int compareTo(Object o) {
-        return 0;
+    public int compareTo(Output o) {
+        return order - o.order;
     }
 }

@@ -1,12 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Polymer extends PhysicalEntity {
 
     @ReactomeProperty
@@ -98,7 +98,6 @@ public class Polymer extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species")
     public void setSpecies(List<Species> species) {
         this.species = species;
     }

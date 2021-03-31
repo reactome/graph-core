@@ -1,9 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.relationship.PublicationAuthor;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +11,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Publication extends DatabaseObject {
 
     @ReactomeProperty
     private String title;
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
+    @Relationship(type = "author", direction = Relationship.Direction.INCOMING)
     private SortedSet<PublicationAuthor> author;
 
     public Publication() {
@@ -31,7 +31,6 @@ public class Publication extends DatabaseObject {
         this.title = title;
     }
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
     public List<Person> getAuthor() {
         if (author == null) return null;
         List<Person> rtn = new ArrayList<>();
@@ -41,7 +40,6 @@ public class Publication extends DatabaseObject {
         return rtn;
     }
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
     public void setAuthor(List<Person> author) {
         this.author = new TreeSet<>();
         int order = 0;

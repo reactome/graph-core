@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class InstanceEdit extends DatabaseObject {
 
     @ReactomeProperty
@@ -15,7 +15,7 @@ public class InstanceEdit extends DatabaseObject {
     @ReactomeProperty
     private String note;
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
+    @Relationship(type = "author", direction = Relationship.Direction.INCOMING)
     private List<Person> author;
 
     public InstanceEdit() {}
@@ -36,12 +36,10 @@ public class InstanceEdit extends DatabaseObject {
         this.note = note;
     }
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
     public List<Person> getAuthor() {
         return author;
     }
 
-    @Relationship(type = "author", direction = Relationship.INCOMING)
     public void setAuthor(List<Person> author) {
         this.author = author;
     }

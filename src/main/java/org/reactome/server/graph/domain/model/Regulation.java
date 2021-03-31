@@ -1,9 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * A regulator that is required for an Event/CatalystActivity to happen.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public abstract class Regulation extends DatabaseObject {
 
     @ReactomeProperty
@@ -25,10 +25,10 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "activity")
     private GO_MolecularFunction activity;
 
-    @Relationship(type = "authored", direction = Relationship.INCOMING)
+    @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
     private InstanceEdit authored;
 
-    @Relationship(type = "edited", direction = Relationship.INCOMING)
+    @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
     @Relationship(type = "goBiologicalProcess")
@@ -38,23 +38,23 @@ public abstract class Regulation extends DatabaseObject {
     private List<Regulation> inferredTo;
 
     @ReactomeTransient
-    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
+    @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
     private List<Regulation> inferredFrom;
 
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
     @ReactomeTransient
-    @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
+    @Relationship(type = "regulatedBy", direction = Relationship.Direction.INCOMING)
     private ReactionLikeEvent regulatedEntity;
 
     @Relationship(type = "regulator")
     private PhysicalEntity regulator;
 
-    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
+    @Relationship(type = "reviewed", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.INCOMING)
+    @Relationship(type = "revised", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> revised;
 
     @Relationship(type = "summation")
@@ -70,42 +70,34 @@ public abstract class Regulation extends DatabaseObject {
         this.releaseDate = releaseDate;
     }
 
-    @Relationship(type = "activeUnit")
     public List<PhysicalEntity> getActiveUnit() {
         return activeUnit;
     }
 
-    @Relationship(type = "activeUnit")
     public void setActiveUnit(List<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
     }
 
-    @Relationship(type = "activity")
     public GO_MolecularFunction getActivity() {
         return activity;
     }
 
-    @Relationship(type = "activity")
     public void setActivity(GO_MolecularFunction activity) {
         this.activity = activity;
     }
 
-    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public InstanceEdit getAuthored() {
         return authored;
     }
 
-    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public void setAuthored(InstanceEdit authored) {
         this.authored = authored;
     }
 
-    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public List<InstanceEdit> getEdited() {
         return edited;
     }
 
-    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public void setEdited(List<InstanceEdit> edited) {
         this.edited = edited;
     }
@@ -114,27 +106,22 @@ public abstract class Regulation extends DatabaseObject {
         return goBiologicalProcess;
     }
 
-    @Relationship(type = "goBiologicalProcess")
     public void setGoBiologicalProcess(GO_BiologicalProcess goBiologicalProcess) {
         this.goBiologicalProcess = goBiologicalProcess;
     }
 
-    @Relationship(type = "inferredTo")
     public List<Regulation> getInferredTo() {
         return inferredTo;
     }
 
-    @Relationship(type = "inferredTo")
     public void setInferredTo(List<Regulation> inferredTo) {
         this.inferredTo = inferredTo;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     public List<Regulation> getInferredFrom() {
         return inferredFrom;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     public void setInferredFrom(List<Regulation> inferredFrom) {
         this.inferredFrom = inferredFrom;
     }
@@ -143,17 +130,14 @@ public abstract class Regulation extends DatabaseObject {
         return literatureReference;
     }
 
-    @Relationship(type = "literatureReference")
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
 
-    @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     public ReactionLikeEvent getRegulatedEntity() {
         return regulatedEntity;
     }
 
-    @Relationship(type = "regulatedBy", direction = Relationship.INCOMING)
     public void setRegulatedEntity(ReactionLikeEvent regulatedEntity) {
         this.regulatedEntity = regulatedEntity;
     }
@@ -162,27 +146,22 @@ public abstract class Regulation extends DatabaseObject {
         return regulator;
     }
 
-    @Relationship(type = "regulator")
     public void setRegulator(PhysicalEntity regulator) {
         this.regulator = regulator;
     }
 
-    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public List<InstanceEdit> getReviewed() {
         return reviewed;
     }
 
-    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public void setReviewed(List<InstanceEdit> reviewed) {
         this.reviewed = reviewed;
     }
 
-    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public List<InstanceEdit> getRevised() {
         return revised;
     }
 
-    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public void setRevised(List<InstanceEdit> revised) {
         this.revised = revised;
     }
@@ -191,7 +170,6 @@ public abstract class Regulation extends DatabaseObject {
         return summation;
     }
 
-    @Relationship(type = "summation")
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
     }

@@ -1,17 +1,17 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.*;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public abstract class PhysicalEntity extends DatabaseObject {
 
     @ReactomeProperty
@@ -26,7 +26,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @ReactomeProperty
     private String systematicName;
 
-    @Relationship(type = "authored", direction = Relationship.INCOMING)
+    @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
     private InstanceEdit authored;
 
     /**
@@ -34,23 +34,19 @@ public abstract class PhysicalEntity extends DatabaseObject {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
+    @Relationship(type = "physicalEntity", direction = Relationship.Direction.INCOMING)
     private List<CatalystActivity> catalystActivities;
 
     @Relationship(type = "compartment")
-    private SortedSet<HasCompartment<PhysicalEntity>> compartment;
+    private SortedSet<HasCompartment> compartment;
 
     /**
      * ComponentOf is not a field of the previous RestfulApi and will be ignored until needed
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
+    @Relationship(type = "hasComponent", direction = Relationship.Direction.INCOMING)
     private SortedSet<HasComponent> componentOf;
-
-    @ReactomeTransient
-    @Relationship(type = "input", direction = Relationship.INCOMING)
-    private Set<Input> consumedByEvent;
 
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
@@ -58,7 +54,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "disease")
     private List<Disease> disease;
 
-    @Relationship(type = "edited", direction = Relationship.INCOMING)
+    @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
     @Relationship(type = "figure")
@@ -71,7 +67,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     private List<PhysicalEntity> inferredTo;
 
     @ReactomeTransient
-    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
+    @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
     /**
@@ -79,7 +75,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
+    @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<Requirement> isRequired;
 
     @Relationship(type = "literatureReference")
@@ -90,7 +86,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "hasMember", direction = Relationship.INCOMING)
+    @Relationship(type = "hasMember", direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> memberOf;
 
     /**
@@ -98,7 +94,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
+    @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
     /**
@@ -106,22 +102,26 @@ public abstract class PhysicalEntity extends DatabaseObject {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
+    @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
+    @Relationship(type = "repeatedUnit", direction = Relationship.Direction.INCOMING)
     private Set<RepeatedUnit> repeatedUnitOf;
 
     @ReactomeTransient
-    @Relationship(type = "output", direction = Relationship.INCOMING)
+    @Relationship(type = "input", direction = Relationship.Direction.INCOMING)
+    private Set<Input> consumedByEvent;
+
+    @ReactomeTransient
+    @Relationship(type = "output", direction = Relationship.Direction.INCOMING)
     private Set<Output> producedByEvent;
 
-    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
+    @Relationship(type = "reviewed", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.INCOMING)
+    @Relationship(type = "revised", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> revised;
 
     @Relationship(type = "summation")
@@ -170,22 +170,18 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.speciesName = speciesName;
     }
 
-    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public InstanceEdit getAuthored() {
         return authored;
     }
 
-    @Relationship(type = "authored", direction = Relationship.INCOMING)
     public void setAuthored(InstanceEdit authored) {
         this.authored = authored;
     }
 
-    @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
     public List<CatalystActivity> getCatalystActivities() {
         return catalystActivities;
     }
 
-    @Relationship(type = "physicalEntity", direction = Relationship.INCOMING)
     public void setCatalystActivities(List<CatalystActivity> catalystActivities) {
         this.catalystActivities = catalystActivities;
     }
@@ -193,14 +189,13 @@ public abstract class PhysicalEntity extends DatabaseObject {
     public List<Compartment> getCompartment() {
         if(compartment == null) return null;
         List<Compartment> rtn = new ArrayList<>();
-        for (HasCompartment<PhysicalEntity> c : compartment) {
+        for (HasCompartment c : compartment) {
             rtn.add(c.getCompartment());
         }
         return rtn;
     }
 
-    @Relationship(type = "compartment")
-    public void setCompartment(SortedSet<HasCompartment<PhysicalEntity>> compartment) {
+    public void setCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
 
@@ -208,15 +203,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.compartment = new TreeSet<>();
         int order = 0;
         for (Compartment c : compartment) {
-            HasCompartment<PhysicalEntity> hc = new HasCompartment<>();
-            hc.setSource(this);
+            HasCompartment hc = new HasCompartment();
+//            hc.setSource(this);
             hc.setCompartment(c);
             hc.setOrder(order++);
             this.compartment.add(hc);
         }
     }
 
-    @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
     public void setComponentOf(SortedSet<HasComponent> componentOf) {
         this.componentOf = componentOf;
     }
@@ -233,7 +227,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         }
     }
 
-    @Relationship(type = "input", direction = Relationship.INCOMING)
     public void setConsumedByEvent(Set<Input> consumedByEvent) {
         this.consumedByEvent = consumedByEvent;
     }
@@ -253,7 +246,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return crossReference;
     }
 
-    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -262,17 +254,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return disease;
     }
 
-    @Relationship(type = "disease")
     public void setDisease(List<Disease> disease) {
         this.disease = disease;
     }
 
-    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public List<InstanceEdit> getEdited() {
         return edited;
     }
 
-    @Relationship(type = "edited", direction = Relationship.INCOMING)
     public void setEdited(List<InstanceEdit> edited) {
         this.edited = edited;
     }
@@ -281,7 +270,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return figure;
     }
 
-    @Relationship(type = "figure")
     public void setFigure(List<Figure> figure) {
         this.figure = figure;
     }
@@ -290,52 +278,42 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return goCellularComponent;
     }
 
-    @Relationship(type = "goCellularComponent")
     public void setGoCellularComponent(GO_CellularComponent goCellularComponent) {
         this.goCellularComponent = goCellularComponent;
     }
 
-    @Relationship(type = "inferredTo")
     public List<PhysicalEntity> getInferredTo() {
         return inferredTo;
     }
 
-    @Relationship(type = "inferredTo")
     public void setInferredTo(List<PhysicalEntity> inferredTo) {
         this.inferredTo = inferredTo;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     public List<PhysicalEntity> getInferredFrom() {
         return inferredFrom;
     }
 
-    @Relationship(type = "inferredTo", direction = Relationship.INCOMING)
     public void setInferredFrom(List<PhysicalEntity> inferredFrom) {
         this.inferredFrom = inferredFrom;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
     public List<Requirement> getIsRequired() {
         return isRequired;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
     public void setIsRequired(List<Requirement> isRequired) {
         this.isRequired = isRequired;
     }
 
-    @Relationship(type = "hasMember", direction = Relationship.INCOMING)
     public List<PhysicalEntity> getMemberOf() {
         return memberOf;
     }
 
-    @Relationship(type = "hasMember", direction = Relationship.INCOMING)
     public void setMemberOf(List<PhysicalEntity> memberOf) {
         this.memberOf = memberOf;
     }
 
-    @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
     public void setRepeatedUnitOf(Set<RepeatedUnit> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
     }
@@ -356,32 +334,26 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return literatureReference;
     }
 
-    @Relationship(type = "literatureReference")
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
     public List<NegativeRegulation> getNegativelyRegulates() {
         return negativelyRegulates;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
     public void setNegativelyRegulates(List<NegativeRegulation> negativelyRegulates) {
         this.negativelyRegulates = negativelyRegulates;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
     public List<PositiveRegulation> getPositivelyRegulates() {
         return positivelyRegulates;
     }
 
-    @Relationship(type = "regulator", direction = Relationship.INCOMING)
     public void setPositivelyRegulates(List<PositiveRegulation> positivelyRegulates) {
         this.positivelyRegulates = positivelyRegulates;
     }
 
-    @Relationship(type = "output", direction = Relationship.INCOMING)
     public void setProducedByEvent(Set<Output> producedByEvent) {
         this.producedByEvent = producedByEvent;
     }
@@ -397,22 +369,18 @@ public abstract class PhysicalEntity extends DatabaseObject {
         }
     }
 
-    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public List<InstanceEdit> getReviewed() {
         return reviewed;
     }
 
-    @Relationship(type = "reviewed", direction = Relationship.INCOMING)
     public void setReviewed(List<InstanceEdit> reviewed) {
         this.reviewed = reviewed;
     }
 
-    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public List<InstanceEdit> getRevised() {
         return revised;
     }
 
-    @Relationship(type = "revised", direction = Relationship.INCOMING)
     public void setRevised(List<InstanceEdit> revised) {
         this.revised = revised;
     }
@@ -421,12 +389,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return summation;
     }
 
-    @Relationship(type = "summation")
     public void setSummation(List<Summation> summation) {
         this.summation = summation;
     }
 
-    @Relationship(type = "repeatedUnit", direction = Relationship.INCOMING)
     public List<Polymer> getRepeatedUnitOf() {
         List<Polymer> rtn = new ArrayList<>();
         if(repeatedUnitOf!=null) {
@@ -440,7 +406,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return null;
     }
 
-    @Relationship(type = "hasComponent", direction = Relationship.INCOMING)
     public List<Complex> getComponentOf() {
         List<Complex> rtn = new ArrayList<>();
         if(componentOf!=null) {
@@ -452,7 +417,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return null;
     }
 
-    @Relationship(type = "input", direction = Relationship.INCOMING)
     public List<ReactionLikeEvent> getConsumedByEvent() {
         List<ReactionLikeEvent> rtn = new ArrayList<>();
         if(consumedByEvent!=null) {
@@ -464,7 +428,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return null;
     }
 
-    @Relationship(type = "output", direction = Relationship.INCOMING)
     public List<ReactionLikeEvent> getProducedByEvent() {
         List<ReactionLikeEvent> rtn = new ArrayList<>();
         if(producedByEvent!=null) {

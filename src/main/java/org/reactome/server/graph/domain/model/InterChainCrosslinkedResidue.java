@@ -1,16 +1,16 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 import java.util.Set;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
 
-    @Relationship(type = "equivalentTo", direction = Relationship.UNDIRECTED)
+    @Relationship(type = "equivalentTo") // TODO: VERIFY, direction = Relationship.Direction.UNDIRECTED)
     private List<InterChainCrosslinkedResidue> equivalentTo;
 
     @Relationship(type = "secondReferenceSequence")
@@ -22,7 +22,6 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
         return equivalentTo;
     }
 
-    @Relationship(type = "equivalentTo", direction = Relationship.UNDIRECTED)
     public void setEquivalentTo(List<InterChainCrosslinkedResidue> equivalentTo) {
         this.equivalentTo = equivalentTo;
     }
@@ -31,7 +30,6 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
         return secondReferenceSequence;
     }
 
-    @Relationship(type = "secondReferenceSequence")
     public void setSecondReferenceSequence(Set<ReferenceSequence> secondReferenceSequence) {
         this.secondReferenceSequence = secondReferenceSequence;
     }
