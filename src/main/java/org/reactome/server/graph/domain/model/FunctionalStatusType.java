@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "FunctionalStatusType")
 public class FunctionalStatusType extends DatabaseObject {
 
     @ReactomeProperty

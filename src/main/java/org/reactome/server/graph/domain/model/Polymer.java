@@ -17,7 +17,7 @@ import java.util.*;
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Polymer")
 public class Polymer extends PhysicalEntity {
 
     @ReactomeProperty

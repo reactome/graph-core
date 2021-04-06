@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
  * This describes an Event/CatalystActivity that is positively regulated by the Regulator (e.g., allosteric activation).
  */
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "PositiveRegulation")
 public class PositiveRegulation extends Regulation {
 
     public PositiveRegulation() {}

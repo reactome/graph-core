@@ -33,7 +33,7 @@ import java.util.Objects;
  */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
-@Node
+@Node(primaryLabel = "DatabaseObject")
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject>, DatabaseObjectLike {
 
     @ReactomeTransient

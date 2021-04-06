@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.*;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "PhysicalEntity")
 public abstract class PhysicalEntity extends DatabaseObject {
 
     @ReactomeProperty

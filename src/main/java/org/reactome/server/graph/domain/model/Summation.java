@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Summation")
 public class Summation extends DatabaseObject {
 
     @ReactomeProperty

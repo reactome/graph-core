@@ -19,7 +19,7 @@ import java.util.TreeSet;
  * A collection of related Events. These events can be ReactionLikeEvents or Pathways
  */
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Pathway")
 public class Pathway extends Event {
 
     @ReactomeProperty

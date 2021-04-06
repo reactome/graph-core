@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-@Node
+@Node(primaryLabel = "ControlReference")
 public abstract class ControlReference extends DatabaseObject {
 
     @Relationship(type = "literatureReference")

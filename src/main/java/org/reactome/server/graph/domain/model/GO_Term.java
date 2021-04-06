@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  * @since 14.04.16.
  */
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "GO_Term")
 public abstract class GO_Term extends DatabaseObject{
 
     @ReactomeProperty

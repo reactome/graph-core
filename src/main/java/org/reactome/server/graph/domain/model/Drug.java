@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-@Node
+@Node(primaryLabel = "Drug")
 public abstract class Drug extends PhysicalEntity {
 
     @Relationship(type = "referenceEntity")

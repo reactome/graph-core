@@ -3,7 +3,7 @@ package org.reactome.server.graph.domain.model;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node
+@Node(primaryLabel = "CatalystActivityReference")
 public class CatalystActivityReference extends ControlReference {
 
     @Relationship(type = "catalystActivity")

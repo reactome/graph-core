@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  * Defines a change of state for one or more molecular entities. Most reactions in Reactome involve either: a) the interaction of entities to form a complex, or b) the movement of entities between compartments, or c) the chemical conversion of entities as part of a metabolic process. Reactions have a molecular balance between input and output entities.
  */
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Reaction")
 public class Reaction extends ReactionLikeEvent {
 
     @Relationship(type = "reverseReaction") // TODO , direction = Relationship.UNDIRECTED)

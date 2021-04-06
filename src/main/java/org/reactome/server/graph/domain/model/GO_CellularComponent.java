@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "GO_CellularComponent")
 public class GO_CellularComponent extends GO_Term {
 
     @Relationship(type = "componentOf")

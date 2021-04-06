@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "EntityFunctionalStatus")
 public class EntityFunctionalStatus extends DatabaseObject {
 
     @Relationship(type = "functionalStatus")

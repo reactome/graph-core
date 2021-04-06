@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Person")
 public class Person extends DatabaseObject {
 
     @ReactomeProperty

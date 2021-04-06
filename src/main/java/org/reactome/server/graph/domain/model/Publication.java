@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Publication")
 public class Publication extends DatabaseObject {
 
     @ReactomeProperty

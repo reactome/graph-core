@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "FunctionalStatus")
 public class FunctionalStatus extends DatabaseObject {
 
     @Relationship(type = "functionalStatusType")

@@ -4,7 +4,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node
+@Node(primaryLabel = "ModifiedNucleotide")
 public class ModifiedNucleotide extends TranscriptionalModification {
 
     @ReactomeProperty

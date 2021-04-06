@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Taxon")
 public class Taxon extends DatabaseObject {
 
     @ReactomeProperty

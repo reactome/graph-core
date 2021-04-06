@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
  * Reactions that follow the pattern: Polymer + Unit - Polymer (there may be a catalyst involved). Used to describe the mechanistic detail of a polymerisation
  */
 @SuppressWarnings("unused")
-@Node
+@Node(primaryLabel = "Polymerisation")
 public class Polymerisation extends ReactionLikeEvent {
 
     public Polymerisation() {}

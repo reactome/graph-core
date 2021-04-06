@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
-@Node
+@Node(primaryLabel = "ReferenceTherapeutic")
 public class ReferenceTherapeutic extends ReferenceEntity{
 
     @ReactomeProperty

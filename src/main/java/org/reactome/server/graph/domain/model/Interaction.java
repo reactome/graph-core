@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-@Node
+@Node(primaryLabel = "Interaction")
 public abstract class Interaction extends DatabaseObject {
 
     @Relationship(type = "referenceDatabase")
