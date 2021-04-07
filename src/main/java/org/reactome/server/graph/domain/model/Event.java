@@ -11,7 +11,8 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.*;
 
 @SuppressWarnings({"unused"})
-@Node(primaryLabel = "Event")
+
+@Node(primaryLabel = "Event", labels = {"Event", "DatabaseObject"})
 public abstract class Event extends DatabaseObject {
 
     @ReactomeProperty
