@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "ReferenceEntity")
+@Node
 public class ReferenceEntity extends DatabaseObject {
 
     // will be filled together with url

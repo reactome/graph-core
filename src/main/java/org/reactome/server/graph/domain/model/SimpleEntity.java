@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  * The detailed structure of a simpleEntity is specified by linking it to details of the molecule in the ChEBI or KEGG databases via the referenceEntity slot. Use of KEGG is deprecated.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "SimpleEntity")
+@Node
 public class SimpleEntity extends PhysicalEntity {
 
     @ReactomeProperty(addedField = true)

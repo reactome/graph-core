@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "GroupModifiedResidue")
+@Node
 public class GroupModifiedResidue extends TranslationalModification {
 
     @Relationship(type = "modification")

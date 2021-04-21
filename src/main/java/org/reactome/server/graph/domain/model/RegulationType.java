@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @Deprecated
 @SuppressWarnings("unused")
-@Node(primaryLabel = "RegulationType")
+@Node
 public class RegulationType extends DatabaseObject {
 
     @ReactomeProperty

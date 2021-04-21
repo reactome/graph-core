@@ -34,7 +34,7 @@
 
     <properties>
         <!--dependencies-->
-        <sdn.version>6.0.6</sdn.version>
+        <sdn.version>6.1.0-SNAPSHOT</sdn.version>
         <spring.version>5.3.5</spring.version>
         <aspectj.version>1.9.6</aspectj.version>
         <junit.version>5.7.1</junit.version>
@@ -71,16 +71,29 @@
             <artifactId>spring-boot-starter-data-neo4j</artifactId>
             <version>2.4.4</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-aop</artifactId>-->
-<!--            <version>2.4.4</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <version>2.4.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-neo4j</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-core</artifactId>
+            <version>3.2.21</version>
+        </dependency>
+
+        <dependency> <!-- If you're using the HTTP driver -->
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-http-driver</artifactId>
+            <version>3.2.21</version>
         </dependency>
 
 
@@ -167,6 +180,11 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+
+        <repository>
+            <id>spring-libs-release</id>
+            <url>https://repo.spring.io/libs-snapshot</url>
         </repository>
 
         <repository>

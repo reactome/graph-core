@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import org.reactome.server.graph.domain.model.Affiliation;
 
 public class SchemaOrganization extends SchemaCreator {
-    private String name;
+    private final String name;
 
     SchemaOrganization(Affiliation affiliation) {
         this.name = affiliation.getDisplayName();

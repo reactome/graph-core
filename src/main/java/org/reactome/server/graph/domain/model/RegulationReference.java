@@ -3,7 +3,7 @@ package org.reactome.server.graph.domain.model;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node(primaryLabel = "RegulationReference")
+@Node
 public class RegulationReference extends ControlReference {
 
     @Relationship(type = "regulation")

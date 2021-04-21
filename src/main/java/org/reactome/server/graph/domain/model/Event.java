@@ -12,7 +12,7 @@ import java.util.*;
 
 @SuppressWarnings({"unused"})
 
-@Node(primaryLabel = "Event", labels = {"Event", "DatabaseObject"})
+@Node
 public abstract class Event extends DatabaseObject {
 
     @ReactomeProperty

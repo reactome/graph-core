@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 
-@Node(primaryLabel = "DBInfo")
+@Node
 public class DBInfo {
 
     @JsonIgnore

@@ -5,15 +5,11 @@ import org.reactome.server.graph.domain.model.Pathway;
 
 import java.util.List;
 
-
 public class DiagramOccurrences {
 
     private Pathway diagram;
-
     private boolean inDiagram;
-
     private List<DatabaseObject> occurrences;
-
     private List<DatabaseObject> interactsWith;
 
     public Pathway getDiagram() {

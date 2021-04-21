@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Node;
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "TopLevelPathway")
+@Node
 public class TopLevelPathway extends Pathway {
 
     public TopLevelPathway() {}

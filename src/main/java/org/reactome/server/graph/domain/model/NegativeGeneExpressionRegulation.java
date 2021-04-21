@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
  * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "NegativeGeneExpressionRegulation")
+@Node
 public class NegativeGeneExpressionRegulation extends NegativeRegulation {
 
     public NegativeGeneExpressionRegulation() {}

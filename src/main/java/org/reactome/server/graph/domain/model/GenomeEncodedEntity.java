@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  * A peptide or polynucleotide whose sequence is unknown and thus cannot be linked to external sequence databases or used for orthology inference.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "GenomeEncodedEntity")
+@Node
 public class GenomeEncodedEntity extends PhysicalEntity {
 
 

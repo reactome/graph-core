@@ -13,7 +13,7 @@ import java.util.*;
  * Two or more entities grouped because of a shared molecular feature. The superclass for CandidateSet and DefinedSet.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "EntitySet")
+@Node
 public abstract class EntitySet extends PhysicalEntity {
 
     @ReactomeProperty

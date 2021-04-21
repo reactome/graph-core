@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "DatabaseIdentifier")
+@Node
 public class DatabaseIdentifier extends DatabaseObject {
 
     // will be filled together with url

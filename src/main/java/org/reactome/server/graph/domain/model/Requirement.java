@@ -5,7 +5,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "Requirement")
+@Node
 public class Requirement extends PositiveRegulation {
 
     public Requirement() {}

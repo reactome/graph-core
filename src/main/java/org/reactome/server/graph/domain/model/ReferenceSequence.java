@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "ReferenceSequence")
+@Node
 public class ReferenceSequence extends ReferenceEntity {
 
     @ReactomeProperty

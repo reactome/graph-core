@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "TranslationalModification")
+@Node
 public class TranslationalModification extends AbstractModifiedResidue {
 
     @ReactomeProperty

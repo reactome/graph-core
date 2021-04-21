@@ -1,12 +1,10 @@
 package org.reactome.server.graph.domain.result;
 
-import org.reactome.server.graph.domain.model.Pathway;
-import org.reactome.server.graph.domain.model.Person;
-
-import java.util.Collection;
+import org.springframework.data.neo4j.core.schema.Id;
 
 
 public class PathwayResult {
+    @Id private Long id;
     private String displayName;
     private String doi;
     private String stId;
@@ -14,10 +12,10 @@ public class PathwayResult {
     private String releaseDate;
     private String reviseDate;
     private String releaseStatus;
-    private Collection<Person> authors;
-    private Collection<Person> reviewers;
-    private Collection<Person> editors;
-    private Collection<Pathway> subPathway;
+//    private Collection<Person> authors;
+//    private Collection<Person> reviewers;
+//    private Collection<Person> editors;
+//    private Collection<Pathway> subPathway;
 
     public PathwayResult() {
     }
@@ -78,36 +76,36 @@ public class PathwayResult {
         this.releaseStatus = releaseStatus;
     }
 
-    public Collection<Person> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(Collection<Person> authors) {
-        this.authors = authors;
-    }
-
-    public Collection<Person> getReviewers() {
-        return reviewers;
-    }
-
-    public void setReviewers(Collection<Person> reviewers) {
-        this.reviewers = reviewers;
-    }
-
-    public Collection<Person> getEditors() {
-        return editors;
-    }
-
-    public void setEditors(Collection<Person> editors) {
-        this.editors = editors;
-    }
-
-    public Collection<Pathway> getSubPathway() {
-        return subPathway;
-    }
-
-    public void setSubPathway(Collection<Pathway> subPathway) {
-        this.subPathway = subPathway;
-    }
+//    public Collection<Person> getAuthors() {
+//        return authors;
+//    }
+//
+//    public void setAuthors(Collection<Person> authors) {
+//        this.authors = authors;
+//    }
+//
+//    public Collection<Person> getReviewers() {
+//        return reviewers;
+//    }
+//
+//    public void setReviewers(Collection<Person> reviewers) {
+//        this.reviewers = reviewers;
+//    }
+//
+//    public Collection<Person> getEditors() {
+//        return editors;
+//    }
+//
+//    public void setEditors(Collection<Person> editors) {
+//        this.editors = editors;
+//    }
+//
+//    public Collection<Pathway> getSubPathway() {
+//        return subPathway;
+//    }
+//
+//    public void setSubPathway(Collection<Pathway> subPathway) {
+//        this.subPathway = subPathway;
+//    }
 }
 

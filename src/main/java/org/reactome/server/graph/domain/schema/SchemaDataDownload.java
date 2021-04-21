@@ -5,8 +5,8 @@ import org.reactome.server.graph.domain.model.Event;
 
 @SuppressWarnings("unused")
 public class SchemaDataDownload {
-    private String contentUrl;
-    private String fileFormat;
+    private final String contentUrl;
+    private final String fileFormat;
 
     public SchemaDataDownload(SchemaDataDownloadType dataDownloadType, Event event) {
         this.contentUrl = dataDownloadType.getUrl(event.getDbId());

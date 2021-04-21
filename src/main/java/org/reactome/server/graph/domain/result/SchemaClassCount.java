@@ -2,6 +2,9 @@ package org.reactome.server.graph.domain.result;
 
 
 
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
+
 import java.util.Collection;
 
 /**
@@ -13,7 +16,6 @@ import java.util.Collection;
  * Object for retrieving all different labels and their counts from the graph
  */
 @SuppressWarnings("unused")
-
 public class SchemaClassCount {
 
     private int count;
@@ -33,6 +35,13 @@ public class SchemaClassCount {
 
     public void setLabels(Collection<String> labels) {
         this.labels = labels;
+    }
+
+    public static SchemaClassCount build(Record record) {
+        SchemaClassCount schemaClassCount = new SchemaClassCount();
+        schemaClassCount.setCount(record.get("count").asInt());
+        schemaClassCount.setLabels(record.get("labels").asList(Value::asString));
+        return schemaClassCount;
     }
 
 }

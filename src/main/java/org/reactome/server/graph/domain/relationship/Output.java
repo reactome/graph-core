@@ -14,15 +14,11 @@ import java.util.Objects;
  */
 @RelationshipProperties
 public class Output implements Comparable<Output> {
-
-    @Id @GeneratedValue
-    private Long id;
+    @Id @GeneratedValue private Long id;
 
     @TargetNode
     private PhysicalEntity physicalEntity;
-
     private Integer stoichiometry = 1;
-
     private int order;
 
     private ReactionLikeEvent reactionLikeEvent;

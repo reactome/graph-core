@@ -13,7 +13,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "DirectedInteraction")
+@Node
 public class DirectedInteraction extends Interaction {
 
     @Relationship(type = "source")

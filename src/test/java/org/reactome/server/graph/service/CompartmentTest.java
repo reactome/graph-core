@@ -1,20 +1,15 @@
 //package org.reactome.server.graph.service;
 //
-//import org.junit.BeforeClass;
-//import org.junit.Test;
 //import org.reactome.server.graph.domain.model.Compartment;
 //import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 //import org.reactome.server.graph.util.DatabaseObjectFactory;
 //import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.test.context.SpringBootTest;
 //
 //import java.util.Objects;
 //
-//import static org.junit.Assert.assertTrue;
-//
-///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
-// */
-//public class CompartmentTest extends BaseTest {
+//@SpringBootTest
+//public class CompartmentTest {
 //
 //    @Autowired
 //    private DatabaseObjectService databaseObjectService;

@@ -4,7 +4,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "FragmentModification")
+@Node
 public class FragmentModification extends GeneticallyModifiedResidue {
 
     @ReactomeProperty

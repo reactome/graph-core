@@ -1,6 +1,7 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.neo4j.driver.Value;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.PublicationAuthor;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "Person")
+@Node
 public class Person extends DatabaseObject {
 
     @ReactomeProperty
@@ -37,6 +38,16 @@ public class Person extends DatabaseObject {
     private List<PublicationAuthor> publicationAuthorList;
 
     public Person() {}
+
+    public Person(Value p) {
+        setDbId(p.get("dbId").asLong());
+        setDisplayName(p.get("displayName").asString());
+        firstname = p.get("firstname").asString(null);
+        initial = p.get("initial").asString(null);
+        orcidId = p.get("orcidId").asString(null);
+        project = p.get("project").asString(null);
+        surname = p.get("surname").asString(null);
+    }
 
     public String getFirstname() {
         return firstname;

@@ -7,8 +7,8 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.List;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "Taxon")
-public class Taxon extends DatabaseObject {
+@Node
+public abstract class Taxon extends DatabaseObject {
 
     @ReactomeProperty
     private List<String> name;

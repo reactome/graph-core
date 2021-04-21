@@ -12,7 +12,7 @@ import java.util.Set;
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the exact active component of a complex or set.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "CatalystActivity")
+@Node
 public class CatalystActivity extends DatabaseObject  {
 
     @Relationship(type = "activeUnit")

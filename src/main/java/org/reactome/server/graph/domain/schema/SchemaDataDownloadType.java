@@ -12,8 +12,8 @@ public enum SchemaDataDownloadType {
     WORD        ("DOCX", "https://reactome.org/cgi-bin/rtfexporter?DB=gk_current&ID=__ID__"),
     PROTEGE     ("OWL", "https://reactome.org/cgi-bin/protegeexporter?DB=gk_current&ID=__ID__");
 
-    private String format;
-    private String url;
+    private final String format;
+    private final String url;
 
     SchemaDataDownloadType(String format, String url) {
         this.format = format;

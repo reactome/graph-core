@@ -13,7 +13,7 @@ import java.util.List;
  * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "UndirectedInteraction")
+@Node
 public class UndirectedInteraction extends Interaction {
 
     @Relationship(type = "interactor")

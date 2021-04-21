@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @Deprecated
 @SuppressWarnings("unused")
-@Node(primaryLabel = "Ontology")
+@Node
 public class Ontology extends DatabaseObject {
 
     private byte[] ontology;

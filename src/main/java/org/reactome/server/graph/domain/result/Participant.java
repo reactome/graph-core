@@ -13,7 +13,6 @@ import java.util.Collection;
  * Object for retrieving Ewas and their ReferenceEntities for a given Pathway Id
  */
 @SuppressWarnings("unused")
-
 public class Participant {
 
     private Long peDbId;

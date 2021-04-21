@@ -10,16 +10,16 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class SchemaDataSet {
 
-    private String name;
-    private String description;
-    private String url;
+    private final String name;
+    private final String description;
+    private final String url;
     private List<String> sameAs;
-    private String version;
-    private List<String> keywords;
-    private List<SchemaCreator> creator = new ArrayList<>();
-    private SchemaDataCatalog includedInDataCatalog;
-    private List<SchemaDataDownload> distribution = new ArrayList<>();
-    private List<String> citation = new ArrayList<>();
+    private final String version;
+    private final List<String> keywords;
+    private final List<SchemaCreator> creator = new ArrayList<>();
+    private final SchemaDataCatalog includedInDataCatalog;
+    private final List<SchemaDataDownload> distribution = new ArrayList<>();
+    private final List<String> citation = new ArrayList<>();
     private static final String license = "https://creativecommons.org/licenses/by/4.0/";
 
     public SchemaDataSet(Event event, Integer version) {

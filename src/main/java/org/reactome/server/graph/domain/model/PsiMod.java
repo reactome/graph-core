@@ -4,7 +4,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "PsiMod")
+@Node
 public class PsiMod extends ExternalOntology {
 
     @ReactomeProperty

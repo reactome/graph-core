@@ -12,7 +12,7 @@ import java.util.*;
  * A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. At least one hasCandidate value is required; hasMember values are optional.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "CandidateSet")
+@Node
 public class CandidateSet extends EntitySet {
 
     @Relationship(type = "hasCandidate")

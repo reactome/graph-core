@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
  * Two or more entities that are interchangeable in function.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "DefinedSet")
+@Node
 public class DefinedSet extends EntitySet {
 
     public DefinedSet() {}

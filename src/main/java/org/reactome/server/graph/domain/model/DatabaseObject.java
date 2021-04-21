@@ -8,7 +8,6 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.result.DatabaseObjectLike;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -33,7 +32,7 @@ import java.util.Objects;
  */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
-@Node(primaryLabel = "DatabaseObject", labels = "DatabaseObject")
+@Node
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject>, DatabaseObjectLike {
 
     @ReactomeTransient
@@ -42,12 +41,13 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeTransient
     public transient Boolean preventLazyLoading = false;
 
-    @JsonIgnore
-    @Id @GeneratedValue
-    private Long id;
+//    @JsonIgnore
+//    @Id @GeneratedValue
+//    private Long id;
 
     @ApiModelProperty(value = "This is the main internal identifier of a Reactome entry", required = true)
-    private Long dbId;
+
+    @Id private Long dbId;
 
     @ApiModelProperty(value = "This is the main name of a Reactome entry", required = true)
     private String displayName;
@@ -73,14 +73,14 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     public DatabaseObject() {
     }
 
-    @ReactomeSchemaIgnore
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    @ReactomeSchemaIgnore
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public Long getDbId() {
         return dbId;
@@ -173,10 +173,14 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     public final String getSchemaClass() {
         return getClass().getSimpleName();
     }
-
     public static DatabaseObject emptyObject() {
         return new Pathway();
     }
+
+//    public static <T extends DatabaseObject> T emptyObject() {
+//        if ()
+//        return tClass;
+//    }
 
     @ReactomeSchemaIgnore
     @JsonIgnore

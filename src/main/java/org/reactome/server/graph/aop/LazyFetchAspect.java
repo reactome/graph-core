@@ -5,10 +5,15 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 
 /**
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
@@ -27,59 +32,60 @@ public class LazyFetchAspect  {
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
 
         System.out.println("####### Intercepted by AspectJ ####### ");
-
+        int i = 0;
+        if (i * 10 == 0) return pjp.proceed();
         if (!enableAOP) return pjp.proceed();
 
-//         // Target is the whole object that originated this pointcut.
-//        DatabaseObject databaseObject = (DatabaseObject) pjp.getTarget();
-//
-//         // Gathering information of the method we are invoking and it's being intercepted by AOP
-//        MethodSignature signature = (MethodSignature) pjp.getSignature();
-//        Method method = signature.getMethod();
-//
-//         // Get the relationship that is annotated in the attribute
-//        Relationship relationship = getRelationship(method.getName(), databaseObject.getClass());
-//        if (relationship != null && !databaseObject.preventLazyLoading) { // && !databaseObject.isLoaded) {
-//             // Check whether the object has been loaded.
-//             // pjp.proceed() has the result of the invoked method.
-//            if (pjp.proceed() == null) {
-//                Long dbId = databaseObject.getDbId();
-//                String setterMethod = method.getName().replaceFirst("get", "set");
-//                Class<?> methodReturnClazz = method.getReturnType();
-//
-//                if (Collection.class.isAssignableFrom(methodReturnClazz)) {
-//                    ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
-//                    Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
-//                    String clazz = type.getSimpleName();
-//                    // DatabaseObject.isLoaded only works for OUTGOING relationships
-//                    //noinspection EqualsBetweenInconvertibleTypes
-//                    boolean isLoaded = databaseObject.isLoaded && relationship.equals(Relationship.OUTGOING);
-//                    // querying the graph and fill the collection if it hasn't been fully loaded before
-//                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
-//                    if (lazyLoadedObjectAsCollection == null) {
-//                        //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
-//                        if (List.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new ArrayList<>();
-//                        if (Set.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new HashSet<>();
-//                    }
-//                    if (lazyLoadedObjectAsCollection != null) {
-//                        // invoke the setter in order to set the object in the target
-//                        databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObjectAsCollection);
-//                        return lazyLoadedObjectAsCollection;
-//                    }
-//                }
-//
-//                if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
-//                    String clazz = methodReturnClazz.getSimpleName();
-//                    // querying the graph and fill the single object
-//                    DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(dbId, clazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
-//                    if (lazyLoadedObject != null) {
-//                        // invoke the setter in order to set the object in the target
-//                        databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObject);
-//                        return lazyLoadedObject;
-//                    }
-//                }
-//            }
-//        }
+         // Target is the whole object that originated this pointcut.
+        DatabaseObject databaseObject = (DatabaseObject) pjp.getTarget();
+
+         // Gathering information of the method we are invoking and it's being intercepted by AOP
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        Method method = signature.getMethod();
+
+         // Get the relationship that is annotated in the attribute
+        Relationship relationship = getRelationship(method.getName(), databaseObject.getClass());
+        if (relationship != null && !databaseObject.preventLazyLoading) { // && !databaseObject.isLoaded) {
+             // Check whether the object has been loaded.
+             // pjp.proceed() has the result of the invoked method.
+            if (pjp.proceed() == null) {
+                Long dbId = databaseObject.getDbId();
+                String setterMethod = method.getName().replaceFirst("get", "set");
+                Class<?> methodReturnClazz = method.getReturnType();
+
+                if (Collection.class.isAssignableFrom(methodReturnClazz)) {
+                    ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
+                    Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
+                    String clazz = type.getSimpleName();
+                    // DatabaseObject.isLoaded only works for OUTGOING relationships
+                    //noinspection EqualsBetweenInconvertibleTypes
+                    boolean isLoaded = databaseObject.isLoaded && relationship.equals(Relationship.Direction.OUTGOING);
+                    // querying the graph and fill the collection if it hasn't been fully loaded before
+                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded ? null : null;//advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    if (lazyLoadedObjectAsCollection == null) {
+                        //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
+                        if (List.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new ArrayList<>();
+                        if (Set.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new HashSet<>();
+                    }
+                    if (lazyLoadedObjectAsCollection != null) {
+                        // invoke the setter in order to set the object in the target
+                        databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObjectAsCollection);
+                        return lazyLoadedObjectAsCollection;
+                    }
+                }
+
+                if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
+                    String clazz = methodReturnClazz.getSimpleName();
+                    // querying the graph and fill the single object
+                    DatabaseObject lazyLoadedObject = null;//advancedDatabaseObjectService.findByRelationship(dbId, clazz, RelationshipDirection.valueOf(relationship.direction()), relationship.type());
+                    if (lazyLoadedObject != null) {
+                        // invoke the setter in order to set the object in the target
+                        databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObject);
+                        return lazyLoadedObject;
+                    }
+                }
+            }
+        }
 
         return pjp.proceed();
     }
@@ -103,10 +109,9 @@ public class LazyFetchAspect  {
      */
     private Relationship getRelationship(String methodName, Class<?> _clazz) {
         methodName = methodName.substring(3); // crop, remove 'get'
-        char c[] = methodName.toCharArray();
-        c[0] = Character.toLowerCase(c[0]); // lower the first char
-
-        String attribute = new String(c);
+        char[] charArray = methodName.toCharArray();
+        charArray[0] = Character.toLowerCase(charArray[0]); // lower the first char
+        String attribute = new String(charArray);
 
          // Look up for the given attribute in the class and after superclasses.
         //noinspection ClassGetClass

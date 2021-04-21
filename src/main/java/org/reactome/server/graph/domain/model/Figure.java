@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "Figure")
+@Node
 public class Figure extends DatabaseObject {
 
     @ReactomeProperty

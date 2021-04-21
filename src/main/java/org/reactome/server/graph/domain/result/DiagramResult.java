@@ -1,18 +1,12 @@
 package org.reactome.server.graph.domain.result;
 
-
-
 import java.util.List;
-
 
 public class DiagramResult {
 
     private String diagramStId;
-
     private List<String> events;
-
     private Integer width;
-
     private Integer height;
 
     public String getDiagramStId() {

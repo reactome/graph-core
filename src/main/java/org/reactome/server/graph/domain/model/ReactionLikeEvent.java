@@ -18,7 +18,7 @@ import java.util.*;
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "ReactionLikeEvent")
+@Node
 public abstract class ReactionLikeEvent extends Event {
 
     @ReactomeProperty

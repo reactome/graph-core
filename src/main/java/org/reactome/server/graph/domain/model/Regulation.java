@@ -11,7 +11,7 @@ import java.util.List;
  * A regulator that is required for an Event/CatalystActivity to happen.
  */
 @SuppressWarnings("unused")
-@Node(primaryLabel = "Regulation")
+@Node
 public abstract class Regulation extends DatabaseObject {
 
     @ReactomeProperty

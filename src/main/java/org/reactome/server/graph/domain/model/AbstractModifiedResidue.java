@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
-@Node(primaryLabel = "AbstractModifiedResidue")
+@Node
 public abstract class AbstractModifiedResidue extends DatabaseObject {
 
     @Relationship(type = "referenceSequence")

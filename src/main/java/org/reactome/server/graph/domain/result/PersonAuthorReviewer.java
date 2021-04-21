@@ -2,8 +2,6 @@ package org.reactome.server.graph.domain.result;
 
 import org.reactome.server.graph.domain.model.Person;
 
-
-
 public class PersonAuthorReviewer {
 
     private Person person;
@@ -11,7 +9,6 @@ public class PersonAuthorReviewer {
     private Long reviewedPathways;
     private Long authoredReactions;
     private Long reviewedReactions;
-
 
     public Person getPerson() {
         return person;

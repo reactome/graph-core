@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
-@Node(primaryLabel = "ReferenceDatabase")
+@Node
 public class ReferenceDatabase extends DatabaseObject {
 
     @ReactomeProperty
