@@ -1,9 +1,11 @@
 package org.reactome.server.graph.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
@@ -37,12 +39,12 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
     @Test
     public void sillyTest () {
-        PhysicalEntity ss = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(189102L, "PhysicalEntity", RelationshipDirection.UNDIRECTED, "output");
+        PhysicalEntity ss = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(189102L, "PhysicalEntity", RelationshipDirection.OUTGOING, "output");
+        System.out.println(ss); // breakpoint here
+        Assertions.assertNotNull(ss.getProducedByEvent()); // INCOMING, doesn't load the desired instances...
 
-        System.out.println(ss.getProducedByEvent());
-
-        DatabaseObject sas = databaseObjectRepository.findByDbId(189102L);
-        System.out.println(sas);
+        ReactionLikeEvent sas = databaseObjectRepository.findByDbId(189102L);
+        Assertions.assertNotNull(sas.getOutput()); // OUTGOING
     }
 
 //    @Autowired
