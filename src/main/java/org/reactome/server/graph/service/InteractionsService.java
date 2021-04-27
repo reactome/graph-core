@@ -11,7 +11,7 @@
 //import java.util.*;
 //
 ///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //@Service
 //public class InteractionsService {

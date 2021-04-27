@@ -14,7 +14,7 @@
 //import static junit.framework.TestCase.assertNotNull;
 //
 ///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //public class InferredToTest extends BaseTest {
 //

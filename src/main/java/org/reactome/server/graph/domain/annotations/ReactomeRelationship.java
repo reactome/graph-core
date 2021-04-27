@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
  *
  * This is currently used for data consistency check in the https://github.com/reactome/graph-importer
  *
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

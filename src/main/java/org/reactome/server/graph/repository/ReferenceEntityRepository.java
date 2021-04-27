@@ -8,7 +8,7 @@
 //import java.util.Collection;
 //
 ///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //@Repository
 //public interface ReferenceEntityRepository extends Neo4jRepository<ReferenceEntity> {

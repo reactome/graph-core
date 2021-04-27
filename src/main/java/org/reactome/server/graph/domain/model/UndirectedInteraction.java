@@ -10,7 +10,6 @@ import java.util.List;
  *
  * Undirected interactions has a list of ReferenceEntity instances that MUST contain only 2 elements.
  *
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 @Node

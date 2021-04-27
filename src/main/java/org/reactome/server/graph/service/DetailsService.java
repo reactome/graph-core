@@ -14,7 +14,7 @@
 //
 ///**
 // * @author Florian Korninger (florian.korninger@ebi.ac.uk)
-// * @author Antonio Fabregat (fabregat@ebi.ac.uk)
+
 // */
 //@Service
 //@SuppressWarnings("WeakerAccess")

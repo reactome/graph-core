@@ -1,8 +1,5 @@
 package org.reactome.server.graph.domain.schema;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 public enum SchemaDataDownloadType {
     SBML        ("SBML", "https://reactome.org/ContentService/exporter/sbml/__ID__.xml"),
     SBGN        ("SBGN", "https://reactome.org/ReactomeRESTfulAPI/RESTfulWS/sbgnExporter/__ID__"),

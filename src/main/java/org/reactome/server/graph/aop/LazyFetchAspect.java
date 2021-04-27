@@ -30,8 +30,6 @@ public class LazyFetchAspect  {
 
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
-
-        System.out.println("####### Intercepted by AspectJ ####### ");
         int i = 0;
         if (i * 10 == 0) return pjp.proceed();
         if (!enableAOP) return pjp.proceed();

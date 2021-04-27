@@ -5,9 +5,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 import java.util.List;
 
-/**
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
- */
 @Node
 public class ReferenceTherapeutic extends ReferenceEntity{
 

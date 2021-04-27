@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  */
 @SuppressWarnings("unused")
 @Node
-public class GenomeEncodedEntity extends PhysicalEntity {
+public abstract class GenomeEncodedEntity extends PhysicalEntity {
 
 
     @Relationship(type = "species")

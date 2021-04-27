@@ -5,6 +5,7 @@ import org.reactome.server.graph.domain.model.ExternalOntology;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
+import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.repository.SchemaRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.Collection;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
+
  */
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -138,35 +139,35 @@ public class SchemaService {
 
     // ---------------------------------------- Query by Class for SimpleReferenceObject ------------------------------------------------
 
-//    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz) {
-//        if (isValidReferenceClass(clazz)) {
-//            return schemaRepository.getSimpleReferencesObjectsByClass(clazz);
-//        }
-//        return null;
-//    }
-//
-//    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz, Integer page, Integer offset) {
-//        if (isValidReferenceClass(clazz)) {
-//            return schemaRepository.getSimpleReferencesObjectsByClass(clazz, page, offset);
-//        }
-//        return null;
-//    }
-//
-//    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClassName(String className) throws ClassNotFoundException {
-//        Class clazz = DatabaseObjectUtils.getClassForName(className);
-//        if (isValidReferenceClass(clazz)) {
-//            return schemaRepository.getSimpleReferencesObjectsByClass(clazz);
-//        }
-//        return null;
-//    }
-//
-//    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
-//        Class clazz = DatabaseObjectUtils.getClassForName(className);
-//        if (isValidReferenceClass(clazz)) {
-//            return schemaRepository.getSimpleReferencesObjectsByClass(clazz, page, offset);
-//        }
-//        return null;
-//    }
+    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz) {
+        if (isValidReferenceClass(clazz)) {
+            return schemaRepository.getSimpleReferencesObjectsByClass(clazz);
+        }
+        return null;
+    }
+
+    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz, Integer page, Integer offset) {
+        if (isValidReferenceClass(clazz)) {
+            return schemaRepository.getSimpleReferencesObjectsByClass(clazz, page, offset);
+        }
+        return null;
+    }
+
+    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClassName(String className) throws ClassNotFoundException {
+        Class clazz = DatabaseObjectUtils.getClassForName(className);
+        if (isValidReferenceClass(clazz)) {
+            return schemaRepository.getSimpleReferencesObjectsByClass(clazz);
+        }
+        return null;
+    }
+
+    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClassName(String className, Integer page, Integer offset) throws ClassNotFoundException {
+        Class clazz = DatabaseObjectUtils.getClassForName(className);
+        if (isValidReferenceClass(clazz)) {
+            return schemaRepository.getSimpleReferencesObjectsByClass(clazz, page, offset);
+        }
+        return null;
+    }
 
     // ---------------------------------------- Query by Class for single value ------------------------------------------------
 

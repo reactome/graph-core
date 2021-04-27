@@ -14,10 +14,6 @@ public class SpeciesService {
     @Autowired
     SpeciesRepository speciesRepository;
 
-    /**
-     *
-     * @return
-     */
     public List<Species> getSpecies() {
         List<Species> species = speciesRepository.getSpecies();
         int humanPos = -1;

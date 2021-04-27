@@ -3,16 +3,20 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
+import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.repository.EventRepository;
 import org.reactome.server.graph.repository.PathwayRepository;
+import org.reactome.server.graph.repository.SimpleDatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
  */
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -21,12 +25,15 @@ public class PathwaysService {
     private final EventRepository eventRepository;
     private final PathwayRepository pathwayRepository;
     private final SpeciesService speciesService;
+    private final SimpleDatabaseObjectRepository simpleDatabaseObjectRepository;
+
 
     @Autowired
-    public PathwaysService(EventRepository eventRepository, PathwayRepository pathwayRepository, SpeciesService speciesService) {
+    public PathwaysService(EventRepository eventRepository, PathwayRepository pathwayRepository, SpeciesService speciesService, SimpleDatabaseObjectRepository simpleDatabaseObjectRepository) {
         this.eventRepository = eventRepository;
         this.pathwayRepository = pathwayRepository;
         this.speciesService = speciesService;
+        this.simpleDatabaseObjectRepository = simpleDatabaseObjectRepository;
     }
 
     public Collection<Event> getContainedEvents(Object identifier) {
@@ -140,47 +147,46 @@ public class PathwaysService {
         }
     }
 
-    // TODO SimpleDatabaseObject
-//    public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, String... pathways) {
-//        return getPathwaysForIdentifier(identifier, Arrays.asList(pathways));
-//    }
-//
-//    public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, Collection<String> pathways) {
-//        //The user might submit a list where dbIds and stIds are mixed -> we create two lists
-//        Collection<String> stIds = new HashSet<>();
-//        Collection<Long> dbIds = new HashSet<>();
-//        for (String pathway : pathways) {
-//            String id = DatabaseObjectUtils.getIdentifier(pathway);
-//            if (DatabaseObjectUtils.isStId(id)) {
-//                stIds.add(id);
-//            } else if (DatabaseObjectUtils.isDbId(id)) {
-//                dbIds.add(Long.valueOf(id));
-//            }
-//        }
-//
-//        Collection<SimpleDatabaseObject> rtn = new HashSet<>();
-//        //Aggregating the results in a set (if any). Order isn't taken into account for the time being
-//        Collection<SimpleDatabaseObject> aux;
-//        if (!stIds.isEmpty()) {
-//            aux = pathwaysRepository.getPathwaysForIdentifierByStId(identifier, stIds);
-//            if (aux != null && !aux.isEmpty()) rtn.addAll(aux);
-//        }
-//        if (!dbIds.isEmpty()) {
-//            aux = pathwaysRepository.getPathwaysForIdentifierByDbId(identifier, dbIds);
-//            if (aux != null && !aux.isEmpty()) rtn.addAll(aux);
-//        }
-//
-//        if (rtn.isEmpty()) return null;
-//        return rtn;
-//    }
-//
-//    public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifier(String pathway, String identifier) {
-//        String id = DatabaseObjectUtils.getIdentifier(pathway);
-//        if (DatabaseObjectUtils.isStId(id)) {
-//            return pathwaysRepository.getDiagramEntitiesForIdentifierByStId(pathway, identifier);
-//        } else if (DatabaseObjectUtils.isDbId(id)) {
-//            return pathwaysRepository.getDiagramEntitiesForIdentifierByDbId(Long.parseLong(pathway), identifier);
-//        }
-//        return null;
-//    }
+    public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, String... pathways) {
+        return getPathwaysForIdentifier(identifier, Arrays.asList(pathways));
+    }
+
+    public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, Collection<String> pathways) {
+        //The user might submit a list where dbIds and stIds are mixed -> we create two lists
+        Collection<String> stIds = new HashSet<>();
+        Collection<Long> dbIds = new HashSet<>();
+        for (String pathway : pathways) {
+            String id = DatabaseObjectUtils.getIdentifier(pathway);
+            if (DatabaseObjectUtils.isStId(id)) {
+                stIds.add(id);
+            } else if (DatabaseObjectUtils.isDbId(id)) {
+                dbIds.add(Long.valueOf(id));
+            }
+        }
+
+        Collection<SimpleDatabaseObject> rtn = new HashSet<>();
+        //Aggregating the results in a set (if any). Order isn't taken into account for the time being
+        Collection<SimpleDatabaseObject> aux;
+        if (!stIds.isEmpty()) {
+            aux = simpleDatabaseObjectRepository.getPathwaysForIdentifierByStId(identifier, stIds);
+            if (aux != null && !aux.isEmpty()) rtn.addAll(aux);
+        }
+        if (!dbIds.isEmpty()) {
+            aux = simpleDatabaseObjectRepository.getPathwaysForIdentifierByDbId(identifier, dbIds);
+            if (aux != null && !aux.isEmpty()) rtn.addAll(aux);
+        }
+
+        if (rtn.isEmpty()) return null;
+        return rtn;
+    }
+
+    public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifier(String pathway, String identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(pathway);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByStId(pathway, identifier);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByDbId(Long.parseLong(pathway), identifier);
+        }
+        return null;
+    }
 }

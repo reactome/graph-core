@@ -5,6 +5,7 @@ import org.reactome.server.graph.domain.model.Disease;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
+import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -270,63 +271,61 @@ public class SchemaServiceTest extends BaseTest {
 
     // ---------------------------------------- Query by Class for SimpleReferenceObject ------------------------------------------------
 
-    // TODO ENABLE THIS TEST
+    @Test
+    public void getSimpleReferencesObjectsByClassTest() {
 
-//    @Test
-//    public void getSimpleReferencesObjectsByClassTest() {
-//
-//        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassTest");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClass(Disease.class);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertTrue("There should be 281 diseases or more", diseases.size() >= 281);
-//        logger.info("Finished");
-//    }
-//
-//    @Test
-//    public void getSimpleReferencesObjectsByClassPagingTest() {
-//
-//        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassPagingTest");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClass(Disease.class, 1, 200);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(200, diseases.size());
-//        logger.info("Finished");
-//    }
-//
-//    @Test
-//    public void getSimpleReferencesObjectsByClassNameTest() throws ClassNotFoundException {
-//
-//        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNameTest");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClassName("Disease");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertTrue(diseases.size() >= 281);
-//        logger.info("Finished");
-//    }
-//
-//    @Test
-//    public void getSimpleReferencesObjectsByClassNamePagingTest() throws ClassNotFoundException {
-//
-//        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClassName("Disease", 1, 200);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(200, diseases.size());
-//        logger.info("Finished");
-//    }
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClass(Disease.class);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(diseases.size() >= 281, "There should be 281 diseases or more");
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getSimpleReferencesObjectsByClassPagingTest() {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassPagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClass(Disease.class, 1, 200);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(200, diseases.size());
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getSimpleReferencesObjectsByClassNameTest() throws ClassNotFoundException {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNameTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClassName("Disease");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(diseases.size() >= 281);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getSimpleReferencesObjectsByClassNamePagingTest() throws ClassNotFoundException {
+
+        logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClassName("Disease", 1, 200);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(200, diseases.size());
+        logger.info("Finished");
+    }
 
     // ---------------------------------------- Query by Class for single value ------------------------------------------------
 

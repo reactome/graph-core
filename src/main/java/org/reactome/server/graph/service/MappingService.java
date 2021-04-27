@@ -11,7 +11,7 @@
 //import java.util.Collection;
 //
 ///**
-// * @author Antonio Fabregat (fabregat@ebi.ac.uk)
+
 // */
 //@SuppressWarnings("WeakerAccess")
 //@Service

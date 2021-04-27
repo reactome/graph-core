@@ -11,7 +11,6 @@ import java.util.Collection;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Repository
 public interface BookRepository extends Neo4jRepository<Book, Long>{

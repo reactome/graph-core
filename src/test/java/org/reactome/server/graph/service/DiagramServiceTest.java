@@ -12,7 +12,7 @@
 //import static org.junit.Assert.*;
 //
 ///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //public class DiagramServiceTest extends BaseTest {
 //

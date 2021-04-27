@@ -204,5 +204,4 @@ public interface PathwayRepository extends Neo4jRepository<Pathway, Long> {
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(@Param("stId") String stId);
 
-
 }

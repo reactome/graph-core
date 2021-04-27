@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.Input;
-import org.reactome.server.graph.domain.relationship.Output;
+import org.reactome.server.graph.domain.relationship.OutputFromReaction;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -47,7 +47,7 @@ public abstract class ReactionLikeEvent extends Event {
     private ReactionLikeEvent normalReaction;
 
     @Relationship(type = "output")
-    private Set<Output> output;
+    private List<OutputFromReaction> output;
 
     @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
@@ -196,44 +196,51 @@ public abstract class ReactionLikeEvent extends Event {
     public List<StoichiometryObject> fetchOutput() {
         List<StoichiometryObject> objects = new ArrayList<>();
         if (output != null) {
-            for (Output aux : output) {
+            for (OutputFromReaction aux : output) {
                 objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
             }
             Collections.sort(objects);
         }
         return objects;
     }
-
-    public List<PhysicalEntity> getOutput() {
-        List<PhysicalEntity> rtn = null;
-        if (output != null) {
-            rtn = new ArrayList<>();
-            for (Output aux : output) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
-                    rtn.add(aux.getPhysicalEntity());
-                }
-            }
-        }
-        return rtn;
+    public List<OutputFromReaction> getOutput(){
+        return this.output;
     }
 
-    public void setOutput(List<PhysicalEntity> outputs) {
-        if (outputs == null) return;
-        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
-        Map<Long, Output> map = new LinkedHashMap<>();
-        for (PhysicalEntity physicalEntity : outputs) {
-            Output output = map.get(physicalEntity.getDbId());
-            if (output == null) {
-                output = new Output();
-                output.setReactionLikeEvent(this);
-                output.setPhysicalEntity(physicalEntity);
-                map.put(physicalEntity.getDbId(), output);
-            } else {
-                output.setStoichiometry(output.getStoichiometry() + 1);
-            }
-        }
-        this.output = new HashSet<>(map.values());
+    public void setOutput(List<OutputFromReaction> output) {
+        this.output=output;
     }
+
+//    public List<PhysicalEntity> getOutput() {
+//        List<PhysicalEntity> rtn = null;
+//        if (output != null) {
+//            rtn = new ArrayList<>();
+//            for (Output aux : output) {
+//                for (int i = 0; i < aux.getStoichiometry(); i++) {
+//                    rtn.add(aux.getPhysicalEntity());
+//                }
+//            }
+//        }
+//        return rtn;
+//    }
+
+//    public void setOutput(List<PhysicalEntity> outputs) {
+//        if (outputs == null) return;
+//        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
+//        Map<Long, Output> map = new LinkedHashMap<>();
+//        for (PhysicalEntity physicalEntity : outputs) {
+//            Output output = map.get(physicalEntity.getDbId());
+//            if (output == null) {
+//                output = new Output();
+//                output.setReactionLikeEvent(this);
+//                output.setPhysicalEntity(physicalEntity);
+//                map.put(physicalEntity.getDbId(), output);
+//            } else {
+//                output.setStoichiometry(output.getStoichiometry() + 1);
+//            }
+//        }
+//        this.output = new HashSet<>(map.values());
+//    }
 
     @ReactomeSchemaIgnore
     @Override

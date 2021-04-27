@@ -27,7 +27,7 @@
 ///**
 // * The documentation for schema validation is at https://developers.google.com/search/docs/guides/prototype
 // *
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //public class SchemaDataSetTest extends BaseTest {
 //

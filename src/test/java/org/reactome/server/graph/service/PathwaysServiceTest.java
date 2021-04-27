@@ -3,10 +3,11 @@ package org.reactome.server.graph.service;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
@@ -14,38 +15,20 @@ import static org.springframework.test.util.AssertionErrors.assertFalse;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
-public class PathwaysServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
-
-//    @Autowired
-//    private GeneralService generalService;
+public class PathwaysServiceTest extends BaseTest {
 
     @Autowired
     private PathwaysService pathwaysService;
 
-//    @BeforeClass
-//    public static void setUpClass() {
-//        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() {
-//        logger.info("\n\n");
-//    }
-//
-//    @Before
-//    public void setUp() throws Exception {
-//        if (!checkedOnce) {
-//            isFit = generalService.fitForService();
-//            checkedOnce = true;
-//        }
-//        assumeTrue(isFit);
-//        DatabaseObjectFactory.clearCache();
-//    }
+    @BeforeTestClass
+    public void setUpClass() {
+        logger.info(" --- !!! Running " + PathwaysServiceTest.class.getName() + " !!! --- \n");
+    }
+
+    @AfterTestClass
+    public void tearDownClass() {
+        logger.info("\n\n");
+    }
 
     @Test
     public void getContainedEventsByStIdTest(){
@@ -56,7 +39,6 @@ public class PathwaysServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertFalse("This event contains other events", events.isEmpty());
-
     }
 
     @Test
@@ -125,25 +107,26 @@ public class PathwaysServiceTest {
         assertTrue("There should be 9 or more pathways containing PTEN in human", pathways.size() >= 9);
     }
 
-//    @Test
-//    public void getPathwaysForIdentifierTest(){
-//        logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
-//        long start = System.currentTimeMillis();
-//        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-68875");
-//        long time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertTrue("There should be 1 or more pathways containing POM121C", pathways.size() >= 0);
-//    }
-//
-//    @Test
-//    public void getDiagramEntitiesForIdentifierTest(){
-//        logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
-//        long start = System.currentTimeMillis();
-//        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "POM121C");
-//        long time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertTrue("There should be more than 1 entity in the pathway containing POM121C", entities.size() >= 0);
-//    }
+
+    @Test
+    public void getPathwaysForIdentifierTest(){
+        logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
+        long start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-68875");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be 1 or more pathways containing POM121C", pathways.size() > 0);
+    }
+
+    @Test
+    public void getDiagramEntitiesForIdentifierTest(){
+        logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
+        long start = System.currentTimeMillis();
+        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "SLC2A12");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue("There should be more than 1 entity in the pathway containing POM121C", entities.size() > 0);
+    }
 }

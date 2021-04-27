@@ -11,7 +11,7 @@
 //import static org.junit.Assert.assertTrue;
 //
 ///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //public class EventsServiceTest extends BaseTest {
 //

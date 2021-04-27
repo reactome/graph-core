@@ -15,7 +15,7 @@
 //import static org.junit.Assume.assumeTrue;
 //
 ///**
-// * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
 // */
 //public class StabilityAndConsistencyTest extends BaseTest {
 //

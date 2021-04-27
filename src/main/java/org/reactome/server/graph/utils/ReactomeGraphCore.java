@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
  * //And used as it is used here...
  * System.out.println("Database name: " + genericService.getDBName());
  *
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
+
  */
 @SuppressWarnings("unused")
 public class ReactomeGraphCore {

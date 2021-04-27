@@ -3,7 +3,6 @@ package org.reactome.server.graph.domain.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.swagger.annotations.ApiModelProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
@@ -45,28 +44,21 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 //    @Id @GeneratedValue
 //    private Long id;
 
-    @ApiModelProperty(value = "This is the main internal identifier of a Reactome entry", required = true)
-
     @Id private Long dbId;
 
-    @ApiModelProperty(value = "This is the main name of a Reactome entry", required = true)
     private String displayName;
 
-    @ApiModelProperty(value = "This is the main external identifier of a Reactome entry")
     @ReactomeProperty(addedField = true)
     private String stId;
 
-    @ApiModelProperty(value = "This is the version of the main external identifier of a Reactome entry")
     private String stIdVersion;
 
     @JsonIgnore
     private transient String oldStId;
 
-    @ApiModelProperty(value = "Instance that created this entry")
     @Relationship(type = "created", direction = Relationship.Direction.INCOMING)
     private InstanceEdit created;
 
-    @ApiModelProperty(value = "Last instance that modified this entry")
     @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
 
@@ -176,11 +168,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     public static DatabaseObject emptyObject() {
         return new Pathway();
     }
-
-//    public static <T extends DatabaseObject> T emptyObject() {
-//        if ()
-//        return tClass;
-//    }
 
     @ReactomeSchemaIgnore
     @JsonIgnore

@@ -10,7 +10,6 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  *
  *   (source) -[interacts]-> (target)
  *
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 @Node

@@ -23,7 +23,7 @@
 //
 ///**
 // * @author Florian Korninger (florian.korninger@ebi.ac.uk)
-// * @author Antonio Fabregat (fabregat@ebi.ac.uk)
+
 // */
 //@ContextConfiguration(classes = {Neo4jConfig.class})
 //@RunWith(SpringJUnit4ClassRunner.class)

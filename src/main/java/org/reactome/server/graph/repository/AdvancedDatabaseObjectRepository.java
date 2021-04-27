@@ -4,6 +4,7 @@ import jodd.typeconverter.TypeConverterManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.result.CustomQuery;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
@@ -18,7 +19,6 @@ import java.util.*;
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unchecked")
 @Repository
@@ -27,39 +27,70 @@ public class AdvancedDatabaseObjectRepository {
     private final Neo4jClient neo4jClient;
     private final Neo4jTemplate neo4jTemplate;
 
+    private static final String CYPHER_RETURN = "" +
+            "WITH n, r, m " +
+            "ORDER BY TYPE(r) ASC, r.order ASC " +
+            "RETURN n, COLLECT(r), COLLECT(m)";
+
+    private static final String CYPHER_RETURN_LIMIT = CYPHER_RETURN + " " + "LIMIT $limit";
+
     @Autowired
     public AdvancedDatabaseObjectRepository(Neo4jClient neo4jClient, Neo4jTemplate neo4jTemplate) {
         this.neo4jClient = neo4jClient;
         this.neo4jTemplate = neo4jTemplate;
     }
 
-    public <T extends DatabaseObject> T findById(){
-        String query = "MATCH (a:DatabaseObject)-[r]->(m) WHERE a.dbId = 69620 RETURN a,collect(r), collect(m)";
-        Optional<DatabaseObject> aa = neo4jClient.query(query).fetchAs(DatabaseObject.class).first();
-        return (T) aa.get();
-    }
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
     @Deprecated
-    public <T extends DatabaseObject> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
+    public <T extends DatabaseObject> DatabaseObject findByProperty(Class<T> clazz, String property, Object value) {
         //return neo4jTemplate.loadByProperty(clazz, property, value, depth);
-        return null;
+        String query = "" +
+                "MATCH (n:" + clazz.getSimpleName() + ") " +
+                "WHERE n." + property + " = $param " +
+                "OPTIONAL MATCH (n)-[r]-(m) " +
+                "RETURN n, COLLECT(r), COLLECT(m)";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("param", value);
+        return neo4jTemplate.findOne(query, map, DatabaseObject.class).orElse(null);
     }
 
     @Deprecated
-    public <T extends DatabaseObject> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        //return neo4jTemplate.loadAllByProperty(clazz, property, value, depth);
-        return null;
+    public <T extends DatabaseObject> Collection<DatabaseObject> findAllByProperty(Class<T> clazz, String property, Object value) {
+        // It turned out that depth 2 takes ages to run
+        String query = "" +
+                "MATCH (n:" + clazz.getSimpleName() + ") " +
+                "WHERE n." + property + " = $param " +
+                "OPTIONAL MATCH (n)-[r]-(m) " +
+                "RETURN n, COLLECT(r), COLLECT(m)";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("param", value);
+
+        return neo4jTemplate.findAll(query, map, DatabaseObject.class);
     }
 
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
 
     public <T extends DatabaseObject> T findById(Long dbId, Integer limit) {
-        String query = "MATCH (n:DatabaseObject{dbId:$dbId}) " +
-                       "OPTIONAL MATCH (n)-[r]-(m) " +
-                       "RETURN n,r,m ORDER BY TYPE(r) ASC, r.order ASC LIMIT $limit";
+        String query = "" +
+                "MATCH (n:DatabaseObject{dbId:$dbId}) " +
+                "OPTIONAL MATCH (n)-[r]-(m) " +
+                CYPHER_RETURN_LIMIT;
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
+        map.put("limit", limit);
+        return (T) neo4jTemplate.findOne(query, map, DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findById(String stId, Integer limit) {
+        String query = "" +
+                "MATCH (n:DatabaseObject{stId:$stId}) " +
+                "OPTIONAL MATCH (n)-[r]-(m) " +
+                CYPHER_RETURN_LIMIT;
+        Map<String, Object> map = new HashMap<>();
+        map.put("stId", stId);
         map.put("limit", limit);
         return (T) neo4jTemplate.findOne(query, map, DatabaseObject.class).orElse(null);
     }
@@ -93,25 +124,17 @@ public class AdvancedDatabaseObjectRepository {
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
     public <T extends DatabaseObject> T findById(Long dbId, RelationshipDirection direction) {
-                String query;
+        // The previous implementation was querying everything and then returning only the first. LIMIT 1 will be forced in this query.
+        String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{dbId:$dbId}) " +
-                        "OPTIONAL MATCH (n)-[r]->(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:$dbId}) OPTIONAL MATCH (n)-[r]->(m) " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{dbId:$dbId}) " +
-                        "OPTIONAL MATCH (n)<-[r]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:$dbId}) OPTIONAL MATCH (n)<-[r]-(m) " + CYPHER_RETURN;
                 break;
             default: // UNDIRECTED
-                query = "MATCH (n:DatabaseObject{dbId:$dbId}) " +
-                        "OPTIONAL MATCH (n)-[r]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:$dbId}) OPTIONAL MATCH (n)-[r]-(m) " + CYPHER_RETURN;
         }
         Map<String, Object> params = new HashMap<>(1);
         params.put("dbId", dbId);
@@ -122,22 +145,13 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{stId:$stId}) " +
-                        "OPTIONAL MATCH (n)-[r]->(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)-[r]->(m) " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{stId:$stId}) " +
-                        "OPTIONAL MATCH (n)<-[r]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)<-[r]-(m) " + CYPHER_RETURN;
                 break;
             default: // UNDIRECTED
-                query = "MATCH (n:DatabaseObject{stId:$stId}) " +
-                        "OPTIONAL MATCH (n)-[r]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)-[r]-(m) " + CYPHER_RETURN;
         }
         Map<String, Object> params = new HashMap<>(1);
         params.put("stId", stId);
@@ -148,19 +162,13 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
             default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
         }
 
@@ -173,19 +181,13 @@ public class AdvancedDatabaseObjectRepository {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{stId:$stId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:$stId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{stId:$stId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:$stId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
             default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{stId:$stId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "RETURN n, COLLECT(r), COLLECT(m) " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (n:DatabaseObject{stId:$stId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
         }
 
@@ -199,18 +201,15 @@ public class AdvancedDatabaseObjectRepository {
         switch (direction) {
             case OUTGOING:
                 query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " +
-                        "WHERE n.dbId IN $dbIds " +
-                        "RETURN n, COLLECT(r), COLLECT(m)";
+                        "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
                 break;
             case INCOMING:
                 query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.dbId IN $dbIds " +
-                        "RETURN n, COLLECT(r), COLLECT(m)";
+                        "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
                 break;
             default: //UNDIRECTED
                 query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.dbId IN $dbIds " +
-                        "RETURN n, COLLECT(r), COLLECT(m)";
+                        "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
                 break;
         }
         Map<String, Object> map = new HashMap<>();
@@ -223,18 +222,15 @@ public class AdvancedDatabaseObjectRepository {
         switch (direction) {
             case OUTGOING:
                 query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " +
-                        "WHERE n.stId IN $stIds " +
-                        "RETURN n, COLLECT(r), COLLECT(m)";
+                        "WHERE n.stId IN $stIds " + CYPHER_RETURN;
                 break;
             case INCOMING:
                 query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.stId IN $stIds " +
-                        "RETURN n, COLLECT(r), COLLECT(m)";
+                        "WHERE n.stId IN $stIds " + CYPHER_RETURN;
                 break;
             default: //UNDIRECTED
                 query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.stId IN $stIds " +
-                        "RETURN n, COLLECT(r), COLLECT(m)";
+                        "WHERE n.stId IN $stIds " + CYPHER_RETURN;
                 break;
         }
         Map<String, Object> map = new HashMap<>();
@@ -243,7 +239,7 @@ public class AdvancedDatabaseObjectRepository {
     }
 
 //    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
-//        Result result = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
+//        Collection<DatabaseObject> list = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
 //
 //        Collection<DatabaseObject> databaseObjects;
 //        if (collectionClass.getName().equals(Set.class.getName())) {
@@ -265,11 +261,11 @@ public class AdvancedDatabaseObjectRepository {
 //    }
 
 //    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
-//        Result result = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
+//        return (T) queryRelationshipTypesByDbId(dbId, clazz, direction, relationships).iterator().next();
 //
-//        if (result != null && result.iterator().hasNext())
-//            return (T) result.iterator().next().get("m");
-//        return null;
+////        if (result != null && result.iterator().hasNext())
+////            return (T) result.iterator().next().get("m");
+////        return null;
 //    }
 
     /**
@@ -278,47 +274,70 @@ public class AdvancedDatabaseObjectRepository {
      * This method queries the Graph and returns it as a Result object that will be parsed in the findByRelationship
      * and findCollectionByRelationship accordingly.
      */
-//    private class Result {
-//        private DatabaseObject databaseObject;
-//        private int stoich;
-//        public Result (Record r) {
-//            InternalNode eObject =  (InternalNode) r.get("m").asObject();
-//               Object s = eObject.asMap(Value::asObject);
-//            System.out.println(s);
-//            stoich = r.get("s").asInt();
-//        }
-//
-//    }
+
     public <T extends DatabaseObject> T queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         String query;
+
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") " +
-                        "RETURN m, collect(r), collect(a)" ;
-//                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") " + CYPHER_RETURN;;
                 break;
             case INCOMING:
-                query = "MATCH (:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " +
-                        "RETURN m, r.stoichiometry AS n " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " + CYPHER_RETURN;;
                 break;
             default: //UNDIRECTED
-                query = "MATCH (:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " +
-                        "RETURN m, r.stoichiometry AS n " +
-                        "ORDER BY TYPE(r) ASC, r.order ASC";
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " + CYPHER_RETURN;
                 break;
         }
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
-        //return (T) neo4jClient.query(query).bindAll(map).fetchAs(Result.class).mappedBy((TypeSystem t, Record s) -> new Result(s)).all();
         return (T) neo4jTemplate.findOne(query, map, DatabaseObject.class).orElse(null);
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
-//
-//    public void customQuery(String query, Map<String, Object> parameters){
-//        neo4jTemplate.query(query, parameters);
-//    }
+
+
+
+    @Deprecated
+    public void customQuery(String query, Map<String, Object> parameters){
+        //neo4jTemplate.query(query, parameters);
+    }
+
+    public <T> T customQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+        try {
+            if (parameters == null) parameters = Collections.EMPTY_MAP;
+
+            if (DatabaseObject.class.isAssignableFrom(clazz)) {
+                return (T) neo4jTemplate.findOne(query, parameters, DatabaseObject.class).orElse(null);
+            } else if (CustomQuery.class.isAssignableFrom(clazz)) {
+                CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
+                return (T) neo4jClient.query(query).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).one().orElse(null);
+            }
+
+            return neo4jClient.query(query).bindAll(parameters).fetchAs(clazz).one().orElse(null);
+
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            throw new CustomQueryException(e);
+        }
+    }
+
+    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+        try {
+
+           if (parameters == null) parameters = Collections.EMPTY_MAP;
+
+            if (DatabaseObject.class.isAssignableFrom(clazz)) {
+                return (Collection<T>) neo4jTemplate.findAll(query, parameters, DatabaseObject.class);
+            } else if (CustomQuery.class.isAssignableFrom(clazz)) {
+                CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
+                return (Collection<T>) neo4jClient.query(query).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).all();
+            }
+
+            return neo4jClient.query(query).bindAll(parameters).fetchAs(clazz).all();
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException  e) {
+            throw new CustomQueryException(e);
+        }
+    }
 
 //    public <T> T customQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
 //        if (parameters == null) parameters = Collections.EMPTY_MAP;

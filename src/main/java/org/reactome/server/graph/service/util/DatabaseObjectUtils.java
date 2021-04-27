@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Component
 public class DatabaseObjectUtils {

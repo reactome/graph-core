@@ -9,7 +9,6 @@ import java.util.List;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class AttributeProperties implements Comparable<AttributeProperties> {

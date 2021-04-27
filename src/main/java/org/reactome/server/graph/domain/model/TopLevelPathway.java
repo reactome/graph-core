@@ -4,7 +4,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 @Node

@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 @SuppressWarnings("unused")
 @Node
-public class Publication extends DatabaseObject {
+public abstract class Publication extends DatabaseObject {
 
     @ReactomeProperty
     private String title;

@@ -4,9 +4,6 @@ import org.neo4j.driver.Record;
 
 import java.util.List;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 @SuppressWarnings("unused")
 public class Referrals {
 

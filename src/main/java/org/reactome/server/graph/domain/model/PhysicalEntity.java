@@ -116,7 +116,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     @ReactomeTransient
     @Relationship(type = "output", direction = Relationship.Direction.INCOMING)
-    private Set<Output> producedByEvent;
+    private List<Output> producedByEvent;
 
     @Relationship(type = "reviewed", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> reviewed;
@@ -354,20 +354,20 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.positivelyRegulates = positivelyRegulates;
     }
 
-    public void setProducedByEvent(Set<Output> producedByEvent) {
+    public void setProducedByEvent(List<Output> producedByEvent) {
         this.producedByEvent = producedByEvent;
     }
 
-    public void setProducedByEvent(List<ReactionLikeEvent> events) {
-        this.producedByEvent = new TreeSet<>();
-        for (ReactionLikeEvent rle : events) {
-            Output output = new Output();
-            output.setReactionLikeEvent(rle);
-            output.setPhysicalEntity(this);
-            output.setStoichiometry(1);
-            this.producedByEvent.add(output);
-        }
-    }
+//    public void setProducedByEvent(List<ReactionLikeEvent> events) {
+//        this.producedByEvent = new TreeSet<>();
+//        for (ReactionLikeEvent rle : events) {
+//            Output output = new Output();
+//            output.setReactionLikeEvent(rle);
+//            output.setPhysicalEntity(this);
+//            output.setStoichiometry(1);
+//            this.producedByEvent.add(output);
+//        }
+//    }
 
     public List<InstanceEdit> getReviewed() {
         return reviewed;
@@ -428,14 +428,17 @@ public abstract class PhysicalEntity extends DatabaseObject {
         return null;
     }
 
-    public List<ReactionLikeEvent> getProducedByEvent() {
-        List<ReactionLikeEvent> rtn = new ArrayList<>();
-        if(producedByEvent!=null) {
-            for (Output aux : producedByEvent) {
-                    rtn.add(aux.getReactionLikeEvent());
-            }
-            return rtn;
-        }
-        return null;
+//    public List<ReactionLikeEvent> getProducedByEvent() {
+//        List<ReactionLikeEvent> rtn = new ArrayList<>();
+//        if(producedByEvent!=null) {
+//            for (Output aux : producedByEvent) {
+//                    rtn.add(aux.getReactionLikeEvent());
+//            }
+//            return rtn;
+//        }
+//        return null;
+//    }
+    public List<Output> getProducedByEvent() {
+        return producedByEvent;
     }
 }

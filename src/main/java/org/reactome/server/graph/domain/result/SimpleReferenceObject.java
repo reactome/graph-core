@@ -1,13 +1,7 @@
 package org.reactome.server.graph.domain.result;
 
+import org.neo4j.driver.Record;
 
-
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 05.06.16.
- */
 
 @SuppressWarnings("unused")
 public class SimpleReferenceObject {
@@ -42,4 +36,13 @@ public class SimpleReferenceObject {
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
     }
+
+    public static SimpleReferenceObject build(Record record) {
+        SimpleReferenceObject simpleReferenceObject = new SimpleReferenceObject();
+        simpleReferenceObject.setDbId(record.get("dbId").asLong());
+        simpleReferenceObject.setIdentifier(record.get("identifier").asString());
+        simpleReferenceObject.setDatabaseName(record.get("databaseName").asString());
+        return simpleReferenceObject;
+    }
+
 }

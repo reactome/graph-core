@@ -10,7 +10,7 @@
 //
 ///**
 // * @author Florian Korninger (florian.korninger@ebi.ac.uk)
-// * @author Antonio Fabregat (fabregat@ebi.ac.uk)
+
 // */
 //@Repository
 //public interface PhysicalEntityRepository extends Neo4jRepository<PhysicalEntity> {
