@@ -2,6 +2,7 @@ package org.reactome.server.graph;
 
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.custom.CustomQueryComplex;
+import org.reactome.server.graph.domain.model.CandidateSet;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.exception.CustomQueryException;
@@ -32,6 +33,13 @@ public class PlaygroundTest {
         ReactionLikeEvent sas = databaseObjectRepository.findByDbId(202245L);
         assertNull(sas.getInferredFrom());
         assertEquals(sas.getInferredFrom().size(),0);
+        System.out.println(sas);
+    }
+
+    @Test
+    public void testHasCandidateSet(){
+//        GenomeEncodedEntity sas = databaseObjectRepository.findByStId("R-HSA-5649637");
+        CandidateSet sas = databaseObjectRepository.findByStId("R-HSA-5672709");
         System.out.println(sas);
     }
 
@@ -78,5 +86,15 @@ public class PlaygroundTest {
         // TODO check Output relationship
         System.out.println(ss); // breakpoint here
         System.out.println(aa); // breakpoint here
+    }
+
+    @Test
+    public void testReactionLikEventOutput() {
+        ReactionLikeEvent rle1 = databaseObjectRepository.findByDbId(8932955L);
+        System.out.println(rle1);
+        assertNotNull(rle1.getOutput());
+        assertEquals("R-HSA-", rle1.getOutput().get(0).getPhysicalEntity().getStId());
+        ReactionLikeEvent rle2 = databaseObjectRepository.findByDbId(1247999L);
+        System.out.println(rle2);
     }
 }
