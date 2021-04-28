@@ -286,6 +286,7 @@ public class AdvancedServiceTest extends BaseTest {
 
         // by default, lazy loading is disabled in our tests, enable here for a particular test
         lazyFetchAspect.setEnableAOP(true);
+        // TODO Test here when LazyLoading is working
         assertNotNull(pathway.getHasEvent());
         assertEquals(4, pathway.getHasEvent().size());
 

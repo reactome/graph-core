@@ -260,13 +260,12 @@ public class AdvancedDatabaseObjectRepository {
 //        return databaseObjects.isEmpty() ? null : databaseObjects;
 //    }
 
-//    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
-//        return (T) queryRelationshipTypesByDbId(dbId, clazz, direction, relationships).iterator().next();
-//
-////        if (result != null && result.iterator().hasNext())
-////            return (T) result.iterator().next().get("m");
-////        return null;
-//    }
+    // TODO Test this method with LazyLoading
+    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+        Collection<DatabaseObject> rels =  queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
+        if (rels != null && rels.size() == 1) return (T) rels.iterator().next();
+        return null;
+    }
 
     /**
      * During the Lazy-Loading strategy, we need to query pointing to a relationship type and either gets back a single
@@ -275,23 +274,27 @@ public class AdvancedDatabaseObjectRepository {
      * and findCollectionByRelationship accordingly.
      */
 
-    public <T extends DatabaseObject> T queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> Collection<T> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         String query;
 
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") " + CYPHER_RETURN;;
+                query = "" +
+                        "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") " +
+                        "RETURN m, COLLECT(r), COLLECT(a)";
                 break;
             case INCOMING:
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " + CYPHER_RETURN;;
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " +
+                        "RETURN m, COLLECT(r), COLLECT(a)";
                 break;
             default: //UNDIRECTED
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " + CYPHER_RETURN;
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " +
+                        "RETURN m, COLLECT(r), COLLECT(a)";
                 break;
         }
         Map<String, Object> map = new HashMap<>();
         map.put("dbId", dbId);
-        return (T) neo4jTemplate.findOne(query, map, DatabaseObject.class).orElse(null);
+        return (Collection<T>) neo4jTemplate.findAll(query, map, DatabaseObject.class);
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
