@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
 @Node
-public class TranslationalModification extends AbstractModifiedResidue {
+public abstract class TranslationalModification extends AbstractModifiedResidue {
 
     @ReactomeProperty
     private Integer coordinate;

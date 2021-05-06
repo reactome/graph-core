@@ -5,7 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
 @Node
-public class FragmentModification extends GeneticallyModifiedResidue {
+public abstract class FragmentModification extends GeneticallyModifiedResidue {
 
     @ReactomeProperty
     private Integer endPositionInReferenceSequence;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import org.neo4j.driver.Value;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
-import org.reactome.server.graph.domain.relationship.PublicationAuthor;
+import org.reactome.server.graph.domain.relationship.AuthorPublication;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -35,7 +35,7 @@ public class Person extends DatabaseObject {
 
     @ReactomeTransient
     @Relationship(type = "author")
-    private List<PublicationAuthor> publicationAuthorList;
+    private List<AuthorPublication> publicationAuthorList;
 
     public Person() {}
 
@@ -111,7 +111,7 @@ public class Person extends DatabaseObject {
     public List<Publication> getPublications() {
         if (publicationAuthorList == null) return null;
         List<Publication> rtn = new ArrayList<>();
-        for (PublicationAuthor publicationAuthor : publicationAuthorList) {
+        for (AuthorPublication publicationAuthor : publicationAuthorList) {
             rtn.add(publicationAuthor.getPublication());
         }
         return rtn;

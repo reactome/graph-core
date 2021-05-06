@@ -8,7 +8,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
-public class ReferenceSequence extends ReferenceEntity {
+public abstract class ReferenceSequence extends ReferenceEntity {
 
     @ReactomeProperty
     private String checksum;

@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.relationship;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.reactome.server.graph.domain.model.Event;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -11,16 +10,10 @@ import java.util.Objects;
 
 @RelationshipProperties
 public class HasEvent implements Comparable<HasEvent> {
-
-    @JsonIgnore
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private Event event;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private Event event;
 
     private int order;
-
     private int stoichiometry;
 
     public Long getId() {

@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
 @Node
-public class CrosslinkedResidue extends TranslationalModification {
+public abstract class CrosslinkedResidue extends TranslationalModification {
 
     @ReactomeProperty
     private Integer secondCoordinate;

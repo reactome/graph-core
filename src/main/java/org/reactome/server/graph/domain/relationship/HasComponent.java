@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -16,28 +15,13 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 @RelationshipProperties
 public class HasComponent implements Comparable<HasComponent> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private PhysicalEntity physicalEntity;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
-
     private int order;
 
-    private Complex complex;
-
     public HasComponent() {}
-
-    public Complex getComplex() {
-        return complex;
-    }
-
-    public void setComplex(Complex complex) {
-        this.complex = complex;
-    }
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;

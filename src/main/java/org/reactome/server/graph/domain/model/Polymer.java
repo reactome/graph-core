@@ -85,7 +85,7 @@ public class Polymer extends PhysicalEntity {
                 re.setStoichiometry(re.getStoichiometry() + 1);
             } else {
                 re = new RepeatedUnit();
-                re.setPolymer(this);
+//                re.setPolymer(this);
                 re.setPhysicalEntity(physicalEntity);
                 re.setOrder(order++);
                 repeatedUnits.put(physicalEntity.getDbId(), re);

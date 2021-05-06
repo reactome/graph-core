@@ -10,12 +10,8 @@ import java.util.Objects;
 
 @RelationshipProperties
 public class HasEncapsulatedEvent implements Comparable<HasEncapsulatedEvent> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private Event event;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private Event event;
 
     private int order;
 

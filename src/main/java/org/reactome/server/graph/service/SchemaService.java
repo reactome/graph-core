@@ -16,7 +16,6 @@ import java.util.Collection;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
-
  */
 @Service
 @SuppressWarnings("WeakerAccess")

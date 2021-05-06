@@ -1,6 +1,5 @@
 package org.reactome.server.graph.service;
 
-import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.DBInfo;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
@@ -50,7 +49,7 @@ public class GeneralService {
 
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
-    public Result query (String query, Map<String,Object> map) {
+    public Object query (String query, Map<String,Object> map) {
         return generalTemplateRepository.query(query,map);
     }
 

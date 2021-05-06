@@ -1,7 +1,6 @@
 package org.reactome.server.graph.domain.relationship;
 
 import org.reactome.server.graph.domain.model.PhysicalEntity;
-import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
@@ -15,21 +14,10 @@ import java.util.Objects;
 @RelationshipProperties
 public class Output implements Comparable<Output> {
     @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
-
-    private PhysicalEntity physicalEntity;
     private Integer stoichiometry = 1;
     private int order;
-    @TargetNode
-    private ReactionLikeEvent reactionLikeEvent;
-
-    public ReactionLikeEvent getReactionLikeEvent() {
-        return reactionLikeEvent;
-    }
-
-    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
-        this.reactionLikeEvent = reactionLikeEvent;
-    }
 
     public Output() {}
 

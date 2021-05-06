@@ -1,6 +1,5 @@
 package org.reactome.server.graph.repository;
 
-import org.neo4j.ogm.model.Result;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +36,7 @@ public class GeneralTemplateRepository {
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
     @Deprecated
-    public Result query(String query, Map<String,Object> map) {
+    public Object query(String query, Map<String,Object> map) {
         // TODO No services are calling this.
         return null;
     }

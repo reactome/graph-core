@@ -85,7 +85,7 @@ public class Complex extends PhysicalEntity {
                 component.setStoichiometry(component.getStoichiometry() + 1);
             } else {
                 component = new HasComponent();
-                component.setComplex(this);
+//                component.setComplex(this);
                 component.setPhysicalEntity(physicalEntity);
                 component.setOrder(order++);
                 components.put(physicalEntity.getDbId(), component);

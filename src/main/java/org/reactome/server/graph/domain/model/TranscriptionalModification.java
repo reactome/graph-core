@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
 @Node
-public class TranscriptionalModification extends AbstractModifiedResidue {
+public abstract class TranscriptionalModification extends AbstractModifiedResidue {
 
     public TranscriptionalModification() { }
 }

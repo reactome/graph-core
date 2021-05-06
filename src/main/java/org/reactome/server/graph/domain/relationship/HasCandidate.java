@@ -13,15 +13,10 @@ import java.util.Objects;
  */
 @RelationshipProperties
 public class HasCandidate implements Comparable<HasCandidate> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private PhysicalEntity physicalEntity;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
-
     private int order;
 
     public HasCandidate() {}
@@ -62,7 +57,6 @@ public class HasCandidate implements Comparable<HasCandidate> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        HasCandidate that = (HasCandidate) o;
         return Objects.equals(physicalEntity, ((HasCandidate) o).physicalEntity);
     }
 

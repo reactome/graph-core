@@ -14,7 +14,6 @@ import java.util.Map;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
-
  */
 @Repository
 public class SchemaRepository {

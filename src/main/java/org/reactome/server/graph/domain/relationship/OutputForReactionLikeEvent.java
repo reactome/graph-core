@@ -1,6 +1,6 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.reactome.server.graph.domain.model.AbstractModifiedResidue;
+import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
@@ -9,26 +9,24 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 import java.util.Objects;
 
 /**
- * HasModifiedResidue is the relationship hasModifiedResidue of EntityWithAccessionedSequence.
- * It is needed to specify the stoichiometry and order of AbstractModifiedResidue instances.
+ * Output relationship of ReactionLikeEvent. It is needed to specify the stoichiometry and order of outputs.
  */
-@SuppressWarnings("unused")
 @RelationshipProperties
-public class HasModifiedResidue implements Comparable<HasModifiedResidue> {
+public class OutputForReactionLikeEvent implements Comparable<OutputForReactionLikeEvent> {
     @Id @GeneratedValue private Long id;
-    @TargetNode private AbstractModifiedResidue abstractModifiedResidue;
+    @TargetNode private ReactionLikeEvent reactionLikeEvent;
 
     private Integer stoichiometry = 1;
     private int order;
 
-    public HasModifiedResidue() {}
+    public OutputForReactionLikeEvent() {}
 
-    public AbstractModifiedResidue getAbstractModifiedResidue() {
-        return abstractModifiedResidue;
+    public ReactionLikeEvent getReactionLikeEvent() {
+        return reactionLikeEvent;
     }
 
-    public void setAbstractModifiedResidue(AbstractModifiedResidue abstractModifiedResidue) {
-        this.abstractModifiedResidue = abstractModifiedResidue;
+    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
+        this.reactionLikeEvent = reactionLikeEvent;
     }
 
     public Integer getStoichiometry() {
@@ -51,16 +49,16 @@ public class HasModifiedResidue implements Comparable<HasModifiedResidue> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(abstractModifiedResidue, ((HasModifiedResidue) o).getAbstractModifiedResidue());
+        return Objects.equals(reactionLikeEvent, ((OutputForReactionLikeEvent) o).reactionLikeEvent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(abstractModifiedResidue);
+        return Objects.hash(reactionLikeEvent);
     }
 
     @Override
-    public int compareTo(HasModifiedResidue o) {
-        return this.order - o.order;
+    public int compareTo(OutputForReactionLikeEvent o) {
+        return order - o.order;
     }
 }

@@ -1,7 +1,6 @@
 package org.reactome.server.graph.domain.relationship;
 
 import org.reactome.server.graph.domain.model.PhysicalEntity;
-import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
@@ -14,35 +13,20 @@ import java.util.Objects;
  */
 @RelationshipProperties
 public class Input implements Comparable<Input> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private PhysicalEntity target;
-
-    private ReactionLikeEvent rle;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
-
     private int order;
 
     public Input() {}
 
     public PhysicalEntity getPhysicalEntity() {
-        return target;
+        return physicalEntity;
     }
 
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
-        this.target = physicalEntity;
-    }
-
-    public ReactionLikeEvent getReactionLikeEvent() {
-        return rle;
-    }
-
-    public void setReactionLikeEvent(ReactionLikeEvent event) {
-        this.rle = event;
+        this.physicalEntity = physicalEntity;
     }
 
     public Integer getStoichiometry() {
@@ -65,12 +49,12 @@ public class Input implements Comparable<Input> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(target, ((Input) o).target);
+        return Objects.equals(physicalEntity, ((Input) o).physicalEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(target);
+        return Objects.hash(physicalEntity);
     }
 
     @Override

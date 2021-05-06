@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
@@ -10,35 +9,24 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 import java.util.Objects;
 
 /**
- * Output relationship of ReactionLikeEvent. It is needed to specify the stoichiometry and order of outputs.
+ * ConsumedBy -> bi-directionality for
  */
 @RelationshipProperties
-public class OutputFromReaction implements Comparable<OutputFromReaction> {
+public class InputForReactionLikeEvent implements Comparable<InputForReactionLikeEvent> {
     @Id @GeneratedValue private Long id;
+    @TargetNode private ReactionLikeEvent reactionLikeEvent;
 
-    @TargetNode
-    private PhysicalEntity physicalEntity;
     private Integer stoichiometry = 1;
     private int order;
 
-    private ReactionLikeEvent reactionLikeEvent;
+    public InputForReactionLikeEvent() {}
 
     public ReactionLikeEvent getReactionLikeEvent() {
         return reactionLikeEvent;
     }
 
-    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
-        this.reactionLikeEvent = reactionLikeEvent;
-    }
-
-    public OutputFromReaction() {}
-
-    public PhysicalEntity getPhysicalEntity() {
-        return physicalEntity;
-    }
-
-    public void setPhysicalEntity(PhysicalEntity physicalEntity) {
-        this.physicalEntity = physicalEntity;
+    public void setReactionLikeEvent(ReactionLikeEvent event) {
+        this.reactionLikeEvent = event;
     }
 
     public Integer getStoichiometry() {
@@ -61,16 +49,16 @@ public class OutputFromReaction implements Comparable<OutputFromReaction> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(physicalEntity, ((OutputFromReaction) o).physicalEntity);
+        return Objects.equals(reactionLikeEvent, ((InputForReactionLikeEvent) o).reactionLikeEvent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(physicalEntity);
+        return Objects.hash(reactionLikeEvent);
     }
 
     @Override
-    public int compareTo(OutputFromReaction o) {
-        return order - o.order;
+    public int compareTo(InputForReactionLikeEvent o) {
+        return this.order - o.order;
     }
 }

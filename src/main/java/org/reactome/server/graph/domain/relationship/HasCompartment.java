@@ -16,12 +16,8 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 @RelationshipProperties
 public class HasCompartment implements Comparable<HasCompartment> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private Compartment compartment;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private Compartment compartment;
 
     private int order;
 

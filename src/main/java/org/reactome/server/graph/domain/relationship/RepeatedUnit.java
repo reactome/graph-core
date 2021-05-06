@@ -1,7 +1,6 @@
 package org.reactome.server.graph.domain.relationship;
 
 import org.reactome.server.graph.domain.model.PhysicalEntity;
-import org.reactome.server.graph.domain.model.Polymer;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
@@ -15,14 +14,8 @@ import java.util.Objects;
  */
 @RelationshipProperties
 public class RepeatedUnit implements Comparable<RepeatedUnit> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private PhysicalEntity physicalEntity;
-
-    private Polymer polymer;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
 
@@ -44,14 +37,6 @@ public class RepeatedUnit implements Comparable<RepeatedUnit> {
 
     public void setOrder(Integer order) {
         this.order = order;
-    }
-
-    public Polymer getPolymer() {
-        return polymer;
-    }
-
-    public void setPolymer(Polymer polymer) {
-        this.polymer = polymer;
     }
 
     public PhysicalEntity getPhysicalEntity() {

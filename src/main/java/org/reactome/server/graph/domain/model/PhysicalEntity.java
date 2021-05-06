@@ -112,11 +112,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     @ReactomeTransient
     @Relationship(type = "input", direction = Relationship.Direction.INCOMING)
-    private Set<Input> consumedByEvent;
+    private List<InputForReactionLikeEvent> consumedByEvent;
 
     @ReactomeTransient
     @Relationship(type = "output", direction = Relationship.Direction.INCOMING)
-    private List<Output> producedByEvent;
+    private List<OutputForReactionLikeEvent> producedByEvent;
 
     @Relationship(type = "reviewed", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> reviewed;
@@ -187,7 +187,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     }
 
     public List<Compartment> getCompartment() {
-        if(compartment == null) return null;
+        if (compartment == null) return null;
         List<Compartment> rtn = new ArrayList<>();
         for (HasCompartment c : compartment) {
             rtn.add(c.getCompartment());
@@ -221,26 +221,41 @@ public abstract class PhysicalEntity extends DatabaseObject {
         for (PhysicalEntity pe : componentOf) {
             HasComponent hc = new HasComponent();
             hc.setPhysicalEntity(this);
-            hc.setComplex((Complex) pe);
+//            hc.setComplex((Complex) pe);
             hc.setOrder(order++);
             this.componentOf.add(hc);
         }
     }
 
-    public void setConsumedByEvent(Set<Input> consumedByEvent) {
+    public void setConsumedByEvent(List<InputForReactionLikeEvent> consumedByEvent) {
         this.consumedByEvent = consumedByEvent;
     }
 
-    public void setConsumedByEvent(List<ReactionLikeEvent> events) {
-        this.consumedByEvent = new TreeSet<>();
-        for (ReactionLikeEvent rle : events) {
-            Input input = new Input();
-            input.setReactionLikeEvent(rle);
-            input.setPhysicalEntity(this);
-            input.setStoichiometry(1);
-            this.consumedByEvent.add(input);
-        }
+//    public void setConsumedByEvent(List<ReactionLikeEvent> events) {
+//        this.consumedByEvent = new TreeSet<>();
+//        for (ReactionLikeEvent rle : events) {
+//            Input input = new Input();
+//            input.setReactionLikeEvent(rle);
+//            input.setPhysicalEntity(this);
+//            input.setStoichiometry(1);
+//            this.consumedByEvent.add(input);
+//        }
+//    }
+
+    public void setProducedByEvent(List<OutputForReactionLikeEvent> producedByEvent) {
+        this.producedByEvent = producedByEvent;
     }
+
+//    public void setProducedByEvent(List<ReactionLikeEvent> events) {
+//        this.producedByEvent = new TreeSet<>();
+//        for (ReactionLikeEvent rle : events) {
+//            Output output = new Output();
+//            output.setReactionLikeEvent(rle);
+//            output.setPhysicalEntity(this);
+//            output.setStoichiometry(1);
+//            this.producedByEvent.add(output);
+//        }
+//    }
 
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
@@ -324,7 +339,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         for (PhysicalEntity pe : repeatedUnitOf) {
             RepeatedUnit ru = new RepeatedUnit();
             ru.setPhysicalEntity(this);
-            ru.setPolymer((Polymer) pe);
+//            ru.setPolymer((Polymer) pe);
             ru.setOrder(order++);
             this.repeatedUnitOf.add(ru);
         }
@@ -354,21 +369,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.positivelyRegulates = positivelyRegulates;
     }
 
-    public void setProducedByEvent(List<Output> producedByEvent) {
-        this.producedByEvent = producedByEvent;
-    }
-
-//    public void setProducedByEvent(List<ReactionLikeEvent> events) {
-//        this.producedByEvent = new TreeSet<>();
-//        for (ReactionLikeEvent rle : events) {
-//            Output output = new Output();
-//            output.setReactionLikeEvent(rle);
-//            output.setPhysicalEntity(this);
-//            output.setStoichiometry(1);
-//            this.producedByEvent.add(output);
-//        }
-//    }
-
     public List<InstanceEdit> getReviewed() {
         return reviewed;
     }
@@ -395,10 +395,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     public List<Polymer> getRepeatedUnitOf() {
         List<Polymer> rtn = new ArrayList<>();
-        if(repeatedUnitOf!=null) {
+        if (repeatedUnitOf != null) {
             for (RepeatedUnit aux : repeatedUnitOf) {
                 for (int i = 0; i < aux.getStoichiometry(); i++) {
-                    rtn.add(aux.getPolymer());
+//                    rtn.add(aux.getPolymer());
                 }
             }
             return rtn;
@@ -408,37 +408,42 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     public List<Complex> getComponentOf() {
         List<Complex> rtn = new ArrayList<>();
-        if(componentOf!=null) {
+        if (componentOf != null) {
             for (HasComponent aux : componentOf) {
-                    rtn.add(aux.getComplex());
+//                rtn.add(aux.getComplex());
             }
             return rtn;
         }
         return null;
     }
+
+//    public List<InputForReactionLikeEvent> getConsumedByEvent() {
+//        return consumedByEvent;
+//    }
 
     public List<ReactionLikeEvent> getConsumedByEvent() {
         List<ReactionLikeEvent> rtn = new ArrayList<>();
-        if(consumedByEvent!=null) {
-            for (Input aux : consumedByEvent) {
-                    rtn.add(aux.getReactionLikeEvent());
+        if (consumedByEvent != null) {
+            for (InputForReactionLikeEvent aux : consumedByEvent) {
+                rtn.add(aux.getReactionLikeEvent());
             }
             return rtn;
         }
         return null;
     }
 
-//    public List<ReactionLikeEvent> getProducedByEvent() {
-//        List<ReactionLikeEvent> rtn = new ArrayList<>();
-//        if(producedByEvent!=null) {
-//            for (Output aux : producedByEvent) {
-//                    rtn.add(aux.getReactionLikeEvent());
-//            }
-//            return rtn;
-//        }
-//        return null;
+//    public List<OutputForReactionLikeEvent> getProducedByEvent() {
+//        return producedByEvent;
 //    }
-    public List<Output> getProducedByEvent() {
-        return producedByEvent;
+
+    public List<ReactionLikeEvent> getProducedByEvent() {
+        List<ReactionLikeEvent> rtn = new ArrayList<>();
+        if (producedByEvent != null) {
+            for (OutputForReactionLikeEvent aux : producedByEvent) {
+                rtn.add(aux.getReactionLikeEvent());
+            }
+            return rtn;
+        }
+        return null;
     }
 }

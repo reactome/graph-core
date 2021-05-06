@@ -1,6 +1,6 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.reactome.server.graph.domain.model.Person;
+import org.reactome.server.graph.domain.model.Publication;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
@@ -9,18 +9,18 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 import java.util.Objects;
 
 @RelationshipProperties
-public class PublicationAuthor implements Comparable<PublicationAuthor> {
+public class AuthorPublication implements Comparable<AuthorPublication> {
     @Id @GeneratedValue private Long id;
-    @TargetNode private Person author;
+    @TargetNode private Publication publication;
 
     private int order;
 
-    public Person getAuthor() {
-        return author;
+    public Publication getPublication() {
+        return publication;
     }
 
-    public void setAuthor(Person author) {
-        this.author = author;
+    public void setPublication(Publication publication) {
+        this.publication = publication;
     }
 
     public int getOrder() {
@@ -35,16 +35,16 @@ public class PublicationAuthor implements Comparable<PublicationAuthor> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(author, ((PublicationAuthor) o).author);
+        return Objects.equals(publication, ((AuthorPublication) o).publication);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(author);
+        return Objects.hash(publication);
     }
 
     @Override
-    public int compareTo(PublicationAuthor o) {
+    public int compareTo(AuthorPublication o) {
         return this.order - o.order;
     }
 }

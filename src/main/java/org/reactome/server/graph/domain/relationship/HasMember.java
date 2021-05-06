@@ -13,15 +13,10 @@ import java.util.Objects;
  */
 @RelationshipProperties
 public class HasMember implements Comparable<HasMember> {
-
-    @Id @GeneratedValue
-    private Long id;
-
-    @TargetNode
-    private PhysicalEntity physicalEntity;
+    @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
-
     private int order;
 
     public HasMember() {}

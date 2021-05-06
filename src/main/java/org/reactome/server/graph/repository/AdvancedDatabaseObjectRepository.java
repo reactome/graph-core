@@ -3,18 +3,24 @@ package org.reactome.server.graph.repository;
 import jodd.typeconverter.TypeConverterManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.neo4j.driver.types.MapAccessor;
+import org.neo4j.driver.types.TypeSystem;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.result.CustomQuery;
+import org.reactome.server.graph.domain.result.QueryResultWrapper;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
+import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.BiFunction;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -26,6 +32,7 @@ public class AdvancedDatabaseObjectRepository {
 
     private final Neo4jClient neo4jClient;
     private final Neo4jTemplate neo4jTemplate;
+    private final Neo4jMappingContext neo4jMappingContext;
 
     private static final String CYPHER_RETURN = "" +
             "WITH n, r, m " +
@@ -35,9 +42,10 @@ public class AdvancedDatabaseObjectRepository {
     private static final String CYPHER_RETURN_LIMIT = CYPHER_RETURN + " " + "LIMIT $limit";
 
     @Autowired
-    public AdvancedDatabaseObjectRepository(Neo4jClient neo4jClient, Neo4jTemplate neo4jTemplate) {
+    public AdvancedDatabaseObjectRepository(Neo4jClient neo4jClient, Neo4jTemplate neo4jTemplate, Neo4jMappingContext neo4jMappingContext) {
         this.neo4jClient = neo4jClient;
         this.neo4jTemplate = neo4jTemplate;
+        this.neo4jMappingContext = neo4jMappingContext;
     }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
@@ -238,27 +246,34 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.findAll(query, map, DatabaseObject.class);
     }
 
-//    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
-//        Collection<DatabaseObject> list = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
-//
-//        Collection<DatabaseObject> databaseObjects;
-//        if (collectionClass.getName().equals(Set.class.getName())) {
-//            databaseObjects = new HashSet<>();
-//            //No need to check stoichiometry
-//            for (Map<String, Object> stringObjectMap : result) {
-//                databaseObjects.add((DatabaseObject) stringObjectMap.get("m"));
-//            }
-//        } else {
-//            databaseObjects = new ArrayList<>();
-//            //Here stoichiometry has to be taken into account
+    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
+        Collection<DatabaseObject> list = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
+        Collection<DatabaseObject> databaseObjects;
+        if (collectionClass.getName().equals(Set.class.getName())) {
+            databaseObjects = new HashSet<>(list);
+        } else {
+            databaseObjects = new ArrayList<>(list);
+            for (DatabaseObject databaseObject : list) {
+                Method getSpecies = null;
+                try {
+                    getSpecies = databaseObject.getClass().getMethod("getOutput");
+                    Object species = getSpecies.invoke(databaseObject);
+
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //Here stoichiometry has to be taken into account
 //            for (Map<String, Object> stringObjectMap : result) {
 //                for (int i = 0; i < (int) stringObjectMap.get("n"); ++i) {
 //                    databaseObjects.add((DatabaseObject) stringObjectMap.get("m"));
 //                }
 //            }
-//        }
-//        return databaseObjects.isEmpty() ? null : databaseObjects;
-//    }
+        }
+        System.out.println("retorneo" + databaseObjects);
+        return databaseObjects.isEmpty() ? null : databaseObjects;
+    }
 
     // TODO Test this method with LazyLoading
     public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
@@ -274,14 +289,29 @@ public class AdvancedDatabaseObjectRepository {
      * and findCollectionByRelationship accordingly.
      */
 
-    public <T extends DatabaseObject> Collection<T> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
-        String query;
+    public <T extends DatabaseObject> Collection<DatabaseObject> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+        Map<String, Object> map = Map.of("dbId", dbId);
 
+        BiFunction<TypeSystem, MapAccessor, PhysicalEntity> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(PhysicalEntity.class);
+        Collection<QueryResultWrapper> wrapper = neo4jClient.query("MATCH (a:DatabaseObject{dbId:$dbId})-[r:output]->(m:PhysicalEntity) RETURN m, r.stoichiometry as n")
+                .bindAll(map).fetchAs(QueryResultWrapper.class)
+                .mappedBy((typeSystem, record) -> {
+                    DatabaseObject n = mappingFunction.apply(typeSystem, record.get("m"));
+                    int number = record.get("n").asInt();
+                    System.out.println(n);
+                    System.out.println(number);
+                    return new QueryResultWrapper(n, number);
+                }).all();
+
+        System.out.println(wrapper);
+        String query;
         switch (direction) {
             case OUTGOING:
                 query = "" +
                         "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") " +
-                        "RETURN m, COLLECT(r), COLLECT(a)";
+                        "RETURN m, r.stoichiometry";//COLLECT(r), COLLECT(a)";
+
+//                MATCH (a:DatabaseObject{dbId:3234081})-[r:output]->(m:PhysicalEntity) RETURN m,
                 break;
             case INCOMING:
                 query = "MATCH (a:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") " +
@@ -292,9 +322,14 @@ public class AdvancedDatabaseObjectRepository {
                         "RETURN m, COLLECT(r), COLLECT(a)";
                 break;
         }
-        Map<String, Object> map = new HashMap<>();
-        map.put("dbId", dbId);
-        return (Collection<T>) neo4jTemplate.findAll(query, map, DatabaseObject.class);
+
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("dbId", dbId);
+        Collection<DatabaseObject> databaseObjects = neo4jTemplate.findAll(query, map, DatabaseObject.class);
+//        Collection<DatabaseObject> databaseObjects = neo4jClient.
+        Map<Collection<DatabaseObject>, Integer> mapStoich = new HashMap<>();
+        mapStoich.put(databaseObjects, 1);
+        return databaseObjects;
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
@@ -627,4 +662,20 @@ public class AdvancedDatabaseObjectRepository {
         }
         return customInstance;
     }
+
+    public Collection<QueryResultWrapper> queryResultWrappers(Long dbId){
+        Map<String, Object> map = Map.of("dbId", dbId);
+
+        BiFunction<TypeSystem, MapAccessor, PhysicalEntity> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(PhysicalEntity.class);
+        Collection<QueryResultWrapper> wrapper = neo4jClient.query("MATCH (a:DatabaseObject{dbId:$dbId})-[r:output]->(m:PhysicalEntity) RETURN m, r.stoichiometry as n")
+                .bindAll(map).fetchAs(QueryResultWrapper.class)
+                .mappedBy((typeSystem, record) -> {
+                    PhysicalEntity n = mappingFunction.apply(typeSystem, record.get("m"));
+                    int number = record.get("n").asInt();
+                    return new QueryResultWrapper(n, number);
+                }).all();
+
+        return wrapper;
+    }
+
 }
