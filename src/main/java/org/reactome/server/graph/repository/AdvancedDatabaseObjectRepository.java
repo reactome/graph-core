@@ -670,7 +670,7 @@ public class AdvancedDatabaseObjectRepository {
         Collection<QueryResultWrapper> wrapper = neo4jClient.query("MATCH (a:DatabaseObject{dbId:$dbId})-[r:output]->(m:PhysicalEntity) RETURN m, r.stoichiometry as n")
                 .bindAll(map).fetchAs(QueryResultWrapper.class)
                 .mappedBy((typeSystem, record) -> {
-                    PhysicalEntity n = mappingFunction.apply(typeSystem, record.get("m"));
+                    DatabaseObject n = mappingFunction.apply(typeSystem, record.get("m"));
                     int number = record.get("n").asInt();
                     return new QueryResultWrapper(n, number);
                 }).all();
