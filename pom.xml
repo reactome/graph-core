@@ -5,7 +5,7 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>1.1.24</version>
+    <version>1.1.26-SNAPSHOT</version>
     <name>graph-core</name>
 
     <description>
@@ -72,7 +72,7 @@
         <!--will be set as system properties during testing phase-->
 
         <!-- Test dependencies -->
-        <reactome.base>1.2.21</reactome.base>
+        <reactome.base>2.1.0-SNAPSHOT</reactome.base>
     </properties>
 
     <dependencies>
@@ -170,9 +170,14 @@
 
     <repositories>
 
+        <!-- Sonatype repository from which to obtain SNAPSHOT dependencies created
+			by Reactome (or others sources) -->
         <repository>
-            <id>neo4j-snapshots</id>
-            <url>https://m2.neo4j.org/content/repositories/snapshots</url>
+            <id>oss.sonatype.org-snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>

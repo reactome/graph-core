@@ -15,7 +15,9 @@ public class ReferenceDatabase extends DatabaseObject {
     private List<String> name;
     @ReactomeProperty
     private String url;
-    
+    @ReactomeProperty
+    private String resourceIdentifier;
+
     public ReferenceDatabase() {}
 
     public String getAccessUrl() {
@@ -41,5 +43,13 @@ public class ReferenceDatabase extends DatabaseObject {
     public void setUrl(String url) {
         this.url = url;
     }
-    
+
+    public String getResourceIdentifier() {
+        return resourceIdentifier;
+    }
+
+    public void setResourceIdentifier(String resourceIdentifier) {
+        this.resourceIdentifier = resourceIdentifier;
+    }
+
 }

@@ -58,6 +58,12 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "requiredInputComponent")
     private Set<PhysicalEntity> requiredInputComponent;
 
+    @Relationship(type = "hasInteraction")
+    private List<InteractionEvent> hasInteraction;
+
+    @Relationship(type = "reactionType")
+    private List<ReactionType> reactionType;
+
     public ReactionLikeEvent() {
     }
 
@@ -157,6 +163,24 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "requiredInputComponent")
     public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
+    }
+
+    public List<InteractionEvent> getHasInteraction() {
+        return hasInteraction;
+    }
+
+    @Relationship(type = "hasInteraction")
+    public void setHasInteraction(List<InteractionEvent> hasInteraction) {
+        this.hasInteraction = hasInteraction;
+    }
+
+    public List<ReactionType> getReactionType() {
+        return reactionType;
+    }
+
+    @Relationship(type = "reactionType")
+    public void setReactionType(List<ReactionType> reactionType) {
+        this.reactionType = reactionType;
     }
 
     @JsonIgnore

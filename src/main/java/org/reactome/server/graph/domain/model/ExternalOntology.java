@@ -8,7 +8,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @NodeEntity
-public class ExternalOntology extends DatabaseObject {
+public abstract class ExternalOntology extends DatabaseObject {
 
     // will be filled together with url
     private String databaseName;
