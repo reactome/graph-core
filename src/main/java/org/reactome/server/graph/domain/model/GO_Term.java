@@ -27,6 +27,12 @@ public abstract class GO_Term extends DatabaseObject{
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
+    public GO_Term() {}
+
+    public GO_Term(Long dbId) {
+        super(dbId);
+    }
+
     public String getAccession() {
         return accession;
     }

@@ -7,10 +7,11 @@ import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.QueryResultWrapper;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
-import org.reactome.server.graph.repository.CustomDTOsRepository;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.repository.EventRepository;
+import org.reactome.server.graph.repository.PersonAuthorReviewerRepository;
 import org.reactome.server.graph.service.PersonService;
+import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,7 +27,7 @@ public class PlaygroundTest {
     @Autowired private DatabaseObjectRepository databaseObjectRepository;
     @Autowired private EventRepository eventRepository;
     @Autowired private PersonService personService;
-    @Autowired private CustomDTOsRepository customDTOsRepository;
+    @Autowired private PersonAuthorReviewerRepository personAuthorReviewerRepository;
 
     @Autowired
     private LazyFetchAspect lazyFetchAspect;
@@ -48,6 +49,12 @@ public class PlaygroundTest {
     public void testHasCandidateSet(){
 //        GenomeEncodedEntity sas = databaseObjectRepository.findByStId("R-HSA-5649637");
         CandidateSet sas = databaseObjectRepository.findByStId("R-HSA-5672709");
+        System.out.println(sas);
+    }
+
+    @Test
+    public void testReaction(){
+        ReactionLikeEvent sas = databaseObjectRepository.findByStId("R-HSA-169680");
         System.out.println(sas);
     }
 
@@ -179,17 +186,82 @@ public class PlaygroundTest {
 
     @Test public void testLazyLoadingOutput() {
         lazyFetchAspect.setEnableAOP(true);
-        System.out.println(lazyFetchAspect.hashCode());
+        lazyFetchAspect.setEnableAOP(true);
         ReactionLikeEvent rle = databaseObjectRepository.findByStIdNoRelations("R-HSA-3234081");
-        rle.getOutput();
-        System.out.println(rle);
+
+        List<PhysicalEntity> outputs = rle.getOutput();
+        assertThat(outputs).containsExactlyInAnyOrder(
+                new Complex(8865819L),
+                new EntityWithAccessionedSequence(912481L),
+                new EntityWithAccessionedSequence(912481L)
+        );
+
+        List<PhysicalEntity> inputs = rle.getInput();
+        assertThat(inputs).containsExactlyInAnyOrder(
+                new Complex(2993783L),
+                new Complex(2993783L),
+                new Complex(8865818L)
+        );
+
+        List<CatalystActivity> catact = rle.getCatalystActivity();
+        assertThat(catact).containsExactlyInAnyOrder(
+                new CatalystActivity(2997650L)
+        );
+
+        List<InstanceEdit> authoreds = rle.getAuthored();
+        assertThat(authoreds).containsExactlyInAnyOrder(
+                new InstanceEdit(3232167L)
+        );
+
+        List<Pathway> events = rle.getEventOf();
+        assertThat(events).containsExactlyInAnyOrder(
+                new Pathway(3232118L),
+                new Pathway(8866904L)
+        );
+
+        List<Publication> pubs = rle.getLiteratureReference();
+        assertThat(pubs).containsExactlyInAnyOrder(
+                new LiteratureReference(3234063L),
+                new LiteratureReference(8874763L),
+                new LiteratureReference(3234089L),
+                new LiteratureReference(5626900L)
+        );
+        for (Publication pub : pubs) {
+            pub.getAuthor();
+        }
+
+        InstanceEdit created = rle.getCreated();
+        assertThat(created).isEqualTo(new InstanceEdit(3234098L));
+
+        InstanceEdit modified = rle.getModified();
+        assertThat(modified).isEqualTo(new InstanceEdit(9644119L));
+
+//        System.out.println(rle);
     }
 
     @Test public void testQueryResultWrapper() {
-        Collection<QueryResultWrapper> wrappers = advancedDatabaseObjectRepository.queryResultWrappers(3234081L);
+        Collection<QueryResultWrapper> wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(3234081L, "PhysicalEntity", RelationshipDirection.OUTGOING,"output");
         assertThat(wrappers).containsExactlyInAnyOrder(
-                new QueryResultWrapper(new Complex(), 1),
-                new QueryResultWrapper(new EntityWithAccessionedSequence(), 2));
+                new QueryResultWrapper(new Complex(8865819L)),
+                new QueryResultWrapper(new EntityWithAccessionedSequence(912481L), 2));
+
+//        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(3234081L, "PhysicalEntity", RelationshipDirection.OUTGOING,"output");
+//        assertThat(wrappers).containsExactlyInAnyOrder(
+//                new QueryResultWrapper(new Complex(8865819L), 1),
+//                new QueryResultWrapper(new EntityWithAccessionedSequence(912481L), 2));
+
+        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "AbstractModifiedResidue", RelationshipDirection.OUTGOING,"hasModifiedResidue");
+        assertThat(wrappers).containsAnyOf(
+                new QueryResultWrapper(new ModifiedResidue(140621L)),
+                new QueryResultWrapper(new ModifiedResidue(140626L)));
+
+        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "ReferenceEntity", RelationshipDirection.OUTGOING,"referenceEntity");
+        ReferenceGeneProduct rgp = new ReferenceGeneProduct();
+        rgp.setDbId(140617L);
+        assertThat(wrappers).containsAnyOf(new QueryResultWrapper(rgp));
+        ReferenceGeneProduct reference = (ReferenceGeneProduct) wrappers.iterator().next().getDatabaseObject();
+        List<DatabaseIdentifier> aa = reference.getCrossReference();
+        aa.get(0).getIdentifier();
     }
 
 

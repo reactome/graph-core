@@ -22,6 +22,10 @@ public class LiteratureReference extends Publication {
 
     public LiteratureReference() {}
 
+    public LiteratureReference(Long dbId) {
+        super(dbId);
+    }
+
     public String getJournal() {
         return this.journal;
     }

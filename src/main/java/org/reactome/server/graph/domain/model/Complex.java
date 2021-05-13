@@ -41,6 +41,10 @@ public class Complex extends PhysicalEntity {
 
     public Complex() {}
 
+    public Complex(Long dbId) {
+        super(dbId);
+    }
+
     public Boolean getIsChimeric() {
         return isChimeric;
     }

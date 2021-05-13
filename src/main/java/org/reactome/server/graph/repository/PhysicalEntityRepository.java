@@ -11,7 +11,6 @@ import java.util.Collection;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
-
  */
 @Repository
 public interface PhysicalEntityRepository extends Neo4jRepository<PhysicalEntity, Long> {
@@ -42,4 +41,12 @@ public interface PhysicalEntityRepository extends Neo4jRepository<PhysicalEntity
 
     @Query("MATCH (:PhysicalEntity{stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(@Param("$stId") String stId);
+
+    @Query(" MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
+            "RETURN Distinct(m)")
+    Collection<PhysicalEntity> getParticipatingPhysicalEntities(@Param("dbId") Long dbId);
+
+    @Query(" MATCH (n:DatabaseObject{stId:$stId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
+            "RETURN Distinct(m)")
+    Collection<PhysicalEntity> getParticipatingPhysicalEntities(@Param("stId") String stId);
 }

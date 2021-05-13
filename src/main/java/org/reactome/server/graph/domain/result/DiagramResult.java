@@ -9,6 +9,15 @@ public class DiagramResult {
     private Integer width;
     private Integer height;
 
+    public DiagramResult() { }
+
+    public DiagramResult(String diagramStId, List<String> events, Integer width, Integer height) {
+        this.diagramStId = diagramStId;
+        this.events = events;
+        this.width = width;
+        this.height = height;
+    }
+
     public String getDiagramStId() {
         return diagramStId;
     }

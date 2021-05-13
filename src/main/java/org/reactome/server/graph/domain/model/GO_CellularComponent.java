@@ -24,6 +24,10 @@ public abstract class GO_CellularComponent extends GO_Term {
 
     public GO_CellularComponent() {}
 
+    public GO_CellularComponent(Long dbId) {
+        super(dbId);
+    }
+
     public List<GO_CellularComponent> getComponentOf() {
         return componentOf;
     }

@@ -12,6 +12,10 @@ public abstract class AbstractModifiedResidue extends DatabaseObject {
 
     public AbstractModifiedResidue() {}
 
+    public AbstractModifiedResidue(Long dbId) {
+        super(dbId);
+    }
+
     public ReferenceSequence getReferenceSequence() {
         return referenceSequence;
     }

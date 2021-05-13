@@ -20,6 +20,10 @@ public class InstanceEdit extends DatabaseObject {
 
     public InstanceEdit() {}
 
+    public InstanceEdit(Long dbId) {
+        super(dbId);
+    }
+
     public String getDateTime() {
         return this.dateTime;
     }

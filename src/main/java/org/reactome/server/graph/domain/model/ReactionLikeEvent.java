@@ -61,6 +61,10 @@ public abstract class ReactionLikeEvent extends Event {
     public ReactionLikeEvent() {
     }
 
+    public ReactionLikeEvent(Long dbId) {
+        super(dbId);
+    }
+
     public Boolean getIsChimeric() {
         return isChimeric;
     }
@@ -224,23 +228,23 @@ public abstract class ReactionLikeEvent extends Event {
         return rtn;
     }
 
-//    public void setOutput(List<PhysicalEntity> outputs) {
-//        if (outputs == null) return;
-//        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
-//        Map<Long, Output> map = new LinkedHashMap<>();
-//        for (PhysicalEntity physicalEntity : outputs) {
-//            Output output = map.get(physicalEntity.getDbId());
-//            if (output == null) {
-//                output = new Output();
+    public void setOutput(List<PhysicalEntity> outputs) {
+        if (outputs == null) return;
+        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
+        Map<Long, Output> map = new LinkedHashMap<>();
+        for (PhysicalEntity physicalEntity : outputs) {
+            Output output = map.get(physicalEntity.getDbId());
+            if (output == null) {
+                output = new Output();
 //                output.setReactionLikeEvent(this);
-//                output.setPhysicalEntity(physicalEntity);
-//                map.put(physicalEntity.getDbId(), output);
-//            } else {
-//                output.setStoichiometry(output.getStoichiometry() + 1);
-//            }
-//        }
-//        this.output = new HashSet<>(map.values());
-//    }
+                output.setPhysicalEntity(physicalEntity);
+                map.put(physicalEntity.getDbId(), output);
+            } else {
+                output.setStoichiometry(output.getStoichiometry() + 1);
+            }
+        }
+        this.output = new HashSet<>(map.values());
+    }
 
     @ReactomeSchemaIgnore
     @Override

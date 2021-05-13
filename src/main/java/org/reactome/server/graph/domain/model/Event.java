@@ -101,6 +101,10 @@ public abstract class Event extends DatabaseObject {
 
     public Event() {}
 
+    public Event(Long dbId) {
+        super(dbId);
+    }
+
     public String getDefinition() {
         return definition;
     }

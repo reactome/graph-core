@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.result;
 
 import org.neo4j.driver.Record;
+import org.reactome.server.graph.domain.ReflectionUtils;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.springframework.data.neo4j.core.schema.Id;
 
 import java.util.Collection;
 import java.util.Collections;
-
 
 public class TocPathwayDTO {
     @Id private String stId;
@@ -30,17 +30,11 @@ public class TocPathwayDTO {
         reviseDate = record.get("reviseDate").asString(null);
         releaseStatus = record.get("releaseStatus").asString(null);
         releaseDate = record.get("releaseDate").asString(null);
-        // TODO this is ugly.... make it nicer
-        authors = !record.get("authors").isNull() ? record.get("authors").asList(PersonDTO::new) : Collections.emptyList();
-        reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(PersonDTO::new) :  Collections.emptyList();
-        editors = !record.get("editors").isNull() ? record.get("editors").asList(PersonDTO::new) :  Collections.emptyList();
-        subpathways  = !record.get("subPathways").isNull() ? record.get("subPathways").asList(p -> new Pathway().build(p)) :  Collections.emptyList();
+        authors = !record.get("authors").isNull() ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p)) : Collections.emptyList();
+        reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
+        editors = !record.get("editors").isNull() ? record.get("editors").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
+        subpathways  = !record.get("subPathways").isNull() ? record.get("subPathways").asList(p -> ReflectionUtils.build(new Pathway(), p)) :  Collections.emptyList();
     }
-
-    public TocPathwayDTO(String displayName) {
-        this.displayName = displayName;
-    }
-
 
     public String getDisplayName() {
         return displayName;
@@ -102,7 +96,7 @@ public class TocPathwayDTO {
         return authors;
     }
 
-    public void setAuthors(Collection<Person> authors) {
+    public void setAuthors(Collection<? extends Person> authors) {
         this.authors = authors;
     }
 
@@ -110,7 +104,7 @@ public class TocPathwayDTO {
         return reviewers;
     }
 
-    public void setReviewers(Collection<Person> reviewers) {
+    public void setReviewers(Collection<? extends Person> reviewers) {
         this.reviewers = reviewers;
     }
 
@@ -118,8 +112,16 @@ public class TocPathwayDTO {
         return editors;
     }
 
-    public void setEditors(Collection<Person> editors) {
+    public void setEditors(Collection<? extends Person> editors) {
         this.editors = editors;
+    }
+
+    public Collection<? extends Pathway> getSubpathways() {
+        return subpathways;
+    }
+
+    public void setSubpathways(Collection<? extends Pathway> subpathways) {
+        this.subpathways = subpathways;
     }
 }
 

@@ -34,7 +34,8 @@
 
     <properties>
 <!--        <spring.data.neo4j.version>6.0.8</spring.data.neo4j.version>-->
-<!--        <spring.data.neo4j.version>6.0.9-GH-2241-SNAPSHOT</spring.data.neo4j.version>-->
+        <!-- TODO Remember to change version, or remove and let Spring boot deals with it -->
+        <spring.data.neo4j.version>6.0.9-GH-2246-SNAPSHOT</spring.data.neo4j.version>
 
         <spring.boot.version>2.4.5</spring.boot.version>
         <spring.version>5.3.5</spring.version>
@@ -83,11 +84,11 @@
         </dependency>
 
         <!-- OVERWRITING SPRING BOOT VERSION -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.data</groupId>-->
-<!--            <artifactId>spring-data-neo4j</artifactId>-->
-<!--            <version>${spring.data.neo4j.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-neo4j</artifactId>
+            <version>${spring.data.neo4j.version}</version>
+        </dependency>
 
         <!--        <dependency>-->
         <!--            <groupId>org.neo4j</groupId>-->

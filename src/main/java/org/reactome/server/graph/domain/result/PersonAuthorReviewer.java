@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.result;
 
-import org.neo4j.driver.Record;
 import org.reactome.server.graph.domain.model.Person;
 
 public class PersonAuthorReviewer {
@@ -10,6 +9,14 @@ public class PersonAuthorReviewer {
     private Long reviewedPathways;
     private Long authoredReactions;
     private Long reviewedReactions;
+
+    public PersonAuthorReviewer(Person person, Long authoredPathways, Long reviewedPathways, Long authoredReactions, Long reviewedReactions) {
+        this.person = person;
+        this.authoredPathways = authoredPathways;
+        this.reviewedPathways = reviewedPathways;
+        this.authoredReactions = authoredReactions;
+        this.reviewedReactions = reviewedReactions;
+    }
 
     public Person getPerson() {
         return person;
@@ -51,13 +58,4 @@ public class PersonAuthorReviewer {
         this.reviewedReactions = reviewedReactions;
     }
 
-    public static PersonAuthorReviewer build(Record record) {
-        PersonAuthorReviewer par = new PersonAuthorReviewer();
-        par.setPerson(new PersonDTO(record.get("person")));
-        par.setAuthoredPathways(record.get("authoredPathways").asLong());
-        par.setAuthoredReactions(record.get("authoredReactions").asLong());
-        par.setReviewedPathways(record.get("reviewedPathways").asLong());
-        par.setReviewedReactions(record.get("reviewedReactions").asLong());
-        return par;
-    }
 }

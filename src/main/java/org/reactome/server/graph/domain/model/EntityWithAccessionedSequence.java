@@ -31,6 +31,10 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity {
 
     public EntityWithAccessionedSequence() {}
 
+    public EntityWithAccessionedSequence(Long dbId) {
+        super(dbId);
+    }
+
     public Integer getEndCoordinate() {
         return endCoordinate;
     }

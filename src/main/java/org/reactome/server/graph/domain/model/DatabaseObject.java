@@ -44,7 +44,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 //    @Id @GeneratedValue
 //    private Long id;
 
-    @Id private Long dbId;
+    @Id protected Long dbId;
 
     private String displayName;
 
@@ -63,6 +63,10 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     private InstanceEdit modified;
 
     public DatabaseObject() {
+    }
+
+    public DatabaseObject(Long dbId) {
+        this.dbId = dbId;
     }
 
 //    @ReactomeSchemaIgnore

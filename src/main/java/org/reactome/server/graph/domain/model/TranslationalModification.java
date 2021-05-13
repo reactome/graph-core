@@ -21,6 +21,10 @@ public abstract class TranslationalModification extends AbstractModifiedResidue 
     
     public TranslationalModification() {}
 
+    public TranslationalModification(Long dbId) {
+        super(dbId);
+    }
+
     public Integer getCoordinate() {
         return coordinate;
     }

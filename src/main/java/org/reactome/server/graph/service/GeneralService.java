@@ -49,6 +49,7 @@ public class GeneralService {
 
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
+    @Deprecated
     public Object query (String query, Map<String,Object> map) {
         return generalTemplateRepository.query(query,map);
     }

@@ -17,6 +17,10 @@ public class Reaction extends ReactionLikeEvent {
 
     public Reaction() {}
 
+    public Reaction(Long dbId) {
+        super(dbId);
+    }
+
     public Reaction getReverseReaction() {
         return reverseReaction;
     }

@@ -18,6 +18,10 @@ public abstract class GenomeEncodedEntity extends PhysicalEntity {
 
     public GenomeEncodedEntity() {}
 
+    public GenomeEncodedEntity(Long dbId) {
+        super(dbId);
+    }
+
     public Taxon getSpecies() {
         return species;
     }

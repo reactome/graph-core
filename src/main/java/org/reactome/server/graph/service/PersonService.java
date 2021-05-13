@@ -5,8 +5,8 @@ import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
-import org.reactome.server.graph.repository.CustomDTOsRepository;
 import org.reactome.server.graph.repository.EventRepository;
+import org.reactome.server.graph.repository.PersonAuthorReviewerRepository;
 import org.reactome.server.graph.repository.PersonRepository;
 import org.reactome.server.graph.repository.PublicationRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -29,7 +29,7 @@ public class PersonService {
     private EventRepository eventRepository;
 
     @Autowired
-    private CustomDTOsRepository customDTOsRepository;
+    private PersonAuthorReviewerRepository personAuthorReviewerRepository;
 
     //    equals person name
     public Collection<Person> findPersonByName(String name) {
@@ -119,7 +119,7 @@ public class PersonService {
     }
 
     public Collection<PersonAuthorReviewer> getAuthorsReviewers(){
-        return customDTOsRepository.getAuthorsReviewers();
+        return personAuthorReviewerRepository.getAuthorsReviewers();
     }
 
 }

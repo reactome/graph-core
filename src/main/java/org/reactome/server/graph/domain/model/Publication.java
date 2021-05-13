@@ -20,7 +20,10 @@ public abstract class Publication extends DatabaseObject {
     @Relationship(type = "author", direction = Relationship.Direction.INCOMING)
     private SortedSet<PublicationAuthor> author;
 
-    public Publication() {
+    public Publication() {}
+
+    public Publication(Long dbId) {
+        super(dbId);
     }
 
     public String getTitle() {

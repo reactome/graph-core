@@ -1,30 +1,36 @@
 package org.reactome.server.graph.domain.result;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Pathway;
-
 import java.util.List;
 
 public class DiagramOccurrences {
 
-    private Pathway diagram;
-    private boolean inDiagram;
-    private List<DatabaseObject> occurrences;
-    private List<DatabaseObject> interactsWith;
+    private String diagramStId;
+    private Boolean inDiagram;
+    private List<String> occurrences;
+    private List<String> interactsWith;
 
-    public Pathway getDiagram() {
-        return diagram;
+    public DiagramOccurrences() { }
+
+    public DiagramOccurrences(String diagramStId, Boolean inDiagram, List<String> occurrences, List<String> interactsWith) {
+        this.diagramStId = diagramStId;
+        this.inDiagram = inDiagram;
+        this.occurrences = occurrences;
+        this.interactsWith = interactsWith;
     }
 
-    public boolean isInDiagram() {
+    public String getDiagramStId() {
+        return diagramStId;
+    }
+
+    public Boolean isInDiagram() {
         return inDiagram;
     }
 
-    public List<DatabaseObject> getOccurrences() {
+    public List<String> getOccurrences() {
         return occurrences;
     }
 
-    public List<DatabaseObject> getInteractsWith() {
+    public List<String> getInteractsWith() {
         return interactsWith;
     }
 }

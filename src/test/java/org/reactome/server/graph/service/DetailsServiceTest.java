@@ -2,8 +2,13 @@ package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.service.helper.ContentDetails;
+import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -43,18 +48,18 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    // TODO uncomment
-//    @Test
-//    public void getLocationInPathwayBrowserForPathwaysTest() {
-//        logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        List<String> pathways = Arrays.asList("R-HSA-212165", "R-HSA-5250913", "R-HSA-5250941", "R-HSA-73886", "R-HSA-74160");
-//        Set<PathwayBrowserNode> node = detailsService.getLocationInPathwayBrowserForPathways(pathways);
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertEquals(2, node.size());
-//    }
+    @Test
+    public void getLocationInPathwayBrowserForPathwaysTest() {
+        logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        List<String> pathways = Arrays.asList("R-HSA-212165", "R-HSA-5250913", "R-HSA-5250941", "R-HSA-73886", "R-HSA-74160");
+        // TODO uncomment here when HierarchyService is done
+        Set<PathwayBrowserNode> node = null;//detailsService.getLocationInPathwayBrowserForPathways(pathways);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(2, node.size());
+    }
 
 }

@@ -8,7 +8,6 @@ import java.util.List;
 public class Referrals {
 
     private String referral;
-
     private List<SimpleDatabaseObject> objects;
 
     public Referrals() {

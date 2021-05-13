@@ -1,12 +1,12 @@
 package org.reactome.server.graph.domain.result;
 
 import org.neo4j.driver.Record;
+import org.reactome.server.graph.domain.ReflectionUtils;
 import org.reactome.server.graph.domain.model.Person;
 import org.springframework.data.neo4j.core.schema.Id;
 
 import java.util.Collection;
 import java.util.Collections;
-
 
 public class DoiPathwayDTO {
     @Id private String stId;
@@ -29,15 +29,10 @@ public class DoiPathwayDTO {
         releaseStatus = record.get("releaseStatus").asString();
         releaseDate = record.get("releaseDate").asString();
         // TODO this is ugly.... make it nicer
-        authors = !record.get("authors").isNull() ? record.get("authors").asList(PersonDTO::new) : Collections.emptyList();
-        reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(PersonDTO::new) :  Collections.emptyList();
-        editors = !record.get("editors").isNull() ? record.get("editors").asList(PersonDTO::new) :  Collections.emptyList();
+        authors = !record.get("authors").isNull() ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p)) : Collections.emptyList();
+        reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
+        editors = !record.get("editors").isNull() ? record.get("editors").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
     }
-
-    public DoiPathwayDTO(String displayName) {
-        this.displayName = displayName;
-    }
-
 
     public String getDisplayName() {
         return displayName;

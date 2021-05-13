@@ -10,16 +10,17 @@ import java.util.List;
 
 public class ReflectionUtils {
 
-//    private static Map<String, Field> getAllFsields(Class<?> type) {
-//        Map<String, Field> map = new HashMap<>();
-//        for (Field field : type.getDeclaredFields()) {
-//            map.put(field.getName(), field);
-//        }
-//        if (type.getSuperclass() != null) {
-//            map.putAll(getAllFields(type.getSuperclass()));
-//        }
-//        return map;
-//    }
+    public static <T> T build(T t, Record v){
+        List<Field> fields = ReflectionUtils.getAllFields(t.getClass());
+        ReflectionUtils.build(v, fields, t);
+        return t;
+    }
+
+    public static <T> T build(T t, Value v){
+        List<Field> fields = ReflectionUtils.getAllFields(t.getClass());
+        ReflectionUtils.build(v, fields, t);
+        return t;
+    }
 
     public static List<Field> getAllFields(Class<?> type) {
         List<Field> allFields = new ArrayList<>();
@@ -42,11 +43,12 @@ public class ReflectionUtils {
                     field.set(_clazz, va.asString());
                 } else if (field.getType().isAssignableFrom(Long.class)) {
                     field.set(_clazz, va.asLong());
-                } else if (field.getType().isAssignableFrom(Integer.class) || field.getType().isPrimitive()) {
-//                    System.out.println(field.getName());
+                } else if (field.getType().isAssignableFrom(Integer.class)) {
                     field.set(_clazz, va.asInt(0));
                 } else if (field.getType().isAssignableFrom(Boolean.class)) {
                     field.set(_clazz, va.asBoolean(Boolean.FALSE));
+                } else if (field.getType().isPrimitive()) {
+                    throw new IllegalAccessException("[" + field.getType() + "] primitive type is not support. Use the wrapper class.");
                 }
             } catch (IllegalAccessException e) {
                 System.out.println(field.getName());
@@ -64,13 +66,11 @@ public class ReflectionUtils {
                 } else if (field.getType().isAssignableFrom(Long.class)) {
                     field.set(_clazz, va.asLong());
                 } else if (field.getType().isAssignableFrom(Integer.class) || field.getType().isPrimitive()) {
-//                    System.out.println(field.getName());
                     field.set(_clazz, va.asInt(0));
                 } else if (field.getType().isAssignableFrom(Boolean.class)) {
                     field.set(_clazz, va.asBoolean(Boolean.FALSE));
                 } else if (Collection.class.isAssignableFrom(field.getType())) {
                     field.set(_clazz, va.asList());
-
                     // TODO inner objects
                 }
             } catch (IllegalAccessException e) {

@@ -37,6 +37,10 @@ public class CatalystActivity extends DatabaseObject  {
 
     public CatalystActivity() {}
 
+    public CatalystActivity(Long dbId) {
+        super(dbId);
+    }
+
     public Set<PhysicalEntity> getActiveUnit() {
         return activeUnit;
     }

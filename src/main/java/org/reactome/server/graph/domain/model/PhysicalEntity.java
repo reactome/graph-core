@@ -108,7 +108,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "repeatedUnit", direction = Relationship.Direction.INCOMING)
-    private Set<RepeatedUnit> repeatedUnitOf;
+    private Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf;
 
     @ReactomeTransient
     @Relationship(type = "input", direction = Relationship.Direction.INCOMING)
@@ -128,6 +128,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
     private List<Summation> summation;
 
     public PhysicalEntity() {}
+
+    public PhysicalEntity(Long dbId) {
+        super(dbId);
+    }
 
     public String getDefinition() {
         return definition;
@@ -204,7 +208,6 @@ public abstract class PhysicalEntity extends DatabaseObject {
         int order = 0;
         for (Compartment c : compartment) {
             HasCompartment hc = new HasCompartment();
-//            hc.setSource(this);
             hc.setCompartment(c);
             hc.setOrder(order++);
             this.compartment.add(hc);
@@ -329,7 +332,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.memberOf = memberOf;
     }
 
-    public void setRepeatedUnitOf(Set<RepeatedUnit> repeatedUnitOf) {
+    public void setRepeatedUnitOf(Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
     }
 
@@ -337,9 +340,9 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.repeatedUnitOf = new TreeSet<>();
         int order = 0;
         for (PhysicalEntity pe : repeatedUnitOf) {
-            RepeatedUnit ru = new RepeatedUnit();
-            ru.setPhysicalEntity(this);
-//            ru.setPolymer((Polymer) pe);
+            RepeatedUnitForPhysicalEntity ru = new RepeatedUnitForPhysicalEntity();
+//            ru.setPhysicalEntity(this);
+            ru.setPolymer((Polymer) pe);
             ru.setOrder(order++);
             this.repeatedUnitOf.add(ru);
         }
@@ -393,12 +396,16 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.summation = summation;
     }
 
+//    public Set<RepeatedUnit> getRepeatedUnitOf(){
+//        return repeatedUnitOf;
+//    }
     public List<Polymer> getRepeatedUnitOf() {
         List<Polymer> rtn = new ArrayList<>();
         if (repeatedUnitOf != null) {
-            for (RepeatedUnit aux : repeatedUnitOf) {
+            for (RepeatedUnitForPhysicalEntity aux : repeatedUnitOf) {
                 for (int i = 0; i < aux.getStoichiometry(); i++) {
-//                    rtn.add(aux.getPolymer());
+//                    rtn.add(aux.getPhysicalEntity())
+                    rtn.add(aux.getPolymer());
                 }
             }
             return rtn;
@@ -410,6 +417,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         List<Complex> rtn = new ArrayList<>();
         if (componentOf != null) {
             for (HasComponent aux : componentOf) {
+                // TODO test this componentOf (not sure where...)
 //                rtn.add(aux.getComplex());
             }
             return rtn;

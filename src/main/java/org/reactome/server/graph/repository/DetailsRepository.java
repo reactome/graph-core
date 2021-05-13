@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -68,8 +67,7 @@ public class DetailsRepository {
                 "OPTIONAL MATCH (m:EntityFunctionalStatus)-[q:diseaseEntity|normalEntity|functionalStatus]-(s)-[a:functionalStatusType|structuralVariant]-(b)" +
                 "RETURN n,collect(r),collect(m),collect(l),collect(e),collect(t),collect(z),collect(u),collect(i),collect(o),collect(p),collect(q),collect(s),collect(a),collect(b)";
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("dbId", dbId);
+        Map<String, Object> map = Map.of("dbId", dbId);
         return neo4jTemplate.findOne(query, map, DatabaseObject.class).orElse(null);
     }
 

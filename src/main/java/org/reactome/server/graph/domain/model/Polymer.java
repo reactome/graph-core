@@ -33,6 +33,10 @@ public class Polymer extends PhysicalEntity {
 
     public Polymer() {}
 
+    public Polymer(Long dbId) {
+        super(dbId);
+    }
+
     public Integer getMaxUnitCount() {
         return maxUnitCount;
     }

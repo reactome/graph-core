@@ -3,6 +3,7 @@ package org.reactome.server.graph.repository;
 import org.reactome.server.graph.domain.result.TocPathwayDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jClient;
+import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -11,10 +12,12 @@ import java.util.Collection;
 public class TocRepository {
 
     private final Neo4jClient neo4jClient;
+    private final Neo4jMappingContext neo4jMappingContext;
 
     @Autowired
-    public TocRepository(Neo4jClient neo4jClient) {
+    public TocRepository(Neo4jClient neo4jClient, Neo4jMappingContext neo4jMappingContext) {
         this.neo4jClient = neo4jClient;
+        this.neo4jMappingContext = neo4jMappingContext;
     }
 
     public Collection<TocPathwayDTO> getTocPathways() {
