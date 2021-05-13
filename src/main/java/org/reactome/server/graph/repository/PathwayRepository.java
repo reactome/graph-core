@@ -204,4 +204,22 @@ public interface PathwayRepository extends Neo4jRepository<Pathway, Long> {
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(@Param("stId") String stId);
 
+    /* ------------------------------------------------------------------*/
+    /* ------------------------- INTERACTORS ----------------------------*/
+    /* ------------------------------------------------------------------*/
+
+    @Query(" MATCH (a:ReferenceEntity)<-[:interactor]-()-[:interactor]->(b:ReferenceEntity) " +
+            "WHERE a.identifier = $acc OR a.variantIdentifier = $acc " +
+            "MATCH path=(p:Pathway)-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(b) " +
+            "WHERE p.speciesName = $speciesName AND SINGLE(e IN NODES(path) WHERE (e:Pathway)) " +
+            "RETURN DISTINCT p")
+    Collection<Pathway> getLowerLevelPathways(@Param("acc") String acc, @Param("speciesName") String speciesName);
+
+    @Query(" MATCH (a:ReferenceEntity)<-[:interactor]-()-[:interactor]->(b:ReferenceEntity) " +
+            "WHERE a.identifier = $acc OR a.variantIdentifier = $acc " +
+            "MATCH path=(p:Pathway{hasDiagram:True})-[:hasEvent|input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:PhysicalEntity)-[:referenceEntity]->(b) " +
+            "WHERE p.speciesName = $speciesName AND SINGLE(e IN NODES(path) WHERE (e:Pathway) AND e.hasDiagram) " +
+            "RETURN DISTINCT p")
+    Collection<Pathway> getDiagrammedLowerLevelPathways(@Param("acc") String acc, @Param("speciesName") String speciesName);
+
 }

@@ -15,16 +15,22 @@ public interface EventsRepository extends Neo4jRepository<Event, Long> {
             "RETURN [n] as nodes " +
             "UNION " +
             "MATCH ancestors=((n:Event{stId:$stId})<-[r:hasEvent*]-(:Pathway)) " +
-            "RETURN NODES(ancestors) AS nodes")
-    Collection<? extends Event> getEventAncestorsByStId(@Param("stId") String stId);
+            "RETURN NODES(ancestors) AS nodes LIMIT 4")
+    Collection<Collection<Event>> getEventAncestorsByStIdMODIFIED(@Param("stId") String stId);
+
+    @Query(" MATCH (n:TopLevelPathway{stId:$stId}) " +
+            "RETURN [n] as nodes " +
+            "UNION " +
+            "MATCH ancestors=((n:Event{stId:$stId})<-[r:hasEvent*]-(:TopLevelPathway)) " +
+            "RETURN NODES(ancestors)")
+    Collection<Collection<Event>> getEventAncestorsByStId(@Param("stId") String stId);
 
     @Query(" MATCH (n:TopLevelPathway{dbId:$dbId}) " +
             "RETURN [n] as nodes " +
             "UNION " +
             "MATCH ancestors=((n:Event{dbId:$dbId})<-[r:hasEvent*]-(:TopLevelPathway)) " +
             "RETURN NODES(ancestors) AS nodes")
-    Collection<? extends Event> getEventAncestorsByDbId(@Param("dbId") Long dbId);
-
+    Collection<Collection<Event>> getEventAncestorsByDbId(@Param("dbId") Long dbId);
 }
 // TODO WORK IN PROGRESS - waiting for community input
 //public class EventsRepository {

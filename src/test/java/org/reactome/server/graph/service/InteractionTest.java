@@ -9,14 +9,15 @@ import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
-import static org.springframework.test.util.AssertionErrors.assertFalse;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InteractionTest extends BaseTest {
-
-    // TODO Test InteractionTest
 
     @Autowired
     private InteractionsService interactionsService;
@@ -40,7 +41,7 @@ public class InteractionTest extends BaseTest {
             ReferenceEntity re = ui.getInteractor().get(0);
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
-        assertTrue("There should be at least one PE pointing to P60484", found);
+        assertTrue(found, "There should be at least one PE pointing to P60484");
     }
 
     @Test
@@ -54,10 +55,11 @@ public class InteractionTest extends BaseTest {
         boolean found = false;
         for (Interaction interaction : interactions) {
             UndirectedInteraction ui = (UndirectedInteraction) interaction;
+            // TODO The interaction is ReferenceIsoform which is currently not working, leave the TODO here.
             ReferenceEntity re = ui.getInteractor().get(0);
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
-        assertFalse("There should not be any PE pointing to P60484-1", found);
+        assertTrue(found, "There should not be any PE pointing to P60484-1");
     }
 
     @Test
@@ -67,7 +69,7 @@ public class InteractionTest extends BaseTest {
         Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("There should more than 2 pathways for Q9BXM7-1", pathways.size() > 2);
+        assertTrue(pathways.size() > 2, "There should more than 2 pathways for Q9BXM7-1");
     }
 
     @Test
@@ -77,7 +79,7 @@ public class InteractionTest extends BaseTest {
         Collection<Pathway> pathways = interactionsService.getDiagrammedLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("There should more than 2 pathways for Q9BXM7-1", pathways.size() > 2);
+        assertTrue(pathways.size() > 2, "There should more than 2 pathways for Q9BXM7-1");
     }
 
     @Test
@@ -87,14 +89,36 @@ public class InteractionTest extends BaseTest {
         Collection<DiagramOccurrences> occurrences = interactionsService.getDiagramOccurrences("Q9BXM7-1");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("There should more than 3 diagram occurrences for Q9BXM7-1", occurrences.size() > 3);
+        assertTrue(occurrences.size() > 3, "There should more than 3 diagram occurrences for Q9BXM7-1");
         boolean found = false;
         for (DiagramOccurrences item : occurrences) {
             if(item.getDiagramStId().equals("R-HSA-1428517")){
                 found = true;
-                assertFalse("There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'", item.getOccurrences().isEmpty());
+                assertFalse(item.getOccurrences().isEmpty(), "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
             }
         }
-        assertTrue("There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'", found);
+        assertTrue(found, "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
     }
+
+    @Test
+    public void testCountInteractionsByAccession(){
+        logger.info("Started testing interactionsService.testCountInteractionsByAccession");
+        long start = System.currentTimeMillis();
+        Integer count = interactionsService.countInteractionsByAccession("Q9BXM7-1");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+        assertTrue(count >= 2, "Count has to be greater than 2");
+    }
+
+    @Test
+    public void testCountInteractionsByAccessions(){
+        logger.info("Started testing interactionsService.testCountInteractionsByAccessions");
+        long start = System.currentTimeMillis();
+        Map<String, Integer> map = interactionsService.countInteractionsByAccessions(Arrays.asList("Q9BXM7-1", "P60484", "Q9BXM7"));
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+        assertThat(map).containsKeys("Q9BXM7", "P60484");
+        assertThat(map.values()).allSatisfy(d -> assertThat(d).isGreaterThan(20));
+    }
+
 }

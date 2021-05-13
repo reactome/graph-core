@@ -2,9 +2,12 @@ package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
-import org.reactome.server.graph.domain.result.ClassCount;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
+import org.reactome.server.graph.domain.result.InteractorsCount;
+import org.reactome.server.graph.repository.DiagramRepository;
 import org.reactome.server.graph.repository.InteractionsRepository;
+import org.reactome.server.graph.repository.InteractorCountRepository;
+import org.reactome.server.graph.repository.PathwayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +17,16 @@ import java.util.*;
 public class InteractionsService {
 
     private final InteractionsRepository interactionsRepository;
+    private final InteractorCountRepository interactorCountRepository;
+    private final PathwayRepository pathwayRepository;
+    private final DiagramRepository diagramRepository;
 
     @Autowired
-    public InteractionsService(InteractionsRepository interactionsRepository) {
+    public InteractionsService(InteractionsRepository interactionsRepository, InteractorCountRepository interactorCountRepository, PathwayRepository pathwayRepository, DiagramRepository diagramRepository) {
         this.interactionsRepository = interactionsRepository;
+        this.interactorCountRepository = interactorCountRepository;
+        this.pathwayRepository = pathwayRepository;
+        this.diagramRepository = diagramRepository;
     }
 
     /**
@@ -30,7 +39,6 @@ public class InteractionsService {
 
     /**
      * Get all interactions of a given accession and resource
-     *
      * @return Map of accession as key and its interactions
      */
     public Map<String, List<Interaction>> getInteractions(Collection<String> accs) {
@@ -77,21 +85,21 @@ public class InteractionsService {
      */
     public Map<String, Integer> countInteractionsByAccessions(Collection<String> accs) {
         Map<String, Integer> rtn = new HashMap<>();
-        for (ClassCount<String, Integer> classCount : interactionsRepository.countByAccessions(accs)) {
-            rtn.put(classCount.s, classCount.t);
+        for (InteractorsCount interactorsCount : interactorCountRepository.countByAccessions(accs)) {
+            rtn.put(interactorsCount.getAcc(), interactorsCount.getCount());
         }
         return rtn;
     }
 
     public Collection<Pathway> getLowerLevelPathways(String acc, String speciesName){
-        return interactionsRepository.getLowerLevelPathways(acc, speciesName);
+        return pathwayRepository.getLowerLevelPathways(acc, speciesName);
     }
 
     public Collection<Pathway> getDiagrammedLowerLevelPathways(String acc, String speciesName){
-        return interactionsRepository.getDiagrammedLowerLevelPathways(acc, speciesName);
+        return pathwayRepository.getDiagrammedLowerLevelPathways(acc, speciesName);
     }
 
     public Collection<DiagramOccurrences> getDiagramOccurrences(String identifier){
-        return interactionsRepository.getDiagramOccurrences(identifier);
+        return diagramRepository.getDiagramOccurrencesWithInteractions(identifier);
     }
 }

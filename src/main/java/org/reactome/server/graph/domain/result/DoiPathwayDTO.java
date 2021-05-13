@@ -28,7 +28,6 @@ public class DoiPathwayDTO {
         reviseDate = record.get("reviseDate").asString();
         releaseStatus = record.get("releaseStatus").asString();
         releaseDate = record.get("releaseDate").asString();
-        // TODO this is ugly.... make it nicer
         authors = !record.get("authors").isNull() ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p)) : Collections.emptyList();
         reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
         editors = !record.get("editors").isNull() ? record.get("editors").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();

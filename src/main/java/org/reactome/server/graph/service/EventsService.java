@@ -21,12 +21,12 @@ public class EventsService {
     /**
      * @return returns a List of Event as it can contain Reactions and Pathway.
      */
-    public Collection<? extends Event> getEventAncestors(Object identifier){
+    public Collection<Collection<Event>> getEventAncestors(Object identifier){
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return eventsRepository.getEventAncestorsByStId(id);
         } else if (DatabaseObjectUtils.isDbId(id)){
-            return eventsRepository.getEventAncestorsByStId(id);
+            return eventsRepository.getEventAncestorsByDbId(Long.parseLong(id));
         }
         return null;
     }

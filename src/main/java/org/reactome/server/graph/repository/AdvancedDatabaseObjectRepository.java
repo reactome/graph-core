@@ -278,7 +278,6 @@ public class AdvancedDatabaseObjectRepository {
      * and findCollectionByRelationship accordingly.
      */
     public Collection<QueryResultWrapper> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
-        long start = System.currentTimeMillis();
         String query;
         switch (direction) {
             case OUTGOING:
@@ -294,18 +293,13 @@ public class AdvancedDatabaseObjectRepository {
 
         Map<String, Object> map = Map.of("dbId", dbId);
         BiFunction<TypeSystem, MapAccessor, DatabaseObject> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(DatabaseObject.class);
-        Collection<QueryResultWrapper> wrappers =
-                neo4jClient.query(query)
+        return neo4jClient.query(query)
                         .bindAll(map)
                         .fetchAs(QueryResultWrapper.class)
                         .mappedBy((typeSystem, record) -> {
                             DatabaseObject databaseObject = mappingFunction.apply(typeSystem, record.get("m"));
                             return new QueryResultWrapper(databaseObject, record.get("n").asInt());
                         }).all();
-        long end = System.currentTimeMillis() - start;
-        // TODO REMOVE THIS SOUT.
-        System.out.println(end + ".ms");
-        return wrappers;
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------

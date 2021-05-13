@@ -24,7 +24,8 @@ public class EventsServiceTest extends BaseTest {
     public void getEventAncestorsByStIdTest() {
         logger.info("Started testing eventsService.getEventAncestorsByStIdTest");
         long start = System.currentTimeMillis();
-        Collection<? extends Event> pathways = eventsService.getEventAncestors("R-HSA-169680");
+        // 169680
+        Collection<Collection<Event>> pathways = eventsService.getEventAncestors("R-HSA-169680");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
