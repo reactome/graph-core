@@ -4,6 +4,7 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,9 @@ public class GeneralTemplateRepository {
     private final Neo4jTemplate neo4jTemplate;
     private final Neo4jClient neo4jClient;
 
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
+
     @Autowired
     public GeneralTemplateRepository(Neo4jTemplate neo4jTemplate, Neo4jClient neo4jClient) {
         this.neo4jTemplate = neo4jTemplate;
@@ -43,7 +47,7 @@ public class GeneralTemplateRepository {
 
     // TODO Test this
     public <T> T query(String query, Map<String,Object> map, Class<T> _clazz) {
-        return (T) neo4jClient.query(query).bindAll(map).fetchAs(_clazz);
+        return (T) neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(_clazz);
     }
 
     // ------------------------------------------- Save and Delete -----------------------------------------------------
@@ -75,7 +79,7 @@ public class GeneralTemplateRepository {
         String query = "MATCH (n:DatabaseObject{dbId:$dbId}) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
         Map<String,Object> map = new HashMap<>();
         map.put("dbId", dbId);
-        neo4jClient.query(query).bindAll(map).run();
+        neo4jClient.query(query).in(databaseName).bindAll(map).run();
     }
 
     // TODO test delete
@@ -83,7 +87,7 @@ public class GeneralTemplateRepository {
         String query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
         Map<String,Object> map = new HashMap<>();
         map.put("stId", stId);
-        neo4jClient.query(query).bindAll(map).run();
+        neo4jClient.query(query).in(databaseName).bindAll(map).run();
     }
 
     // ------------------------------------ Utility Methods for JUnit Tests --------------------------------------------
@@ -91,7 +95,7 @@ public class GeneralTemplateRepository {
     public boolean fitForService() {
         String query = "MATCH (n) RETURN COUNT(n) > 0 AS fitForService";
         try {
-            return neo4jClient.query(query).fetchAs(Boolean.class).first().orElse(false);
+            return neo4jClient.query(query).in(databaseName).fetchAs(Boolean.class).first().orElse(false);
         } catch (Exception e) {
             logger.error("A connection with the Neo4j Graph could not be established. Tests will be skipped", e);
         }

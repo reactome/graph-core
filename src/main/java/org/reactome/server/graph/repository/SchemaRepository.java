@@ -4,6 +4,7 @@ import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,6 +22,9 @@ public class SchemaRepository {
     private final Neo4jTemplate neo4jTemplate;
     private final Neo4jClient neo4jClient;
 
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
+
     @Autowired
     public SchemaRepository(Neo4jTemplate neo4jTemplate, Neo4jClient neo4jClient) {
         this.neo4jTemplate = neo4jTemplate;
@@ -29,7 +33,7 @@ public class SchemaRepository {
 
     public Collection<SchemaClassCount> getSchemaClassCounts() {
         String query = "MATCH (n:DatabaseObject) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count";
-        return neo4jClient.query(query).fetchAs(SchemaClassCount.class).mappedBy((ts, rec) -> SchemaClassCount.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(SchemaClassCount.class).mappedBy((ts, rec) -> SchemaClassCount.build(rec)).all();
     }
 
     // ---------------------------------------- Query by Class --------------------------------------------------
@@ -104,7 +108,7 @@ public class SchemaRepository {
                 "MATCH (n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
                 "ORDER BY n.displayName";
-        return neo4jClient.query(query).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class clazz, String taxId) {
@@ -114,7 +118,7 @@ public class SchemaRepository {
                 "ORDER BY n.displayName";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy((ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy((ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class clazz, String speciesName) {
@@ -124,7 +128,7 @@ public class SchemaRepository {
                 "ORDER BY n.displayName";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     // ---------------------------------------- Query by Class for SimpleObject (paging) ------------------------------------------------
@@ -138,7 +142,7 @@ public class SchemaRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("limit", offset);
         map.put("skip", (page-1) * offset);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class clazz, String taxId, Integer page, Integer offset) {
@@ -151,7 +155,7 @@ public class SchemaRepository {
         map.put("taxId", taxId);
         map.put("limit", offset);
         map.put("skip", (page-1) * offset);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class clazz, String speciesName, Integer page, Integer offset) {
@@ -164,7 +168,7 @@ public class SchemaRepository {
         map.put("speciesName", speciesName);
         map.put("limit", offset);
         map.put("skip", (page-1) * offset);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     // ---------------------------------------- Query by Class for SimpleReferenceObject ------------------------------------------------
@@ -174,7 +178,7 @@ public class SchemaRepository {
                 "MATCH (n:" + clazz.getSimpleName() + ") " +
                 "RETURN n.dbId AS dbId, n.databaseName AS databaseName, n.identifier AS identifier " +
                 "ORDER BY n.identifier ";
-        return neo4jClient.query(query).fetchAs(SimpleReferenceObject.class).mappedBy( (ts, rec) -> SimpleReferenceObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(SimpleReferenceObject.class).mappedBy( (ts, rec) -> SimpleReferenceObject.build(rec)).all();
     }
 
     public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz, Integer page, Integer offset) {
@@ -186,19 +190,19 @@ public class SchemaRepository {
         Map<String,Object> map = new HashMap<>();
         map.put("limit", offset);
         map.put("skip", (page-1) * offset);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleReferenceObject.class).mappedBy( (ts, rec) -> SimpleReferenceObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleReferenceObject.class).mappedBy( (ts, rec) -> SimpleReferenceObject.build(rec)).all();
     }
 
     // ---------------------------------------- Query by Class for ids ------------------------------------------------
 
     public Collection<String> getStIdsByClass (Class clazz) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n.stId";
-        return neo4jClient.query(query).fetchAs(String.class).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(String.class).all();
     }
 
     public Collection<Long> getDbIdsByClass (Class clazz) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n.dbId";
-        return neo4jClient.query(query).fetchAs(Long.class).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(Long.class).all();
     }
 
     // ---------------------------------------- Count by Class ------------------------------------------------

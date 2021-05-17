@@ -2,6 +2,7 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,9 @@ import java.util.Collections;
 public class ComponentOfLinkageRepository {
 
     private final Neo4jClient neo4jClient;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public ComponentOfLinkageRepository(Neo4jClient neo4jClient) {
@@ -26,7 +30,7 @@ public class ComponentOfLinkageRepository {
                 "       COLLECT(COALESCE(m.displayName, '')) AS names, " +
                 "       COLLECT(COALESCE(m.stId, '')) AS stIds, " +
                 "       COLLECT(COALESCE(m.speciesName, '')) as species";
-        return neo4jClient.query(query).bindAll(Collections.singletonMap("stId", stId)).fetchAs(ComponentOf.class).mappedBy( (t, record) -> ComponentOf.build(record)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("stId", stId)).fetchAs(ComponentOf.class).mappedBy( (t, record) -> ComponentOf.build(record)).all();
 
     }
 
@@ -38,7 +42,7 @@ public class ComponentOfLinkageRepository {
                 "       COLLECT(COALESCE(m.displayName, '')) AS names, " +
                 "       COLLECT(COALESCE(m.stId, '')) AS stIds, " +
                 "       COLLECT(COALESCE(m.speciesName, '')) as species";
-        return neo4jClient.query(query).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(ComponentOf.class).mappedBy( (t, record) -> ComponentOf.build(record)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(ComponentOf.class).mappedBy( (t, record) -> ComponentOf.build(record)).all();
 
     }
 

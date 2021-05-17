@@ -2,8 +2,8 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.result.TocPathwayDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
-import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -12,12 +12,13 @@ import java.util.Collection;
 public class TocRepository {
 
     private final Neo4jClient neo4jClient;
-    private final Neo4jMappingContext neo4jMappingContext;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
-    public TocRepository(Neo4jClient neo4jClient, Neo4jMappingContext neo4jMappingContext) {
+    public TocRepository(Neo4jClient neo4jClient) {
         this.neo4jClient = neo4jClient;
-        this.neo4jMappingContext = neo4jMappingContext;
     }
 
     public Collection<TocPathwayDTO> getTocPathways() {
@@ -50,6 +51,6 @@ public class TocRepository {
                 "subPathways " +
                 "ORDER BY toLower(p.displayName)";
 
-        return neo4jClient.query(query).fetchAs(TocPathwayDTO.class).mappedBy((typeSystem, record) -> new TocPathwayDTO(record)).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(TocPathwayDTO.class).mappedBy((typeSystem, record) -> new TocPathwayDTO(record)).all();
     }
 }

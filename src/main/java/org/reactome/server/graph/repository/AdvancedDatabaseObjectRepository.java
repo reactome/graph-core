@@ -12,6 +12,7 @@ import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
@@ -33,6 +34,9 @@ public class AdvancedDatabaseObjectRepository {
     private final Neo4jClient neo4jClient;
     private final Neo4jTemplate neo4jTemplate;
     private final Neo4jMappingContext neo4jMappingContext;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     private static final String CYPHER_RETURN = "" +
             "WITH n, r, m " +
@@ -317,10 +321,10 @@ public class AdvancedDatabaseObjectRepository {
                 return (T) neo4jTemplate.findOne(query, parameters, DatabaseObject.class).orElse(null);
             } else if (CustomQuery.class.isAssignableFrom(clazz)) {
                 CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
-                return (T) neo4jClient.query(query).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).one().orElse(null);
+                return (T) neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).one().orElse(null);
             }
 
-            return neo4jClient.query(query).bindAll(parameters).fetchAs(clazz).one().orElse(null);
+            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).one().orElse(null);
 
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new CustomQueryException(e);
@@ -334,10 +338,10 @@ public class AdvancedDatabaseObjectRepository {
                 return (Collection<T>) neo4jTemplate.findAll(query, parameters, DatabaseObject.class);
             } else if (CustomQuery.class.isAssignableFrom(clazz)) {
                 CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
-                return (Collection<T>) neo4jClient.query(query).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).all();
+                return (Collection<T>) neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).all();
             }
 
-            return neo4jClient.query(query).bindAll(parameters).fetchAs(clazz).all();
+            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).all();
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException  e) {
             throw new CustomQueryException(e);
         }

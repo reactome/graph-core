@@ -2,6 +2,7 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +18,9 @@ public class DatabaseObjectRepository {
 
     private final Neo4jTemplate neo4jTemplate;
     private final Neo4jClient neo4jClient;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public DatabaseObjectRepository(Neo4jTemplate neo4jTemplate, Neo4jClient neo4jClient) {
@@ -42,7 +46,7 @@ public class DatabaseObjectRepository {
         String query = "MATCH (n:DatabaseObject{oldStId:$oldStId}) RETURN n.stId";
         Map<String, Object> params = new HashMap<>(1);
         params.put("oldStId", oldStId);
-        return neo4jClient.query(query).bindAll(params).fetchAs(String.class).one().orElse(null);
+        return neo4jClient.query(query).in(databaseName).bindAll(params).fetchAs(String.class).one().orElse(null);
     }
 
     public <T extends DatabaseObject> T findByDbIdNoRelations(Long dbId) {

@@ -2,6 +2,7 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.result.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,9 @@ import java.util.Collections;
 public class ParticipantRepository {
 
     private final Neo4jClient neo4jClient;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public ParticipantRepository(Neo4jClient neo4jClient) {
@@ -39,7 +43,7 @@ public class ParticipantRepository {
                 "              icon: icon " +
                 "       })) AS refEntities";
 
-        return neo4jClient.query(query).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(Participant.class).mappedBy( (t, record) -> Participant.build(record)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(Participant.class).mappedBy( (t, record) -> Participant.build(record)).all();
     }
 
 
@@ -64,7 +68,7 @@ public class ParticipantRepository {
                 "              icon: icon " +
                 "       })) AS refEntities";
 
-        return neo4jClient.query(query).bindAll(Collections.singletonMap("stId", stId)).fetchAs(Participant.class).mappedBy( (t, record) -> Participant.build(record)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("stId", stId)).fetchAs(Participant.class).mappedBy( (t, record) -> Participant.build(record)).all();
     }
 
 }

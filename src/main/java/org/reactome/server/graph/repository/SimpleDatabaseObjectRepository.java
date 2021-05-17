@@ -2,6 +2,7 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
@@ -13,6 +14,9 @@ import java.util.Map;
 public class SimpleDatabaseObjectRepository {
 
     private final Neo4jClient neo4jClient;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public SimpleDatabaseObjectRepository(Neo4jClient neo4jClient) {
@@ -36,7 +40,7 @@ public class SimpleDatabaseObjectRepository {
         Map<String, Object> map = new HashMap<>(2);
         map.put("identifier", identifier);
         map.put("stIds", pathways);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getPathwaysForIdentifierByDbId(String identifier, Collection<Long> pathways){
@@ -56,7 +60,7 @@ public class SimpleDatabaseObjectRepository {
         map.put("identifier", identifier);
         map.put("stIds", pathways);
 
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifierByStId(String stId, String identifier) {
@@ -90,7 +94,7 @@ public class SimpleDatabaseObjectRepository {
         map.put("identifier", identifier);
         map.put("stId", stId);
 
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
     public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifierByDbId(Long dbId, String identifier) {
@@ -123,7 +127,7 @@ public class SimpleDatabaseObjectRepository {
         Map<String, Object> map = new HashMap<>(2);
         map.put("identifier", identifier);
         map.put("dbId", dbId);
-        return neo4jClient.query(query).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject .class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
 }

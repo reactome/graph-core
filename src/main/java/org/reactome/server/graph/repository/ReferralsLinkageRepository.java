@@ -2,8 +2,8 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.result.Referrals;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
-import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -13,7 +13,9 @@ import java.util.Collections;
 public class ReferralsLinkageRepository {
 
     private final Neo4jClient neo4jClient;
-    Neo4jTemplate n;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public ReferralsLinkageRepository(Neo4jClient neo4jClient) {
@@ -28,7 +30,7 @@ public class ReferralsLinkageRepository {
                 "RETURN DISTINCT TYPE(rel) AS referral, " +
                 "       COLLECT(ref) AS objects " +
                 "LIMIT 1000";
-        return neo4jClient.query(query).bindAll(Collections.singletonMap("stId", stId)).fetchAs(Referrals.class).mappedBy( (t, record) -> Referrals.build(record)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("stId", stId)).fetchAs(Referrals.class).mappedBy( (t, record) -> Referrals.build(record)).all();
 
     }
 
@@ -40,7 +42,7 @@ public class ReferralsLinkageRepository {
                 "RETURN DISTINCT TYPE(rel) AS referral, " +
                 "       COLLECT(ref) AS objects " +
                 "LIMIT 1000";
-        return neo4jClient.query(query).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(Referrals.class).mappedBy( (t, record) -> Referrals.build(record)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(Referrals.class).mappedBy( (t, record) -> Referrals.build(record)).all();
 
     }
 }

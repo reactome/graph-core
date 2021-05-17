@@ -6,12 +6,6 @@ import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 06.04.16.
- */
 @SuppressWarnings("unused")
 public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
@@ -25,7 +19,7 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     private Boolean unique;
 
     @JsonIgnore
-    private boolean highlighted ;
+    private boolean highlighted;
     @JsonIgnore
     private boolean clickable;
 
@@ -35,13 +29,14 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
 
     public void addParent(PathwayBrowserNode node) {
-        if (parent==null) {
+        if (parent == null) {
             parent = new TreeSet<>();
         }
         parent.add(node);
     }
+
     public void addChild(PathwayBrowserNode node) {
-        if (children==null) {
+        if (children == null) {
             children = new TreeSet<>();
         }
         children.add(node);
@@ -61,7 +56,7 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     }
 
     public Boolean hasDiagram() {
-        if (diagram ==null) {
+        if (diagram == null) {
             return false;
         } else {
             return diagram;

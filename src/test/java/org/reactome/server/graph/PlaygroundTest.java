@@ -6,10 +6,7 @@ import org.reactome.server.graph.custom.CustomQueryComplex;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.QueryResultWrapper;
 import org.reactome.server.graph.exception.CustomQueryException;
-import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
-import org.reactome.server.graph.repository.DatabaseObjectRepository;
-import org.reactome.server.graph.repository.EventRepository;
-import org.reactome.server.graph.repository.PersonAuthorReviewerRepository;
+import org.reactome.server.graph.repository.*;
 import org.reactome.server.graph.service.PersonService;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +23,8 @@ public class PlaygroundTest {
     @Autowired private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
     @Autowired private DatabaseObjectRepository databaseObjectRepository;
     @Autowired private EventRepository eventRepository;
+    @Autowired private EventsRepository eventsRepository;
+    @Autowired private HierarchyRepository hierarchyRepository;
     @Autowired private PersonService personService;
     @Autowired private PersonAuthorReviewerRepository personAuthorReviewerRepository;
 
@@ -264,5 +263,21 @@ public class PlaygroundTest {
         aa.get(0).getIdentifier();
     }
 
+    @Test
+    public void testEventAncestorsS() {
+        DatabaseObject aaa  = advancedDatabaseObjectRepository.findById("R-HSA-8952903", 1000);
+        assertTrue(aaa.isLoaded);
+    }
+
+    @Test
+    public void testEventAncestors() {
+        Collection<Collection<Event>> pathways = eventsRepository.getEventAncestorsByStId("R-HSA-169680");
+        assertTrue(pathways.iterator().next().size() > 2);
+    }
+
+    @Test
+    public void testHierarchy() {
+        hierarchyRepository.getSubHierarchyByDbIdRaw(69620L);
+    }
 
 }

@@ -2,6 +2,7 @@ package org.reactome.server.graph.repository;
 
 import org.reactome.server.graph.domain.result.DoiPathwayDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,9 @@ import java.util.Collection;
 public class DoiRepository {
 
     private Neo4jClient neo4jClient;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public DoiRepository(Neo4jClient neo4jClient) {
@@ -47,7 +51,7 @@ public class DoiRepository {
                         "       COLLECT(DISTINCT totalEdtd) AS editors " +
                         "ORDER BY toLower(p.displayName) ";
 
-        return neo4jClient.query(query).fetchAs(DoiPathwayDTO.class).mappedBy((typeSystem, record) -> new DoiPathwayDTO(record)).all();
+        return neo4jClient.query(query).in(databaseName).fetchAs(DoiPathwayDTO.class).mappedBy((typeSystem, record) -> new DoiPathwayDTO(record)).all();
     }
 
 }

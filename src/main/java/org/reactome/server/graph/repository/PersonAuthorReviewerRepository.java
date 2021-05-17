@@ -5,6 +5,7 @@ import org.neo4j.driver.types.TypeSystem;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,9 @@ public class PersonAuthorReviewerRepository {
 
     private final Neo4jClient neo4jClient;
     private final Neo4jMappingContext neo4jMappingContext;
+
+    @Value("${spring.data.neo4j.database}")
+    private String databaseName;
 
     @Autowired
     public PersonAuthorReviewerRepository(Neo4jClient neo4jClient, Neo4jMappingContext neo4jMappingContext) {
@@ -37,13 +41,13 @@ public class PersonAuthorReviewerRepository {
                 "RETURN per AS person, aps AS authoredPathways, rps AS reviewedPathways, ars AS authoredReactions, rrs AS reviewedReactions";
 
         BiFunction<TypeSystem, MapAccessor, Person> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(Person.class);
-        Collection<PersonAuthorReviewer> wrapper = neo4jClient.query(query).fetchAs(PersonAuthorReviewer.class)
+        Collection<PersonAuthorReviewer> wrapper = neo4jClient.query(query).in(databaseName).fetchAs(PersonAuthorReviewer.class)
                 .mappedBy((typeSystem, record) -> {
                     Person n = mappingFunction.apply(typeSystem, record.get("person"));
                     return new PersonAuthorReviewer(n, record.get("authoredPathways").asLong(),record.get("reviewedPathways").asLong(),record.get("authoredReactions").asLong(),record.get("reviewedReactions").asLong());
                 }).all();
 
         return wrapper;
-//        return neo4jClient.query(query).fetchAs(PersonAuthorReviewer.class).mappedBy(((typeSystem, record) -> PersonAuthorReviewer.build(record))).all();
+//        return neo4jClient.query(query).in(databaseName).fetchAs(PersonAuthorReviewer.class).mappedBy(((typeSystem, record) -> PersonAuthorReviewer.build(record))).all();
     }
 }
