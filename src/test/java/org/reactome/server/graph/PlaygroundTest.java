@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.custom.CustomQueryComplex;
 import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.result.EventProjectionWrapper;
+import org.reactome.server.graph.domain.result.HierarchyBranch;
 import org.reactome.server.graph.domain.result.QueryResultWrapper;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.*;
@@ -35,6 +37,12 @@ public class PlaygroundTest {
 //    public void disableLazyFetch(){
 //        lazyFetchAspect.setEnableAOP(false);
 //    }
+
+    @Test
+    public void testDrugType(){
+        DatabaseObject sas = databaseObjectRepository.findByDbId(9725061L);
+        System.out.println(sas);
+    }
 
     @Test
     public void testInferredFromNull(){
@@ -244,11 +252,6 @@ public class PlaygroundTest {
                 new QueryResultWrapper(new Complex(8865819L)),
                 new QueryResultWrapper(new EntityWithAccessionedSequence(912481L), 2));
 
-//        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(3234081L, "PhysicalEntity", RelationshipDirection.OUTGOING,"output");
-//        assertThat(wrappers).containsExactlyInAnyOrder(
-//                new QueryResultWrapper(new Complex(8865819L), 1),
-//                new QueryResultWrapper(new EntityWithAccessionedSequence(912481L), 2));
-
         wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "AbstractModifiedResidue", RelationshipDirection.OUTGOING,"hasModifiedResidue");
         assertThat(wrappers).containsAnyOf(
                 new QueryResultWrapper(new ModifiedResidue(140621L)),
@@ -271,13 +274,22 @@ public class PlaygroundTest {
 
     @Test
     public void testEventAncestors() {
-        Collection<Collection<Event>> pathways = eventsRepository.getEventAncestorsByStId("R-HSA-169680");
-        assertTrue(pathways.iterator().next().size() > 2);
+        Collection<EventProjectionWrapper> pathways = eventsRepository.getEventAncestorsByStId("R-HSA-169680");
+        assertNotNull(pathways);
+        assertNotNull(pathways.iterator());
+        assertTrue(pathways.iterator().next().getEvents().size() > 4);
     }
 
     @Test
     public void testHierarchy() {
         hierarchyRepository.getSubHierarchyByDbIdRaw(69620L);
+    }
+
+    @Test
+    public void testHierarchyBranch() {
+        List<Long> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L);
+        Collection<HierarchyBranch> aaa = hierarchyRepository.getLocationInPathwayBrowserForPathwaysRaw(pathways);
+        System.out.println(aaa);
     }
 
 }

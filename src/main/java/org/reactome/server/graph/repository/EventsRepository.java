@@ -1,10 +1,8 @@
 package org.reactome.server.graph.repository;
 
 import org.neo4j.driver.Record;
-import org.neo4j.driver.types.MapAccessor;
-import org.neo4j.driver.types.TypeSystem;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.result.EventAncestorsWrapper;
+import org.reactome.server.graph.domain.result.EventProjection;
+import org.reactome.server.graph.domain.result.EventProjectionWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
@@ -15,8 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.function.BiFunction;
 
 @Repository
 public class EventsRepository {
@@ -33,64 +29,49 @@ public class EventsRepository {
     @Value("${spring.data.neo4j.database}")
     private String databaseName;
 
-    public Collection<Collection<Event>> getEventAncestorsByStId(@Param("stId") String stId) {
+    public Collection<EventProjectionWrapper> getEventAncestorsByStId(@Param("stId") String stId) {
+        //language=Cypher
         String query = " " +
-                "MATCH (n:Pathway{stId:$stId}) " +
-                "RETURN [n] as nodes " +
+                "MATCH (n:TopLevelPathway{stId:$stId}) " +
+                "WITH *, [n] as nodes " +
+                "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result " +
                 "UNION " +
-                "MATCH ancestors=((n:Event{stId:$stId})<-[:hasEvent*]-(remove:Pathway)) " +
-                "WHERE NOT remove.schemaClass=\"TopLevelPathway\" " + // TODO remove this condition...
-                "RETURN NODES(ancestors) AS nodes";
+                "MATCH ancestors=((n:Event{stId:$stId})<-[:hasEvent*]-(remove:TopLevelPathway)) " +
+                "WITH *, NODES(ancestors) AS nodes " +
+                "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result";
 
-        BiFunction<TypeSystem, MapAccessor, Event> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(Event.class);
-        Collection<EventAncestorsWrapper> wrapper =
-                neo4jClient.query(query)
-                        .in(databaseName)
-                        .bindAll(Collections.singletonMap("stId", stId))
-                        .fetchAs(EventAncestorsWrapper.class)
-                        .mappedBy((typeSystem, record) -> getEventAncestorsWrapper(mappingFunction, typeSystem, record))
-                .all();
-
-        Collection<Collection<Event>> ret = new ArrayList<>(wrapper.size());
-        for (EventAncestorsWrapper eventAncestorsWrapper : wrapper) {
-            ret.add(eventAncestorsWrapper.getNodes());
-        }
-
-        return ret;
+        return neo4jClient.query(query)
+                .in(databaseName)
+                .bindAll(Collections.singletonMap("stId", stId))
+                .fetchAs(EventProjectionWrapper.class)
+                .mappedBy((typeSystem, record) -> getEventProjectionWrapper(record)).all();
     }
 
-    public Collection<Collection<Event>> getEventAncestorsByDbId(@Param("dbId") Long dbId) {
+    public Collection<EventProjectionWrapper> getEventAncestorsByDbId(@Param("dbId") Long dbId) {
+        //language=Cypher
         String query = " " +
-                "MATCH (n:Pathway{dbId:dbId}) " +
-                "RETURN [n] as nodes " +
+                "MATCH (n:TopLevelPathway{dbId:dbId}) " +
+                "WITH *, [n] as nodes " +
+                "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result " +
                 "UNION " +
-                "MATCH ancestors=((n:Event{dbId:dbId})<-[:hasEvent*]-(remove:Pathway)) " +
-                "WHERE NOT remove.schemaClass=\"TopLevelPathway\" " + // TODO remove this condition...
-                "RETURN NODES(ancestors) AS nodes";
+                "MATCH ancestors=((n:Event{dbId:dbId})<-[:hasEvent*]-(remove:TopLevelPathway)) " +
+                "WITH *, NODES(ancestors) AS nodes " +
+                "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result";
 
-        BiFunction<TypeSystem, MapAccessor, Event> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(Event.class);
-        Collection<EventAncestorsWrapper> wrapper =
-                neo4jClient.query(query)
-                        .in(databaseName)
-                        .bindAll(Collections.singletonMap("dbId", dbId))
-                        .fetchAs(EventAncestorsWrapper.class)
-                        .mappedBy((typeSystem, record) -> getEventAncestorsWrapper(mappingFunction, typeSystem, record))
-                        .all();
-
-        Collection<Collection<Event>> ret = new ArrayList<>(wrapper.size());
-        for (EventAncestorsWrapper eventAncestorsWrapper : wrapper) {
-            ret.add(eventAncestorsWrapper.getNodes());
-        }
-
-        return ret;
+        return neo4jClient.query(query)
+                .in(databaseName)
+                .bindAll(Collections.singletonMap("dbId", dbId))
+                .fetchAs(EventProjectionWrapper.class)
+                .mappedBy((typeSystem, record) -> getEventProjectionWrapper(record)).all();
     }
 
-    private EventAncestorsWrapper getEventAncestorsWrapper(BiFunction<TypeSystem, MapAccessor, Event> mappingFunction, TypeSystem typeSystem, Record record){
-        Iterator<org.neo4j.driver.Value> values =  record.get("nodes").values().iterator();
-        Collection<Event> events = new ArrayList<>();
-        while(values.hasNext()){
-            events.add(mappingFunction.apply(typeSystem, values.next()));
+    private EventProjectionWrapper getEventProjectionWrapper(Record record) {
+        Collection<EventProjection> events = new ArrayList<>();
+        for (org.neo4j.driver.Value resultSet : record.values()) {
+            for (org.neo4j.driver.Value item : resultSet.values()) {
+                events.add(new EventProjection(item));
+            }
         }
-        return new EventAncestorsWrapper(events);
+        return new EventProjectionWrapper(events);
     }
 }

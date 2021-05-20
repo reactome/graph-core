@@ -10,8 +10,8 @@ import org.reactome.server.graph.domain.result.DatabaseObjectLike;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -162,7 +162,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     }
 
     @Override
-    public int compareTo(@Nonnull DatabaseObject o) {
+    public int compareTo(@NonNull DatabaseObject o) {
         return this.dbId.compareTo(o.dbId);
     }
 

@@ -1,8 +1,8 @@
 package org.reactome.server.graph.service.helper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -157,7 +157,7 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     }
 
     @Override
-    public int compareTo(@Nonnull PathwayBrowserNode node) {
+    public int compareTo(@NonNull PathwayBrowserNode node) {
         // Sorting PathwayBrowserNode by species (if present) first, then sort by name.
         String thisSpecies = this.species == null ? "" : this.species;
         String nodeSpecies = node.getSpecies() == null ? "" : node.getSpecies();

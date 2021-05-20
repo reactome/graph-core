@@ -6,6 +6,7 @@ import org.neo4j.driver.Value;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ReflectionUtils {
@@ -42,7 +43,7 @@ public class ReflectionUtils {
                 if (field.getType().isAssignableFrom(String.class)) {
                     field.set(_clazz, va.asString());
                 } else if (field.getType().isAssignableFrom(Long.class)) {
-                    field.set(_clazz, va.asLong());
+                    field.set(_clazz, va.asLong(0));
                 } else if (field.getType().isAssignableFrom(Integer.class)) {
                     field.set(_clazz, va.asInt(0));
                 } else if (field.getType().isAssignableFrom(Boolean.class)) {
@@ -64,13 +65,13 @@ public class ReflectionUtils {
                 if (field.getType().isAssignableFrom(String.class)) {
                     field.set(_clazz, va.asString());
                 } else if (field.getType().isAssignableFrom(Long.class)) {
-                    field.set(_clazz, va.asLong());
+                    field.set(_clazz, va.asLong(0));
                 } else if (field.getType().isAssignableFrom(Integer.class) || field.getType().isPrimitive()) {
                     field.set(_clazz, va.asInt(0));
                 } else if (field.getType().isAssignableFrom(Boolean.class)) {
                     field.set(_clazz, va.asBoolean(Boolean.FALSE));
                 } else if (Collection.class.isAssignableFrom(field.getType())) {
-                    field.set(_clazz, va.asList());
+                    field.set(_clazz, va.asList(Collections.EMPTY_LIST));
                     // TODO inner objects
                 }
             } catch (IllegalAccessException e) {

@@ -1,39 +1,25 @@
 package org.reactome.server.graph.repository;
 
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
-import org.neo4j.driver.types.MapAccessor;
-import org.neo4j.driver.types.TypeSystem;
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.model.Pathway;
-import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.reactome.server.graph.domain.result.HierarchyBranch;
+import org.reactome.server.graph.domain.result.HierarchyTreeItem;
 import org.reactome.server.graph.domain.result.HierarchyWrapper;
-import org.reactome.server.graph.domain.result.PathwayResult;
-import org.reactome.server.graph.exception.CustomQueryException;
-import org.reactome.server.graph.repository.util.HierarchyBranch;
-import org.reactome.server.graph.service.AdvancedDatabaseObjectService;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jClient;
-import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
-import java.util.function.BiFunction;
 
 @Repository
 public class HierarchyRepository {
 
-    private final AdvancedDatabaseObjectService advancedDatabaseObjectService;
     private final Neo4jClient neo4jClient;
-    private final Neo4jMappingContext neo4jMappingContext;
 
-    @Autowired
-    public HierarchyRepository(AdvancedDatabaseObjectService advancedDatabaseObjectService, Neo4jClient neo4jClient, Neo4jMappingContext neo4jMappingContext) {
-        this.advancedDatabaseObjectService = advancedDatabaseObjectService;
+    public HierarchyRepository(Neo4jClient neo4jClient) {
         this.neo4jClient = neo4jClient;
-        this.neo4jMappingContext = neo4jMappingContext;
     }
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
@@ -70,10 +56,11 @@ public class HierarchyRepository {
 
     /**
      * Used to build the locations in the Pathway Browser for the EHLD containing a given icon
+     *
      * @param pathways list of pathways (can contain Pathway objects, dbIds, stIds - or a combination of them)
      * @return a set of PathwayBrowserNode
      */
-    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways) {
         Collection<HierarchyBranch> branches = getLocationInPathwayBrowserForPathwaysRaw(pathways);
         return mergeBranches(branches);
     }
@@ -112,48 +99,39 @@ public class HierarchyRepository {
      * @return PathwayBrowserNode having parents and children
      */
     private PathwayBrowserNode parseResult(Collection<HierarchyWrapper> result, Boolean omitNonDisplayableItems) {
-
-        // TODO uncomment here
-        if (result != null && result.iterator().hasNext()) {
-            Map<String, Object> stringObjectMap = null;//result.iterator().next();
-            return parseRaw(stringObjectMap, omitNonDisplayableItems);
-        }
+        if (result != null && result.iterator().hasNext()) return parseRaw(result.iterator().next(), omitNonDisplayableItems);
         return null;
     }
 
-
     private Collection<PathwayBrowserNode> parseResults(Collection<HierarchyWrapper> result, Boolean omitNonDisplayableItems) {
-
         if (result != null && result.iterator().hasNext()) {
             Collection<PathwayBrowserNode> eventHierarchy = new ArrayList<>();
-
-            // TODO uncomment here
-//            for (Map<String, Object> stringObjectMap : result) {
-//                eventHierarchy.add(parseRaw(stringObjectMap, omitNonDisplayableItems));
-//            }
+            for (HierarchyWrapper hierarchyWrapper : result) {
+                eventHierarchy.add(parseRaw(hierarchyWrapper, omitNonDisplayableItems));
+            }
             return eventHierarchy;
         }
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    private PathwayBrowserNode parseRaw(Map<String, Object> stringObjectMap, Boolean omitNonDisplayableItems) {
-        PathwayBrowserNode root = createNode((DatabaseObject) stringObjectMap.get("n"));
+    private PathwayBrowserNode parseRaw(HierarchyWrapper result, Boolean omitNonDisplayableItems) {
+        PathwayBrowserNode root = createRootNode(result.getRoot());
         Map<String, PathwayBrowserNode> nodes = new HashMap<>();
         PathwayBrowserNode previous = root;
         nodes.put(root.getStId(), root);
         int previousSize = 0;
-        Object[] nodePairCollections = (Object[]) stringObjectMap.get("nodePairCollection");
-        if (nodePairCollections != null && nodePairCollections.length > 0) {
-            for (ArrayList<Object> nodePairCollection : ((ArrayList<Object>[]) nodePairCollections)) {
-                int size = nodePairCollection.size();
+        Collection<Collection<HierarchyTreeItem>> resultNodes = result.getNodes();
+        if (resultNodes != null && resultNodes.size() > 0) {
+            for (Collection<HierarchyTreeItem> hierarchyTreeItems : resultNodes) {
+                int size = hierarchyTreeItems.size();
                 if (size > previousSize) {
-                    ArrayList<Object> objects = (ArrayList<Object>) nodePairCollection.get(nodePairCollection.size() - 1);
-                    previous = addNode(previous, nodes, objects, omitNonDisplayableItems);
+                    ArrayList<HierarchyTreeItem> hierarchyTreeItemArrayList = (ArrayList<HierarchyTreeItem>) hierarchyTreeItems;
+                    HierarchyTreeItem hierarchyTreeItem = hierarchyTreeItemArrayList.get(hierarchyTreeItems.size() - 1);
+                    previous = addNode(previous, nodes, hierarchyTreeItem, omitNonDisplayableItems);
                 } else {
                     previous = root;
-                    for (Object objects : nodePairCollection) {
-                        previous = addNode(previous, nodes, (ArrayList) objects, omitNonDisplayableItems);
+                    for (HierarchyTreeItem hierarchyTreeItem : hierarchyTreeItems) {
+                        previous = addNode(previous, nodes, hierarchyTreeItem, omitNonDisplayableItems);
                     }
                 }
                 previousSize = size;
@@ -162,19 +140,19 @@ public class HierarchyRepository {
         return root;
     }
 
-    private Set<PathwayBrowserNode> mergeBranches(Collection<HierarchyBranch> branches){
+    private Set<PathwayBrowserNode> mergeBranches(Collection<HierarchyBranch> branches) {
         Map<String, PathwayBrowserNode> nodes = new HashMap<>();
 
         Set<PathwayBrowserNode> rtn = new HashSet<>();
         for (HierarchyBranch branch : branches) {
-            List<Pathway> pathways = branch.getPathways();
-            Pathway p = pathways.get(0);
-            PathwayBrowserNode node = nodes.getOrDefault(p.getStId(), createNode(p));
+            List<HierarchyTreeItem> pathways = branch.getPathways();
+            HierarchyTreeItem p = pathways.get(0);
+            PathwayBrowserNode node = nodes.getOrDefault(p.getStId(), createRootNode(p));
             nodes.put(node.getStId(), node);
             rtn.add(node);
-            for (int i = 1 ; i < pathways.size(); i++) {
-                Pathway pathway = pathways.get(i);
-                PathwayBrowserNode child = nodes.getOrDefault(pathway.getStId(), createNode(pathway));
+            for (int i = 1; i < pathways.size(); i++) {
+                HierarchyTreeItem pathway = pathways.get(i);
+                PathwayBrowserNode child = nodes.getOrDefault(pathway.getStId(), createRootNode(pathway));
                 nodes.put(child.getStId(), child);
                 node.addChild(child);
                 child.addParent(node);
@@ -185,13 +163,13 @@ public class HierarchyRepository {
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
-    private PathwayBrowserNode addNode(PathwayBrowserNode previous, Map<String, PathwayBrowserNode> nodes, ArrayList<Object> objects, Boolean omitNonDisplayableItems) {
+    private PathwayBrowserNode addNode(PathwayBrowserNode previous, Map<String, PathwayBrowserNode> nodes, HierarchyTreeItem result, Boolean omitNonDisplayableItems) {
         PathwayBrowserNode node;
 
-        if (nodes.containsKey(objects.get(0))) {
-            node = nodes.get(objects.get(0));
+        if (nodes.containsKey(result.getStId())) {
+            node = nodes.get(result.getStId());
         } else {
-            node = createNode(objects);
+            node = createNode(result);
             nodes.put(node.getStId(), node);
         }
 
@@ -207,43 +185,40 @@ public class HierarchyRepository {
     /**
      * Create a node based on the query Result
      *
-     * @param nodePairCollection, the query result
+     * @param result, the query result
      */
     @SuppressWarnings("unchecked")
-    private PathwayBrowserNode createNode(ArrayList<Object> nodePairCollection) {
+    private PathwayBrowserNode createNode(HierarchyTreeItem result) {
         PathwayBrowserNode node = new PathwayBrowserNode();
-        node.setStId((String) nodePairCollection.get(0));
-        node.setName((String) nodePairCollection.get(1));
-        node.setDiagram((Boolean) nodePairCollection.get(2));
-        node.setSpecies((String) nodePairCollection.get(3));
-        node.setType((String) nodePairCollection.get(4));
+        node.setStId(result.getStId());
+        node.setName(result.getDisplayName());
+        node.setDiagram(result.isHasDiagram());
+        node.setSpecies(result.getSpeciesName());
+        node.setType(result.getSchemaClass());
 
         doHighlighting(node);
 
         return node;
     }
 
-    private PathwayBrowserNode createNode(DatabaseObject databaseObject) {
+    private PathwayBrowserNode createRootNode(HierarchyTreeItem hierarchyTreeItem) {
         PathwayBrowserNode node = new PathwayBrowserNode();
-        node.setStId(databaseObject.getStId());
-        node.setName(databaseObject.getDisplayName());
+        node.setStId(hierarchyTreeItem.getStId());
+        node.setName(hierarchyTreeItem.getDisplayName());
         // do not use SchemaClass here
-        node.setType(databaseObject.getClass().getSimpleName());
-
+        // node.setType(hierarchyTreeItem.getClass().getSimpleName());
+        node.setType(hierarchyTreeItem.getSchemaClass());
         // Root by default is clickable and highlighted
         node.setClickable(true);
         node.setHighlighted(true);
 
-        if (databaseObject instanceof Event) {
-            Event event = (Event) databaseObject;
-            node.setSpecies(event.getSpeciesName());
-            if (event instanceof Pathway) {
-                Pathway pathway = (Pathway) event;
-                node.setDiagram(pathway.getHasDiagram());
+        if (hierarchyTreeItem.getLabels().contains("Event")) {
+            node.setSpecies(hierarchyTreeItem.getSpeciesName());
+            if (hierarchyTreeItem.getLabels().contains("Pathway")) {
+                node.setDiagram(hierarchyTreeItem.isHasDiagram());
             }
-        } else if (databaseObject instanceof PhysicalEntity) {
-            PhysicalEntity physicalEntity = (PhysicalEntity) databaseObject;
-            node.setSpecies(physicalEntity.getSpeciesName());
+        } else if (hierarchyTreeItem.getLabels().contains("PhysicalEntity")) {
+            node.setSpecies(hierarchyTreeItem.getSpeciesName());
         }
 
         return node;
@@ -265,38 +240,15 @@ public class HierarchyRepository {
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
     public Collection<HierarchyWrapper> getSubHierarchyByDbIdRaw(Long dbId) {
+        //language=Cypher
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH path=(n)-[:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
-                "WITH *, relationships(path) as r " +
-                "RETURN n, " +
-                "COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass ]] ) AS nodePairCollection";
+                "WITH *, relationships(path) AS r " +
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
 
-
-        BiFunction<TypeSystem, MapAccessor, DatabaseObject> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(DatabaseObject.class);
-        Collection<HierarchyWrapper> wrapper = neo4jClient.query(query)
-                .bindAll(Collections.singletonMap("dbId", dbId))
-                .fetchAs(HierarchyWrapper.class)
-                .mappedBy((typeSystem, record) -> {
-                    Iterator<Value> values =  record.get("nodePairCollection").values().iterator();
-                    Collection<Collection<PathwayResult>> pathwayResults = new ArrayList<>();
-                    while(values.hasNext()){
-                        Iterator<org.neo4j.driver.Value> whatDoICallYou = values.next().values().iterator();
-                        while(whatDoICallYou.hasNext()) {
-                            Iterator<org.neo4j.driver.Value> innerValues = whatDoICallYou.next().values().iterator();
-                            while (innerValues.hasNext()) {
-                                Value v = innerValues.next();
-                                System.out.println(v);
-                            }
-                        }
-                        //
-                    }
-
-                    DatabaseObject databaseObject = mappingFunction.apply(typeSystem, record.get("n"));
-                    return new HierarchyWrapper(databaseObject, pathwayResults);
-                }).all();
-
-        return wrapper;
+        return queryHierarchyWrapper(query, Collections.singletonMap("dbId", dbId));
     }
 
     private Collection<HierarchyWrapper> getSubHierarchyByStIdRaw(String stId) {
@@ -304,11 +256,11 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH path=(n)-[:hasEvent|input|output|repeatedUnit|hasMember|hasCandidate|hasComponent*]->(m:DatabaseObject) " +
-                "WITH *, relationships(path) as r " +
-                "RETURN n, " +
-                "COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass ]] ) AS nodePairCollection";
-        Collections.singletonMap("stId", stId);
-        return null;
+                "WITH *, relationships(path) AS r " +
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+
+        return queryHierarchyWrapper(query, Collections.singletonMap("stId", stId));
     }
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------
@@ -317,12 +269,11 @@ public class HierarchyRepository {
         //language=Cypher
         String query = "" +
                 "MATCH path=(n:TopLevelPathway{speciesName:$speciesName})-[:hasEvent*]->(m:Event) " +
-                "WITH *, relationships(path) as r " +
-                "RETURN n, " +
-                "COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass ]] ) AS nodePairCollection";
-        Collections.singletonMap("speciesName", speciesName);
+                "WITH *, relationships(path) AS r " +
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT ( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
 
-        return null;
+        return queryHierarchyWrapper(query, Collections.singletonMap("speciesName", speciesName));
     }
 
     private Collection<HierarchyWrapper> getEventHierarchyByTaxIdRaw(String taxId) {
@@ -330,10 +281,11 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (s:Species{taxId:$taxId})<-[:species]-(n:TopLevelPathway)" +
                 "MATCH path=(n)-[:hasEvent*]->(m:Event) " +
-                "WITH *, relationships(path) as r " +
-                "RETURN n, COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass ]] ) AS nodePairCollection";
-        Collections.singletonMap("taxId", taxId);
-        return null;
+                "WITH *, relationships(path) AS r " +
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+
+        return queryHierarchyWrapper(query, Collections.singletonMap("taxId", taxId));
     }
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
@@ -350,9 +302,10 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
-                "RETURN n, COLLECT( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ]] ) as nodePairCollection";
-        Collections.singletonMap("stId", stId);
-        return null;
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+
+        return queryHierarchyWrapper(query, Collections.singletonMap("stId", stId));
     }
 
     /**
@@ -367,9 +320,10 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
-                "RETURN n, COLLECT( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ]] ) as nodePairCollection";
-        Collections.singletonMap("dbId", dbId);
-        return null;
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+
+        return queryHierarchyWrapper(query, Collections.singletonMap("dbId", dbId));
     }
 
     /**
@@ -387,9 +341,10 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|input|output|hasEvent*]-() " +
-                "RETURN n, COLLECT( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ]] ) as nodePairCollection";
-        Collections.singletonMap("stId", stId);
-        return null;
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+
+        return queryHierarchyWrapper(query, Collections.singletonMap("stId", stId));
     }
 
     /**
@@ -407,25 +362,29 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|input|output|hasEvent*]-() " +
-                "RETURN n, COLLECT( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass ]] ) as nodePairCollection";
-        Collections.singletonMap("dbId", dbId);
-        //return neo4jTemplate.query(query, map);
-        return null;
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
+                "COLLECT( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+
+        return queryHierarchyWrapper(query, Collections.singletonMap("dbId", dbId));
     }
 
-    private Collection<HierarchyBranch> getLocationInPathwayBrowserForPathwaysRaw(List<?> pathways) {
+    public Collection<HierarchyBranch> getLocationInPathwayBrowserForPathwaysRaw(List<?> pathways) {
         //language=Cypher
-        String query = "" +
+        String query = " " +
                 "MATCH (p:Pathway) " +
                 "WHERE p.dbId IN $dbIds OR p.stId IN $stIds " +
                 "OPTIONAL MATCH path=(:TopLevelPathway)-[:hasEvent*]->(p) " +
-                "WITH p, NODES(path) AS branch " +
-                "RETURN CASE WHEN SIZE(branch) > 0 THEN branch ELSE [p] END AS branch";
+                "WITH p, nodes(path) AS branch " +
+                "RETURN " +
+                "   CASE WHEN size(branch) > 0 " +
+                "   THEN [ na IN branch | [ na.stId, na.displayName, na.hasDiagram, na.speciesName, na.schemaClass, labels(na) ] ] " +
+                "   ELSE [ [ p.stId, p.displayName, p.hasDiagram, p.speciesName, p.schemaClass, labels(p) ] ]  " +
+                "END AS branch";
 
         List<String> stIds = new ArrayList<>();
         List<Long> dbIds = new ArrayList<>();
         for (Object aux : pathways) {
-            if (aux instanceof DatabaseObject){
+            if (aux instanceof DatabaseObject) {
                 dbIds.add(((DatabaseObject) aux).getDbId());
             } else {
                 String identifier = String.valueOf(aux);
@@ -437,10 +396,39 @@ public class HierarchyRepository {
             }
         }
 
-        try {
-            return advancedDatabaseObjectService.getCustomQueryResults(HierarchyBranch.class, query, Map.of("stIds", stIds, "dbIds", dbIds));
-        } catch (CustomQueryException ex){
-            return null;
+        return neo4jClient.query(query)
+                .bindAll(Map.of("stIds", stIds, "dbIds", dbIds))
+                .fetchAs(HierarchyBranch.class)
+                .mappedBy((typeSystem, record) -> getHierarchyBranch(record)).all();
+
+    }
+
+    private HierarchyBranch getHierarchyBranch(Record record) {
+        List<HierarchyTreeItem> events = new ArrayList<>();
+        for (org.neo4j.driver.Value resultSet : record.values()) {
+            for (org.neo4j.driver.Value item : resultSet.values()) {
+                events.add(HierarchyTreeItem.build(item));
+            }
         }
+        return new HierarchyBranch(events);
+    }
+
+    private Collection<HierarchyWrapper> queryHierarchyWrapper(String query, Map<String, Object> param) {
+        return neo4jClient.query(query)
+                .bindAll(param)
+                .fetchAs(HierarchyWrapper.class)
+                .mappedBy((typeSystem, record) -> {
+                    Iterator<Value> nodePairCollection = record.get("nodePairCollection").values().iterator();
+                    Collection<Collection<HierarchyTreeItem>> pathwayResults = new ArrayList<>();
+                    while (nodePairCollection.hasNext()) {
+                        Iterator<Value> nodePair = nodePairCollection.next().values().iterator();
+                        Collection<HierarchyTreeItem> innerCollection = new ArrayList<>();
+                        while (nodePair.hasNext()) {
+                            innerCollection.add(HierarchyTreeItem.build(nodePair.next()));
+                        }
+                        pathwayResults.add(innerCollection);
+                    }
+                    return new HierarchyWrapper(HierarchyTreeItem.build(record.get("db")), pathwayResults);
+                }).all();
     }
 }
