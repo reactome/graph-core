@@ -5,11 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("ALL")
@@ -28,52 +26,38 @@ public class DatabaseObjectRepository {
         this.neo4jClient = neo4jClient;
     }
 
-    public <T extends DatabaseObject> T findByDbId(@Param("dbId") Long dbId) {
+    public <T extends DatabaseObject> T findByDbId(Long dbId) {
         String query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r]-(m) RETURN a, COLLECT(r), COLLECT(m)";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("dbId", dbId);
-        return (T) neo4jTemplate.findOne(query, params, DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findByStId(@Param("stId") String stId) {
+    public <T extends DatabaseObject> T findByStId(String stId) {
         String query = "MATCH (a:DatabaseObject{stId:$stId})-[r]-(m) RETURN a, COLLECT(r), COLLECT(m)";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("stId", stId);
-        return (T) neo4jTemplate.findOne(query, params, DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
     public String findNewStId(String oldStId) {
         String query = "MATCH (n:DatabaseObject{oldStId:$oldStId}) RETURN n.stId";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("oldStId", oldStId);
-        return neo4jClient.query(query).in(databaseName).bindAll(params).fetchAs(String.class).one().orElse(null);
+        return neo4jClient.query(query).in(databaseName).bindAll(Map.of("oldStId", oldStId)).fetchAs(String.class).one().orElse(null);
     }
 
     public <T extends DatabaseObject> T findByDbIdNoRelations(Long dbId) {
         String query = "MATCH (n:DatabaseObject{dbId:$dbId}) RETURN n";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("dbId", dbId);
-        return (T) neo4jTemplate.findOne(query, params, DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> T findByStIdNoRelations(String stId) {
         String query = "MATCH (n:DatabaseObject{stId:$stId}) RETURN n";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("stId", stId);
-        return (T) neo4jTemplate.findOne(query, params, DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> Collection<T> findByDbIdsNoRelations(Collection<Long> dbIds) {
         String query = "MATCH (n:DatabaseObject) WHERE n.dbId IN $dbIds RETURN n";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("dbIds", dbIds);
-        return (Collection<T>) neo4jTemplate.findAll(query, params, DatabaseObject.class);
+        return (Collection<T>) neo4jTemplate.findAll(query, Map.of("dbIds", dbIds), DatabaseObject.class);
     }
 
     public <T extends DatabaseObject> Collection<T> findByStIdsNoRelations(Collection<String> stIds) {
         String query = "MATCH (n:DatabaseObject) WHERE n.stId IN $stIds RETURN n";
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("stIds", stIds);
-        return (Collection<T>) neo4jTemplate.findAll(query, params, DatabaseObject.class);
+        return (Collection<T>) neo4jTemplate.findAll(query, Map.of("stIds", stIds), DatabaseObject.class);
     }
 }
