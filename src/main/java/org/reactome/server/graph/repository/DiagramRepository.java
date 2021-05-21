@@ -9,11 +9,8 @@ import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
-/**
- */
 @Repository
 public class DiagramRepository {
 
@@ -28,7 +25,6 @@ public class DiagramRepository {
     }
 
     public DiagramResult getDiagramResult(Long dbId) {
-        Map<String, Object> map = Map.of("dbId", dbId);
         String query = " MATCH (d:Pathway{dbId:$dbId, hasDiagram:True}) " +
                 "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, 1 AS level " +
                 "UNION " +
@@ -50,11 +46,10 @@ public class DiagramRepository {
                 "RETURN d.stId as diagramStId, [r.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
                 "ORDER BY level LIMIT 1";
 
-        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(DiagramResult.class).mappedBy((t, s) -> ReflectionUtils.build(new DiagramResult(), s)).one().orElse(null);
+        return neo4jClient.query(query).in(databaseName).bindAll(Map.of("dbId", dbId)).fetchAs(DiagramResult.class).mappedBy((t, record) -> ReflectionUtils.build(new DiagramResult(), record)).one().orElse(null);
     }
 
     public DiagramResult getDiagramResult(String stId) {
-        Map<String, Object> map = Map.of("stId", stId);
         String query = " MATCH (d:Pathway{stId:$stId, hasDiagram:True}) " +
                 "RETURN d.stId As diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, 1 AS level " +
                 "UNION " +
@@ -76,12 +71,11 @@ public class DiagramRepository {
                 "RETURN d.stId as diagramStId, [r.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, SIZE(NODES(depth)) AS level " +
                 "ORDER BY level LIMIT 1";
 
-        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(DiagramResult.class).mappedBy((t, s) -> ReflectionUtils.build(new DiagramResult(), s)).one().orElse(null);
+        return neo4jClient.query(query).in(databaseName).bindAll(Map.of("stId", stId)).fetchAs(DiagramResult.class).mappedBy((t, record) -> ReflectionUtils.build(new DiagramResult(), record)).one().orElse(null);
 
     }
 
     public Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId) {
-        Map<String, Object> map = Map.of("dbId", dbId);
         String query = " MATCH (i:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (i)-[:referenceEntity]->(:ReferenceEntity)<-[:interactor]-(:Interaction)-[:interactor]->(re:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
                 "WHERE re.trivial IS NULL " +
@@ -108,7 +102,7 @@ public class DiagramRepository {
                 "WHERE inDiagram OR SIZE(occurrences) > 0 " +
                 "RETURN DISTINCT p.stId AS diagramStId, inDiagram, occurrences, interactsWith";
 
-        return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(DiagramOccurrences.class).mappedBy((t, s) -> ReflectionUtils.build(new DiagramOccurrences(), s)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Map.of("dbId", dbId)).fetchAs(DiagramOccurrences.class).mappedBy((t, record) -> ReflectionUtils.build(new DiagramOccurrences(), record)).all();
     }
 
     public Collection<DiagramOccurrences> getDiagramOccurrences(String stId) {
@@ -139,7 +133,7 @@ public class DiagramRepository {
                 "WHERE inDiagram OR size(occurrences) > 0 " +
                 "RETURN DISTINCT p.stId AS diagramStId, inDiagram, occurrences, interactsWith";
 
-        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("stId", stId)).fetchAs(DiagramOccurrences.class).mappedBy((t, s) -> ReflectionUtils.build(new DiagramOccurrences(), s)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Map.of("stId", stId)).fetchAs(DiagramOccurrences.class).mappedBy((t, record) -> ReflectionUtils.build(new DiagramOccurrences(), record)).all();
     }
 
     public Collection<DiagramOccurrences> getDiagramOccurrencesWithInteractions(String identifier) {
@@ -167,6 +161,6 @@ public class DiagramRepository {
                 "WHERE SIZE(pes) > 0 OR SIZE(pathwaysOccurrences) > 0 " +
                 "RETURN DISTINCT p.stId AS diagramStId, false AS inDiagram, pathwaysOccurrences AS occurrences, pes AS interactsWith";
 
-        return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("identifier", identifier)).fetchAs(DiagramOccurrences.class).mappedBy((t, s) -> ReflectionUtils.build(new DiagramOccurrences(), s)).all();
+        return neo4jClient.query(query).in(databaseName).bindAll(Map.of("identifier", identifier)).fetchAs(DiagramOccurrences.class).mappedBy((t, record) -> ReflectionUtils.build(new DiagramOccurrences(), record)).all();
     }
 }
