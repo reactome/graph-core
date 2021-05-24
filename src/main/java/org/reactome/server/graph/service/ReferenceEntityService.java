@@ -13,8 +13,6 @@ public class ReferenceEntityService {
 
     private final ReferenceEntityRepository referenceEntityRepository;
 
-    // TODO Test ReferenceEntityService
-
     @Autowired
     public ReferenceEntityService(ReferenceEntityRepository referenceEntityRepository) {
         this.referenceEntityRepository = referenceEntityRepository;

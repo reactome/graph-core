@@ -15,7 +15,6 @@ import java.util.Set;
 @SuppressWarnings("WeakerAccess")
 public class HierarchyService {
 
-    // TODO all methods returning null just for compilation purpose....
     private final HierarchyRepository hierarchyRepository;
 
     @Autowired

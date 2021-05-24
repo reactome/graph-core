@@ -4,26 +4,45 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ReflectionUtils {
 
-    public static <T> T build(T t, Record v){
+    public static <T> T build(T t, Record record){
         List<Field> fields = ReflectionUtils.getAllFields(t.getClass());
-        ReflectionUtils.build(v, fields, t);
+        ReflectionUtils.build(record, fields, t);
         return t;
     }
 
-    public static <T> T build(T t, Value v){
+    public static <T> T build(T t, Value value){
         List<Field> fields = ReflectionUtils.getAllFields(t.getClass());
-        ReflectionUtils.build(v, fields, t);
+        ReflectionUtils.build(value, fields, t);
         return t;
     }
 
-    public static List<Field> getAllFields(Class<?> type) {
+    /**
+     * Depending on how you write the query and your return statement.
+     * You might have a Record or @see build(Value value)
+     */
+    private static <T> void build(Value v, List<Field> fields, T _instance) {
+        for (Field field : fields) {
+            Value value = v.get(field.getName());
+            setFields(value, field, _instance);
+        }
+    }
+
+    /**
+     * Depending on how you write the query and your return statement.
+     * You might have a Record or @see build(Value value)
+     */
+    private static <T> void build(Record record, List<Field> fields, T _instance) {
+        for (Field field : fields) {
+            Value value = record.get(field.getName());
+            setFields(value, field, _instance);
+        }
+    }
+
+    private static List<Field> getAllFields(Class<?> type) {
         List<Field> allFields = new ArrayList<>();
         for (Field field : type.getDeclaredFields()) {
             field.setAccessible(true);
@@ -35,50 +54,37 @@ public class ReflectionUtils {
         return allFields;
     }
 
-    public static void build(Value v, List<Field> fields, Object _clazz) {
-        for (Field field : fields) {
-            Value va = v.get(field.getName());
-            try {
-                field.setAccessible(true);
-                if (field.getType().isAssignableFrom(String.class)) {
-                    field.set(_clazz, va.asString());
-                } else if (field.getType().isAssignableFrom(Long.class)) {
-                    field.set(_clazz, va.asLong(0));
-                } else if (field.getType().isAssignableFrom(Integer.class)) {
-                    field.set(_clazz, va.asInt(0));
-                } else if (field.getType().isAssignableFrom(Boolean.class)) {
-                    field.set(_clazz, va.asBoolean(Boolean.FALSE));
-                } else if (field.getType().isPrimitive()) {
-                    throw new IllegalAccessException("[" + field.getType() + "] primitive type is not support. Use the wrapper class.");
+    private static void setFields(Value value, Field field, Object _instance){
+        try {
+            field.setAccessible(true);
+            if (field.getType().isAssignableFrom(String.class)) {
+                field.set(_instance, value.asString());
+            } else if (field.getType().isAssignableFrom(Long.class)) {
+                field.set(_instance, value.asLong(0));
+            } else if (field.getType().isAssignableFrom(Integer.class)) {
+                field.set(_instance, value.asInt(0));
+            } else if (field.getType().isAssignableFrom(Boolean.class)) {
+                field.set(_instance, value.asBoolean(Boolean.FALSE));
+            } else if (Collection.class.isAssignableFrom(field.getType())) {
+                if (!value.isNull()) {
+                    field.set(_instance, value.asList(Value::asString));
+                } else {
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        field.set(_instance, Collections.emptyList());
+                    } else if (Set.class.isAssignableFrom(field.getType())) {
+                        if (SortedSet.class.isAssignableFrom(field.getType())) {
+                            field.set(_instance, Collections.emptySortedSet());
+                        } else {
+                            field.set(_instance, Collections.emptySet());
+                        }
+                    }
                 }
-            } catch (IllegalAccessException e) {
-                System.out.println(field.getName());
+            } else if (field.getType().isPrimitive()) {
+                throw new IllegalAccessException("[" + field.getType() + "] primitive type is not support. Use the wrapper class.");
             }
+        } catch (IllegalAccessException e) {
+            System.err.println(field.getName());
         }
-    }
-
-    public static <T> T build(Record r, List<Field> fields, T _clazz) {
-        for (Field field : fields) {
-            Value va = r.get(field.getName());
-            try {
-                field.setAccessible(true);
-                if (field.getType().isAssignableFrom(String.class)) {
-                    field.set(_clazz, va.asString());
-                } else if (field.getType().isAssignableFrom(Long.class)) {
-                    field.set(_clazz, va.asLong(0));
-                } else if (field.getType().isAssignableFrom(Integer.class) || field.getType().isPrimitive()) {
-                    field.set(_clazz, va.asInt(0));
-                } else if (field.getType().isAssignableFrom(Boolean.class)) {
-                    field.set(_clazz, va.asBoolean(Boolean.FALSE));
-                } else if (Collection.class.isAssignableFrom(field.getType())) {
-                    field.set(_clazz, va.asList(Collections.EMPTY_LIST));
-                    // TODO inner objects
-                }
-            } catch (IllegalAccessException e) {
-                System.out.println(field.getName());
-            }
-        }
-        return _clazz;
     }
 
 //    /**

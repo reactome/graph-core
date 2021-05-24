@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
@@ -33,7 +32,7 @@ public class LazyLoadingTest extends BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = generalService.fitForService();
+            isFit = fitForService();
             checkedOnce = true;
         }
 
@@ -52,7 +51,8 @@ public class LazyLoadingTest extends BaseTest {
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
 
         //getters will be automatically called by the Assertion test
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
+//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
     }
 

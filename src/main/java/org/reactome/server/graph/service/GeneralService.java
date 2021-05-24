@@ -3,8 +3,8 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.DBInfo;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
+import org.reactome.server.graph.repository.CRUDRepository;
 import org.reactome.server.graph.repository.DBInfoRepository;
-import org.reactome.server.graph.repository.GeneralRepository;
 import org.reactome.server.graph.repository.GeneralTemplateRepository;
 import org.reactome.server.graph.repository.SchemaRepository;
 import org.springframework.stereotype.Service;
@@ -22,17 +22,16 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class GeneralService {
 
-//    @Autowired
-    public GeneralRepository generalRepository;
-
     private final GeneralTemplateRepository generalTemplateRepository;
     private final SchemaRepository schemaRepository;
     private final DBInfoRepository dbInfoRepository;
+    private final CRUDRepository crudRepository;
 
-    public GeneralService(GeneralTemplateRepository generalTemplateRepository, SchemaRepository schemaRepository, DBInfoRepository dbInfoRepository) {
+    public GeneralService(GeneralTemplateRepository generalTemplateRepository, SchemaRepository schemaRepository, DBInfoRepository dbInfoRepository, CRUDRepository crudRepository) {
         this.generalTemplateRepository = generalTemplateRepository;
         this.schemaRepository = schemaRepository;
         this.dbInfoRepository = dbInfoRepository;
+        this.crudRepository = crudRepository;
     }
 
     private static DBInfo dbInfo = null;
@@ -57,44 +56,37 @@ public class GeneralService {
     // ------------------------------------------- Save and Delete -----------------------------------------------------
 
     public <T extends DatabaseObject> T save(T t) {
-        return generalTemplateRepository.save(t);
+        return crudRepository.save(t);
     }
 
     @Deprecated
     public <T extends DatabaseObject> T save(T t, int depth) {
-        return generalTemplateRepository.save(t, depth);
+        return null;
     }
 
-    // TODO Test
     public void delete(DatabaseObject o)  {
-        generalTemplateRepository.delete(o);
+        crudRepository.delete(o);
     }
 
     public void delete(Object id, Class<?> _clazz)  {
-        generalTemplateRepository.delete(id, _clazz);
+        crudRepository.delete(id, _clazz);
     }
 
     public void deleteAll(Class<?> _clazz) {
-        generalTemplateRepository.deleteAllByClass(_clazz);
+        crudRepository.deleteAllByClass(_clazz);
     }
 
     public void delete(Long dbId) {
-        generalTemplateRepository.delete(dbId);
+        crudRepository.delete(dbId);
     }
 
     public void delete(String stId) {
-        generalTemplateRepository.delete(stId);
+        crudRepository.delete(stId);
     }
 
     // ------------------------------------ Utility Methods for JUnit Tests --------------------------------------------
 
     @Deprecated
-    public void clearCache() {
-        generalTemplateRepository.clearCache();
-    }
-
-    public boolean fitForService()  {
-        return generalTemplateRepository.fitForService();
-    }
+    public void clearCache() {}
 
 }

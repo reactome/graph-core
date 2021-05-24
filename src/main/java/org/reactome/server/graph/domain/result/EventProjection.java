@@ -1,7 +1,6 @@
 package org.reactome.server.graph.domain.result;
 
 import org.neo4j.driver.Value;
-import org.reactome.server.graph.domain.ReflectionUtils;
 
 import java.util.List;
 
@@ -35,12 +34,6 @@ public class EventProjection {
 
     public EventProjection() {
 
-    }
-
-    public EventProjection build(Value item) {
-        EventProjection ep = new EventProjection();
-        ReflectionUtils.build(ep, item);
-        return ep;
     }
 
     public EventProjection(Value item) {

@@ -11,8 +11,6 @@ import java.util.Collection;
 @Repository
 public interface OrthologyRepository extends Neo4jRepository<DatabaseObject, Long> {
 
-    // TODO Test OrthologyRepository
-
     //The relationship do not have direction because that's what is needed in this case
     @Query(" MATCH (:DatabaseObject{dbId:$dbId})<-[:inferredTo]-()-[:inferredTo]->(o:DatabaseObject)-[:species]->(:Species{dbId:$speciesId}) RETURN DISTINCT o " +
             "UNION " +

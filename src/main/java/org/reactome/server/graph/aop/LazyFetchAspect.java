@@ -31,7 +31,7 @@ public class LazyFetchAspect  {
 
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
-        System.out.println("LazyFetchAspects => " + this.hashCode());
+//        System.out.println("LazyFetchAspects => " + this.hashCode());
 
         if (!enableAOP) return pjp.proceed();
 

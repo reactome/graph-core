@@ -64,4 +64,13 @@ public class HasEvent implements Comparable<HasEvent> {
     public int compareTo(HasEvent o) {
         return this.order - o.order;
     }
+
+    @Override
+    public String toString() {
+        return "HasEvent{" +
+                "event=" + event +
+                ", order=" + order +
+                ", stoichiometry=" + stoichiometry +
+                '}';
+    }
 }

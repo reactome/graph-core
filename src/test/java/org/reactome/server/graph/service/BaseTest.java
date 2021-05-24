@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -23,7 +24,7 @@ public abstract class BaseTest {
     static Boolean isFit = false;
 
     @Autowired
-    protected GeneralService generalService;
+    protected Neo4jClient neo4jClient;
 
     @Autowired
     protected LazyFetchAspect lazyFetchAspect;
@@ -36,7 +37,7 @@ public abstract class BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = generalService.fitForService();
+            isFit = fitForService();
             checkedOnce = true;
         }
 
@@ -46,4 +47,15 @@ public abstract class BaseTest {
         assumeTrue(isFit);
         DatabaseObjectFactory.clearCache();
     }
+
+    protected final boolean fitForService() {
+        String query = "MATCH (n) RETURN COUNT(n) > 0 AS fitForService";
+        try {
+            return neo4jClient.query(query).fetchAs(Boolean.class).first().orElse(false);
+        } catch (Exception e) {
+            logger.error("A connection with the Neo4j Graph could not be established. Tests will be skipped", e);
+        }
+        return false;
+    }
+
 }

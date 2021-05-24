@@ -24,10 +24,10 @@ public class EventsServiceTest extends BaseTest {
     public void getEventAncestorsByStIdTest() {
         logger.info("Started testing eventsService.getEventAncestorsByStIdTest");
         long start = System.currentTimeMillis();
-        Collection<EventProjectionWrapper> pathways = eventsService.getEventAncestors("R-HSA-169680");
+        Collection<EventProjectionWrapper> pathways = eventsService.getEventAncestors(169680L);
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue("'IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel' is in several different locations. Found:" + pathways.size(), pathways.size() > 10);
+        assertTrue("'IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel' is in several different locations. Found:" + pathways.size(), pathways.size() >= 10);
         for (EventProjectionWrapper eventProjectionWrapper : pathways) {
             assertFalse(eventProjectionWrapper.getEvents().isEmpty(), "Ancestors list cannot be empty");
         }
@@ -41,7 +41,7 @@ public class EventsServiceTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("'IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel' is in several different locations. Found:" + pathways.size(), pathways.size() > 10);
+        assertTrue("'IP3 binds to the IP3 receptor, opening the endoplasmic reticulum Ca2+ channel' is in several different locations. Found:" + pathways.size(), pathways.size() >= 10);
         for (EventProjectionWrapper eventProjectionWrapper : pathways) {
             assertFalse(eventProjectionWrapper.getEvents().isEmpty(), "Ancestors list cannot be empty");
         }

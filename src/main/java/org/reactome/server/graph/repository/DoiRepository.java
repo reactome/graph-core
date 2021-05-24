@@ -11,7 +11,7 @@ import java.util.Collection;
 @Repository
 public class DoiRepository {
 
-    private Neo4jClient neo4jClient;
+    private final Neo4jClient neo4jClient;
 
     @Value("${spring.data.neo4j.database}")
     private String databaseName;

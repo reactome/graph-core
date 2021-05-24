@@ -108,9 +108,10 @@ public class Pathway extends Event {
     }
 
     public List<Event> getHasEvent() {
-        if (hasEvent == null) return null;
+        if (this.hasEvent == null) return null;
         List<Event> rtn = new ArrayList<>();
-        for (HasEvent he : hasEvent) {
+        for (HasEvent he : this.hasEvent) {
+            System.out.println(he.getEvent());
             rtn.add(he.getEvent());
         }
         return rtn;
@@ -121,7 +122,6 @@ public class Pathway extends Event {
         int order = 0;
         for (Event event : hasEvent) {
             HasEvent aux = new HasEvent();
-//            aux.setPathway(this);
             aux.setEvent(event);
             aux.setOrder(order++);
             this.hasEvent.add(aux);

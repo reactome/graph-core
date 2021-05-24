@@ -6,24 +6,22 @@ import org.reactome.server.graph.domain.result.EventProjectionWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
-import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 @Repository
-public class EventsRepository {
+public class EventAncestorsRepository {
 
     private final Neo4jClient neo4jClient;
-    private final Neo4jMappingContext neo4jMappingContext;
 
     @Autowired
-    public EventsRepository(Neo4jClient neo4jClient, Neo4jMappingContext neo4jMappingContext) {
+    public EventAncestorsRepository(Neo4jClient neo4jClient) {
         this.neo4jClient = neo4jClient;
-        this.neo4jMappingContext = neo4jMappingContext;
     }
 
     @Value("${spring.data.neo4j.database}")
@@ -42,7 +40,7 @@ public class EventsRepository {
 
         return neo4jClient.query(query)
                 .in(databaseName)
-                .bindAll(Collections.singletonMap("stId", stId))
+                .bindAll(Map.of("stId", stId))
                 .fetchAs(EventProjectionWrapper.class)
                 .mappedBy((typeSystem, record) -> getEventProjectionWrapper(record)).all();
     }
@@ -50,11 +48,11 @@ public class EventsRepository {
     public Collection<EventProjectionWrapper> getEventAncestorsByDbId(@Param("dbId") Long dbId) {
         //language=Cypher
         String query = " " +
-                "MATCH (n:TopLevelPathway{dbId:dbId}) " +
+                "MATCH (n:TopLevelPathway{dbId:$dbId}) " +
                 "WITH *, [n] as nodes " +
                 "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result " +
                 "UNION " +
-                "MATCH ancestors=((n:Event{dbId:dbId})<-[:hasEvent*]-(remove:TopLevelPathway)) " +
+                "MATCH ancestors=((n:Event{dbId:$dbId})<-[:hasEvent*]-(remove:TopLevelPathway)) " +
                 "WITH *, NODES(ancestors) AS nodes " +
                 "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result";
 

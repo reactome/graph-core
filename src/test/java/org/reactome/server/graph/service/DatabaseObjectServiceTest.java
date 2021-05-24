@@ -6,7 +6,6 @@ import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
@@ -15,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -49,7 +49,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
     }
 
     @Test
-    public void findByDbIdTest() throws Exception {
+    public void findByDbIdTest() {
 
         logger.info("Started testing databaseObjectService.findByDbIdTest");
         long start, time;
@@ -63,7 +63,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
         logger.info("Finished");
     }
 
@@ -103,7 +103,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
         logger.info("Finished");
 
     }

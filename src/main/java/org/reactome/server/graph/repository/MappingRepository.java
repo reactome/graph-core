@@ -13,7 +13,6 @@ import java.util.Collection;
 @Repository
 public interface MappingRepository extends Neo4jRepository<Event, Long> {
 
-    // TODO Test Mapping Repository ... likely to Slit the events
     @Query(" MATCH (n)-[:referenceDatabase]->(rd:ReferenceDatabase) " +
             "WHERE toLower(rd.displayName) = toLower($databaseName) AND (n.identifier = $identifier OR n.variantIdentifier = $identifier OR $identifier IN n.geneName OR $identifier IN n.name) " +
             "WITH DISTINCT n " +

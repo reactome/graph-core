@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
@@ -17,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 05.06.16.
  */
 public class GeneralServiceTest extends BaseTest {
+
+    @Autowired private GeneralService generalService;
+
 
     @BeforeTestClass
     public void setUpClass() {

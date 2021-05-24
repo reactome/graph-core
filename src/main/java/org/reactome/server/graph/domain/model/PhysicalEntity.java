@@ -46,7 +46,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasComponent", direction = Relationship.Direction.INCOMING)
-    private SortedSet<HasComponent> componentOf;
+    private SortedSet<HasComponentForComplex> componentOf;
 
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
@@ -214,7 +214,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         }
     }
 
-    public void setComponentOf(SortedSet<HasComponent> componentOf) {
+    public void setComponentOf(SortedSet<HasComponentForComplex> componentOf) {
         this.componentOf = componentOf;
     }
 
@@ -222,9 +222,9 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.componentOf = new TreeSet<>();
         int order = 0;
         for (PhysicalEntity pe : componentOf) {
-            HasComponent hc = new HasComponent();
-            hc.setPhysicalEntity(this);
-//            hc.setComplex((Complex) pe);
+            HasComponentForComplex hc = new HasComponentForComplex();
+//            hc.setPhysicalEntity(this);
+            hc.setComplex((Complex) pe);
             hc.setOrder(order++);
             this.componentOf.add(hc);
         }
@@ -416,8 +416,8 @@ public abstract class PhysicalEntity extends DatabaseObject {
     public List<Complex> getComponentOf() {
         List<Complex> rtn = new ArrayList<>();
         if (componentOf != null) {
-            for (HasComponent aux : componentOf) {
-                // TODO test this componentOf (not sure where...)
+            for (HasComponentForComplex aux : componentOf) {
+                rtn.add(aux.getComplex());
 //                rtn.add(aux.getComplex());
             }
             return rtn;

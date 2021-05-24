@@ -25,7 +25,7 @@ public class PlaygroundTest {
     @Autowired private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
     @Autowired private DatabaseObjectRepository databaseObjectRepository;
     @Autowired private EventRepository eventRepository;
-    @Autowired private EventsRepository eventsRepository;
+    @Autowired private EventAncestorsRepository eventAncestorsRepository;
     @Autowired private HierarchyRepository hierarchyRepository;
     @Autowired private PersonService personService;
     @Autowired private PersonAuthorReviewerRepository personAuthorReviewerRepository;
@@ -47,7 +47,8 @@ public class PlaygroundTest {
     @Test
     public void testInferredFromNull(){
         ReactionLikeEvent sas = databaseObjectRepository.findByDbId(202245L);
-        assertNull(sas.getInferredFrom());
+        // Collections won't null and will be empty instead
+//        assertNull(sas.getInferredFrom());
         assertEquals(sas.getInferredFrom().size(),0);
         System.out.println(sas);
     }
@@ -274,7 +275,7 @@ public class PlaygroundTest {
 
     @Test
     public void testEventAncestors() {
-        Collection<EventProjectionWrapper> pathways = eventsRepository.getEventAncestorsByStId("R-HSA-169680");
+        Collection<EventProjectionWrapper> pathways = eventAncestorsRepository.getEventAncestorsByStId("R-HSA-169680");
         assertNotNull(pathways);
         assertNotNull(pathways.iterator());
         assertTrue(pathways.iterator().next().getEvents().size() > 4);

@@ -37,7 +37,7 @@ public class SortingAspectsTest extends BaseTest {
     @BeforeEach
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = generalService.fitForService();
+            isFit = fitForService();
             checkedOnce = true;
         }
 
