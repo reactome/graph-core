@@ -115,7 +115,6 @@ public class DatabaseObjectFactory {
     /**
      * Method to create an object from a given Reactome identifier.
      * @param identifier StableIdentifier or dbId
-     * @param <T> TODO
      * @return Object that extends DatabaseObject
      */
     @SuppressWarnings("unchecked")

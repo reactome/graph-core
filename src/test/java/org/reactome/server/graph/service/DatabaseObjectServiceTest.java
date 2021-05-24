@@ -57,7 +57,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
         DatabaseObject databaseObjectObserved = databaseObjectRepository.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        // TODO SDN 6.0.9 fixes inferredFrom being 0 instead of null .. double check once the final version is released.
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
         time = System.currentTimeMillis() - start;

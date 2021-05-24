@@ -106,7 +106,6 @@ public class PlaygroundTest {
     public void testQueryRelationshipTypesByDbId() {
 //        Collection<PhysicalEntity> ss = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(189102L, "PhysicalEntity", RelationshipDirection.INCOMING, "output");
 //        Collection<PhysicalEntity> aa = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(189102L, "PhysicalEntity", RelationshipDirection.OUTGOING, "output");
-//         TODO check Output relationship
 //        System.out.println(ss); // breakpoint here
 //        System.out.println(aa); // breakpoint here
     }
@@ -116,7 +115,6 @@ public class PlaygroundTest {
         ReactionLikeEvent rle1 = databaseObjectRepository.findByDbId(8932955L);
         System.out.println(rle1);
         assertNotNull(rle1.getOutput());
-        // TODO Fix here
 //        assertEquals("R-ALL-83910", rle1.getOutput().iterator().next().getPhysicalEntity().getStId());
         ReactionLikeEvent rle2 = databaseObjectRepository.findByDbId(1247999L);
         System.out.println(rle2);

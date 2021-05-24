@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class SortingAspectsTest extends BaseTest {
 
-    // TODO Test SortingAspectsTest
-
     private static final String stId = "R-HSA-2466381";
 
     @Autowired

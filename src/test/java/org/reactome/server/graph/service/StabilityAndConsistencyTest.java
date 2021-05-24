@@ -16,7 +16,6 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 public class StabilityAndConsistencyTest extends BaseTest {
 
-    // TODO Test StabilityAndConsistencyTest
     private static final String stId = "R-HSA-110243";
 
     @Autowired private DatabaseObjectService dbs;
