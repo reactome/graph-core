@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class InferredToTest extends BaseTest {
 
-    // TODO Test InferredToTest
     @Autowired private DatabaseObjectService databaseObjectService;
 
     @BeforeTestClass

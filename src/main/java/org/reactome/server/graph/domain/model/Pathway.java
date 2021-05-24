@@ -111,7 +111,6 @@ public class Pathway extends Event {
         if (this.hasEvent == null) return null;
         List<Event> rtn = new ArrayList<>();
         for (HasEvent he : this.hasEvent) {
-            System.out.println(he.getEvent());
             rtn.add(he.getEvent());
         }
         return rtn;

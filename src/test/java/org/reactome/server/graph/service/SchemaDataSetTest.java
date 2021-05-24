@@ -71,6 +71,9 @@ public class SchemaDataSetTest extends BaseTest {
         try {
             String json = mapper.writeValueAsString(schemaDataSet);
 
+            // How to test online ?
+            // https://search.google.com/structured-data/testing-tool and post the json output
+
             URL url = new URL("https://search.google.com/structured-data/testing-tool/validate");
             URLConnection con = url.openConnection();
             HttpURLConnection http = (HttpURLConnection) con;
@@ -95,8 +98,7 @@ public class SchemaDataSetTest extends BaseTest {
 
             String response = new BufferedReader(new InputStreamReader(http.getInputStream()))
                     .lines().collect(Collectors.joining("\n"));
-//            String response = IOUtils.toString(http.getInputStream(), StandardCharsets.UTF_8);
-            Boolean valid = response.contains("\"totalNumErrors\":0,\"totalNumWarnings\":0");
+            boolean valid = response.contains("\"totalNumErrors\":0,\"totalNumWarnings\":0");
             assertTrue("The generated schema should not have errors neither warnings", valid);
         } catch (IOException e) {
             e.printStackTrace();

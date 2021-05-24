@@ -72,8 +72,8 @@ public class LazyLoadingTest extends BaseTest {
                 negativeRegulations.add((NegativeRegulation) regulation);
             }
         }
-        assertTrue(positiveRegulations.size() > 1);
-        assertTrue(negativeRegulations.size() > 1);
+        assertTrue(positiveRegulations.size() >= 1);
+        assertTrue(negativeRegulations.size() >= 3);
 
         logger.info("Finished");
     }

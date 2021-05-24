@@ -14,8 +14,6 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 public class PublicationTest extends BaseTest {
 
-    // TODO Test PublicationTest
-    
     @Autowired
     private DatabaseObjectService databaseObjectService;
 

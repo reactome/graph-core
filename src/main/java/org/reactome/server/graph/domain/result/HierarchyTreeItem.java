@@ -6,7 +6,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import java.util.List;
 
 /**
- * PathwayResult is a minimalist object that is used to build the Pathway Browser Tree
+ * HierarchyTreeItem is a minimalist object that is used to build the Pathway Browser Tree
  *
  * The HierarchyBranch is comprised of a Collection of PathwayResult
  */

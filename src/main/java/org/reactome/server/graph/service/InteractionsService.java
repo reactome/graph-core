@@ -76,7 +76,13 @@ public class InteractionsService {
      * @return Map of accession and count
      */
     public Integer countInteractionsByAccession(String acc) {
-        return countInteractionsByAccessions(Collections.singletonList(acc)).get(acc);
+        Map<String, Integer> map = countInteractionsByAccessions(Collections.singletonList(acc));
+        if (acc.contains("-")) {
+            // When the given accession is a ReferenceIsoform, the query retrieves the normal identifier
+            // in which .get(acc) will retrieve null. To prevent that, we are getting the accession instead
+            acc = acc.substring(0, acc.indexOf("-"));
+        }
+        return map.get(acc);
     }
 
     /**
