@@ -191,14 +191,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>repackage</id>-->
-<!--                        <configuration>-->
-<!--                            <classifier>exec</classifier>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
 
             </plugin>
 
@@ -221,20 +221,27 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
-<!--                    <excludes>-->
-<!--                        <exclude>org.reactome.server.graph.Main.class</exclude>-->
-<!--                    </excludes>-->
                 </configuration>
             </plugin>
 
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven.jar.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/logback.xml</exclude>
-                    </excludes>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/reactome/server/graph/Main.class</exclude>
+                                <exclude>**/logback.xml</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!--
