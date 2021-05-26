@@ -20,7 +20,7 @@ public class DetailsRepository {
     public DatabaseObject detailsPageQuery(String stId) {
         //language=Cypher
         String query = "" +
-                "MATCH (n:DatabaseObject{dbId:$stId})-[r]->(m)" +
+                "MATCH (n:DatabaseObject{stId:$stId})-[r]->(m)" +
                 "OPTIONAL MATCH (n)<-[e:inferredTo|regulator|regulatedBy]-(l)" +
                 "OPTIONAL MATCH (m:ReferenceEntity)-[t:crossReference|referenceGene|referenceTranscript]->(z)" +
                 "OPTIONAL MATCH (m:AbstractModifiedResidue)-[u:psiMod|modification]-(i)" +
