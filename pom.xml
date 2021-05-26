@@ -191,14 +191,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>repackage</id>
-                        <configuration>
-                            <classifier>exec</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>repackage</id>-->
+<!--                        <configuration>-->
+<!--                            <classifier>exec</classifier>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
 
             </plugin>
 
@@ -221,9 +221,9 @@
                 <configuration>
                     <source>11</source>
                     <target>11</target>
-                    <excludes>
-                        <exclude>org.reactome.server.graph.Main.class</exclude>
-                    </excludes>
+<!--                    <excludes>-->
+<!--                        <exclude>org.reactome.server.graph.Main.class</exclude>-->
+<!--                    </excludes>-->
                 </configuration>
             </plugin>
 

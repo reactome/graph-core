@@ -24,7 +24,7 @@ public class EventAncestorsRepository {
         this.neo4jClient = neo4jClient;
     }
 
-    @Value("${spring.data.neo4j.database}")
+    @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
     public Collection<EventProjectionWrapper> getEventAncestorsByStId(@Param("stId") String stId) {

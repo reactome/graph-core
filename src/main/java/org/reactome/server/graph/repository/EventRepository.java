@@ -16,7 +16,7 @@ public class EventRepository {
     private final Neo4jClient neo4jClient;
     private final Neo4jTemplate neo4jTemplate;
 
-    @Value("${spring.data.neo4j.database}")
+    @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
     public EventRepository(Neo4jClient neo4jClient, Neo4jTemplate neo4jTemplate) {

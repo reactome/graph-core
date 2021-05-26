@@ -11,35 +11,28 @@ import org.springframework.stereotype.Service;
  * when this library is used by a stand-alone application.
  *
  * //First the class needs to be initialised
- * ReactomeGraphCore.initialise("host","user","password");
+ * ReactomeGraphCore.initialise("uri","user","password", "dbName");
  *
  * //A certain Service can be retrieved as follows
  * GeneralService genericService = ReactomeGraphCore.getService(GeneralService.class);
  *
  * //And used as it is used here...
  * System.out.println("Database name: " + genericService.getDBName());
- *
  */
 @SuppressWarnings("unused")
 public class ReactomeGraphCore {
 
     private static ApplicationContext context;
 
-//    public static void initialise(String host, String port, String user, String password, Class<? extends Neo4jConfig> clazz) {
-//        System.setProperty("neo4j.host", host);
-//        System.setProperty("neo4j.port", port);
-//        System.setProperty("neo4j.user", user);
-//        System.setProperty("neo4j.password", password);
-//
-//        context = new AnnotationConfigApplicationContext(clazz);
-//    }
+    public static void initialise(String uri, String user, String password) {
+        initialise(uri, user, password, "graph.db");
+    }
 
-    public static void initialise(String host, String port, String user, String password) {
-        System.setProperty("neo4j.host", host);
-        System.setProperty("neo4j.port", port);
-        System.setProperty("neo4j.user", user);
-        System.setProperty("neo4j.password", password);
-
+    public static void initialise(String uri, String user, String password, String databaseName) {
+        System.setProperty("spring.neo4j.uri", uri);
+        System.setProperty("spring.neo4j.authentication.username", user);
+        System.setProperty("spring.neo4j.authentication.password", password);
+        System.setProperty("spring.data.neo4j.database", databaseName);
         context = new AnnotationConfigApplicationContext(Main.class);
     }
 

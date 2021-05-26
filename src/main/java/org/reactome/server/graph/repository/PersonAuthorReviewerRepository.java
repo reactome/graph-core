@@ -19,7 +19,7 @@ public class PersonAuthorReviewerRepository {
     private final Neo4jClient neo4jClient;
     private final Neo4jMappingContext neo4jMappingContext;
 
-    @Value("${spring.data.neo4j.database}")
+    @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
     @Autowired

@@ -13,7 +13,7 @@ public class DoiRepository {
 
     private final Neo4jClient neo4jClient;
 
-    @Value("${spring.data.neo4j.database}")
+    @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
     @Autowired

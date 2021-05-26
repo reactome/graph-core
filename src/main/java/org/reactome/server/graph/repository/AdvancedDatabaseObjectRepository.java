@@ -32,7 +32,7 @@ public class AdvancedDatabaseObjectRepository {
     private final Neo4jTemplate neo4jTemplate;
     private final Neo4jMappingContext neo4jMappingContext;
 
-    @Value("${spring.data.neo4j.database}")
+    @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
     private static final String CYPHER_RETURN = "" +

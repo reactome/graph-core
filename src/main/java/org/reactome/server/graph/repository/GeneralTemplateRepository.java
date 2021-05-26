@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -23,7 +24,7 @@ public class GeneralTemplateRepository {
 
     private final Neo4jClient neo4jClient;
 
-    @Value("${spring.data.neo4j.database}")
+    @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
     @Autowired
@@ -33,10 +34,8 @@ public class GeneralTemplateRepository {
 
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
-    @Deprecated
-    public Object query(String query, Map<String,Object> map) {
-        // TODO No services are calling this.
-        return null;
+    public Collection<Map<String, Object>> query(String query, Map<String,Object> map) {
+        return this.neo4jClient.query(query).in(databaseName).bindAll(map).fetch().all();
     }
 
     // TODO Test this
