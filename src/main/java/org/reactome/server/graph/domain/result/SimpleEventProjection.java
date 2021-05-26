@@ -1,7 +1,10 @@
 package org.reactome.server.graph.domain.result;
 
 import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
 import org.springframework.data.neo4j.core.schema.Id;
+
+import java.util.List;
 
 /**
  * SimpleEventProjection is a minimalist object that is used to build Pathway tables with minimum information required.
@@ -15,6 +18,8 @@ public class SimpleEventProjection {
     private String schemaClass;
     private String dateTime;
     private Long authorDbId;
+    private String doi;
+    private List<String> labels;
 
     private SimpleEventProjection() { }
 
@@ -27,6 +32,8 @@ public class SimpleEventProjection {
         simpleEventProjection.setSpeciesName(valueNode.get("speciesName").asString(null));
         simpleEventProjection.setDateTime(valueNode.get("dateTime").asString(null));
         simpleEventProjection.setAuthorDbId(valueNode.get("authorDbId").asLong(0));
+        simpleEventProjection.setDoi(valueNode.get("doi").asString(null));
+        simpleEventProjection.setLabels(valueNode.get("labels").asList(Value::asString));
         return simpleEventProjection;
     }
 
@@ -85,5 +92,22 @@ public class SimpleEventProjection {
     public void setAuthorDbId(Long authorDbId) {
         this.authorDbId = authorDbId;
     }
+
+    public String getDoi() {
+        return doi;
+    }
+
+    public void setDoi(String doi) {
+        this.doi = doi;
+    }
+
+    public List<String> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(List<String> labels) {
+        this.labels = labels;
+    }
+
 }
 
