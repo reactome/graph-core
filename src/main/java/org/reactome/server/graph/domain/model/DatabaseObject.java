@@ -214,6 +214,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeSchemaIgnore
     @JsonIgnore
     public <T extends DatabaseObject> T preventLazyLoading(boolean preventLazyLoading) {
+        if (this.preventLazyLoading == null) this.preventLazyLoading = false;
         if (this.preventLazyLoading == preventLazyLoading) return (T) this;
 
         this.preventLazyLoading = preventLazyLoading;
