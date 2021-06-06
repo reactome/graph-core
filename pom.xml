@@ -1,51 +1,88 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
-
-    <packaging>jar</packaging>
     <version>1.1.24-SNAPSHOT</version>
-    <name>graph-core</name>
+    <packaging>jar</packaging>
 
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>
         The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more information visit the reactome github repository.
     </description>
-
     <url>https://github.com/reactome/graph-core</url>
 
     <organization>
         <name>The European Bioinformatics Institute</name>
-        <url>http://www.ebi.ac.uk/</url>
+        <url>https://www.ebi.ac.uk/</url>
     </organization>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
             <id>fabregat</id>
             <name>Antonio Fabregat</name>
-            <email>fabregat@ebi.ac.uk</email>
-            <organization>http://www.ebi.ac.uk/</organization>
+            <roles>
+                <role>alumni</role>
+            </roles>
         </developer>
         <developer>
-        <id>gviteri</id>
+            <id>gviteri</id>
             <name>Guilherme Viteri</name>
             <email>gviteri@ebi.ac.uk</email>
-            <organization>http://www.ebi.ac.uk/</organization>
+            <organization>The European Bioinformatics Institute</organization>
+            <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+        </developer>
+        <developer>
+            <id>cqgong</id>
+            <name>Chuqiao Gong</name>
+            <email>cgong@ebi.ac.uk</email>
+            <organization>The European Bioinformatics Institute</organization>
+            <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+        </developer>
+        <developer>
+            <id>EliotRagueneau</id>
+            <name>Eliot Ragueneau</name>
+            <email>eragueneau@ebi.ac.uk</email>
+            <organization>The European Bioinformatics Institute</organization>
+            <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+        </developer>
+        <developer>
+            <id>pasculorente</id>
+            <name>Pascual Lorente</name>
+            <roles>
+                <role>alumni</role>
+            </roles>
         </developer>
         <developer>
             <id>fkorn</id>
             <name>Florian Korninger</name>
-            <email>fkorn@ebi.ac.uk</email>
-            <organization>http://www.ebi.ac.uk/</organization>
+            <roles>
+                <role>alumni</role>
+            </roles>
         </developer>
     </developers>
+
     <contributors>
         <contributor>
         </contributor>
     </contributors>
 
+    <scm>
+        <connection>scm:git:git://github.com/reactome/graph-core.git</connection>
+        <developerConnection>scm:git:ssh://github.com:reactome/graph-core.git</developerConnection>
+        <url>https://github.com/reactome/graph-core/tree/master</url>
+    </scm>
+
     <properties>
-        <!--dependencies-->
+        <!-- dependencies -->
         <sdn.version>4.1.11.RELEASE</sdn.version>
         <spring.test.version>4.3.11.RELEASE</spring.test.version>
         <spring.version>4.3.11.RELEASE</spring.version>
@@ -54,11 +91,13 @@
         <logback.version>1.2.3</logback.version>
         <reflection.version>0.9.10</reflection.version>
         <swagger.annotations.version>1.5.6</swagger.annotations.version>
-        <!--build-->
+
+        <!-- build -->
         <jdk.version>1.8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.locations.enabled>false</dependency.locations.enabled>
-        <!--maven build and plugins-->
+
+        <!-- maven build and plugins -->
         <maven.compiler.version>3.5.1</maven.compiler.version>
         <maven.javadoc.version>2.10.3</maven.javadoc.version>
         <maven.jar.version>2.6</maven.jar.version>
@@ -69,48 +108,47 @@
         <maven.info.report.version>2.8.1</maven.info.report.version>
         <jackrabbit.version>2.10</jackrabbit.version>
         <pmd.version>3.6</pmd.version>
-        <!--will be set as system properties during testing phase-->
+        <!-- will be set as system properties during testing phase -->
 
         <!-- Test dependencies -->
         <reactome.base>1.2.21</reactome.base>
     </properties>
 
     <dependencies>
-
-        <!--Spring data import neo4j-->
+        <!-- Spring data import neo4j -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j</artifactId>
             <version>${sdn.version}</version>
         </dependency>
 
-        <!--BOLT DRIVER-->
-        <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-ogm-bolt-driver</artifactId>-->
-            <!--<version>2.0.3</version>-->
-        <!--</dependency>-->
+        <!-- BOLT DRIVER -->
+        <!-- <dependency> -->
+            <!-- <groupId>org.neo4j</groupId> -->
+            <!-- <artifactId>neo4j-ogm-bolt-driver</artifactId> -->
+            <!-- <version>2.0.3</version> -->
+        <!-- </dependency> -->
 
-        <!--<dependency>-->
-            <!--<groupId>org.neo4j</groupId>-->
-            <!--<artifactId>neo4j-ogm-embedded-driver</artifactId>-->
-            <!--<version>2.0.3</version>-->
-        <!--</dependency>-->
+        <!-- <dependency> -->
+            <!-- <groupId>org.neo4j</groupId> -->
+            <!-- <artifactId>neo4j-ogm-embedded-driver</artifactId> -->
+            <!-- <version>2.0.3</version> -->
+        <!-- </dependency> -->
 
-
-        <!--Logback classic-->
+        <!-- Logback classic -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
         </dependency>
 
-        <!--Reflection library -->
+        <!-- Reflection library -->
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>${reflection.version}</version>
         </dependency>
+
         <!-- Swagger for Annotations -->
         <dependency>
             <groupId>io.swagger</groupId>
@@ -119,18 +157,18 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--Aspectj AOP -->
+        <!-- Aspectj AOP -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -138,21 +176,22 @@
             <version>3.4</version>
         </dependency>
 
-
-        <!--Spring junit test framework-->
+        <!-- Spring junit test framework -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.test.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--Junit Tests-->
+
+        <!-- Junit Tests -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>org.reactome.base</groupId>
             <artifactId>reactome-base</artifactId>
@@ -165,31 +204,7 @@
             <artifactId>jodd-bean</artifactId>
             <version>3.7</version>
         </dependency>
-
     </dependencies>
-
-    <repositories>
-
-        <repository>
-            <id>neo4j-snapshots</id>
-            <url>https://m2.neo4j.org/content/repositories/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <repository>
-            <id>nexus-ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <finalName>${project.name}</finalName>
@@ -209,9 +224,8 @@
         </testResources>
 
         <plugins>
-
-            <!--Plugin needed to force maven resources to latest version. Default version contains a bug-->
-            <!--preventing maven to filter resources containg a @ symbol-->
+            <!-- Plugin needed to force maven resources to latest version. Default version contains a bug -->
+            <!-- preventing maven to filter resources containing a @ symbol -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -232,7 +246,7 @@
                 </configuration>
             </plugin>
 
-            <!--Maven site generates project summary that can be deployed to nexus-->
+            <!-- Maven site generates project summary that can be deployed to nexus -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -245,13 +259,28 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven.jar.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>**/logback.xml</exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Nexus staging plugin for Sonatype deployment -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.7</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
 
@@ -293,6 +322,7 @@
                 </dependencies>
             </plugin>
 
+            <!-- Generate source jar file -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -306,29 +336,94 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Generate JavaDoc jar file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Signs deployed jar, source jar, and JavaDoc jar with GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Allows "release" mvn goal to deploy a SNAPSHOT or version release to Sonatype -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
-    <!--Configures the distribution to nexus repository -->
-    <distributionManagement>
-        <!-- EBI repo -->
+    <repositories>
         <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+            <id>neo4j-snapshots</id>
+            <url>https://m2.neo4j.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
-        <!-- EBI SNAPSHOT repo -->
+
+        <repository>
+            <id>nexus-ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- Configures the distribution to nexus repository -->
+    <distributionManagement>
+        <!-- Sonatype Release repo -->
+        <repository>
+            <id>ossrh</id>
+            <name>Sonatype Release Repository</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+
+        <!-- Sonatype SNAPSHOT repo -->
         <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>pst-snapshots</id>
-            <name>EBI Nexus Snapshots Repository</name>
-            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
+            <id>ossrh</id>
+            <name>Sonatype Snapshot Repository</name>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-    <!--This configuration is needed so that javadoc is included in maven site-->
+    <!-- This configuration is needed so that javadoc is included in maven site -->
 
     <reporting>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -345,11 +440,13 @@
                     </reportSet>
                 </reportSets>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${maven.info.report.version}</version>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
