@@ -66,6 +66,13 @@ public class PlaygroundTest {
         System.out.println(sas);
     }
 
+    @Test
+    public void testHasEvent(){
+        Pathway sas = advancedDatabaseObjectRepository.findById("R-HSA-69620", RelationshipDirection.OUTGOING);
+        List<Event> events = sas.getHasEvent();
+        System.out.println(events);
+    }
+
     //@Test
     public void testMultipleReactions () {
         List<String> reactionsStId = Arrays.asList("R-HSA-9626034", "R-RNO-9626032", "R-RNO-9626037","R-HSA-9626046",
