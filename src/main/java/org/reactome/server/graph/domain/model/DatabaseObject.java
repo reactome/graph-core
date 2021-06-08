@@ -44,7 +44,8 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 //    @Id @GeneratedValue
 //    private Long id;
 
-    @Id protected Long dbId;
+    @Id
+    protected Long dbId;
 
     private String displayName;
 
@@ -169,6 +170,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     public final String getSchemaClass() {
         return getClass().getSimpleName();
     }
+
     public static DatabaseObject emptyObject() {
         return new Pathway();
     }
@@ -227,8 +229,13 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
                 if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
                     DatabaseObject object = (DatabaseObject) method.invoke(this);
-                    if (object != null && object.preventLazyLoading != preventLazyLoading) {
-                        object.preventLazyLoading(preventLazyLoading);
+                    if (object != null) {
+                        if (object.preventLazyLoading == null) {
+                            object.preventLazyLoading = false;
+                        }
+                        if (object.preventLazyLoading != preventLazyLoading) {
+                            object.preventLazyLoading(preventLazyLoading);
+                        }
                     }
                 }
 
@@ -237,12 +244,17 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
                     Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
                     String clazz = type.getSimpleName();
                     if (DatabaseObject.class.isAssignableFrom(type)) {
-                        Collection collection = (Collection) method.invoke(this);
+                        Collection<T> collection = (Collection<T>) method.invoke(this);
                         if (collection != null) {
-                            for (Object obj : collection) {
-                                DatabaseObject object = (DatabaseObject) obj;
-                                if (object != null && object.preventLazyLoading != preventLazyLoading) {
-                                    object.preventLazyLoading(preventLazyLoading);
+                            for (DatabaseObject obj : collection) {
+                                DatabaseObject object = obj;
+                                if (object != null) {
+                                    if (object.preventLazyLoading == null) {
+                                        object.preventLazyLoading = false;
+                                    }
+                                    if (object.preventLazyLoading != preventLazyLoading) {
+                                        object.preventLazyLoading(preventLazyLoading);
+                                    }
                                 }
                             }
                         }
