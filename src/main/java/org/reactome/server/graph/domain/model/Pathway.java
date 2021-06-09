@@ -108,7 +108,6 @@ public class Pathway extends Event {
     }
 
     public List<Event> getHasEvent() {
-        System.out.println(" -- > " + hasEvent);
         if (hasEvent == null) return null;
         List<Event> rtn = new ArrayList<>();
 

@@ -5,7 +5,7 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.repository.CRUDRepository;
 import org.reactome.server.graph.repository.DBInfoRepository;
-import org.reactome.server.graph.repository.GeneralTemplateRepository;
+import org.reactome.server.graph.repository.GeneralRepository;
 import org.reactome.server.graph.repository.SchemaRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,16 +22,16 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class GeneralService {
 
-    private final GeneralTemplateRepository generalTemplateRepository;
     private final SchemaRepository schemaRepository;
     private final DBInfoRepository dbInfoRepository;
     private final CRUDRepository crudRepository;
+    private final GeneralRepository generalRepository;
 
-    public GeneralService(GeneralTemplateRepository generalTemplateRepository, SchemaRepository schemaRepository, DBInfoRepository dbInfoRepository, CRUDRepository crudRepository) {
-        this.generalTemplateRepository = generalTemplateRepository;
+    public GeneralService(SchemaRepository schemaRepository, DBInfoRepository dbInfoRepository, CRUDRepository crudRepository, GeneralRepository generalRepository) {
         this.schemaRepository = schemaRepository;
         this.dbInfoRepository = dbInfoRepository;
         this.crudRepository = crudRepository;
+        this.generalRepository = generalRepository;
     }
 
     private static DBInfo dbInfo = null;
@@ -49,7 +49,11 @@ public class GeneralService {
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
     public Collection<Map<String, Object>> query (String query, Map<String,Object> map) {
-        return generalTemplateRepository.query(query,map);
+        return crudRepository.query(query,map);
+    }
+
+    public <T extends DatabaseObject> T query(String query, Map<String, Object> map, Class<T> _clazz) {
+        return crudRepository.query(query, map, _clazz);
     }
 
     // ------------------------------------------- Save and Delete -----------------------------------------------------
@@ -87,5 +91,9 @@ public class GeneralService {
 
     @Deprecated
     public void clearCache() {}
+
+    public Boolean fitForService() {
+        return generalRepository.fitForService();
+    }
 
 }

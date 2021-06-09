@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.Map;
 
 @Repository
@@ -28,8 +29,11 @@ public class CRUDRepository {
         this.neo4jClient = neo4jClient;
     }
 
-    // TODO Test this
-    public <T> T query(String query, Map<String,Object> map, Class<T> _clazz) {
+    public Collection<Map<String, Object>> query(String query, Map<String,Object> map) {
+        return this.neo4jClient.query(query).in(databaseName).bindAll(map).fetch().all();
+    }
+    
+    public <T extends DatabaseObject> T query(String query, Map<String,Object> map, Class<T> _clazz) {
         return (T) neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(_clazz);
     }
 
@@ -60,7 +64,5 @@ public class CRUDRepository {
         String query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)-[r]-() DELETE n, r";
         neo4jClient.query(query).in(databaseName).bindAll(Map.of("stId", stId)).run();
     }
-
-    // ------------------------------------ Utility Methods for JUnit Tests --------------------------------------------
-
+    
 }

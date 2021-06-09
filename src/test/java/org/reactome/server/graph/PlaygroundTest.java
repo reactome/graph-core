@@ -298,4 +298,10 @@ public class PlaygroundTest {
         System.out.println(aaa);
     }
 
+    @Test
+    public void testReactionExportQuery() throws CustomQueryException {
+        String query = "MATCH (rle:ReactionLikeEvent{stId:$stId}) RETURN DISTINCT rle";
+        Collection<Event> aa = advancedDatabaseObjectRepository.customQueryResults(Event.class, query, Map.of("stId", "R-HSA-70994"));
+        System.out.println(aa);
+    }
 }
