@@ -419,16 +419,16 @@ public class HierarchyRepository {
                 .fetchAs(HierarchyWrapper.class)
                 .mappedBy((typeSystem, record) -> {
                     Iterator<Value> nodePairCollection = record.get("nodePairCollection").values().iterator();
-                    Collection<Collection<HierarchyTreeItem>> pathwayResults = new ArrayList<>();
+                    Collection<Collection<HierarchyTreeItem>> nodeResults = new ArrayList<>();
                     while (nodePairCollection.hasNext()) {
                         Iterator<Value> nodePair = nodePairCollection.next().values().iterator();
                         Collection<HierarchyTreeItem> innerCollection = new ArrayList<>();
                         while (nodePair.hasNext()) {
                             innerCollection.add(HierarchyTreeItem.build(nodePair.next()));
                         }
-                        pathwayResults.add(innerCollection);
+                        nodeResults.add(innerCollection);
                     }
-                    return new HierarchyWrapper(HierarchyTreeItem.build(record.get("db")), pathwayResults);
+                    return new HierarchyWrapper(HierarchyTreeItem.build(record.get("db")), nodeResults);
                 }).all();
     }
 }
