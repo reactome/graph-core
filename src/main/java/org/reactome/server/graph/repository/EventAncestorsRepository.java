@@ -34,7 +34,7 @@ public class EventAncestorsRepository {
                 "WITH *, [n] as nodes " +
                 "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result " +
                 "UNION " +
-                "MATCH ancestors=((n:Event{stId:$stId})<-[:hasEvent*]-(remove:TopLevelPathway)) " +
+                "MATCH ancestors=((n:Event{stId:$stId})<-[:hasEvent*]-(:TopLevelPathway)) " +
                 "WITH *, NODES(ancestors) AS nodes " +
                 "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result";
 
@@ -52,7 +52,7 @@ public class EventAncestorsRepository {
                 "WITH *, [n] as nodes " +
                 "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result " +
                 "UNION " +
-                "MATCH ancestors=((n:Event{dbId:$dbId})<-[:hasEvent*]-(remove:TopLevelPathway)) " +
+                "MATCH ancestors=((n:Event{dbId:$dbId})<-[:hasEvent*]-(:TopLevelPathway)) " +
                 "WITH *, NODES(ancestors) AS nodes " +
                 "RETURN [na IN nodes | [na.dbId, na.displayName, na.name, na.stId, na.stIdVersion, na.oldStId, na.schemaClass, na.doi, na.speciesName, na.releaseDate, na.releaseStatus, na.hasDiagram, na.hasEHLD, na.diagramHeight, na.diagramWidth, na.isInferred, na.category, na.isInDisease, na.definition,na.isCanonical] ] AS result";
 
