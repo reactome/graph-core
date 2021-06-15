@@ -48,6 +48,5 @@ public class PersonAuthorReviewerRepository {
                 }).all();
 
         return wrapper;
-//        return neo4jClient.query(query).in(databaseName).fetchAs(PersonAuthorReviewer.class).mappedBy(((typeSystem, record) -> PersonAuthorReviewer.build(record))).all();
     }
 }
