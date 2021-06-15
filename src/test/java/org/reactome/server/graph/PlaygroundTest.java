@@ -6,9 +6,11 @@ import org.reactome.server.graph.custom.CustomQueryComplex;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.result.EventProjectionWrapper;
 import org.reactome.server.graph.domain.result.HierarchyBranch;
+import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.reactome.server.graph.domain.result.QueryResultWrapper;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.*;
+import org.reactome.server.graph.service.AdvancedDatabaseObjectService;
 import org.reactome.server.graph.service.PersonService;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class PlaygroundTest {
 
     @Autowired private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
+    @Autowired private AdvancedDatabaseObjectService advancedDatabaseObjectService;
     @Autowired private DatabaseObjectRepository databaseObjectRepository;
     @Autowired private EventRepository eventRepository;
     @Autowired private EventAncestorsRepository eventAncestorsRepository;
@@ -130,7 +133,9 @@ public class PlaygroundTest {
     @Test
     public void testComplexIncludedLocation() {
         Complex complex = databaseObjectRepository.findByStId("R-HSA-9626061");
-        System.out.println(complex);
+        List<PhysicalEntity> ss = complex.getHasComponent();
+
+        System.out.println(ss);
     }
 
     @Test
@@ -303,5 +308,27 @@ public class PlaygroundTest {
         String query = "MATCH (rle:ReactionLikeEvent{stId:$stId}) RETURN DISTINCT rle";
         Collection<Event> aa = advancedDatabaseObjectRepository.customQueryResults(Event.class, query, Map.of("stId", "R-HSA-70994"));
         System.out.println(aa);
+    }
+
+    @Test
+    public void testPerson() throws CustomQueryException {
+
+       Collection<PersonAuthorReviewer> ppp = personAuthorReviewerRepository.getAuthorsReviewers();
+        System.out.println(ppp);
+    }
+    
+    @Test
+    public void testHas() throws CustomQueryException {
+        String query = "" +
+                "MATCH path=(p:Pathway{stId:$stId})-[:hasEvent*]->(rle:ReactionLikeEvent) " +
+                "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
+                "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:EntityWithAccessionedSequence) " +
+                "WITH DISTINCT pe " +
+                "MATCH (pe)-[hm:hasModifiedResidue]->(tm:TranslationalModification) " +
+                "RETURN DISTINCT pe, collect(hm), collect(tm) ";
+        Map<String, Object> params = new HashMap<>();
+        params.put("stId", "R-HSA-68875");
+        Collection<EntityWithAccessionedSequence> ewass = advancedDatabaseObjectService.getCustomQueryResults(EntityWithAccessionedSequence.class, query, params);
+        System.out.println(ewass);
     }
 }

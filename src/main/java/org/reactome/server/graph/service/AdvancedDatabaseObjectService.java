@@ -118,12 +118,10 @@ public class AdvancedDatabaseObjectService {
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
 
-    // TODO These methods are void ??? maybe not in use  DEPRECATE
-    @Deprecated
     public void customQuery(String query) {
         customQuery(query, Collections.emptyMap());
     }
-    @Deprecated
+    
     public void customQuery(String query, Map<String, Object> parameters) {
         advancedDatabaseObjectRepository.customQuery(query, parameters);
     }

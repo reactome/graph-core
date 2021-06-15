@@ -247,6 +247,18 @@ public class AdvancedServiceTest extends BaseTest {
 
     // ------------------------------- Methods with Custom Query -------------------------------------
 
+    //@Test
+    public void custom() {
+        // WARNING: THIS QUERY ALTERS DATA IN THE GRAPH. UNCOMMENT WHEN NEEDED.
+        String query = "" +
+                "MATCH (rle:ReactionLikeEvent{dbId:$dbId}}) " +
+                "SET rle.category=$category ";
+        Map<String, Object> params = new HashMap<>();
+        params.put("dbId", 6803411L);
+        params.put("category", "ommited");
+        advancedDatabaseObjectService.customQuery(query, params);
+
+    }
     @Test
     public void customQueryWithCustomObjectTest() throws CustomQueryException {
         logger.info("Started testing advancedDatabaseObjectService.customQueryForObject");
