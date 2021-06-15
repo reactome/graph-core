@@ -199,7 +199,6 @@
                         </configuration>
                     </execution>
                 </executions>
-
             </plugin>
 
             <!--Plugin needed to force maven resources to latest version. Default version contains a bug-->
