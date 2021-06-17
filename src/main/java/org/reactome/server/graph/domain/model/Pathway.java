@@ -40,7 +40,7 @@ public class Pathway extends Event {
     private String isCanonical;
 
     @Relationship(type = "hasEvent")
-    private List<HasEvent> hasEvent;
+    private SortedSet<HasEvent> hasEvent;
 
     @ReactomeRelationship
     @Relationship(type = "hasEncapsulatedEvent")
@@ -118,7 +118,7 @@ public class Pathway extends Event {
     }
 
     public void setHasEvent(List<Event> hasEvent) {
-        this.hasEvent = new ArrayList<>();
+        this.hasEvent = new TreeSet<>();
         int order = 0;
         for (Event event : hasEvent) {
             HasEvent aux = new HasEvent();

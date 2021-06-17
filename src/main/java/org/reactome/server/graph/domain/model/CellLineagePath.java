@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import org.reactome.server.graph.domain.relationship.HasEvent;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class CellLineagePath extends Event {
 
     @Relationship(type = "hasEvent")
-    private List<Event> hasEvent;
+    private List<HasEvent> hasEvent;
 
     @Relationship(type = "tissue")
     private Anatomy tissue;
@@ -25,11 +26,11 @@ public class CellLineagePath extends Event {
         this.tissue = tissue;
     }
 
-    public List<Event> getHasEvent() {
+    public List<HasEvent> getHasEvent() {
         return hasEvent;
     }
 
-    public void setHasEvent(List<Event> hasEvent) {
+    public void setHasEvent(List<HasEvent> hasEvent) {
         this.hasEvent = hasEvent;
     }
 }
