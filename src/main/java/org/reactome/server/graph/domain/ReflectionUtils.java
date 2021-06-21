@@ -63,11 +63,23 @@ public class ReflectionUtils {
                 field.set(_instance, value.asLong(0));
             } else if (field.getType().isAssignableFrom(Integer.class)) {
                 field.set(_instance, value.asInt(0));
+            } else if (field.getType().isAssignableFrom(Double.class)) {
+                field.set(_instance, value.asDouble(0));
             } else if (field.getType().isAssignableFrom(Boolean.class)) {
                 field.set(_instance, value.asBoolean(Boolean.FALSE));
             } else if (Collection.class.isAssignableFrom(field.getType())) {
                 if (!value.isNull()) {
-                    field.set(_instance, value.asList(Value::asString));
+                    if (field.getType().isAssignableFrom(String.class)) {
+                        field.set(_instance, value.asList(Value::asString));
+                    } else if (field.getType().isAssignableFrom(Long.class)) {
+                        field.set(_instance, value.asList(Value::asLong));
+                    } else if (field.getType().isAssignableFrom(Integer.class)) {
+                        field.set(_instance, value.asList(Value::asInt));
+                    } else if (field.getType().isAssignableFrom(Double.class)) {
+                        field.set(_instance, value.asList(Value::asDouble));
+                    } else if (field.getType().isAssignableFrom(Boolean.class)) {
+                        field.set(_instance, value.asList(Value::asBoolean));
+                    }
                 } else {
                     if (List.class.isAssignableFrom(field.getType())) {
                         field.set(_instance, Collections.emptyList());

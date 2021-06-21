@@ -38,7 +38,7 @@ public abstract class Publication extends DatabaseObject {
         if (author == null) return null;
         List<Person> rtn = new ArrayList<>();
         for (PublicationAuthor author : author) {
-//            rtn.add(author.getAuthor());
+            rtn.add(author.getAuthor());
         }
         return rtn;
     }
@@ -49,7 +49,6 @@ public abstract class Publication extends DatabaseObject {
         for (Person person : author) {
             PublicationAuthor aux = new PublicationAuthor();
             aux.setAuthor(person);
-//            aux.setPublication(this);
             aux.setOrder(order++);
             this.author.add(aux);
         }

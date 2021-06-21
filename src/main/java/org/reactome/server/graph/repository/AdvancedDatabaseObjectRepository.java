@@ -2,6 +2,7 @@ package org.reactome.server.graph.repository;
 
 import org.neo4j.driver.types.MapAccessor;
 import org.neo4j.driver.types.TypeSystem;
+import org.reactome.server.graph.domain.ReflectionUtils;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.CustomQuery;
 import org.reactome.server.graph.domain.result.QueryResultWrapper;
@@ -15,6 +16,7 @@ import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -298,9 +300,22 @@ public class AdvancedDatabaseObjectRepository {
             } else if (CustomQuery.class.isAssignableFrom(clazz)) {
                 CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
                 return (T) neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).one().orElse(null);
+            } else if (Number.class.isAssignableFrom(clazz) || String.class.isAssignableFrom(clazz) || Boolean.class.isAssignableFrom(clazz)) {
+                return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).one().orElse(null);
             }
 
-            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).one().orElse(null);
+            Constructor<T> constructor = (Constructor<T>) Arrays.stream(clazz.getConstructors()).findFirst().get();
+            constructor.setAccessible(true);
+
+            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz)
+                    .mappedBy( (t,r) -> {
+                        try {
+                            T tt = constructor.newInstance();
+                            return ReflectionUtils.build(tt, r);
+                        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                            return null;
+                        }
+                    }).one().orElse(null);
 
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new CustomQueryException(e);
@@ -310,15 +325,29 @@ public class AdvancedDatabaseObjectRepository {
     public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
         try {
             if (parameters == null) parameters = Collections.EMPTY_MAP;
+
             if (DatabaseObject.class.isAssignableFrom(clazz)) {
                 return (Collection<T>) neo4jTemplate.findAll(query, parameters, DatabaseObject.class);
             } else if (CustomQuery.class.isAssignableFrom(clazz)) {
                 CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
                 return (Collection<T>) neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).all();
+            } else if (Number.class.isAssignableFrom(clazz) || String.class.isAssignableFrom(clazz) || Boolean.class.isAssignableFrom(clazz)) {
+                return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).all();
             }
 
-            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).all();
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException  e) {
+            Constructor<T> constructor = (Constructor<T>) Arrays.stream(clazz.getConstructors()).findFirst().get();
+            constructor.setAccessible(true);
+
+            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz)
+                    .mappedBy( (t,r) -> {
+                        try {
+                            T tt = constructor.newInstance();
+                            return ReflectionUtils.build(tt, r);
+                        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
+                            return null;
+                        }
+                    }).all();
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new CustomQueryException(e);
         }
     }
