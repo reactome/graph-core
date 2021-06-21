@@ -3,6 +3,8 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
+import org.reactome.server.graph.service.util.ServiceUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -16,36 +18,23 @@ import java.util.Set;
  * @author Guilherme Viteri
  */
 @Service
-@SuppressWarnings({"WeakerAccess", "SpringAutowiredFieldsWarningInspection"})
 public class DatabaseObjectService {
 
     private final DatabaseObjectRepository databaseObjectRepository;
 
+    @Autowired
     public DatabaseObjectService(DatabaseObjectRepository databaseObjectRepository) {
         this.databaseObjectRepository = databaseObjectRepository;
     }
 
     public <T extends DatabaseObject> T findById(Object identifier) {
-        T rtn = null;
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            rtn = databaseObjectRepository.findByStId(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            rtn = databaseObjectRepository.findByDbId(Long.parseLong(id));
-        }
+        T rtn = ServiceUtils.fetchById(identifier, databaseObjectRepository::findByStId, databaseObjectRepository::findByDbId);
         if (rtn != null) rtn.isLoaded = true;
         return rtn;
     }
 
     public <T extends DatabaseObject> T findByIdNoRelations(Object identifier) {
-
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return databaseObjectRepository.findByStIdNoRelations(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return databaseObjectRepository.findByDbIdNoRelations(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, databaseObjectRepository::findByStIdNoRelations, databaseObjectRepository::findByDbIdNoRelations);
     }
 
     public <T extends DatabaseObject> Collection<T> findByIdsNoRelations(Collection<?> identifiers) {
@@ -55,7 +44,7 @@ public class DatabaseObjectService {
             String id = DatabaseObjectUtils.getIdentifier(identifier);
             if (DatabaseObjectUtils.isStId(id)) {
                 stIds.add(id);
-            } else if (DatabaseObjectUtils.isDbId(id)){
+            } else if (DatabaseObjectUtils.isDbId(id)) {
                 dbIds.add(Long.parseLong(id));
             }
         }

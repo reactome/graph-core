@@ -9,26 +9,27 @@ import org.reactome.server.graph.repository.PersonAuthorReviewerRepository;
 import org.reactome.server.graph.repository.PersonRepository;
 import org.reactome.server.graph.repository.PublicationRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
-@SuppressWarnings("ALL")
 public class PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    @Autowired
-    private PublicationRepository publicationRepository;
+    private final PublicationRepository publicationRepository;
 
-    @Autowired
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
-    @Autowired
-    private PersonAuthorReviewerRepository personAuthorReviewerRepository;
+    private final PersonAuthorReviewerRepository personAuthorReviewerRepository;
+
+    public PersonService(PersonRepository personRepository, PublicationRepository publicationRepository, EventRepository eventRepository, PersonAuthorReviewerRepository personAuthorReviewerRepository) {
+        this.personRepository = personRepository;
+        this.publicationRepository = publicationRepository;
+        this.eventRepository = eventRepository;
+        this.personAuthorReviewerRepository = personAuthorReviewerRepository;
+    }
 
     //    equals person name
     public Collection<Person> findPersonByName(String name) {
@@ -76,9 +77,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getAuthoredPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
+            return eventRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredPathwaysByOrcidId(id);
+            return eventRepository.getAuthoredPathwaysByOrcidId(id);
         } else {
             return null;
         }
@@ -87,9 +88,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getAuthoredReactions(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
+            return eventRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredReactionsByOrcidId(id);
+            return eventRepository.getAuthoredReactionsByOrcidId(id);
         } else {
             return null;
         }
@@ -98,9 +99,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getReviewedPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
+            return eventRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedPathwaysByOrcidId(id);
+            return eventRepository.getReviewedPathwaysByOrcidId(id);
         } else {
             return null;
         }
@@ -109,9 +110,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getReviewedReactions(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedReactionsByDbId(Long.valueOf(id));
+            return eventRepository.getReviewedReactionsByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedReactionsByOrcidId(id);
+            return eventRepository.getReviewedReactionsByOrcidId(id);
         } else {
             return null;
         }

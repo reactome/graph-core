@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.repository.HierarchyRepository;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
+import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@SuppressWarnings("WeakerAccess")
 public class HierarchyService {
 
     private final HierarchyRepository hierarchyRepository;
@@ -33,7 +33,7 @@ public class HierarchyService {
                 return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(id, omitNonDisplayableItems);
             }
             return hierarchyRepository.getLocationsInPathwayBrowser(id, omitNonDisplayableItems);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             if (showDirectParticipants) {
                 return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(Long.parseLong(id), omitNonDisplayableItems);
             }
@@ -42,20 +42,14 @@ public class HierarchyService {
         return null;
     }
 
-    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways) {
         return hierarchyRepository.getLocationInPathwayBrowserForPathways(pathways);
     }
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
     public PathwayBrowserNode getSubHierarchy(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return hierarchyRepository.getSubHierarchy(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return hierarchyRepository.getSubHierarchy(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, hierarchyRepository::getSubHierarchy, hierarchyRepository::getSubHierarchy);
     }
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------

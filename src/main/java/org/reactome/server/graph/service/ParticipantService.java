@@ -6,14 +6,13 @@ import org.reactome.server.graph.domain.result.Participant;
 import org.reactome.server.graph.repository.ParticipantRepository;
 import org.reactome.server.graph.repository.PhysicalEntityRepository;
 import org.reactome.server.graph.repository.ReferenceEntityRepository;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
+import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
-@SuppressWarnings("WeakerAccess")
 public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
@@ -28,33 +27,15 @@ public class ParticipantService {
     }
 
     public Collection<ReferenceEntity> getParticipatingReferenceEntities(String identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return referenceEntityRepository.getParticipatingReferenceEntities(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return referenceEntityRepository.getParticipatingReferenceEntities(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, referenceEntityRepository::getParticipatingReferenceEntities, referenceEntityRepository::getParticipatingReferenceEntities);
     }
 
     public Collection<PhysicalEntity> getParticipatingPhysicalEntities(String identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getParticipatingPhysicalEntities(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getParticipatingPhysicalEntities(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getParticipatingPhysicalEntities, physicalEntityRepository::getParticipatingPhysicalEntities);
     }
 
     public Collection<Participant> getParticipants(String identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return participantRepository.getParticipants(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return participantRepository.getParticipants(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, participantRepository::getParticipants, participantRepository::getParticipants);
     }
 
 }

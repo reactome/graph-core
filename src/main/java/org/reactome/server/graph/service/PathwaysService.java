@@ -8,6 +8,7 @@ import org.reactome.server.graph.repository.EventRepository;
 import org.reactome.server.graph.repository.PathwayRepository;
 import org.reactome.server.graph.repository.SimpleDatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
+import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,9 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
-
+ *
  */
 @Service
-@SuppressWarnings("WeakerAccess")
 public class PathwaysService {
 
     private final EventRepository eventRepository;
@@ -37,105 +37,58 @@ public class PathwaysService {
     }
 
     public Collection<Event> getContainedEvents(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return eventRepository.getContainedEventsByStId(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return eventRepository.getContainedEventsByDbId(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, eventRepository::getContainedEventsByStId, eventRepository::getContainedEventsByDbId);
     }
 
     public Collection<Pathway> getPathwaysFor(String identifier, Object species) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
+        String taxId = s != null ? s.getTaxId() : null;
 
-        if (DatabaseObjectUtils.isStId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysForByStIdAndSpeciesTaxId(id, s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysForByStId(id);
-            }
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysForByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysForByDbId(Long.parseLong(id));
-            }
-        }
-        return null;
+        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+                pathwayRepository::getPathwaysForByStIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysForByStId,
+                pathwayRepository::getPathwaysForByDbIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysForByDbId);
     }
 
     public Collection<Pathway> getPathwaysForAllFormsOf(String identifier, Object species) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
+        String taxId = s != null ? s.getTaxId() : null;
 
-        if (DatabaseObjectUtils.isStId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysForAllFormsOfByStIdAndSpeciesTaxId(id, s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysForAllFormsOfByStId(id);
-            }
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysForAllFormsOfByDbId(Long.parseLong(id));
-            }
-        }
-        return null;
+        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+                pathwayRepository::getPathwaysForAllFormsOfByStIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysForAllFormsOfByStId,
+                pathwayRepository::getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysForAllFormsOfByDbId);
     }
 
     public Collection<Pathway> getPathwaysWithDiagramFor(String identifier, Object species) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
+        String taxId = s != null ? s.getTaxId() : null;
 
-        if (DatabaseObjectUtils.isStId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysWithDiagramForByStIdAndSpeciesTaxId(id, s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysWithDiagramForByStId(id);
-            }
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysWithDiagramForByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysWithDiagramForByDbId(Long.parseLong(id));
-            }
-        }
-
-        return null;
+        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+                pathwayRepository::getPathwaysWithDiagramForByStIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysWithDiagramForByStId,
+                pathwayRepository::getPathwaysWithDiagramForByDbIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysWithDiagramForByDbId);
     }
 
     public Collection<Pathway> getPathwaysWithDiagramForAllFormsOf(String identifier, Object species) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
         Species s = speciesService.getSpecies(species);
+        String taxId = s != null ? s.getTaxId() : null;
 
-        if (DatabaseObjectUtils.isStId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByStIdAndSpeciesTaxId(id, s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByStId(id);
-            }
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            if (s != null) {
-                return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
-            } else {
-                return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByDbId(Long.parseLong(id));
-            }
-        }
-        return null;
+        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+                pathwayRepository::getPathwaysWithDiagramForAllFormsOfByStIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysWithDiagramForAllFormsOfByStId,
+                pathwayRepository::getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId,
+                pathwayRepository::getPathwaysWithDiagramForAllFormsOfByDbId);
     }
 
     @SuppressWarnings("unused")
     public Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return pathwayRepository.getLowerLevelPathwaysIncludingEncapsulation(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return pathwayRepository.getLowerLevelPathwaysIncludingEncapsulation(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier,
+                pathwayRepository::getLowerLevelPathwaysIncludingEncapsulation,
+                pathwayRepository::getLowerLevelPathwaysIncludingEncapsulation);
     }
 
     public Collection<Pathway> getLowerLevelPathwaysForIdentifier(String identifier, Object species) {
@@ -181,12 +134,8 @@ public class PathwaysService {
     }
 
     public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifier(String pathway, String identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(pathway);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByStId(pathway, identifier);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByDbId(Long.parseLong(pathway), identifier);
-        }
-        return null;
+        return ServiceUtils.fetchByIdAndB(pathway, identifier,
+                simpleDatabaseObjectRepository::getDiagramEntitiesForIdentifierByStId,
+                simpleDatabaseObjectRepository::getDiagramEntitiesForIdentifierByDbId);
     }
 }

@@ -4,8 +4,8 @@ import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.repository.DetailsRepository;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.reactome.server.graph.service.util.PathwayBrowserLocationsUtils;
+import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,6 @@ import java.util.Set;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  */
 @Service
-@SuppressWarnings("WeakerAccess")
 public class DetailsService {
 
     private final DetailsRepository detailsRepository;
@@ -35,15 +34,9 @@ public class DetailsService {
     public ContentDetails getContentDetails(Object identifier, Boolean directParticipants) {
 
         ContentDetails contentDetails = new ContentDetails();
-        DatabaseObject databaseObject;
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            databaseObject = detailsRepository.detailsPageQuery(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            databaseObject = detailsRepository.detailsPageQuery(Long.parseLong(id));
-        } else {
-            return null;
-        }
+        DatabaseObject databaseObject = ServiceUtils.fetchById(identifier, detailsRepository::detailsPageQuery, detailsRepository::detailsPageQuery);
+        if (databaseObject == null) return null;
+
         contentDetails.setDatabaseObject(databaseObject);
         if (databaseObject instanceof Event || databaseObject instanceof PhysicalEntity || databaseObject instanceof Regulation) {
             if (directParticipants == null) directParticipants = false;
@@ -55,14 +48,14 @@ public class DetailsService {
         return contentDetails;
     }
 
-    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<String> pathways){
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<String> pathways) {
         Set<PathwayBrowserNode> rtn = hierarchyService.getLocationInPathwayBrowserForPathways(pathways);
         return PathwayBrowserLocationsUtils.enrichPathwayBrowserNode(rtn, pathways);
     }
 
     private Set<PathwayBrowserNode> getLocationsInThePathwayBrowserHierarchy(DatabaseObject databaseObject, boolean directParticipants) {
         PathwayBrowserNode root = getLocationsInThePathwayBrowser(databaseObject, directParticipants);
-        if (root!=null) {
+        if (root != null) {
             Set<PathwayBrowserNode> leaves = root.getLeaves();
             PathwayBrowserLocationsUtils.removeOrphans(leaves);
             return PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves);

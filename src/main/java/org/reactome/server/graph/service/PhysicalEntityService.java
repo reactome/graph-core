@@ -4,7 +4,7 @@ import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.repository.PhysicalEntityRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -14,20 +14,16 @@ import java.util.Collection;
 
  */
 @Service
-@SuppressWarnings("WeakerAccess")
 public class PhysicalEntityService {
 
-    @Autowired
-    private PhysicalEntityRepository physicalEntityRepository;
+    private final PhysicalEntityRepository physicalEntityRepository;
+
+    public PhysicalEntityService(PhysicalEntityRepository physicalEntityRepository) {
+        this.physicalEntityRepository = physicalEntityRepository;
+    }
 
     public Collection<PhysicalEntity> getOtherFormsOf(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getOtherFormsOf(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getOtherFormsOf(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getOtherFormsOf, physicalEntityRepository::getOtherFormsOf);
     }
 
     public Collection<Complex> getComplexesFor(String identifier, String resource){
@@ -35,22 +31,10 @@ public class PhysicalEntityService {
     }
 
     public Collection<PhysicalEntity> getPhysicalEntitySubunits(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getPhysicalEntitySubunits(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getPhysicalEntitySubunits(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getPhysicalEntitySubunits, physicalEntityRepository::getPhysicalEntitySubunits);
     }
 
     public Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getPhysicalEntitySubunitsNoStructures(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
-            return physicalEntityRepository.getPhysicalEntitySubunitsNoStructures(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getPhysicalEntitySubunitsNoStructures, physicalEntityRepository::getPhysicalEntitySubunitsNoStructures);
     }
 }

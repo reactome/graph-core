@@ -3,7 +3,6 @@ package org.reactome.server.graph.service;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.repository.SpeciesRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.List;
 @Service
 public class SpeciesService {
 
-    @Autowired
-    SpeciesRepository speciesRepository;
+    private final SpeciesRepository speciesRepository;
+
+    public SpeciesService(SpeciesRepository speciesRepository) {
+        this.speciesRepository = speciesRepository;
+    }
 
     public List<Species> getSpecies() {
         List<Species> species = speciesRepository.getSpecies();
