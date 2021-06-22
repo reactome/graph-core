@@ -1,6 +1,6 @@
 package org.reactome.server.graph.repository.util;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Collection;
 
 /**
  * Created by:
@@ -10,10 +10,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class RepositoryUtils {
 
-    public static String getRelationshipAsString (String... relationships) {
+    public static String getRelationshipAsString (Collection<String> relationships) {
         String result = "";
-        if (relationships != null && relationships.length > 0) {
-            result = ":" + StringUtils.join(relationships, "|");
+        if (relationships != null && relationships.size() > 0) {
+            result = ":" + String.join("|", relationships);
         }
         return result;
     }

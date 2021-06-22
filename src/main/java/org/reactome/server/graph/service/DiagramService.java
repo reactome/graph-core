@@ -23,10 +23,10 @@ public class DiagramService {
     }
 
     public DiagramResult getDiagramResult(Object identifier) {
-        return ServiceUtils.fetchById(identifier, diagramRepository::getDiagramResult, diagramRepository::getDiagramResult);
+        return ServiceUtils.fetchById(identifier, true, diagramRepository::getDiagramResult, diagramRepository::getDiagramResult);
     }
 
     public Collection<DiagramOccurrences> getDiagramOccurrences(Object identifier) {
-        return ServiceUtils.fetchById(identifier, diagramRepository::getDiagramOccurrences, diagramRepository::getDiagramOccurrences);
+        return ServiceUtils.fetchById(identifier, true, diagramRepository::getDiagramOccurrences, diagramRepository::getDiagramOccurrences);
     }
 }

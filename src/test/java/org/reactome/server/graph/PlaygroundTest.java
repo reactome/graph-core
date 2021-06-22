@@ -24,14 +24,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class PlaygroundTest {
 
-    @Autowired private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
-    @Autowired private AdvancedDatabaseObjectService advancedDatabaseObjectService;
-    @Autowired private DatabaseObjectRepository databaseObjectRepository;
-    @Autowired private EventRepository eventRepository;
-    @Autowired private EventAncestorsRepository eventAncestorsRepository;
-    @Autowired private HierarchyRepository hierarchyRepository;
-    @Autowired private PersonService personService;
-    @Autowired private PersonAuthorReviewerRepository personAuthorReviewerRepository;
+    @Autowired
+    private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
+    @Autowired
+    private AdvancedDatabaseObjectService advancedDatabaseObjectService;
+    @Autowired
+    private DatabaseObjectRepository databaseObjectRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private EventAncestorsRepository eventAncestorsRepository;
+    @Autowired
+    private HierarchyRepository hierarchyRepository;
+    @Autowired
+    private PersonService personService;
+    @Autowired
+    private PersonAuthorReviewerRepository personAuthorReviewerRepository;
 
     @Autowired
     private LazyFetchAspect lazyFetchAspect;
@@ -42,56 +50,56 @@ public class PlaygroundTest {
 //    }
 
     @Test
-    public void testDrugType(){
+    public void testDrugType() {
         DatabaseObject sas = databaseObjectRepository.findByDbId(9725061L);
         System.out.println(sas);
     }
 
     @Test
-    public void testInferredFromNull(){
+    public void testInferredFromNull() {
         ReactionLikeEvent sas = databaseObjectRepository.findByDbId(202245L);
         // Collections won't null and will be empty instead
 //        assertNull(sas.getInferredFrom());
-        assertEquals(sas.getInferredFrom().size(),0);
+        assertEquals(sas.getInferredFrom().size(), 0);
         System.out.println(sas);
     }
 
     @Test
-    public void testHasCandidateSet(){
+    public void testHasCandidateSet() {
 //        GenomeEncodedEntity sas = databaseObjectRepository.findByStId("R-HSA-5649637");
         CandidateSet sas = databaseObjectRepository.findByStId("R-HSA-5672709");
         System.out.println(sas);
     }
 
     @Test
-    public void testReaction(){
+    public void testReaction() {
         ReactionLikeEvent sas = databaseObjectRepository.findByStId("R-HSA-169680");
         System.out.println(sas);
     }
 
     @Test
-    public void testHasEvent(){
+    public void testHasEvent() {
         Pathway sas = advancedDatabaseObjectRepository.findById("R-HSA-69620", RelationshipDirection.OUTGOING);
         List<Event> events = sas.getHasEvent();
         System.out.println(events);
     }
 
     //@Test
-    public void testMultipleReactions () {
-        List<String> reactionsStId = Arrays.asList("R-HSA-9626034", "R-RNO-9626032", "R-RNO-9626037","R-HSA-9626046",
-                "R-HSA-9626067","R-RNO-9626036", "R-HSA-9626038","R-HSA-9626256", "R-RNO-9626254","R-RNO-9626239",
-                "R-RNO-9626250",                "R-RNO-9626030",                "R-RNO-9626028",                "R-RNO-9625160",
-                "R-RNO-9625173",                "R-RNO-9625183",                "R-RNO-9624154",                "R-RNO-9622851",
-                "R-RNO-9622832",                "R-RNO-9620205",                "R-RNO-9626275",                "R-RNO-9626236",
-                "R-RNO-9615712",                "R-HSA-9626253",                "R-HSA-9626242",                "R-HSA-9626039",
-                "R-HSA-9626060",                "R-HSA-9625188",                "R-HSA-9625196",                "R-HSA-9625197",
-                "R-HSA-9624158",                "R-HSA-9622831",                "R-HSA-9626276",                "R-HSA-9626235",
-                "R-HSA-9622840",                "R-HSA-9620197",                "R-HSA-9615721",                "R-HSA-9613666",
-                "R-MMU-9613670",                "R-MMU-9613562",                "R-MMU-9613545",                "R-MMU-9613507",
-                "R-HSA-9613565",                "R-HSA-9613530",                "R-HSA-9613513",                "R-HSA-9613352",
-                "R-RNO-9613356",                "R-HSA-9646685",                "R-MMU-9646685");
+    public void testMultipleReactions() {
+        List<String> reactionsStId = Arrays.asList("R-HSA-9626034", "R-RNO-9626032", "R-RNO-9626037", "R-HSA-9626046",
+                "R-HSA-9626067", "R-RNO-9626036", "R-HSA-9626038", "R-HSA-9626256", "R-RNO-9626254", "R-RNO-9626239",
+                "R-RNO-9626250", "R-RNO-9626030", "R-RNO-9626028", "R-RNO-9625160",
+                "R-RNO-9625173", "R-RNO-9625183", "R-RNO-9624154", "R-RNO-9622851",
+                "R-RNO-9622832", "R-RNO-9620205", "R-RNO-9626275", "R-RNO-9626236",
+                "R-RNO-9615712", "R-HSA-9626253", "R-HSA-9626242", "R-HSA-9626039",
+                "R-HSA-9626060", "R-HSA-9625188", "R-HSA-9625196", "R-HSA-9625197",
+                "R-HSA-9624158", "R-HSA-9622831", "R-HSA-9626276", "R-HSA-9626235",
+                "R-HSA-9622840", "R-HSA-9620197", "R-HSA-9615721", "R-HSA-9613666",
+                "R-MMU-9613670", "R-MMU-9613562", "R-MMU-9613545", "R-MMU-9613507",
+                "R-HSA-9613565", "R-HSA-9613530", "R-HSA-9613513", "R-HSA-9613352",
+                "R-RNO-9613356", "R-HSA-9646685", "R-MMU-9646685");
         for (String stId : reactionsStId) {
-            ReactionLikeEvent sas = databaseObjectRepository.findByDbId(Long.parseLong(stId.replaceAll("R-[A-Z]{3}-","")));
+            ReactionLikeEvent sas = databaseObjectRepository.findByDbId(Long.parseLong(stId.replaceAll("R-[A-Z]{3}-", "")));
             assertNotNull(sas);
             assertNotNull(sas.getStId());
         }
@@ -99,16 +107,16 @@ public class PlaygroundTest {
 
     @Test
     public void testCustomQuery() throws CustomQueryException {
-            String query = "MATCH (pe:Complex{speciesName:$species,stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(re) " +
-                    "RETURN pe.stId AS stId, pe.displayName AS displayName, COLLECT(re.dbId) as dbIds, COLLECT(re.databaseName) as databaseNames, " +
-                    "COLLECT({database:re.databaseName, identifier:re.identifier}) AS customReferences";
+        String query = "MATCH (pe:Complex{speciesName:$species,stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(re) " +
+                "RETURN pe.stId AS stId, pe.displayName AS displayName, COLLECT(re.dbId) as dbIds, COLLECT(re.databaseName) as databaseNames, " +
+                "COLLECT({database:re.databaseName, identifier:re.identifier}) AS customReferences";
 
-            Map<String, Object> parametersMap = new HashMap<>();
-            parametersMap.put("species", "Homo sapiens");
-            parametersMap.put("stId", "R-HSA-1852614");
+        Map<String, Object> parametersMap = new HashMap<>();
+        parametersMap.put("species", "Homo sapiens");
+        parametersMap.put("stId", "R-HSA-1852614");
 
         CustomQueryComplex customComplexes = advancedDatabaseObjectRepository.customQueryResult(CustomQueryComplex.class, query, parametersMap);
-            // In this test case, the relationships are mapped in the object CustomQueryComplex inside the Collection
+        // In this test case, the relationships are mapped in the object CustomQueryComplex inside the Collection
 //            Collection<CustomQueryComplex> customComplexes = advancedDatabaseObjectService.getCustomQueryResults(CustomQueryComplex.class, query, parametersMap);
     }
 
@@ -139,19 +147,19 @@ public class PlaygroundTest {
     }
 
     @Test
-    public void testEwas(){
+    public void testEwas() {
         EntityWithAccessionedSequence ewas = databaseObjectRepository.findByStId("R-HSA-70298");
         System.out.println(ewas);
     }
 
     @Test
-    public void testHasEncapsulatedEvent(){
+    public void testHasEncapsulatedEvent() {
         Pathway ewas = databaseObjectRepository.findByStId("R-HSA-69620");
         System.out.println(ewas);
     }
 
     @Test
-    public void testHasMemberAndMemberOf(){
+    public void testHasMemberAndMemberOf() {
         DefinedSet set = databaseObjectRepository.findByStId("R-HSA-6803216");
         System.out.println(set);
 
@@ -163,7 +171,8 @@ public class PlaygroundTest {
 
     }
 
-    @Test public void testInput(){
+    @Test
+    public void testInput() {
         ReactionLikeEvent rle = databaseObjectRepository.findByStId("R-HSA-9626046");
         System.out.println(rle);
 
@@ -176,33 +185,38 @@ public class PlaygroundTest {
         System.out.println(output);
     }
 
-    @Test public void testPublicationAuthor() {
+    @Test
+    public void testPublicationAuthor() {
         LiteratureReference rle = databaseObjectRepository.findByDbId(192633L);
         System.out.println(rle);
         Person person = databaseObjectRepository.findByDbId(169005L);
         person.getAffiliation();
     }
 
-    @Test public void testRepeatedUnitAndHasModifiedResidue() {
+    @Test
+    public void testRepeatedUnitAndHasModifiedResidue() {
         Polymer rle = databaseObjectRepository.findByStId("R-HSA-5340146");
         System.out.println(rle);
         EntityWithAccessionedSequence input2 = databaseObjectRepository.findByStId("R-DDI-4793916");
         input2.getRepeatedUnitOf();
     }
 
-    @Test public void testInferredTo() {
+    @Test
+    public void testInferredTo() {
         EntityWithAccessionedSequence rle = databaseObjectRepository.findByStId("R-SSC-5684062");
         System.out.println(rle);
     }
 
-    @Test public void testLazyLoading() {
-      lazyFetchAspect.setEnableAOP(false);
+    @Test
+    public void testLazyLoading() {
+        lazyFetchAspect.setEnableAOP(false);
         EntityWithAccessionedSequence rle = databaseObjectRepository.findByStIdNoRelations("R-SSC-5684062");
         rle.getCompartment();
         System.out.println(rle);
     }
 
-    @Test public void testLazyLoadingOutput() {
+    @Test
+    public void testLazyLoadingOutput() {
         lazyFetchAspect.setEnableAOP(true);
         lazyFetchAspect.setEnableAOP(true);
         ReactionLikeEvent rle = databaseObjectRepository.findByStIdNoRelations("R-HSA-3234081");
@@ -257,18 +271,19 @@ public class PlaygroundTest {
 //        System.out.println(rle);
     }
 
-    @Test public void testQueryResultWrapper() {
-        Collection<QueryResultWrapper> wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(3234081L, "PhysicalEntity", RelationshipDirection.OUTGOING,"output");
+    @Test
+    public void testQueryResultWrapper() {
+        Collection<QueryResultWrapper> wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(3234081L, "PhysicalEntity", RelationshipDirection.OUTGOING, List.of("output"));
         assertThat(wrappers).containsExactlyInAnyOrder(
                 new QueryResultWrapper(new Complex(8865819L)),
                 new QueryResultWrapper(new EntityWithAccessionedSequence(912481L), 2));
 
-        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "AbstractModifiedResidue", RelationshipDirection.OUTGOING,"hasModifiedResidue");
+        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "AbstractModifiedResidue", RelationshipDirection.OUTGOING, List.of("hasModifiedResidue"));
         assertThat(wrappers).containsAnyOf(
                 new QueryResultWrapper(new ModifiedResidue(140621L)),
                 new QueryResultWrapper(new ModifiedResidue(140626L)));
 
-        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "ReferenceEntity", RelationshipDirection.OUTGOING,"referenceEntity");
+        wrappers = advancedDatabaseObjectRepository.queryRelationshipTypesByDbId(159718L, "ReferenceEntity", RelationshipDirection.OUTGOING, List.of("referenceEntity"));
         ReferenceGeneProduct rgp = new ReferenceGeneProduct();
         rgp.setDbId(140617L);
         assertThat(wrappers).containsAnyOf(new QueryResultWrapper(rgp));
@@ -279,7 +294,7 @@ public class PlaygroundTest {
 
     @Test
     public void testEventAncestorsS() {
-        DatabaseObject aaa  = advancedDatabaseObjectRepository.findById("R-HSA-8952903", 1000);
+        DatabaseObject aaa = advancedDatabaseObjectService.findById("R-HSA-8952903", 1000);
         assertTrue(aaa.isLoaded);
     }
 
@@ -313,10 +328,10 @@ public class PlaygroundTest {
     @Test
     public void testPerson() throws CustomQueryException {
 
-       Collection<PersonAuthorReviewer> ppp = personAuthorReviewerRepository.getAuthorsReviewers();
+        Collection<PersonAuthorReviewer> ppp = personAuthorReviewerRepository.getAuthorsReviewers();
         System.out.println(ppp);
     }
-    
+
     @Test
     public void testHas() throws CustomQueryException {
         String query = "" +

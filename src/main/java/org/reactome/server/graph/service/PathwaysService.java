@@ -37,14 +37,14 @@ public class PathwaysService {
     }
 
     public Collection<Event> getContainedEvents(Object identifier) {
-        return ServiceUtils.fetchById(identifier, eventRepository::getContainedEventsByStId, eventRepository::getContainedEventsByDbId);
+        return ServiceUtils.fetchById(identifier, true, eventRepository::getContainedEventsByStId, eventRepository::getContainedEventsByDbId);
     }
 
     public Collection<Pathway> getPathwaysFor(String identifier, Object species) {
         Species s = speciesService.getSpecies(species);
         String taxId = s != null ? s.getTaxId() : null;
 
-        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+        return ServiceUtils.fetchById(identifier, taxId, true,
                 pathwayRepository::getPathwaysForByStIdAndSpeciesTaxId,
                 pathwayRepository::getPathwaysForByStId,
                 pathwayRepository::getPathwaysForByDbIdAndSpeciesTaxId,
@@ -55,7 +55,7 @@ public class PathwaysService {
         Species s = speciesService.getSpecies(species);
         String taxId = s != null ? s.getTaxId() : null;
 
-        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+        return ServiceUtils.fetchById(identifier, taxId, true,
                 pathwayRepository::getPathwaysForAllFormsOfByStIdAndSpeciesTaxId,
                 pathwayRepository::getPathwaysForAllFormsOfByStId,
                 pathwayRepository::getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId,
@@ -66,7 +66,7 @@ public class PathwaysService {
         Species s = speciesService.getSpecies(species);
         String taxId = s != null ? s.getTaxId() : null;
 
-        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+        return ServiceUtils.fetchById(identifier, taxId, true,
                 pathwayRepository::getPathwaysWithDiagramForByStIdAndSpeciesTaxId,
                 pathwayRepository::getPathwaysWithDiagramForByStId,
                 pathwayRepository::getPathwaysWithDiagramForByDbIdAndSpeciesTaxId,
@@ -77,7 +77,7 @@ public class PathwaysService {
         Species s = speciesService.getSpecies(species);
         String taxId = s != null ? s.getTaxId() : null;
 
-        return ServiceUtils.fetchByIdAndOptionalB(identifier, taxId,
+        return ServiceUtils.fetchById(identifier, taxId, true,
                 pathwayRepository::getPathwaysWithDiagramForAllFormsOfByStIdAndSpeciesTaxId,
                 pathwayRepository::getPathwaysWithDiagramForAllFormsOfByStId,
                 pathwayRepository::getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId,
@@ -86,7 +86,7 @@ public class PathwaysService {
 
     @SuppressWarnings("unused")
     public Collection<Pathway> getLowerLevelPathwaysIncludingEncapsulation(Object identifier) {
-        return ServiceUtils.fetchById(identifier,
+        return ServiceUtils.fetchById(identifier, true,
                 pathwayRepository::getLowerLevelPathwaysIncludingEncapsulation,
                 pathwayRepository::getLowerLevelPathwaysIncludingEncapsulation);
     }
@@ -134,7 +134,7 @@ public class PathwaysService {
     }
 
     public Collection<SimpleDatabaseObject> getDiagramEntitiesForIdentifier(String pathway, String identifier) {
-        return ServiceUtils.fetchByIdAndB(pathway, identifier,
+        return ServiceUtils.fetchById(pathway, identifier, true,
                 simpleDatabaseObjectRepository::getDiagramEntitiesForIdentifierByStId,
                 simpleDatabaseObjectRepository::getDiagramEntitiesForIdentifierByDbId);
     }

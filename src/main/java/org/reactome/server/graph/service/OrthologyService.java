@@ -21,7 +21,7 @@ public class OrthologyService {
     }
 
     public Collection<DatabaseObject> getOrthology(Object identifier, Long speciesId) {
-        return ServiceUtils.fetchByIdAndB(identifier, speciesId, orthologyRepository::getOrthology, orthologyRepository::getOrthology);
+        return ServiceUtils.fetchById(identifier, speciesId, true, orthologyRepository::getOrthology, orthologyRepository::getOrthology);
     }
 
     public Map<Object, Collection<DatabaseObject>> getOrthologies(Collection<Object> identifiers, Long speciesId) {

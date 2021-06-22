@@ -28,13 +28,11 @@ public class DatabaseObjectService {
     }
 
     public <T extends DatabaseObject> T findById(Object identifier) {
-        T rtn = ServiceUtils.fetchById(identifier, databaseObjectRepository::findByStId, databaseObjectRepository::findByDbId);
-        if (rtn != null) rtn.isLoaded = true;
-        return rtn;
+        return ServiceUtils.fetchById(identifier, true, databaseObjectRepository::findByStId, databaseObjectRepository::findByDbId);
     }
 
     public <T extends DatabaseObject> T findByIdNoRelations(Object identifier) {
-        return ServiceUtils.fetchById(identifier, databaseObjectRepository::findByStIdNoRelations, databaseObjectRepository::findByDbIdNoRelations);
+        return ServiceUtils.fetchById(identifier, false, databaseObjectRepository::findByStIdNoRelations, databaseObjectRepository::findByDbIdNoRelations);
     }
 
     public <T extends DatabaseObject> Collection<T> findByIdsNoRelations(Collection<?> identifiers) {

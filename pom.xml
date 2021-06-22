@@ -48,7 +48,7 @@
         <logback.version>1.2.3</logback.version>
         <reflection.version>0.9.12</reflection.version>
         <jackson.version>2.12.3</jackson.version>
-        <commons.lang3.version>3.12.0</commons.lang3.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
         <jodd.bean.version>5.1.6</jodd.bean.version>
 
         <!--build-->
@@ -104,6 +104,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
         </dependency>
 
         <dependency>

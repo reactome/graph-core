@@ -49,7 +49,7 @@ public class HierarchyService {
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
     public PathwayBrowserNode getSubHierarchy(Object identifier) {
-        return ServiceUtils.fetchById(identifier, hierarchyRepository::getSubHierarchy, hierarchyRepository::getSubHierarchy);
+        return ServiceUtils.fetchById(identifier, true, hierarchyRepository::getSubHierarchy, hierarchyRepository::getSubHierarchy);
     }
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------

@@ -27,15 +27,15 @@ public class ParticipantService {
     }
 
     public Collection<ReferenceEntity> getParticipatingReferenceEntities(String identifier) {
-        return ServiceUtils.fetchById(identifier, referenceEntityRepository::getParticipatingReferenceEntities, referenceEntityRepository::getParticipatingReferenceEntities);
+        return ServiceUtils.fetchById(identifier, true, referenceEntityRepository::getParticipatingReferenceEntities, referenceEntityRepository::getParticipatingReferenceEntities);
     }
 
     public Collection<PhysicalEntity> getParticipatingPhysicalEntities(String identifier) {
-        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getParticipatingPhysicalEntities, physicalEntityRepository::getParticipatingPhysicalEntities);
+        return ServiceUtils.fetchById(identifier, true, physicalEntityRepository::getParticipatingPhysicalEntities, physicalEntityRepository::getParticipatingPhysicalEntities);
     }
 
     public Collection<Participant> getParticipants(String identifier) {
-        return ServiceUtils.fetchById(identifier, participantRepository::getParticipants, participantRepository::getParticipants);
+        return ServiceUtils.fetchById(identifier, true, participantRepository::getParticipants, participantRepository::getParticipants);
     }
 
 }

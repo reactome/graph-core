@@ -3,7 +3,6 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.repository.PhysicalEntityRepository;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ public class PhysicalEntityService {
     }
 
     public Collection<PhysicalEntity> getOtherFormsOf(Object identifier) {
-        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getOtherFormsOf, physicalEntityRepository::getOtherFormsOf);
+        return ServiceUtils.fetchById(identifier, true, physicalEntityRepository::getOtherFormsOf, physicalEntityRepository::getOtherFormsOf);
     }
 
     public Collection<Complex> getComplexesFor(String identifier, String resource){
@@ -31,10 +30,10 @@ public class PhysicalEntityService {
     }
 
     public Collection<PhysicalEntity> getPhysicalEntitySubunits(Object identifier) {
-        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getPhysicalEntitySubunits, physicalEntityRepository::getPhysicalEntitySubunits);
+        return ServiceUtils.fetchById(identifier, true, physicalEntityRepository::getPhysicalEntitySubunits, physicalEntityRepository::getPhysicalEntitySubunits);
     }
 
     public Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(Object identifier) {
-        return ServiceUtils.fetchById(identifier, physicalEntityRepository::getPhysicalEntitySubunitsNoStructures, physicalEntityRepository::getPhysicalEntitySubunitsNoStructures);
+        return ServiceUtils.fetchById(identifier, true, physicalEntityRepository::getPhysicalEntitySubunitsNoStructures, physicalEntityRepository::getPhysicalEntitySubunitsNoStructures);
     }
 }

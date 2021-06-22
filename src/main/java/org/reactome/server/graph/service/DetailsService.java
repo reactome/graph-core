@@ -34,7 +34,7 @@ public class DetailsService {
     public ContentDetails getContentDetails(Object identifier, Boolean directParticipants) {
 
         ContentDetails contentDetails = new ContentDetails();
-        DatabaseObject databaseObject = ServiceUtils.fetchById(identifier, detailsRepository::detailsPageQuery, detailsRepository::detailsPageQuery);
+        DatabaseObject databaseObject = ServiceUtils.fetchById(identifier, true, detailsRepository::detailsPageQuery, detailsRepository::detailsPageQuery);
         if (databaseObject == null) return null;
 
         contentDetails.setDatabaseObject(databaseObject);

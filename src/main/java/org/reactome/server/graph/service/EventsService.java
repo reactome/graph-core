@@ -21,6 +21,6 @@ public class EventsService {
      * @return returns a List of Event as it can contain Reactions and Pathway.
      */
     public Collection<EventProjectionWrapper> getEventAncestors(Object identifier) {
-        return ServiceUtils.fetchById(identifier, eventAncestorsRepository::getEventAncestorsByStId, eventAncestorsRepository::getEventAncestorsByDbId);
+        return ServiceUtils.fetchById(identifier, true, eventAncestorsRepository::getEventAncestorsByStId, eventAncestorsRepository::getEventAncestorsByDbId);
     }
 }

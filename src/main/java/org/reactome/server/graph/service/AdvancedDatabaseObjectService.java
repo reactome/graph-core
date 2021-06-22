@@ -8,10 +8,7 @@ import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -31,13 +28,13 @@ public class AdvancedDatabaseObjectService {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
-        return ServiceUtils.fetchById(identifier, advancedDatabaseObjectRepository::findEnhancedObjectById, advancedDatabaseObjectRepository::findEnhancedObjectById);
+        return ServiceUtils.fetchById(identifier, true, advancedDatabaseObjectRepository::findEnhancedObjectById, advancedDatabaseObjectRepository::findEnhancedObjectById);
     }
 
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
 
     public <T extends DatabaseObject> T findById(Object identifier, Integer limit) {
-        return ServiceUtils.fetchByIdAndB(identifier, limit, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
+        return ServiceUtils.fetchById(identifier, limit, true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
@@ -55,19 +52,19 @@ public class AdvancedDatabaseObjectService {
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
     public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction) {
-        return ServiceUtils.fetchByIdAndB(identifier, direction, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
+        return ServiceUtils.fetchById(identifier, direction, true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }
 
     public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction, String... relationships) {
-        return ServiceUtils.fetchByIdAndBAndC(identifier, direction, relationships, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
+        return ServiceUtils.fetchById(identifier, direction, Arrays.asList(relationships), true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }
 
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction, relationships);
+        return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction, Arrays.asList(relationships));
     }
 
     public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
+        return advancedDatabaseObjectRepository.findByStIds(stIds, direction, Arrays.asList(relationships));
     }
 
     public Collection<DatabaseObject> findByIds(Collection<Object> ids, RelationshipDirection direction) {
@@ -89,11 +86,11 @@ public class AdvancedDatabaseObjectService {
     }
 
     public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, relationships);
+        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, Arrays.asList(relationships));
     }
 
     public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, relationships);
+        return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, Arrays.asList(relationships));
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------

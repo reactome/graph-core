@@ -23,10 +23,10 @@ public class AdvancedLinkageService {
     }
 
     public Collection<ComponentOf> getComponentsOf(Object identifier) {
-        return ServiceUtils.fetchById(identifier, componentOfLinkageRepository::getComponentsOf, componentOfLinkageRepository::getComponentsOf);
+        return ServiceUtils.fetchById(identifier, true, componentOfLinkageRepository::getComponentsOf, componentOfLinkageRepository::getComponentsOf);
     }
 
     public Collection<Referrals> getReferralsTo(Object identifier){
-        return ServiceUtils.fetchById(identifier, referralsLinkageRepository::getReferralsTo, referralsLinkageRepository::getReferralsTo);
+        return ServiceUtils.fetchById(identifier, true, referralsLinkageRepository::getReferralsTo, referralsLinkageRepository::getReferralsTo);
     }
 }
