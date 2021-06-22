@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,6 +34,7 @@
                 <role>alumni</role>
             </roles>
         </developer>
+
         <developer>
             <id>gviteri</id>
             <name>Guilherme Viteri</name>
@@ -40,6 +42,7 @@
             <organization>The European Bioinformatics Institute</organization>
             <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
         </developer>
+
         <developer>
             <id>cqgong</id>
             <name>Chuqiao Gong</name>
@@ -47,6 +50,7 @@
             <organization>The European Bioinformatics Institute</organization>
             <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
         </developer>
+
         <developer>
             <id>EliotRagueneau</id>
             <name>Eliot Ragueneau</name>
@@ -54,6 +58,7 @@
             <organization>The European Bioinformatics Institute</organization>
             <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
         </developer>
+
         <developer>
             <id>pasculorente</id>
             <name>Pascual Lorente</name>
@@ -61,6 +66,7 @@
                 <role>alumni</role>
             </roles>
         </developer>
+
         <developer>
             <id>fkorn</id>
             <name>Florian Korninger</name>
@@ -83,13 +89,15 @@
 
     <properties>
         <!-- dependencies -->
-        <sdn.version>4.1.11.RELEASE</sdn.version>
-        <spring.test.version>4.3.11.RELEASE</spring.test.version>
-        <spring.version>4.3.11.RELEASE</spring.version>
         <aspectj.version>1.8.10</aspectj.version>
+        <common.lang.version>3.4</common.lang.version>
+        <jodd.version>3.7</jodd.version>
         <junit.version>4.13.1</junit.version>
         <logback.version>1.2.3</logback.version>
         <reflection.version>0.9.10</reflection.version>
+        <sdn.version>4.1.11.RELEASE</sdn.version>
+        <spring.test.version>4.3.11.RELEASE</spring.test.version>
+        <spring.version>4.3.11.RELEASE</spring.version>
         <swagger.annotations.version>1.5.6</swagger.annotations.version>
 
         <!-- build -->
@@ -98,14 +106,19 @@
         <dependency.locations.enabled>false</dependency.locations.enabled>
 
         <!-- maven build and plugins -->
-        <maven.compiler.version>3.5.1</maven.compiler.version>
-        <maven.javadoc.version>2.10.3</maven.javadoc.version>
-        <maven.jar.version>2.6</maven.jar.version>
-        <maven.source.version>2.4</maven.source.version>
+        <maven.aspectj.version>1.4</maven.aspectj.version>
         <maven.assembly.version>2.6</maven.assembly.version>
-        <maven.surefire.version>2.12.4</maven.surefire.version>
-        <maven.site.version>3.4</maven.site.version>
+        <maven.compiler.version>3.5.1</maven.compiler.version>
+        <maven.gpg.version>1.5</maven.gpg.version>
         <maven.info.report.version>2.8.1</maven.info.report.version>
+        <maven.jar.version>2.6</maven.jar.version>
+        <maven.javadoc.version>2.10.3</maven.javadoc.version>
+        <maven.release.version>2.5.3</maven.release.version>
+        <maven.resources.version>3.0.1</maven.resources.version>
+        <maven.site.version>3.4</maven.site.version>
+        <maven.source.version>2.4</maven.source.version>
+        <maven.surefire.version>2.12.4</maven.surefire.version>
+        <nexus-staging-maven-plugin>1.6.7</nexus-staging-maven-plugin>
         <jackrabbit.version>2.10</jackrabbit.version>
         <pmd.version>3.6</pmd.version>
         <!-- will be set as system properties during testing phase -->
@@ -173,7 +186,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
+            <version>${common.lang.version}</version>
         </dependency>
 
         <!-- Spring junit test framework -->
@@ -202,12 +215,12 @@
         <dependency>
             <groupId>org.jodd</groupId>
             <artifactId>jodd-bean</artifactId>
-            <version>3.7</version>
+            <version>${jodd.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>${project.name}</finalName>
+        <finalName>${project.artifactId}</finalName>
 
         <resources>
             <resource>
@@ -229,7 +242,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.0.1</version>
+                <version>${maven.resources.version}</version>
 
                 <configuration>
                     <escapeString>\</escapeString>
@@ -275,7 +288,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
+                <version>${nexus-staging-maven-plugin}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
@@ -291,10 +304,10 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>${maven.aspectj.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
                 </configuration>
                 <executions>
                     <execution>
@@ -341,7 +354,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>${maven.javadoc.version}</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -356,7 +369,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
+                <version>${maven.gpg.version}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -372,7 +385,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
+                <version>${maven.release.version}</version>
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
@@ -421,8 +434,8 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-    <!-- This configuration is needed so that javadoc is included in maven site -->
 
+    <!-- This configuration is needed so that javadoc is included in maven site -->
     <reporting>
         <plugins>
             <plugin>
