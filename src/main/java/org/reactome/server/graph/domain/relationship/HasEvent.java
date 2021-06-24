@@ -9,20 +9,11 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 import java.util.Objects;
 
 @RelationshipProperties
-public class HasEvent implements Comparable<HasEvent> {
-    @Id @GeneratedValue private Long id;
+public class HasEvent extends AbstractRelationship {
+    @Id
+    @GeneratedValue
+    protected Long id;
     @TargetNode private Event event;
-
-    private int order;
-    private int stoichiometry;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Event getEvent() {
         return event;
@@ -30,22 +21,6 @@ public class HasEvent implements Comparable<HasEvent> {
 
     public void setEvent(Event hasEvent) {
         this.event = hasEvent;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
-
-    public int getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(int stoichiometry) {
-        this.stoichiometry = stoichiometry;
     }
 
     @Override
@@ -58,11 +33,6 @@ public class HasEvent implements Comparable<HasEvent> {
     @Override
     public int hashCode() {
         return Objects.hash(event);
-    }
-
-    @Override
-    public int compareTo(HasEvent o) {
-        return this.order - o.order;
     }
 
     @Override

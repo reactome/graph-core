@@ -12,14 +12,15 @@ import java.util.Objects;
  * ConsumedBy -> bi-directionality for
  */
 @RelationshipProperties
-public class InputForReactionLikeEvent implements Comparable<InputForReactionLikeEvent> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private ReactionLikeEvent reactionLikeEvent;
+public class InputForReactionLikeEvent extends AbstractInput {
+    @Id
+    @GeneratedValue
+    protected Long id;
+    @TargetNode
+    private ReactionLikeEvent reactionLikeEvent;
 
-    private Integer stoichiometry = 1;
-    private int order;
-
-    public InputForReactionLikeEvent() {}
+    public InputForReactionLikeEvent() {
+    }
 
     public ReactionLikeEvent getReactionLikeEvent() {
         return reactionLikeEvent;
@@ -27,22 +28,6 @@ public class InputForReactionLikeEvent implements Comparable<InputForReactionLik
 
     public void setReactionLikeEvent(ReactionLikeEvent event) {
         this.reactionLikeEvent = event;
-    }
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override
@@ -55,10 +40,5 @@ public class InputForReactionLikeEvent implements Comparable<InputForReactionLik
     @Override
     public int hashCode() {
         return Objects.hash(reactionLikeEvent);
-    }
-
-    @Override
-    public int compareTo(InputForReactionLikeEvent o) {
-        return this.order - o.order;
     }
 }

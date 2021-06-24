@@ -13,30 +13,14 @@ import java.util.Objects;
  * repeatedUnits.
  */
 @RelationshipProperties
-public class RepeatedUnitForPhysicalEntity implements Comparable<RepeatedUnitForPhysicalEntity> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private Polymer polymer;
+public class RepeatedUnitForPhysicalEntity extends AbstractRepeatedUnit {
+    @Id
+    @GeneratedValue
+    protected Long id;
+    @TargetNode
+    private Polymer polymer;
 
-    private Integer stoichiometry = 1;
-
-    private Integer order;
-
-    public RepeatedUnitForPhysicalEntity() {}
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
+    public RepeatedUnitForPhysicalEntity() {
     }
 
     public Polymer getPolymer() {
@@ -59,8 +43,4 @@ public class RepeatedUnitForPhysicalEntity implements Comparable<RepeatedUnitFor
         return Objects.hash(polymer);
     }
 
-    @Override
-    public int compareTo(RepeatedUnitForPhysicalEntity o) {
-        return this.order - o.order;
-    }
 }

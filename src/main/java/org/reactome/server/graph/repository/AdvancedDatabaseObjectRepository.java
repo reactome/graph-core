@@ -155,7 +155,7 @@ public class AdvancedDatabaseObjectRepository {
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findById(Long dbId, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findById(Long dbId, RelationshipDirection direction, Collection<String> relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -172,7 +172,7 @@ public class AdvancedDatabaseObjectRepository {
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findById(String stId, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findById(String stId, RelationshipDirection direction, Collection<String> relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -189,7 +189,7 @@ public class AdvancedDatabaseObjectRepository {
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, Collection<String> relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -209,7 +209,7 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.findAll(query, Map.of("dbIds", dbIds), DatabaseObject.class);
     }
 
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, Collection<String> relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
@@ -230,7 +230,7 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.findAll(query, map, DatabaseObject.class);
     }
 
-    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, Collection<String> relationships) {
         Collection<QueryResultWrapper> list = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
         Collection<DatabaseObject> databaseObjects;
         if (collectionClass.getName().equals(Set.class.getName())) {
@@ -247,7 +247,7 @@ public class AdvancedDatabaseObjectRepository {
         return databaseObjects.isEmpty() ? null : databaseObjects;
     }
 
-    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, Collection<String> relationships) {
         Collection<QueryResultWrapper> wrappers = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
         if (wrappers != null && wrappers.size() == 1) {
             return (T) wrappers.iterator().next().getDatabaseObject();
@@ -261,7 +261,7 @@ public class AdvancedDatabaseObjectRepository {
      * This method queries the Graph and returns it as a Result object that will be parsed in the findByRelationship
      * and findCollectionByRelationship accordingly.
      */
-    public Collection<QueryResultWrapper> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public Collection<QueryResultWrapper> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, Collection<String> relationships) {
         String query;
         switch (direction) {
             case OUTGOING:

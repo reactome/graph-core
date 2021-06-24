@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@SuppressWarnings("unused")
 @Service
 public class ReferenceEntityService {
 

@@ -15,14 +15,15 @@ import java.util.Objects;
  */
 @SuppressWarnings("unused")
 @RelationshipProperties
-public class HasComponentForComplex implements Comparable<HasComponentForComplex> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private Complex complex;
+public class HasComponentForComplex extends AbstractHasComponent {
+    @Id
+    @GeneratedValue
+    protected Long id;
+    @TargetNode
+    private Complex complex;
 
-    private Integer stoichiometry = 1;
-    private int order;
-
-    public HasComponentForComplex() {}
+    public HasComponentForComplex() {
+    }
 
     public Complex getComplex() {
         return complex;
@@ -30,22 +31,6 @@ public class HasComponentForComplex implements Comparable<HasComponentForComplex
 
     public void setComplex(Complex complex) {
         this.complex = complex;
-    }
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override
@@ -60,8 +45,4 @@ public class HasComponentForComplex implements Comparable<HasComponentForComplex
         return Objects.hash(complex);
     }
 
-    @Override
-    public int compareTo(HasComponentForComplex o) {
-        return this.order - o.order;
-    }
 }

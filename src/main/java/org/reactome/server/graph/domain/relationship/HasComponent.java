@@ -14,14 +14,16 @@ import java.util.Objects;
  */
 @SuppressWarnings("unused")
 @RelationshipProperties
-public class HasComponent implements Comparable<HasComponent> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private PhysicalEntity physicalEntity;
+public class HasComponent extends AbstractHasComponent {
+    @Id
+    @GeneratedValue
+    protected Long id;
 
-    private Integer stoichiometry = 1;
-    private int order;
+    @TargetNode
+    private PhysicalEntity physicalEntity;
 
-    public HasComponent() {}
+    public HasComponent() {
+    }
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
@@ -29,22 +31,6 @@ public class HasComponent implements Comparable<HasComponent> {
 
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
-    }
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override
@@ -57,10 +43,5 @@ public class HasComponent implements Comparable<HasComponent> {
     @Override
     public int hashCode() {
         return Objects.hash(physicalEntity);
-    }
-
-    @Override
-    public int compareTo(HasComponent o) {
-        return this.order - o.order;
     }
 }

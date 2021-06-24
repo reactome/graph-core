@@ -15,7 +15,6 @@ import java.util.Collection;
  * @since 18.05.16.
  */
 @Service
-@SuppressWarnings("WeakerAccess")
 public class TopLevelPathwayService {
 
     public final TopLevelPathwayRepository topLevelPathwayRepository;

@@ -4,14 +4,11 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
-import org.reactome.server.graph.service.util.DatabaseObjectUtils;
+import org.reactome.server.graph.service.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -21,31 +18,22 @@ import java.util.Map;
 @Service
 public class AdvancedDatabaseObjectService {
 
+    private final AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
+
     @Autowired
-    private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
+    public AdvancedDatabaseObjectService(AdvancedDatabaseObjectRepository repository) {
+        this.advancedDatabaseObjectRepository = repository;
+    }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(id);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id));
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, true, advancedDatabaseObjectRepository::findEnhancedObjectById, advancedDatabaseObjectRepository::findEnhancedObjectById);
     }
 
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
-
     public <T extends DatabaseObject> T findById(Object identifier, Integer limit) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findById(id, limit);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findById(Long.parseLong(id), limit);
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, limit, true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
@@ -63,31 +51,19 @@ public class AdvancedDatabaseObjectService {
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
     public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findById(id, direction);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findById(Long.parseLong(id), direction);
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, direction, true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }
 
     public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction, String... relationships) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findById(id, direction, relationships);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findById(Long.parseLong(id), direction, relationships);
-        }
-        return null;
+        return ServiceUtils.fetchById(identifier, direction, Arrays.asList(relationships), true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }
 
     public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction, relationships);
+        return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction, Arrays.asList(relationships));
     }
 
     public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
+        return advancedDatabaseObjectRepository.findByStIds(stIds, direction, Arrays.asList(relationships));
     }
 
     public Collection<DatabaseObject> findByIds(Collection<Object> ids, RelationshipDirection direction) {
@@ -109,11 +85,11 @@ public class AdvancedDatabaseObjectService {
     }
 
     public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, relationships);
+        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, Arrays.asList(relationships));
     }
 
     public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, relationships);
+        return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, Arrays.asList(relationships));
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
@@ -121,7 +97,7 @@ public class AdvancedDatabaseObjectService {
     public void customQuery(String query) {
         customQuery(query, Collections.emptyMap());
     }
-    
+
     public void customQuery(String query, Map<String, Object> parameters) {
         advancedDatabaseObjectRepository.customQuery(query, parameters);
     }

@@ -18,11 +18,13 @@ import java.util.Collection;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  */
 @Service
-@SuppressWarnings("WeakerAccess")
 public class SchemaService {
 
-    @Autowired
-    private SchemaRepository schemaRepository;
+    private final SchemaRepository schemaRepository;
+
+    public SchemaService(SchemaRepository schemaRepository) {
+        this.schemaRepository = schemaRepository;
+    }
 
     // ---------------------------------------- Query by Class --------------------------------------------------
 

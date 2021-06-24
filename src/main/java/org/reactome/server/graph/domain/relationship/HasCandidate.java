@@ -12,22 +12,13 @@ import java.util.Objects;
  * HasCandidate is the relationship entity of CandidateSets. It is needed to specify the order of members.
  */
 @RelationshipProperties
-public class HasCandidate implements Comparable<HasCandidate> {
-    @Id @GeneratedValue private Long id;
+public class HasCandidate extends AbstractRelationship {
+    @Id
+    @GeneratedValue
+    protected Long id;
     @TargetNode private PhysicalEntity physicalEntity;
 
-    private Integer stoichiometry = 1;
-    private int order;
-
     public HasCandidate() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
@@ -35,22 +26,6 @@ public class HasCandidate implements Comparable<HasCandidate> {
 
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.physicalEntity = physicalEntity;
-    }
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override
@@ -63,10 +38,5 @@ public class HasCandidate implements Comparable<HasCandidate> {
     @Override
     public int hashCode() {
         return Objects.hash(physicalEntity);
-    }
-
-    @Override
-    public int compareTo(HasCandidate o) {
-        return this.order - o.order;
     }
 }
