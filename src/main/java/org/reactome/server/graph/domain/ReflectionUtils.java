@@ -2,19 +2,22 @@ package org.reactome.server.graph.domain;
 
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
+import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
+import java.util.function.Function;
 
 public class ReflectionUtils {
 
-    public static <T> T build(T t, Record record){
+    public static <T> T build(T t, Record record) {
         List<Field> fields = ReflectionUtils.getAllFields(t.getClass());
         ReflectionUtils.build(record, fields, t);
         return t;
     }
 
-    public static <T> T build(T t, Value value){
+    public static <T> T build(T t, Value value) {
         List<Field> fields = ReflectionUtils.getAllFields(t.getClass());
         ReflectionUtils.build(value, fields, t);
         return t;
@@ -54,7 +57,7 @@ public class ReflectionUtils {
         return allFields;
     }
 
-    private static void setFields(Value value, Field field, Object _instance){
+    private static void setFields(Value value, Field field, Object _instance) {
         try {
             field.setAccessible(true);
             if (field.getType().isAssignableFrom(String.class)) {
@@ -68,17 +71,16 @@ public class ReflectionUtils {
             } else if (field.getType().isAssignableFrom(Boolean.class)) {
                 field.set(_instance, value.asBoolean(Boolean.FALSE));
             } else if (Collection.class.isAssignableFrom(field.getType())) {
-                if (!value.isNull()) {
-                    if (field.getType().isAssignableFrom(String.class)) {
-                        field.set(_instance, value.asList(Value::asString));
-                    } else if (field.getType().isAssignableFrom(Long.class)) {
-                        field.set(_instance, value.asList(Value::asLong));
-                    } else if (field.getType().isAssignableFrom(Integer.class)) {
-                        field.set(_instance, value.asList(Value::asInt));
-                    } else if (field.getType().isAssignableFrom(Double.class)) {
-                        field.set(_instance, value.asList(Value::asDouble));
-                    } else if (field.getType().isAssignableFrom(Boolean.class)) {
-                        field.set(_instance, value.asList(Value::asBoolean));
+                if (!value.isNull() && !value.isEmpty()) {
+                    List<?> list = value.asList(getCollectionValueType(field));
+                    if (List.class.isAssignableFrom(field.getType())) {
+                        field.set(_instance, list);
+                    } else if (Set.class.isAssignableFrom(field.getType())) {
+                        if (SortedSet.class.isAssignableFrom(field.getType())) {
+                            field.set(_instance, new TreeSet<>(list));
+                        } else {
+                            field.set(_instance, new HashSet<>(list));
+                        }
                     }
                 } else {
                     if (List.class.isAssignableFrom(field.getType())) {
@@ -97,6 +99,23 @@ public class ReflectionUtils {
         } catch (IllegalAccessException e) {
             System.err.println(field.getName());
         }
+    }
+
+    private static Function<Value, ?> getCollectionValueType(@NonNull Field field) throws IllegalAccessException {
+        Class<?> eType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+
+        if (String.class.isAssignableFrom(eType)) {
+            return Value::asString;
+        } else if (Long.class.isAssignableFrom(eType)) {
+            return Value::asLong;
+        } else if (Integer.class.isAssignableFrom(eType)) {
+            return Value::asInt;
+        } else if (Double.class.isAssignableFrom(eType)) {
+            return Value::asDouble;
+        } else if (Boolean.class.isAssignableFrom(eType)) {
+            return Value::asBoolean;
+        }
+        throw new IllegalAccessException(field.getName() + " is a collection of non supported elements: " + eType.toGenericString() + ". Use the wrapper class");
     }
 
 //    /**
