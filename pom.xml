@@ -52,7 +52,6 @@
         <jodd.bean.version>5.1.6</jodd.bean.version>
 
         <!--build-->
-        <jdk.version>11</jdk.version>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependency.locations.enabled>false</dependency.locations.enabled>
@@ -224,9 +223,6 @@
                 <executions>
                     <execution>
                         <id>test-compile</id>
-                        <configuration>
-                            <weaveMainSourceFolder>true</weaveMainSourceFolder>
-                        </configuration>
                         <goals>
                             <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
                             <goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
