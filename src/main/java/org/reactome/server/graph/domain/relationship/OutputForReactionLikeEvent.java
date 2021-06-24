@@ -12,14 +12,15 @@ import java.util.Objects;
  * Output relationship of ReactionLikeEvent. It is needed to specify the stoichiometry and order of outputs.
  */
 @RelationshipProperties
-public class OutputForReactionLikeEvent implements Comparable<OutputForReactionLikeEvent> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private ReactionLikeEvent reactionLikeEvent;
+public class OutputForReactionLikeEvent extends AbstractOutput {
+    @Id
+    @GeneratedValue
+    protected Long id;
+    @TargetNode
+    private ReactionLikeEvent reactionLikeEvent;
 
-    private Integer stoichiometry = 1;
-    private int order;
-
-    public OutputForReactionLikeEvent() {}
+    public OutputForReactionLikeEvent() {
+    }
 
     public ReactionLikeEvent getReactionLikeEvent() {
         return reactionLikeEvent;
@@ -27,22 +28,6 @@ public class OutputForReactionLikeEvent implements Comparable<OutputForReactionL
 
     public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
         this.reactionLikeEvent = reactionLikeEvent;
-    }
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override
@@ -55,10 +40,5 @@ public class OutputForReactionLikeEvent implements Comparable<OutputForReactionL
     @Override
     public int hashCode() {
         return Objects.hash(reactionLikeEvent);
-    }
-
-    @Override
-    public int compareTo(OutputForReactionLikeEvent o) {
-        return order - o.order;
     }
 }

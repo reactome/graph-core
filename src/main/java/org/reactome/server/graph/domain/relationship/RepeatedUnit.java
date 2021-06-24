@@ -13,13 +13,11 @@ import java.util.Objects;
  * repeatedUnits.
  */
 @RelationshipProperties
-public class RepeatedUnit implements Comparable<RepeatedUnit> {
-    @Id @GeneratedValue private Long id;
+public class RepeatedUnit extends AbstractRepeatedUnit {
+    @Id
+    @GeneratedValue
+    protected Long id;
     @TargetNode private PhysicalEntity physicalEntity;
-
-    private Integer stoichiometry = 1;
-
-    private Integer order;
 
     public RepeatedUnit() {}
 
@@ -31,13 +29,6 @@ public class RepeatedUnit implements Comparable<RepeatedUnit> {
         this.stoichiometry = stoichiometry;
     }
 
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
-    }
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
@@ -57,10 +48,5 @@ public class RepeatedUnit implements Comparable<RepeatedUnit> {
     @Override
     public int hashCode() {
         return Objects.hash(physicalEntity);
-    }
-
-    @Override
-    public int compareTo(RepeatedUnit o) {
-        return this.order - o.order;
     }
 }

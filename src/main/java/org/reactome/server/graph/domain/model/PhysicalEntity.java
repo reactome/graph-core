@@ -5,6 +5,10 @@ import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.*;
+import org.reactome.server.graph.domain.relationship.HasComponentForComplex;
+import org.reactome.server.graph.domain.relationship.InputForReactionLikeEvent;
+import org.reactome.server.graph.domain.relationship.OutputForReactionLikeEvent;
+import org.reactome.server.graph.domain.relationship.RepeatedUnitForPhysicalEntity;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 

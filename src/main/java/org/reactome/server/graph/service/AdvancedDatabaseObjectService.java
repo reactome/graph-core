@@ -32,7 +32,6 @@ public class AdvancedDatabaseObjectService {
     }
 
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
-
     public <T extends DatabaseObject> T findById(Object identifier, Integer limit) {
         return ServiceUtils.fetchById(identifier, limit, true, advancedDatabaseObjectRepository::findById, advancedDatabaseObjectRepository::findById);
     }

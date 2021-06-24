@@ -14,14 +14,15 @@ import java.util.Objects;
  */
 @SuppressWarnings("unused")
 @RelationshipProperties
-public class HasModifiedResidue implements Comparable<HasModifiedResidue> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private AbstractModifiedResidue abstractModifiedResidue;
+public class HasModifiedResidue extends AbstractRelationship {
+    @Id
+    @GeneratedValue
+    protected Long id;
+    @TargetNode
+    private AbstractModifiedResidue abstractModifiedResidue;
 
-    private Integer stoichiometry = 1;
-    private int order;
-
-    public HasModifiedResidue() {}
+    public HasModifiedResidue() {
+    }
 
     public AbstractModifiedResidue getAbstractModifiedResidue() {
         return abstractModifiedResidue;
@@ -29,22 +30,6 @@ public class HasModifiedResidue implements Comparable<HasModifiedResidue> {
 
     public void setAbstractModifiedResidue(AbstractModifiedResidue abstractModifiedResidue) {
         this.abstractModifiedResidue = abstractModifiedResidue;
-    }
-
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
     }
 
     @Override
@@ -57,10 +42,5 @@ public class HasModifiedResidue implements Comparable<HasModifiedResidue> {
     @Override
     public int hashCode() {
         return Objects.hash(abstractModifiedResidue);
-    }
-
-    @Override
-    public int compareTo(HasModifiedResidue o) {
-        return this.order - o.order;
     }
 }

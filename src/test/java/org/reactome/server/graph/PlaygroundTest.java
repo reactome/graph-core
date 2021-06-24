@@ -40,6 +40,8 @@ public class PlaygroundTest {
     private PersonService personService;
     @Autowired
     private PersonAuthorReviewerRepository personAuthorReviewerRepository;
+    @Autowired
+    private PhysicalEntityRepository physicalEntityRepository;
 
     @Autowired
     private LazyFetchAspect lazyFetchAspect;
@@ -345,5 +347,19 @@ public class PlaygroundTest {
         params.put("stId", "R-HSA-68875");
         Collection<EntityWithAccessionedSequence> ewass = advancedDatabaseObjectService.getCustomQueryResults(EntityWithAccessionedSequence.class, query, params);
         System.out.println(ewass);
+    }
+
+    @Test
+    public void test2DRelationship() {
+        Complex complex = advancedDatabaseObjectService.findById("R-HSA-9656173", 1);
+        assertThat(complex).isNotNull();
+
+        assertTrue(complex.getHasComponent()
+                .stream()
+                .findFirst()
+                .map(PhysicalEntity::getComponentOf)
+                .stream()
+                .anyMatch(complexes -> complexes.contains(complex))
+        );
     }
 }

@@ -12,21 +12,14 @@ import java.util.Objects;
  * HasMember is the relationship entity of EntitySets. It is needed to specify the order of members.
  */
 @RelationshipProperties
-public class HasMember implements Comparable<HasMember> {
-    @Id @GeneratedValue private Long id;
-    @TargetNode private PhysicalEntity physicalEntity;
+public class HasMember extends AbstractRelationship {
+    @Id
+    @GeneratedValue
+    protected Long id;
+    @TargetNode
+    private PhysicalEntity physicalEntity;
 
-    private Integer stoichiometry = 1;
-    private int order;
-
-    public HasMember() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public HasMember() {
     }
 
     public PhysicalEntity getPhysicalEntity() {
@@ -37,21 +30,6 @@ public class HasMember implements Comparable<HasMember> {
         this.physicalEntity = physicalEntity;
     }
 
-    public Integer getStoichiometry() {
-        return stoichiometry;
-    }
-
-    public void setStoichiometry(Integer stoichiometry) {
-        this.stoichiometry = stoichiometry;
-    }
-
-    public int getOrder() {
-        return order;
-    }
-
-    public void setOrder(int order) {
-        this.order = order;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,10 +41,5 @@ public class HasMember implements Comparable<HasMember> {
     @Override
     public int hashCode() {
         return Objects.hash(physicalEntity);
-    }
-
-    @Override
-    public int compareTo(HasMember o) {
-        return this.order - o.order;
     }
 }
