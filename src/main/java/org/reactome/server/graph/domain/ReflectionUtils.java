@@ -58,7 +58,7 @@ public class ReflectionUtils {
         try {
             field.setAccessible(true);
             if (field.getType().isAssignableFrom(String.class)) {
-                field.set(_instance, value.asString());
+                field.set(_instance, value.asString(null));
             } else if (field.getType().isAssignableFrom(Long.class)) {
                 field.set(_instance, value.asLong(0));
             } else if (field.getType().isAssignableFrom(Integer.class)) {
@@ -70,7 +70,7 @@ public class ReflectionUtils {
             } else if (Collection.class.isAssignableFrom(field.getType())) {
                 if (!value.isNull()) {
                     if (field.getType().isAssignableFrom(String.class)) {
-                        field.set(_instance, value.asList(Value::asString));
+                        field.set(_instance, value.asList(v -> v.asString(null)));
                     } else if (field.getType().isAssignableFrom(Long.class)) {
                         field.set(_instance, value.asList(Value::asLong));
                     } else if (field.getType().isAssignableFrom(Integer.class)) {
