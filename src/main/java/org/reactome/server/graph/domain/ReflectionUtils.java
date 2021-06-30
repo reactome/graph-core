@@ -61,7 +61,7 @@ public class ReflectionUtils {
         try {
             field.setAccessible(true);
             if (field.getType().isAssignableFrom(String.class)) {
-                field.set(_instance, value.asString());
+                field.set(_instance, value.asString(null));
             } else if (field.getType().isAssignableFrom(Long.class)) {
                 field.set(_instance, value.asLong(0));
             } else if (field.getType().isAssignableFrom(Integer.class)) {

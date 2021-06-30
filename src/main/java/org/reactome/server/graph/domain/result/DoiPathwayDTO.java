@@ -21,12 +21,12 @@ public class DoiPathwayDTO {
     private Collection<? extends Person> editors;
 
     public DoiPathwayDTO(Record record) {
-        displayName = record.get("displayName").asString();
-        doi = record.get("doi").asString();
-        stId = record.get("stId").asString();
-        species = record.get("species").asString();
-        reviseDate = record.get("reviseDate").asString();
-        releaseStatus = record.get("releaseStatus").asString();
+        displayName = record.get("displayName").asString(null);
+        doi = record.get("doi").asString(null);
+        stId = record.get("stId").asString(null);
+        species = record.get("species").asString(null);
+        reviseDate = record.get("reviseDate").asString(null);
+        releaseStatus = record.get("releaseStatus").asString(null);
         releaseDate = record.get("releaseDate").asString();
         authors = !record.get("authors").isNull() ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p)) : Collections.emptyList();
         reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
