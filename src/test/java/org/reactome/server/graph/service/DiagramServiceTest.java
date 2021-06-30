@@ -23,6 +23,7 @@ public class DiagramServiceTest extends BaseTest {
 
     @Test
     public void getDiagramResultTest() {
+        //TODO
         logger.info("Started testing diagramService.getDiagramTest");
         long start = System.currentTimeMillis();
         DiagramResult dr1 = diagramService.getDiagramResult("R-HSA-6799198");
@@ -99,6 +100,7 @@ public class DiagramServiceTest extends BaseTest {
             if(o.getDiagramStId().equals("R-HSA-168928")){
                 assertTrue(o.isInDiagram(), "'R-HSA-879382' not directly contained in 'R-HSA-168928'");
                 assertTrue(o.getOccurrences().isEmpty());
+                // TODO
             }
         }
     }

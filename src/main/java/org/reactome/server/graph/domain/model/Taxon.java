@@ -8,7 +8,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
-public abstract class Taxon extends DatabaseObject {
+public class Taxon extends DatabaseObject {
 
     @ReactomeProperty
     private List<String> name;

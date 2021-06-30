@@ -1,6 +1,5 @@
 package org.reactome.server.graph.service;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
@@ -46,8 +45,6 @@ public class InteractionTest extends BaseTest {
     }
 
     @Test
-    @Disabled
-    // TODO The interaction is ReferenceIsoform which is currently not working, leave the TODO here. Remove @Disabled once
     public void getInteractionsNoneInReactome() {
         logger.info("Started testing interactionsService.getInteractionsNoneInReactome");
         long start = System.currentTimeMillis();
@@ -86,6 +83,7 @@ public class InteractionTest extends BaseTest {
 
     @Test
     public void getDiagramOccurrencesTest(){
+        //TODO
         logger.info("Started testing interactionsService.getDiagramOccurrences");
         long start = System.currentTimeMillis();
         Collection<DiagramOccurrences> occurrences = interactionsService.getDiagramOccurrences("Q9BXM7-1");
