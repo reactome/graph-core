@@ -31,7 +31,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
     private static final List<Long> dbIds = Arrays.asList(1640170L, 73886L, 1500620L);
     private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-5672710");
 
-    // TODO not mapping to TopLevelPathway - 1640170
     private static final List<Object> ids = Arrays.asList(1640170L, 73886L, 1500620L, "R-HSA-199420");
 
     @Autowired

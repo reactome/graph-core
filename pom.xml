@@ -35,9 +35,9 @@
     <properties>
 <!--        <spring.data.neo4j.version>6.0.8</spring.data.neo4j.version>-->
         <!-- TODO Remember to change version, or remove and let Spring boot deals with it -->
-        <spring.data.neo4j.version>6.0.10-GH-2290-SNAPSHOT</spring.data.neo4j.version>
+        <spring.data.neo4j.version>6.1.3-GH-2216-SNAPSHOT</spring.data.neo4j.version>
 
-        <spring.boot.version>2.4.5</spring.boot.version>
+        <spring.boot.version>2.5.2</spring.boot.version>
         <spring.version>5.3.5</spring.version>
 
         <aspectj.version>1.9.6</aspectj.version>

@@ -7,8 +7,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
-// TODO REMOVE ABSTRACT FROM GO_CellularComponent
-public abstract class GO_CellularComponent extends GO_Term {
+public class GO_CellularComponent extends GO_Term {
 
     @Relationship(type = "componentOf")
     private List<GO_CellularComponent> componentOf;

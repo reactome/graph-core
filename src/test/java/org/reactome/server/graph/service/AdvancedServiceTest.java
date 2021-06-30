@@ -293,16 +293,14 @@ public class AdvancedServiceTest extends BaseTest {
 
         String query = "MATCH (p:Pathway{dbId:$dbId}) RETURN p";
         Map<String, Object> parametersMap = new HashMap<>();
-        // TODO not mapping to TopLevelPathway - 1640170
-        // TODO change expected
-        parametersMap.put("dbId", 69620);
+        parametersMap.put("dbId", 1640170);
         Pathway pathway = advancedDatabaseObjectService.getCustomQueryResult(Pathway.class, query, parametersMap);
         assertNotNull(pathway);
 
         // by default, lazy loading is disabled in our tests, enable here for a particular test
         lazyFetchAspect.setEnableAOP(true);
         assertNotNull(pathway.getHasEvent());
-        assertEquals(3, pathway.getHasEvent().size());
+        assertEquals(4, pathway.getHasEvent().size());
         assertEquals(1, pathway.getHasEncapsulatedEvent().size());
 
         // disable it for further tests in this particular test class
@@ -315,7 +313,6 @@ public class AdvancedServiceTest extends BaseTest {
 //
 //        String query = "MATCH (p:Pathway{dbId:$dbId})-[r:hasEvent]->(m) RETURN p,collect(r),collect(m) ORDER BY p.dbId";
 //        Map<String, Object> parametersMap = new HashMap<>();
-//        // TODO not mapping to TopLevelPathway - 1640170
 //        parametersMap.put("dbId", 69620);
 //        // In this test case, the relationships are mapped in the object Pathway inside the Collection
 //        Collection<Pathway> pathways = advancedDatabaseObjectService.getCustomQueryResults(Pathway.class, query, parametersMap);
