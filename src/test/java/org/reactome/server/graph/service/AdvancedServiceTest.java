@@ -51,8 +51,7 @@ public class AdvancedServiceTest extends BaseTest {
         PhysicalEntity peObserved = advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-
-        assertEquals("R-HSA-113454", peObserved.getPositivelyRegulates().get(0).getRegulatedEntity().getStId());
+        assertEquals("R-HSA-113454", peObserved.getPositivelyRegulates().get(0).getRegulatedEntity().get(0).getStId());
         logger.info("Finished");
     }
 

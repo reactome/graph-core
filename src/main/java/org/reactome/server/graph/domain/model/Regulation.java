@@ -46,7 +46,7 @@ public abstract class Regulation extends DatabaseObject {
 
     @ReactomeTransient
     @Relationship(type = "regulatedBy", direction = Relationship.Direction.INCOMING)
-    private ReactionLikeEvent regulatedEntity;
+    private List<ReactionLikeEvent> regulatedEntity;
 
     @Relationship(type = "regulator")
     private PhysicalEntity regulator;
@@ -134,11 +134,11 @@ public abstract class Regulation extends DatabaseObject {
         this.literatureReference = literatureReference;
     }
 
-    public ReactionLikeEvent getRegulatedEntity() {
+    public List<ReactionLikeEvent> getRegulatedEntity() {
         return regulatedEntity;
     }
 
-    public void setRegulatedEntity(ReactionLikeEvent regulatedEntity) {
+    public void setRegulatedEntity(List<ReactionLikeEvent> regulatedEntity) {
         this.regulatedEntity = regulatedEntity;
     }
 
