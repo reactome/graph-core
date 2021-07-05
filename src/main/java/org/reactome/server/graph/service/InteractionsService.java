@@ -71,6 +71,10 @@ public class InteractionsService {
         return interactionMaps;
     }
 
+    public Interaction getSingleInteractionDetails(String acc, String accB) {
+        return interactionsRepository.getInteractorByAcc(acc, accB);
+    }
+
     /**
      * Count interaction by accession
      * @return Map of accession and count

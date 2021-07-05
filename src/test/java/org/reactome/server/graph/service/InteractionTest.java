@@ -11,6 +11,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +40,39 @@ public class InteractionTest extends BaseTest {
         for (Interaction interaction : interactions) {
             UndirectedInteraction ui = (UndirectedInteraction) interaction;
             ReferenceEntity re = ui.getInteractor().get(0);
+            found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
+        }
+        assertTrue(found, "There should be at least one PE pointing to P60484");
+    }
+
+    @Test
+    public void getInteractionsForTP53() {
+        logger.info("Started testing interactionsService.getInteractions");
+        long start = System.currentTimeMillis();
+        Collection<Interaction> interactions = interactionsService.getInteractions("P04637");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        boolean found = false;
+        for (Interaction interaction : interactions) {
+            UndirectedInteraction ui = (UndirectedInteraction) interaction;
+            ReferenceEntity re = ui.getInteractor().get(0);
+            found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
+        }
+        assertTrue(found, "There should be at least one PE pointing to P60484");
+    }
+
+    @Test
+    public void getInteractionsForTP53PhysicalEntities() {
+        logger.info("Started testing interactionsService.getInteractions");
+        long start = System.currentTimeMillis();
+        UndirectedInteraction interaction  = (UndirectedInteraction) interactionsService.getSingleInteractionDetails("P04637", "P04637");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        boolean found = false;
+        List<ReferenceEntity> interactor = interaction.getInteractor();
+        for (ReferenceEntity re : interactor) {
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
         assertTrue(found, "There should be at least one PE pointing to P60484");
