@@ -127,6 +127,9 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "summation")
     private List<Summation> summation;
 
+    @Relationship(type = "cellType")
+    private List<CellType> cellType;
+
     public PhysicalEntity() {}
 
     public PhysicalEntity(Long dbId) {
@@ -453,5 +456,13 @@ public abstract class PhysicalEntity extends DatabaseObject {
             return rtn;
         }
         return null;
+    }
+
+    public List<CellType> getCellType() {
+        return cellType;
+    }
+
+    public void setCellType(List<CellType> cellType) {
+        this.cellType = cellType;
     }
 }
