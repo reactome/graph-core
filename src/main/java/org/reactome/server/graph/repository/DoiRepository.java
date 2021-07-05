@@ -24,7 +24,7 @@ public class DoiRepository {
     public Collection<DoiPathwayDTO> doiPathwayDTO() {
         String query =
                 "MATCH (p:Pathway) " +
-                        "WHERE EXISTS(p.doi) " +
+                        "WHERE p.doi IS NOT NULL " +
                         "OPTIONAL MATCH (p)<-[:revised]-(re:InstanceEdit) " +
                         "OPTIONAL MATCH (p)<-[:authored | revised]-(:InstanceEdit)<-[:author]-(patrs:Person) " +
                         "OPTIONAL MATCH (p)<-[:reviewed]-(:InstanceEdit)<-[:author]-(prvwd:Person) " +
