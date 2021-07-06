@@ -98,6 +98,9 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "summation")
     private List<Summation> summation;
 
+    @Relationship(type = "negativePrecedingEvent")
+    private List<NegativePrecedingEvent> negativePrecedingEvent;
+
     public Event() {}
 
     public String getDefinition() {
@@ -357,4 +360,13 @@ public abstract class Event extends DatabaseObject {
         this.summation = summation;
     }
 
+    @Relationship(type = "negativePrecedingEvent")
+    public List<NegativePrecedingEvent> getNegativePrecedingEvent() {
+        return negativePrecedingEvent;
+    }
+
+    @Relationship(type = "negativePrecedingEvent")
+    public void setNegativePrecedingEvent(List<NegativePrecedingEvent> negativePrecedingEvent) {
+        this.negativePrecedingEvent = negativePrecedingEvent;
+    }
 }
