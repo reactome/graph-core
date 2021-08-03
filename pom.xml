@@ -32,10 +32,13 @@
         </developer>
     </developers>
 
-    <properties>
-        <spring.data.neo4j.version>6.1.3-SNAPSHOT</spring.data.neo4j.version>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-parent</artifactId>
+        <version>2.5.3</version>
+    </parent>
 
-        <spring.boot.version>2.5.2</spring.boot.version>
+    <properties>
         <spring.version>5.3.5</spring.version>
 
         <aspectj.version>1.9.6</aspectj.version>
@@ -67,20 +70,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-neo4j</artifactId>
-            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.boot.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <!-- OVERWRITING SPRING BOOT VERSION -->
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-neo4j</artifactId>
-            <version>${spring.data.neo4j.version}</version>
         </dependency>
 
         <!--Reflection library -->
@@ -148,7 +142,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.name}</finalName>
+        <finalName>${artifactId}</finalName>
 
         <resources>
             <resource>
@@ -189,7 +183,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
+                <version>${parent.version}</version>
                 <executions>
                     <execution>
                         <id>repackage</id>
@@ -223,6 +217,7 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven.jar.version}</version>
                 <executions>
