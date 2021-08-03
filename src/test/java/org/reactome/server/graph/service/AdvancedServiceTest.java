@@ -300,27 +300,12 @@ public class AdvancedServiceTest extends BaseTest {
         lazyFetchAspect.setEnableAOP(true);
         assertNotNull(pathway.getHasEvent());
         assertEquals(4, pathway.getHasEvent().size());
-        assertEquals(1, pathway.getHasEncapsulatedEvent().size());
+        assertEquals(0, pathway.getHasEncapsulatedEvent().size());
 
         // disable it for further tests in this particular test class
         lazyFetchAspect.setEnableAOP(false);
     }
 
-//    @Test
-//    public void customQueryListOfDatabaseObjectTest() throws CustomQueryException {
-//        logger.info("Started testing advancedDatabaseObjectService.customQueryForDatabaseObjects");
-//
-//        String query = "MATCH (p:Pathway{dbId:$dbId})-[r:hasEvent]->(m) RETURN p,collect(r),collect(m) ORDER BY p.dbId";
-//        Map<String, Object> parametersMap = new HashMap<>();
-//        parametersMap.put("dbId", 69620);
-//        // In this test case, the relationships are mapped in the object Pathway inside the Collection
-//        Collection<Pathway> pathways = advancedDatabaseObjectService.getCustomQueryResults(Pathway.class, query, parametersMap);
-//        assertNotNull(pathways);
-//        assertEquals(5, pathways.size());
-//        lazyFetchAspect.setEnableAOP(true);
-//        assertEquals(2, pathways.iterator().next().getHasEvent().size());
-//        lazyFetchAspect.setEnableAOP(false);
-//    }
 
 //    @Test
     public void customQueryTest() throws CustomQueryException {
