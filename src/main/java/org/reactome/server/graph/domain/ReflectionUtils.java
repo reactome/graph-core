@@ -84,12 +84,12 @@ public class ReflectionUtils {
                     }
                 } else {
                     if (List.class.isAssignableFrom(field.getType())) {
-                        field.set(_instance, Collections.emptyList());
+                        field.set(_instance, new ArrayList<>());
                     } else if (Set.class.isAssignableFrom(field.getType())) {
                         if (SortedSet.class.isAssignableFrom(field.getType())) {
-                            field.set(_instance, Collections.emptySortedSet());
+                            field.set(_instance, new TreeSet<>());
                         } else {
-                            field.set(_instance, Collections.emptySet());
+                            field.set(_instance, new HashSet<>());
                         }
                     }
                 }
