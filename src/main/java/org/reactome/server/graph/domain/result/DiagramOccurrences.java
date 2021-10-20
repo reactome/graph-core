@@ -1,35 +1,36 @@
 package org.reactome.server.graph.domain.result;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.Pathway;
-import org.springframework.data.neo4j.annotation.QueryResult;
-
 import java.util.List;
 
-@QueryResult
 public class DiagramOccurrences {
 
-    private Pathway diagram;
+    private String diagramStId;
+    private Boolean inDiagram;
+    private List<String> occurrences;
+    private List<String> interactsWith;
 
-    private boolean inDiagram;
+    public DiagramOccurrences() { }
 
-    private List<DatabaseObject> occurrences;
-
-    private List<DatabaseObject> interactsWith;
-
-    public Pathway getDiagram() {
-        return diagram;
+    public DiagramOccurrences(String diagramStId, Boolean inDiagram, List<String> occurrences, List<String> interactsWith) {
+        this.diagramStId = diagramStId;
+        this.inDiagram = inDiagram;
+        this.occurrences = occurrences;
+        this.interactsWith = interactsWith;
     }
 
-    public boolean isInDiagram() {
+    public String getDiagramStId() {
+        return diagramStId;
+    }
+
+    public Boolean isInDiagram() {
         return inDiagram;
     }
 
-    public List<DatabaseObject> getOccurrences() {
+    public List<String> getOccurrences() {
         return occurrences;
     }
 
-    public List<DatabaseObject> getInteractsWith() {
+    public List<String> getInteractsWith() {
         return interactsWith;
     }
 }

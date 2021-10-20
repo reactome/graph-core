@@ -1,28 +1,17 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
 import org.reactome.server.graph.domain.model.Person;
-import org.reactome.server.graph.domain.model.Publication;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.RelationshipProperties;
+import org.springframework.data.neo4j.core.schema.TargetNode;
 
-/**
- * @author Luanne Misquitta
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
- */
-@SuppressWarnings("unused")
-@RelationshipEntity(type = "author")
-public class PublicationAuthor implements Comparable {
+import java.util.Objects;
 
-    @GraphId
-    private Long id;
-
-    @StartNode
-    private Person author;
-
-    @EndNode
-    private Publication publication;
+@RelationshipProperties
+public class PublicationAuthor implements Comparable<PublicationAuthor> {
+    @Id @GeneratedValue private Long id;
+    @TargetNode private Person author;
 
     private int order;
 
@@ -34,14 +23,6 @@ public class PublicationAuthor implements Comparable {
         this.author = author;
     }
 
-    public Publication getPublication() {
-        return publication;
-    }
-
-    public void setPublication(Publication publication) {
-        this.publication = publication;
-    }
-
     public int getOrder() {
         return order;
     }
@@ -51,7 +32,19 @@ public class PublicationAuthor implements Comparable {
     }
 
     @Override
-    public int compareTo(Object o) {
-        return this.order - ((PublicationAuthor) o).order;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return Objects.equals(author, ((PublicationAuthor) o).author);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(author);
+    }
+
+    @Override
+    public int compareTo(PublicationAuthor o) {
+        return this.order - o.order;
     }
 }

@@ -1,42 +1,27 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
-import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.RelationshipProperties;
+import org.springframework.data.neo4j.core.schema.TargetNode;
+
+import java.util.Objects;
 
 /**
  * HasComponent is the relationship entity of Complexes. It is needed to specify the stoichiometry and order of
  * components.
  */
 @SuppressWarnings("unused")
-@RelationshipEntity(type = "hasComponent")
-public class HasComponent implements Comparable {
-
-    @GraphId
-    private Long id;
-
-    @StartNode
-    private Complex complex;
-
-    @EndNode
-    private PhysicalEntity physicalEntity;
+@RelationshipProperties
+public class HasComponent implements Comparable<HasComponent> {
+    @Id @GeneratedValue private Long id;
+    @TargetNode private PhysicalEntity physicalEntity;
 
     private Integer stoichiometry = 1;
-
     private int order;
 
     public HasComponent() {}
-
-    public Complex getComplex() {
-        return complex;
-    }
-
-    public void setComplex(Complex complex) {
-        this.complex = complex;
-    }
 
     public PhysicalEntity getPhysicalEntity() {
         return physicalEntity;
@@ -66,22 +51,16 @@ public class HasComponent implements Comparable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        HasComponent that = (HasComponent) o;
-
-        if (complex != null ? !complex.equals(that.complex) : that.complex != null) return false;
-        return physicalEntity != null ? physicalEntity.equals(that.physicalEntity) : that.physicalEntity == null;
+        return Objects.equals(physicalEntity, ((HasComponent) o).physicalEntity);
     }
 
     @Override
     public int hashCode() {
-        int result = complex != null ? complex.hashCode() : 0;
-        result = 31 * result + (physicalEntity != null ? physicalEntity.hashCode() : 0);
-        return result;
+        return Objects.hash(physicalEntity);
     }
 
     @Override
-    public int compareTo(Object o) {
-        return this.order - ((HasComponent) o).order;
+    public int compareTo(HasComponent o) {
+        return this.order - o.order;
     }
 }

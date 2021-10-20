@@ -1,63 +1,33 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
-import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.springframework.test.util.AssertionErrors.assertFalse;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
-@ContextConfiguration(classes = { Neo4jConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-public class PathwaysServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
-
-    @Autowired
-    private GeneralService generalService;
+@SpringBootTest
+public class PathwaysServiceTest extends BaseTest {
 
     @Autowired
     private PathwaysService pathwaysService;
 
-    @BeforeClass
-    public static void setUpClass() {
-        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
+    @BeforeTestClass
+    public void setUpClass() {
+        logger.info(" --- !!! Running " + PathwaysServiceTest.class.getName() + " !!! --- \n");
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterTestClass
+    public void tearDownClass() {
         logger.info("\n\n");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-        DatabaseObjectFactory.clearCache();
     }
 
     @Test
@@ -137,6 +107,7 @@ public class PathwaysServiceTest {
         assertTrue("There should be 9 or more pathways containing PTEN in human", pathways.size() >= 9);
     }
 
+
     @Test
     public void getPathwaysForIdentifierTest(){
         logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
@@ -145,17 +116,17 @@ public class PathwaysServiceTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 1 or more pathways containing POM121C", pathways.size() >= 0);
+        assertTrue("There should be 1 or more pathways containing POM121C", pathways.size() > 0);
     }
 
     @Test
     public void getDiagramEntitiesForIdentifierTest(){
         logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "POM121C");
+        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "SLC2A12");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be more than 1 entity in the pathway containing POM121C", entities.size() >= 0);
+        assertTrue("There should be more than 1 entity in the pathway containing POM121C", entities.size() > 0);
     }
 }

@@ -10,6 +10,11 @@ public class CustomReference {
     private String database;
     private String identifier;
 
+    public CustomReference(String database, String identifier) {
+        this.database = database;
+        this.identifier = identifier;
+    }
+
     public String getDatabase() {
         return database;
     }

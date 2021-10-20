@@ -1,26 +1,23 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Compartment;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.util.Objects;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.assertTrue;
-
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
-public class CompartmentTest extends BaseTest {
+@SpringBootTest
+public class CompartmentTest extends BaseTest{
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + CompartmentTest.class.getName() + " !!! --- \n");
     }
 
@@ -33,12 +30,12 @@ public class CompartmentTest extends BaseTest {
         ReactionLikeEvent rleGDB = databaseObjectService.findById("1247999");
         ReactionLikeEvent rleRDB = DatabaseObjectFactory.createObject("1247999");
 
-        assertTrue("Different sizes", Objects.equals(rleGDB.getCompartment().size(), rleRDB.getCompartment().size()));
+        assertEquals(rleRDB.getCompartment().size(), rleGDB.getCompartment().size(), "Different sizes");
 
         for (int i = 0; i < rleRDB.getCompartment().size(); i++) {
             Compartment cRDB = rleRDB.getCompartment().get(i);
             Compartment cGDB = rleGDB.getCompartment().get(i);
-            assertTrue(cGDB + " differs of " + cRDB, Objects.equals(cRDB, cGDB));
+            assertEquals(cGDB, cRDB, cGDB + " differs of " + cRDB);
         }
 
         time = System.currentTimeMillis() - start;

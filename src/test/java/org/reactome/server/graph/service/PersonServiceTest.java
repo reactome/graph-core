@@ -1,17 +1,16 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.reactome.server.graph.domain.model.Pathway;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
-import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
+import org.reactome.server.graph.domain.result.SimpleEventProjection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by:
@@ -24,8 +23,8 @@ public class PersonServiceTest extends BaseTest {
     @Autowired
     private PersonService personService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public  void setUpClass() {
         logger.info(" --- !!! Running " + PersonServiceTest.class.getName() + " !!! --- \n");
     }
 
@@ -108,25 +107,12 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-//    @Test
-//    public void getPublicationsOfPersonByEmailTest() {
-//        logger.info("Started testing personService.getPublicationsOfPersonByEmailTest");
-//        long start, time;
-//        start = System.currentTimeMillis();
-//        Collection<Publication> publications = personService.getPublicationsOfPerson("sjupe@ebi.ac.uk");
-//        time = System.currentTimeMillis() - start;
-//        logger.info("GraphDb execution time: " + time + "ms");
-//
-//        assertTrue(publications.size() > 0);
-//        logger.info("Finished");
-//    }
-
     @Test
     public void getAuthoredPathwaysByOrcidIdTest() {
         logger.info("Started testing personService.getAuthoredPathwaysByOrcidId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getAuthoredPathways("0000-0001-5807-0069");
+        Collection<SimpleEventProjection> pathways = personService.getAuthoredPathways("0000-0001-5807-0069");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -139,7 +125,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getAuthoredPathwaysByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getAuthoredPathways(391309L);
+        Collection<SimpleEventProjection> pathways = personService.getAuthoredPathways(391309L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -152,7 +138,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getAuthoredReactionsByOrcidId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> reactions = personService.getAuthoredReactions("0000-0001-5193-0855");
+        Collection<SimpleEventProjection> reactions = personService.getAuthoredReactions("0000-0001-5193-0855");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -165,7 +151,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getAuthoredReactionsByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> pathways = personService.getAuthoredReactions(203835L);
+        Collection<SimpleEventProjection> pathways = personService.getAuthoredReactions(203835L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -178,7 +164,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getReviewedPathwaysByOrcidId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getReviewedPathways("0000-0001-5807-0069");
+        Collection<SimpleEventProjection> pathways = personService.getReviewedPathways("0000-0001-5807-0069");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -191,7 +177,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getReviewedPathwaysByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Pathway> pathways = personService.getReviewedPathways(391309L);
+        Collection<SimpleEventProjection> pathways = personService.getReviewedPathways(391309L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -204,7 +190,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getReviewedReactionsByOrcidId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> reactions = personService.getReviewedReactions("0000-0001-5193-0855");
+        Collection<SimpleEventProjection> reactions = personService.getReviewedReactions("0000-0001-5193-0855");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -217,7 +203,7 @@ public class PersonServiceTest extends BaseTest {
         logger.info("Started testing personService.getReviewedReactionsByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> reactions = personService.getReviewedReactions(203835L);
+        Collection<SimpleEventProjection> reactions = personService.getReviewedReactions(203835L);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -233,7 +219,7 @@ public class PersonServiceTest extends BaseTest {
         Collection<PersonAuthorReviewer> objs = personService.getAuthorsReviewers();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-
+        assertNotNull(objs.iterator().next().getPerson());
         assertTrue(objs.size() >= 600);
         logger.info("Finished");
     }

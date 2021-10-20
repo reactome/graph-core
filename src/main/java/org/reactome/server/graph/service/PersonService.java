@@ -1,29 +1,34 @@
 package org.reactome.server.graph.service;
 
-import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
-import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
+import org.reactome.server.graph.domain.result.SimpleEventProjection;
+import org.reactome.server.graph.repository.EventRepository;
+import org.reactome.server.graph.repository.PersonAuthorReviewerRepository;
 import org.reactome.server.graph.repository.PersonRepository;
+import org.reactome.server.graph.repository.PublicationRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 31.05.16.
- */
 @Service
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings("ALL")
 public class PersonService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private PublicationRepository publicationRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private PersonAuthorReviewerRepository personAuthorReviewerRepository;
 
     //    equals person name
     public Collection<Person> findPersonByName(String name) {
@@ -58,62 +63,62 @@ public class PersonService {
     public Collection<Publication> getPublicationsOfPerson(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isEmail(id)){
-            return personRepository.getPublicationsOfPersonByEmail(id);
+            return publicationRepository.getPublicationsOfPersonByEmail(id);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return personRepository.getPublicationsOfPersonByDbId(Long.valueOf(id));
+            return publicationRepository.getPublicationsOfPersonByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return personRepository.getPublicationsOfPersonByOrcidId(id);
+            return publicationRepository.getPublicationsOfPersonByOrcidId(id);
         } else {
             return null;
         }
     }
 
-    public Collection<Pathway> getAuthoredPathways(Object identifier) {
+    public Collection<SimpleEventProjection> getAuthoredPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return personRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
+            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return personRepository.getAuthoredPathwaysByOrcidId(id);
+            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredPathwaysByOrcidId(id);
         } else {
             return null;
         }
     }
 
-    public Collection<ReactionLikeEvent> getAuthoredReactions(Object identifier) {
+    public Collection<SimpleEventProjection> getAuthoredReactions(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return personRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
+            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return personRepository.getAuthoredReactionsByOrcidId(id);
+            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredReactionsByOrcidId(id);
         } else {
             return null;
         }
     }
 
-    public Collection<Pathway> getReviewedPathways(Object identifier) {
+    public Collection<SimpleEventProjection> getReviewedPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return personRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
+            return (Collection<SimpleEventProjection>) eventRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return personRepository.getReviewedPathwaysByOrcidId(id);
+            return (Collection<SimpleEventProjection>) eventRepository.getReviewedPathwaysByOrcidId(id);
         } else {
             return null;
         }
     }
 
-    public Collection<ReactionLikeEvent> getReviewedReactions(Object identifier) {
+    public Collection<SimpleEventProjection> getReviewedReactions(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return personRepository.getReviewedReactionsByDbId(Long.valueOf(id));
+            return (Collection<SimpleEventProjection>) eventRepository.getReviewedReactionsByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return personRepository.getReviewedReactionsByOrcidId(id);
+            return (Collection<SimpleEventProjection>) eventRepository.getReviewedReactionsByOrcidId(id);
         } else {
             return null;
         }
     }
 
     public Collection<PersonAuthorReviewer> getAuthorsReviewers(){
-        return personRepository.getAuthorsReviewers();
+        return personAuthorReviewerRepository.getAuthorsReviewers();
     }
 
 }

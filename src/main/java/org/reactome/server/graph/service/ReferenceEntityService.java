@@ -7,15 +7,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 @SuppressWarnings("unused")
 @Service
 public class ReferenceEntityService {
 
+    private final ReferenceEntityRepository referenceEntityRepository;
+
     @Autowired
-    private ReferenceEntityRepository referenceEntityRepository;
+    public ReferenceEntityService(ReferenceEntityRepository referenceEntityRepository) {
+        this.referenceEntityRepository = referenceEntityRepository;
+    }
 
     public Collection<ReferenceEntity> getReferenceEntitiesFor(String identifier){
         return referenceEntityRepository.getReferenceEntitiesFor(identifier);

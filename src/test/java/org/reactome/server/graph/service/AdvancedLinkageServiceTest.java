@@ -1,32 +1,28 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.Referrals;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
+
 public class AdvancedLinkageServiceTest extends BaseTest {
 
     @Autowired
     private AdvancedLinkageService advancedLinkageService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + AdvancedLinkageServiceTest.class.getName() + "!!! --- \n");
     }
 
     @Test
     public void getComponentsOfTest() {
-
         logger.info("Started testing genericService.getComponentsOfTest");
         long start, time;
         start = System.currentTimeMillis();
@@ -47,8 +43,7 @@ public class AdvancedLinkageServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There has to be 2 or more referrals", referrals.size() >= 1);
+        assertTrue(referrals.size() >= 1, "There has to be 2 or more referrals");
         logger.info("Finished");
-
     }
 }

@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
-@NodeEntity
-public class CrosslinkedResidue extends TranslationalModification {
+@Node
+public abstract class CrosslinkedResidue extends TranslationalModification {
 
     @ReactomeProperty
     private Integer secondCoordinate;
@@ -31,7 +31,6 @@ public class CrosslinkedResidue extends TranslationalModification {
         return modification;
     }
 
-    @Relationship(type = "modification")
     public void setModification(DatabaseObject modification) {
         if(modification == null) return;
 

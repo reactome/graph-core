@@ -14,19 +14,23 @@ import java.util.Set;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Service
 @SuppressWarnings("WeakerAccess")
 public class DetailsService {
 
-    private DetailsRepository detailsRepository;
+    private final DetailsRepository detailsRepository;
+    private final AdvancedLinkageService advancedLinkageService;
+    private final PhysicalEntityService physicalEntityService;
+    private final HierarchyService hierarchyService;
 
-    private AdvancedLinkageService advancedLinkageService;
-
-    private PhysicalEntityService physicalEntityService;
-
-    private HierarchyService hierarchyService;
+    @Autowired
+    public DetailsService(DetailsRepository detailsRepository, AdvancedLinkageService advancedLinkageService, PhysicalEntityService physicalEntityService, HierarchyService hierarchyService) {
+        this.detailsRepository = detailsRepository;
+        this.advancedLinkageService = advancedLinkageService;
+        this.physicalEntityService = physicalEntityService;
+        this.hierarchyService = hierarchyService;
+    }
 
     public ContentDetails getContentDetails(Object identifier, Boolean directParticipants) {
 
@@ -60,7 +64,7 @@ public class DetailsService {
         PathwayBrowserNode root = getLocationsInThePathwayBrowser(databaseObject, directParticipants);
         if (root!=null) {
             Set<PathwayBrowserNode> leaves = root.getLeaves();
-            leaves = PathwayBrowserLocationsUtils.removeOrphans(leaves);
+            PathwayBrowserLocationsUtils.removeOrphans(leaves);
             return PathwayBrowserLocationsUtils.buildTreesFromLeaves(leaves);
         }
         return null;
@@ -84,31 +88,11 @@ public class DetailsService {
             leaf = ((Regulation) databaseObject).getRegulator();
         }
 
-        if(leaf!=null){
+        if (leaf != null) {
             node.setName(leaf.getDisplayName());
             node.setStId(leaf.getStId());
             node.setType(leaf.getSchemaClass());
         }
         return node;
-    }
-
-    @Autowired
-    public void setDetailsRepository(DetailsRepository detailsRepository) {
-        this.detailsRepository = detailsRepository;
-    }
-
-    @Autowired
-    public void setAdvancedLinkageService(AdvancedLinkageService advancedLinkageService) {
-        this.advancedLinkageService = advancedLinkageService;
-    }
-
-    @Autowired
-    public void setPhysicalEntityService(PhysicalEntityService physicalEntityService) {
-        this.physicalEntityService = physicalEntityService;
-    }
-
-    @Autowired
-    public void setHierarchyService(HierarchyService hierarchyService) {
-        this.hierarchyService = hierarchyService;
     }
 }

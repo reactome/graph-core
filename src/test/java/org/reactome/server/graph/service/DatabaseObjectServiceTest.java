@@ -1,28 +1,26 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
+import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.reactome.server.graph.util.JunitHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * Created by:
- *
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 10.11.15.
- * <p>
- * 507868 Will test wrong. Difference is that duplications are removed in the graph
+ *         507868 Will test wrong. Difference is that duplications are removed in the graph
  */
 public class DatabaseObjectServiceTest extends BaseTest {
 
@@ -31,41 +29,44 @@ public class DatabaseObjectServiceTest extends BaseTest {
     private static final String stId = "R-HSA-5205685";
 
     private static final List<Long> dbIds = Arrays.asList(1640170L, 73886L, 1500620L);
-    private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-1500620");
+    private static final List<String> stIds = Arrays.asList("R-HSA-1640170", "R-HSA-73886", "R-HSA-5672710");
+
     private static final List<Object> ids = Arrays.asList(1640170L, 73886L, 1500620L, "R-HSA-199420");
 
     @Autowired
     private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
 
     @Autowired
+    private DatabaseObjectRepository databaseObjectRepository;
+
+    @Autowired
     private DatabaseObjectService databaseObjectService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + DatabaseObjectServiceTest.class.getName() + "!!! --- \n");
     }
 
     @Test
-    public void findByDbIdTest() throws Exception {
+    public void findByDbIdTest() {
 
         logger.info("Started testing databaseObjectService.findByDbIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = databaseObjectService.findById(dbId);
+        DatabaseObject databaseObjectObserved = databaseObjectRepository.findByDbId(dbId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-
         start = System.currentTimeMillis();
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
         logger.info("Finished");
     }
 
     @Test
-    public void findHomoSapiensTest() throws Exception {
+    public void findHomoSapiensTest() {
 
         logger.info("Started testing databaseObjectService.findHomoSapiensTest");
         long start, time;
@@ -79,11 +80,14 @@ public class DatabaseObjectServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
+        assertNotNull(databaseObjectExpected);
+        assertNotNull(databaseObjectObserved);
         assertEquals(databaseObjectExpected.getDisplayName(), databaseObjectObserved.getDisplayName());
         logger.info("Finished");
     }
+
     @Test
-    public void findByStIdTest() throws InvocationTargetException, IllegalAccessException {
+    public void findByStIdTest() throws IllegalAccessException, InvocationTargetException {
 
         logger.info("Started testing databaseObjectService.findByStIdTest");
         long start, time;
@@ -97,8 +101,9 @@ public class DatabaseObjectServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
         logger.info("Finished");
+
     }
 
     @Test
@@ -118,6 +123,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
+
     }
 
     @Test
@@ -131,16 +137,17 @@ public class DatabaseObjectServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(dbId.toString());
+        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
         assertEquals(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
+
     }
 
     @Test
-    public void testFindByDbIds() throws Exception {
+    public void testFindByDbIds() {
 
         logger.info("Started testing databaseObjectService.findByDbId");
         long start, time;
@@ -152,6 +159,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(3, databaseObjectsObserved.size());
         logger.info("Finished");
+
     }
 
     @Test
@@ -166,6 +174,7 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(3, databaseObjectsObserved.size());
         logger.info("Finished");
+
     }
 
     @Test
@@ -180,10 +189,12 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(4, databaseObjectsObserved.size());
         logger.info("Finished");
+
     }
 
     @Test
     public void useOldStableIdentifier() {
+
         logger.info("Started testing databaseObjectService.useOldStableIdentifier");
         long start, time;
         start = System.currentTimeMillis();
@@ -191,7 +202,8 @@ public class DatabaseObjectServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("The old StId for R-HSA-71291 is REACT_13. Wrong one found " + databaseObject.getStId(), "R-HSA-71291", databaseObject.getStId());
+        assertEquals("R-HSA-71291", databaseObject.getStId(), "The old StId for R-HSA-71291 is REACT_13. Wrong one found " + databaseObject.getStId());
         logger.info("Finished");
+
     }
 }

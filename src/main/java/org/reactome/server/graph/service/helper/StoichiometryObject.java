@@ -1,8 +1,7 @@
 package org.reactome.server.graph.service.helper;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
-
-import javax.annotation.Nonnull;
+import org.springframework.lang.NonNull;
 
 @SuppressWarnings("unused")
 public class StoichiometryObject implements Comparable<StoichiometryObject> {
@@ -34,7 +33,7 @@ public class StoichiometryObject implements Comparable<StoichiometryObject> {
     }
 
     @Override
-    public int compareTo(@Nonnull StoichiometryObject o) {
+    public int compareTo(@NonNull StoichiometryObject o) {
         return this.object.getDisplayName().compareToIgnoreCase(o.getObject().getDisplayName());
     }
 }

@@ -1,28 +1,24 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.Reaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 public class InferredToTest extends BaseTest {
 
-    @Autowired
-    DatabaseObjectService databaseObjectService;
+    @Autowired private DatabaseObjectService databaseObjectService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + InferredToTest.class.getName() + " !!! --- \n");
     }
 
@@ -35,13 +31,13 @@ public class InferredToTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull("The inferredTo for complex 'R-HSA-5682892' cannot be null", inferredTo);
+        assertNotNull(inferredTo, "The inferredTo for complex 'R-HSA-5682892' cannot be null");
         PhysicalEntity aux = null;
         for (PhysicalEntity pe : inferredTo) {
             if (pe.getStId().equals("R-MMU-5682892")) aux = pe;
         }
 
-        assertNotNull("The complex 'R-HSA-5682892' should be manually inferredTo 'R-MMU-5682892'", aux);
+        assertNotNull(aux, "The complex 'R-HSA-5682892' should be manually inferredTo 'R-MMU-5682892'");
     }
 
     @Test
@@ -53,13 +49,13 @@ public class InferredToTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull("The orthologous events for reaction 'R-HSA-73577' cannot be null", inferredTo);
+        assertNotNull(inferredTo, "The orthologous events for reaction 'R-HSA-73577' cannot be null");
         Event aux = null;
         for (Event pe : inferredTo) {
             if (pe.getStId().equals("R-MMU-73577")) aux = pe;
         }
 
-        assertNotNull("The reaction 'R-HSA-73577' should be manually inferredTo 'R-MMU-73577'", aux);
+        assertNotNull(aux, "The reaction 'R-HSA-73577' should be manually inferredTo 'R-MMU-73577'");
     }
 
     @Test
@@ -71,8 +67,8 @@ public class InferredToTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull("The getOrthologousEvent for event 'R-HSA-68827' cannot be null", inferredTo);
-        assertFalse("The getOrthologousEvent for event 'R-HSA-68827' cannot be empty", inferredTo.isEmpty());
+        assertNotNull(inferredTo, "The getOrthologousEvent for event 'R-HSA-68827' cannot be null");
+        assertFalse(inferredTo.isEmpty(), "The getOrthologousEvent for event 'R-HSA-68827' cannot be empty");
     }
 
 }

@@ -1,11 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Compartment extends GO_CellularComponent {
 
     public Compartment() {}
-
+    public Compartment(Long dbId) {
+        super(dbId);
+    }
 }

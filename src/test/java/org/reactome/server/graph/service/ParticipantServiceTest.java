@@ -1,22 +1,16 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.result.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 19.04.16.
- */
 public class ParticipantServiceTest extends BaseTest {
 
     private static final String stId = "R-HSA-5205685";
@@ -24,8 +18,8 @@ public class ParticipantServiceTest extends BaseTest {
     @Autowired
     private ParticipantService participantService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + ParticipantServiceTest.class.getName() + " !!! --- \n");
     }
 

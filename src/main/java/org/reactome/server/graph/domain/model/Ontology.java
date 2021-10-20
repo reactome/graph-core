@@ -1,10 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
 @Deprecated
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class Ontology extends DatabaseObject {
 
     private byte[] ontology;

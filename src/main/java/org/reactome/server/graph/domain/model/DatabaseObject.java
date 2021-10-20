@@ -3,22 +3,22 @@ package org.reactome.server.graph.domain.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import io.swagger.annotations.ApiModelProperty;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.result.DatabaseObjectLike;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
@@ -31,54 +31,53 @@ import java.util.Collection;
  */
 @SuppressWarnings("unused")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
-@NodeEntity
+@Node
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject>, DatabaseObjectLike {
 
     @ReactomeTransient
-    public transient boolean isLoaded = false;
+    public transient Boolean isLoaded = false;
 
     @ReactomeTransient
-    public transient boolean preventLazyLoading = false;
+    public transient Boolean preventLazyLoading = false;
 
-    @JsonIgnore
-    @GraphId
-    private Long id;
+//    @JsonIgnore
+//    @Id @GeneratedValue
+//    private Long id;
 
-    @ApiModelProperty(value = "This is the main internal identifier of a Reactome entry", required = true)
-    private Long dbId;
+    @Id
+    protected Long dbId;
 
-    @ApiModelProperty(value = "This is the main name of a Reactome entry", required = true)
     private String displayName;
 
-    @ApiModelProperty(value = "This is the main external identifier of a Reactome entry")
     @ReactomeProperty(addedField = true)
     private String stId;
 
-    @ApiModelProperty(value = "This is the version of the main external identifier of a Reactome entry")
     private String stIdVersion;
 
     @JsonIgnore
     private transient String oldStId;
 
-    @ApiModelProperty(value = "Instance that created this entry")
-    @Relationship(type = "created", direction = Relationship.INCOMING)
+    @Relationship(type = "created", direction = Relationship.Direction.INCOMING)
     private InstanceEdit created;
 
-    @ApiModelProperty(value = "Last instance that modified this entry")
-    @Relationship(type = "modified", direction = Relationship.INCOMING)
+    @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
 
     public DatabaseObject() {
     }
 
-    @ReactomeSchemaIgnore
-    public Long getId() {
-        return id;
+    public DatabaseObject(Long dbId) {
+        this.dbId = dbId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    @ReactomeSchemaIgnore
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public Long getDbId() {
         return dbId;
@@ -122,22 +121,18 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         this.oldStId = oldStId;
     }
 
-    @Relationship(type = "created", direction = Relationship.INCOMING)
     public InstanceEdit getCreated() {
         return created;
     }
 
-    @Relationship(type = "created", direction = Relationship.INCOMING)
     public void setCreated(InstanceEdit created) {
         this.created = created;
     }
 
-    @Relationship(type = "modified", direction = Relationship.INCOMING)
     public InstanceEdit getModified() {
         return modified;
     }
 
-    @Relationship(type = "modified", direction = Relationship.INCOMING)
     public void setModified(InstanceEdit modified) {
         this.modified = modified;
     }
@@ -156,7 +151,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         if (o == null || getClass() != o.getClass()) return false;
 
         DatabaseObject that = (DatabaseObject) o;
-        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stId != null ? stId.equals(that.stId) : that.stId == null && !(displayName != null ? !displayName.equals(that.displayName) : that.displayName != null));
+        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stId != null ? stId.equals(that.stId) : that.stId == null && Objects.equals(displayName, that.displayName));
     }
 
     @Override
@@ -168,7 +163,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     }
 
     @Override
-    public int compareTo(@Nonnull DatabaseObject o) {
+    public int compareTo(@NonNull DatabaseObject o) {
         return this.dbId.compareTo(o.dbId);
     }
 
@@ -221,6 +216,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeSchemaIgnore
     @JsonIgnore
     public <T extends DatabaseObject> T preventLazyLoading(boolean preventLazyLoading) {
+        if (this.preventLazyLoading == null) this.preventLazyLoading = false;
         if (this.preventLazyLoading == preventLazyLoading) return (T) this;
 
         this.preventLazyLoading = preventLazyLoading;
@@ -234,8 +230,13 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
                 if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
                     DatabaseObject object = (DatabaseObject) method.invoke(this);
-                    if (object != null && object.preventLazyLoading != preventLazyLoading) {
-                        object.preventLazyLoading(preventLazyLoading);
+                    if (object != null) {
+                        if (object.preventLazyLoading == null) {
+                            object.preventLazyLoading = false;
+                        }
+                        if (object.preventLazyLoading != preventLazyLoading) {
+                            object.preventLazyLoading(preventLazyLoading);
+                        }
                     }
                 }
 
@@ -244,12 +245,17 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
                     Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
                     String clazz = type.getSimpleName();
                     if (DatabaseObject.class.isAssignableFrom(type)) {
-                        Collection collection = (Collection) method.invoke(this);
+                        Collection<T> collection = (Collection<T>) method.invoke(this);
                         if (collection != null) {
-                            for (Object obj : collection) {
-                                DatabaseObject object = (DatabaseObject) obj;
-                                if (object != null && object.preventLazyLoading != preventLazyLoading) {
-                                    object.preventLazyLoading(preventLazyLoading);
+                            for (DatabaseObject obj : collection) {
+                                DatabaseObject object = obj;
+                                if (object != null) {
+                                    if (object.preventLazyLoading == null) {
+                                        object.preventLazyLoading = false;
+                                    }
+                                    if (object.preventLazyLoading != preventLazyLoading) {
+                                        object.preventLazyLoading(preventLazyLoading);
+                                    }
                                 }
                             }
                         }

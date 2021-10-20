@@ -1,22 +1,25 @@
 package org.reactome.server.graph.domain.result;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.springframework.data.neo4j.annotation.QueryResult;
+import org.neo4j.driver.Record;
 
 import java.util.List;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 @SuppressWarnings("unused")
-@QueryResult
 public class Referrals {
 
     private String referral;
-
-    private List<DatabaseObject> objects;
+    private List<SimpleDatabaseObject> objects;
 
     public Referrals() {
+    }
+
+    public Referrals(String referral, List<SimpleDatabaseObject> objects) {
+        this.referral = referral;
+        this.objects = objects;
+    }
+
+    public static Referrals build(Record record) {
+        return new Referrals(record.get("referral").asString(), record.get("objects").asList(SimpleDatabaseObject::build));
     }
 
     public String getReferral() {
@@ -27,11 +30,11 @@ public class Referrals {
         this.referral = referral;
     }
 
-    public List<DatabaseObject> getObjects() {
+    public List<SimpleDatabaseObject> getObjects() {
         return objects;
     }
 
-    public void setObjects(List<DatabaseObject> objects) {
+    public void setObjects(List<SimpleDatabaseObject> objects) {
         this.objects = objects;
     }
 }

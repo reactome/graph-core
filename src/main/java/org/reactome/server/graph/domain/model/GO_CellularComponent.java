@@ -1,12 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class GO_CellularComponent extends GO_Term {
 
     @Relationship(type = "componentOf")
@@ -23,11 +23,14 @@ public class GO_CellularComponent extends GO_Term {
 
     public GO_CellularComponent() {}
 
+    public GO_CellularComponent(Long dbId) {
+        super(dbId);
+    }
+
     public List<GO_CellularComponent> getComponentOf() {
         return componentOf;
     }
 
-    @Relationship(type = "componentOf")
     public void setComponentOf(List<GO_CellularComponent> componentOf) {
         this.componentOf = componentOf;
     }
@@ -36,7 +39,6 @@ public class GO_CellularComponent extends GO_Term {
         return hasPart;
     }
 
-    @Relationship(type = "hasPart")
     public void setHasPart(List<GO_CellularComponent> hasPart) {
         this.hasPart = hasPart;
     }
@@ -45,7 +47,6 @@ public class GO_CellularComponent extends GO_Term {
         return instanceOf;
     }
 
-    @Relationship(type = "instanceOf")
     public void setInstanceOf(List<GO_CellularComponent> instanceOf) {
         this.instanceOf = instanceOf;
     }
@@ -54,7 +55,6 @@ public class GO_CellularComponent extends GO_Term {
         return surroundedBy;
     }
 
-    @Relationship(type = "surroundedBy")
     public void setSurroundedBy(List<GO_CellularComponent> surroundedBy) {
         this.surroundedBy = surroundedBy;
     }
