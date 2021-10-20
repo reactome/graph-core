@@ -1,26 +1,23 @@
 package org.reactome.server.graph.repository;
 
-import org.reactome.server.graph.domain.model.DBInfo;
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.result.SchemaClassCount;
-import org.springframework.data.neo4j.annotation.Query;
-import org.springframework.data.neo4j.repository.GraphRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 19.04.16.
- */
 @Repository
-public interface GeneralRepository extends GraphRepository<DatabaseObject> {
+public class GeneralRepository {
 
-    @Query(" MATCH (n:DatabaseObject) RETURN DISTINCT LABELS(n) AS labels, Count(n) AS count")
-    Collection<SchemaClassCount> getSchemaClassCounts();
+    private final Neo4jClient neo4jClient;
 
-    @Query("MATCH (db:DBInfo) RETURN db LIMIT 1")
-    DBInfo getDBInfo();
+    @Value("${spring.data.neo4j.database:graph.db}")
+    private String databaseName;
+
+    public GeneralRepository(Neo4jClient neo4jClient) {
+        this.neo4jClient = neo4jClient;
+    }
+    
+    public Boolean fitForService() {
+        String query = "MATCH (n) RETURN COUNT(n) > 0 AS fitForService";
+        return neo4jClient.query(query).in(databaseName).fetchAs(Boolean.class).first().orElse(false);
+    }
 }

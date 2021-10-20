@@ -1,11 +1,11 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
-@NodeEntity
+@Node
 public class Cell extends PhysicalEntity {
     @Relationship(type = "rnaMarker")
     private List<EntityWithAccessionedSequence> RNAMarker;
@@ -36,7 +36,6 @@ public class Cell extends PhysicalEntity {
         return RNAMarker;
     }
 
-    @Relationship(type = "rnaMarker")
     public void setRNAMarker(List<EntityWithAccessionedSequence> rNAMarker) {
         RNAMarker = rNAMarker;
     }
@@ -45,7 +44,6 @@ public class Cell extends PhysicalEntity {
         return markerReference;
     }
 
-    @Relationship(type = "markerReference")
     public void setMarkerReference(List<MarkerReference> markerReference) {
         this.markerReference = markerReference;
     }
@@ -54,7 +52,6 @@ public class Cell extends PhysicalEntity {
         return organ;
     }
 
-    @Relationship(type = "organ")
     public void setOrgan(Anatomy organ) {
         this.organ = organ;
     }
@@ -63,7 +60,6 @@ public class Cell extends PhysicalEntity {
         return proteinMarker;
     }
 
-    @Relationship(type = "proteinMarker")
     public void setProteinMarker(List<EntityWithAccessionedSequence> proteinMarker) {
         this.proteinMarker = proteinMarker;
     }
@@ -72,7 +68,6 @@ public class Cell extends PhysicalEntity {
         return species;
     }
 
-    @Relationship(type = "species")
     public void setSpecies(List<Taxon> species) {
         this.species = species;
     }
@@ -81,7 +76,6 @@ public class Cell extends PhysicalEntity {
         return tissue;
     }
 
-    @Relationship(type = "tissue")
     public void setTissue(Anatomy tissue) {
         this.tissue = tissue;
     }
@@ -90,7 +84,6 @@ public class Cell extends PhysicalEntity {
         return tissueLayer;
     }
 
-    @Relationship(type = "tissueLayer")
     public void setTissueLayer(Anatomy tissueLayer) {
         this.tissueLayer = tissueLayer;
     }

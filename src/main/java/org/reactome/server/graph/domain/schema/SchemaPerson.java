@@ -10,10 +10,10 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class SchemaPerson extends SchemaCreator {
 
-    private String givenName;
-    private String familyName;
-    private List<SchemaOrganization> affiliation = new ArrayList<>();
-    private String url; //For the orcidId
+    private final String givenName;
+    private final String familyName;
+    private final List<SchemaOrganization> affiliation = new ArrayList<>();
+    private final String url; //For the orcidId
 
     SchemaPerson(Person person) {
         this.givenName = person.getFirstname();

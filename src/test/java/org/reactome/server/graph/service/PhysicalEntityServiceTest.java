@@ -1,44 +1,22 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
-import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
-@ContextConfiguration(classes = {Neo4jConfig.class})
-@RunWith(SpringJUnit4ClassRunner.class)
-public class PhysicalEntityServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
-
+public class PhysicalEntityServiceTest extends BaseTest {
     private static final Long dbId = 199420L;
     private static final String stId = "R-HSA-199420";
-
-    @Autowired
-    private GeneralService generalService;
 
     @Autowired
     private DatabaseObjectService dos;
@@ -46,28 +24,18 @@ public class PhysicalEntityServiceTest {
     @Autowired
     private PhysicalEntityService physicalEntityService;
 
-    @BeforeClass
-    public static void setUpClass() {
-        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
+    @BeforeTestClass
+    public void setUpClass() {
+        logger.info(" --- !!! Running " + PhysicalEntityServiceTest.class.getName() + " !!! --- \n");
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterTestClass
+    public void tearDownClass() {
         logger.info("\n\n");
     }
 
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-        DatabaseObjectFactory.clearCache();
-    }
-
     @Test
-    public void testGetOtherFormsOfThisMoleculeByDbId() throws InvocationTargetException, IllegalAccessException {
+    public void testGetOtherFormsOfThisMoleculeByDbId() {
 
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByDbId");
         long start, time;
@@ -81,7 +49,7 @@ public class PhysicalEntityServiceTest {
     }
 
     @Test
-    public void testGetOtherFormsOfThisMoleculeByStId() throws InvocationTargetException, IllegalAccessException {
+    public void testGetOtherFormsOfThisMoleculeByStId() {
 
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
         long start, time;
@@ -95,7 +63,7 @@ public class PhysicalEntityServiceTest {
     }
 
     @Test
-    public void testGetOtherFormsOfThisMoleculeByPhysicalEntity() throws InvocationTargetException, IllegalAccessException {
+    public void testGetOtherFormsOfThisMoleculeByPhysicalEntity() {
 
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
         long start, time;
@@ -110,7 +78,8 @@ public class PhysicalEntityServiceTest {
     }
 
     @Test
-    public void testGetComplexesFor(){
+    public void testGetComplexesFor() {
+
         logger.info("Started testing physicalEntityService.testGetComplexesFor");
         long start, time;
         start = System.currentTimeMillis();
@@ -120,10 +89,12 @@ public class PhysicalEntityServiceTest {
 
         assertTrue(complexes.size() >= 5);
         logger.info("Finished");
+
     }
 
     @Test
-    public void testGetComplexSubunits(){
+    public void testGetComplexSubunits() {
+
         logger.info("Started testing physicalEntityService.testGetComplexSubunits");
         long start, time;
         start = System.currentTimeMillis();
@@ -133,5 +104,6 @@ public class PhysicalEntityServiceTest {
 
         assertTrue(complexSubunits.size() >= 5);
         logger.info("Finished");
+
     }
 }

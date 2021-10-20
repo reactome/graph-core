@@ -1,13 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-/**
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
- */
 @SuppressWarnings({"unused", "WeakerAccess"})
-@NodeEntity
+@Node
 public abstract class Drug extends PhysicalEntity {
 
     @Relationship(type = "referenceEntity")
@@ -19,7 +16,6 @@ public abstract class Drug extends PhysicalEntity {
         return referenceEntity;
     }
 
-    @Relationship(type = "referenceEntity")
     public void setReferenceEntity(ReferenceTherapeutic referenceEntity) {
         this.referenceEntity = referenceEntity;
     }

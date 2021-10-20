@@ -1,8 +1,5 @@
 package org.reactome.server.graph.domain.schema;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 public enum SchemaDataDownloadType {
     SBML        ("SBML", "https://reactome.org/ContentService/exporter/sbml/__ID__.xml"),
     SBGN        ("SBGN", "https://reactome.org/ReactomeRESTfulAPI/RESTfulWS/sbgnExporter/__ID__"),
@@ -12,8 +9,8 @@ public enum SchemaDataDownloadType {
     WORD        ("DOCX", "https://reactome.org/cgi-bin/rtfexporter?DB=gk_current&ID=__ID__"),
     PROTEGE     ("OWL", "https://reactome.org/cgi-bin/protegeexporter?DB=gk_current&ID=__ID__");
 
-    private String format;
-    private String url;
+    private final String format;
+    private final String url;
 
     SchemaDataDownloadType(String format, String url) {
         this.format = format;

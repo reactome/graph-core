@@ -1,10 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
+import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
-@NodeEntity
-public class TranscriptionalModification extends AbstractModifiedResidue {
+@Node
+public abstract class TranscriptionalModification extends AbstractModifiedResidue {
 
     public TranscriptionalModification() { }
 }

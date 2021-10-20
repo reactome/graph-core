@@ -1,11 +1,11 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
-@NodeEntity
+@Node
 public class MarkerReference extends ControlReference {
 
     @Relationship(type = "marker")
@@ -18,7 +18,6 @@ public class MarkerReference extends ControlReference {
         return marker;
     }
 
-    @Relationship(type = "marker")
     public void setMarker(List<EntityWithAccessionedSequence> marker) {
         this.marker = marker;
     }

@@ -1,19 +1,22 @@
 package org.reactome.server.graph.domain.result;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
-
 import java.util.List;
 
-@QueryResult
 public class DiagramResult {
 
     private String diagramStId;
-
     private List<String> events;
-
     private Integer width;
-
     private Integer height;
+
+    public DiagramResult() { }
+
+    public DiagramResult(String diagramStId, List<String> events, Integer width, Integer height) {
+        this.diagramStId = diagramStId;
+        this.events = events;
+        this.width = width;
+        this.height = height;
+    }
 
     public String getDiagramStId() {
         return diagramStId;

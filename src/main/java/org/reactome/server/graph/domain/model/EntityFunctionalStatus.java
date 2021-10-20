@@ -1,12 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class EntityFunctionalStatus extends DatabaseObject {
 
     @Relationship(type = "functionalStatus")
@@ -25,7 +25,6 @@ public class EntityFunctionalStatus extends DatabaseObject {
         return functionalStatus;
     }
 
-    @Relationship(type = "functionalStatus")
     public void setFunctionalStatus(List<FunctionalStatus> functionalStatus) {
         this.functionalStatus = functionalStatus;
     }
@@ -34,7 +33,6 @@ public class EntityFunctionalStatus extends DatabaseObject {
         return diseaseEntity;
     }
 
-    @Relationship(type = "diseaseEntity")
     public void setDiseaseEntity(PhysicalEntity diseaseEntity) {
         this.diseaseEntity = diseaseEntity;
     }
@@ -43,7 +41,6 @@ public class EntityFunctionalStatus extends DatabaseObject {
         return normalEntity;
     }
 
-    @Relationship(type = "normalEntity")
     public void setNormalEntity(PhysicalEntity normalEntity) {
         this.normalEntity = normalEntity;
     }

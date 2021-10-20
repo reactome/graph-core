@@ -1,9 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-@NodeEntity
+@Node
 public class CellDevelopmentStep extends ReactionLikeEvent {
 
     @Relationship(type = "tissue")
@@ -17,7 +17,6 @@ public class CellDevelopmentStep extends ReactionLikeEvent {
         return tissue;
     }
 
-    @Relationship(type = "tissue")
     public void setTissue(Anatomy tissue) {
         this.tissue = tissue;
     }

@@ -1,17 +1,17 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by:
@@ -26,18 +26,17 @@ public class DetailsServiceTest extends BaseTest {
     @Autowired
     private DetailsService detailsService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
     }
 
     @Test
     public void getContentDetailsTest() {
-
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails(stId, false);
+        ContentDetails contentDetails = detailsService.getContentDetails(199420L, false);
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 
@@ -47,7 +46,6 @@ public class DetailsServiceTest extends BaseTest {
         assertTrue(contentDetails.getComponentOf().size() >= 1);
         logger.info("Finished");
     }
-
 
     @Test
     public void getLocationInPathwayBrowserForPathwaysTest() {

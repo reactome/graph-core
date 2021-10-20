@@ -50,12 +50,14 @@ public class AdvancedDatabaseObjectService {
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
-    public <T extends DatabaseObject> T findByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return advancedDatabaseObjectRepository.findByProperty(clazz, property, value, depth);
+    @Deprecated
+    public <T extends DatabaseObject> DatabaseObject findByProperty(Class<T> clazz, String property, Object value) {
+        return advancedDatabaseObjectRepository.findByProperty(clazz, property, value);
     }
 
-    public <T extends DatabaseObject> Collection<T> findAllByProperty(Class<T> clazz, String property, Object value, Integer depth) {
-        return advancedDatabaseObjectRepository.findAllByProperty(clazz, property, value, depth);
+    @Deprecated
+    public <T extends DatabaseObject> Collection<DatabaseObject> findAllByProperty(Class<T> clazz, String property, Object value) {
+        return advancedDatabaseObjectRepository.findAllByProperty(clazz, property, value);
     }
 
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
@@ -119,7 +121,7 @@ public class AdvancedDatabaseObjectService {
     public void customQuery(String query) {
         customQuery(query, Collections.emptyMap());
     }
-
+    
     public void customQuery(String query, Map<String, Object> parameters) {
         advancedDatabaseObjectRepository.customQuery(query, parameters);
     }

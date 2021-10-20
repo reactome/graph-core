@@ -1,10 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class FunctionalStatus extends DatabaseObject {
 
     @Relationship(type = "functionalStatusType")
@@ -19,7 +19,6 @@ public class FunctionalStatus extends DatabaseObject {
         return functionalStatusType;
     }
 
-    @Relationship(type = "functionalStatusType")
     public void setFunctionalStatusType(FunctionalStatusType functionalStatusType) {
         this.functionalStatusType = functionalStatusType;
     }
@@ -28,7 +27,6 @@ public class FunctionalStatus extends DatabaseObject {
         return structuralVariant;
     }
 
-    @Relationship(type = "structuralVariant")
     public void setStructuralVariant(SequenceOntology structuralVariant) {
         this.structuralVariant = structuralVariant;
     }

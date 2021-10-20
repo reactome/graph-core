@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 @Service
 public class SpeciesService {
 

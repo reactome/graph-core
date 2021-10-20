@@ -1,25 +1,21 @@
 package org.reactome.server.graph.service;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.aop.SortingAspect;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-/**
- * @author Guilherme Viteri (gviteri@ebi.ac.uk)
- * @since 14.06.16.
- */
 public class SortingAspectsTest extends BaseTest {
 
     private static final String stId = "R-HSA-2466381";
@@ -30,16 +26,16 @@ public class SortingAspectsTest extends BaseTest {
     @Autowired
     private SortingAspect sortingAspect;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + SortingAspectsTest.class.getName() + "!!! --- \n");
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = generalService.fitForService();
+            isFit = fitForService();
             checkedOnce = true;
         }
 
@@ -69,7 +65,7 @@ public class SortingAspectsTest extends BaseTest {
         return true;
     }
 
-    @After
+    @AfterEach
     public void setDown(){
         sortingAspect.setEnableSorting(false);
     }

@@ -1,16 +1,17 @@
 package org.reactome.server.graph.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.schema.SchemaDataSet;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -20,14 +21,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 /**
  * The documentation for schema validation is at https://developers.google.com/search/docs/guides/prototype
- *
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 public class SchemaDataSetTest extends BaseTest {
 
@@ -39,16 +39,16 @@ public class SchemaDataSetTest extends BaseTest {
     @Autowired
     private GeneralService generalService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + SchemaDataSetTest.class.getName() + "!!! --- \n");
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = generalService.fitForService();
+            isFit = fitForService();
             checkedOnce = true;
         }
 
@@ -70,6 +70,9 @@ public class SchemaDataSetTest extends BaseTest {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String json = mapper.writeValueAsString(schemaDataSet);
+
+            // How to test online ?
+            // https://search.google.com/structured-data/testing-tool and post the json output
 
             URL url = new URL("https://search.google.com/structured-data/testing-tool/validate");
             URLConnection con = url.openConnection();
@@ -93,8 +96,9 @@ public class SchemaDataSetTest extends BaseTest {
                 os.write(out);
             }
 
-            String response = IOUtils.toString(http.getInputStream(), "UTF-8");
-            Boolean valid = response.contains("\"totalNumErrors\":0,\"totalNumWarnings\":0");
+            String response = new BufferedReader(new InputStreamReader(http.getInputStream()))
+                    .lines().collect(Collectors.joining("\n"));
+            boolean valid = response.contains("\"totalNumErrors\":0,\"totalNumWarnings\":0");
             assertTrue("The generated schema should not have errors neither warnings", valid);
         } catch (IOException e) {
             e.printStackTrace();

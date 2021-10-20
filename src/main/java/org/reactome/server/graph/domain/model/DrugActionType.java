@@ -1,11 +1,11 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
-@NodeEntity
+@Node
 public class DrugActionType extends ReactionType {
 
     @Relationship(type = "instanceOf")
@@ -18,7 +18,6 @@ public class DrugActionType extends ReactionType {
         return instanceOf;
     }
 
-    @Relationship(type = "instanceOf")
     public void setInstanceOf(List<DrugActionType> instanceOf) {
         this.instanceOf = instanceOf;
     }

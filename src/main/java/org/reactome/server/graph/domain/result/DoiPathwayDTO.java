@@ -1,26 +1,36 @@
 package org.reactome.server.graph.domain.result;
 
-import org.reactome.server.graph.domain.model.Pathway;
+import org.neo4j.driver.Record;
+import org.reactome.server.graph.domain.ReflectionUtils;
 import org.reactome.server.graph.domain.model.Person;
-import org.springframework.data.neo4j.annotation.QueryResult;
+import org.springframework.data.neo4j.core.schema.Id;
 
 import java.util.Collection;
+import java.util.Collections;
 
-@QueryResult
-public class PathwayResult {
+public class DoiPathwayDTO {
+    @Id private String stId;
     private String displayName;
     private String doi;
-    private String stId;
     private String species;
     private String releaseDate;
     private String reviseDate;
     private String releaseStatus;
-    private Collection<Person> authors;
-    private Collection<Person> reviewers;
-    private Collection<Person> editors;
-    private Collection<Pathway> subPathway;
+    private Collection<? extends Person> authors;
+    private Collection<? extends Person> reviewers;
+    private Collection<? extends Person> editors;
 
-    public PathwayResult() {
+    public DoiPathwayDTO(Record record) {
+        displayName = record.get("displayName").asString(null);
+        doi = record.get("doi").asString(null);
+        stId = record.get("stId").asString(null);
+        species = record.get("species").asString(null);
+        reviseDate = record.get("reviseDate").asString(null);
+        releaseStatus = record.get("releaseStatus").asString(null);
+        releaseDate = record.get("releaseDate").asString();
+        authors = !record.get("authors").isNull() ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p)) : Collections.emptyList();
+        reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
+        editors = !record.get("editors").isNull() ? record.get("editors").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
     }
 
     public String getDisplayName() {
@@ -79,7 +89,7 @@ public class PathwayResult {
         this.releaseStatus = releaseStatus;
     }
 
-    public Collection<Person> getAuthors() {
+    public Collection<? extends Person> getAuthors() {
         return authors;
     }
 
@@ -87,7 +97,7 @@ public class PathwayResult {
         this.authors = authors;
     }
 
-    public Collection<Person> getReviewers() {
+    public Collection<? extends Person> getReviewers() {
         return reviewers;
     }
 
@@ -95,20 +105,12 @@ public class PathwayResult {
         this.reviewers = reviewers;
     }
 
-    public Collection<Person> getEditors() {
+    public Collection<? extends Person> getEditors() {
         return editors;
     }
 
     public void setEditors(Collection<Person> editors) {
         this.editors = editors;
-    }
-
-    public Collection<Pathway> getSubPathway() {
-        return subPathway;
-    }
-
-    public void setSubPathway(Collection<Pathway> subPathway) {
-        this.subPathway = subPathway;
     }
 }
 

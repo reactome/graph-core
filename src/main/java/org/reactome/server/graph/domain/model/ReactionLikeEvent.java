@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public abstract class ReactionLikeEvent extends Event {
 
     @ReactomeProperty
@@ -43,11 +43,11 @@ public abstract class ReactionLikeEvent extends Event {
     @Relationship(type = "input")
     private Set<Input> input;
 
-    @Relationship(type = "normalReaction")
-    private ReactionLikeEvent normalReaction;
-
     @Relationship(type = "output")
     private Set<Output> output;
+
+    @Relationship(type = "normalReaction")
+    private ReactionLikeEvent normalReaction;
 
     @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
@@ -65,6 +65,10 @@ public abstract class ReactionLikeEvent extends Event {
     private List<ReactionType> reactionType;
 
     public ReactionLikeEvent() {
+    }
+
+    public ReactionLikeEvent(Long dbId) {
+        super(dbId);
     }
 
     public Boolean getIsChimeric() {
@@ -95,17 +99,14 @@ public abstract class ReactionLikeEvent extends Event {
         return catalystActivity;
     }
 
-    @Relationship(type = "catalystActivity")
     public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
         this.catalystActivity = catalystActivity;
     }
 
-    @Relationship(type = "catalystActivityReference")
     public CatalystActivityReference getCatalystActivityReference() {
         return catalystActivityReference;
     }
 
-    @Relationship(type = "catalystActivityReference")
     public void setCatalystActivityReference(CatalystActivityReference catalystActivityReference) {
         this.catalystActivityReference = catalystActivityReference;
     }
@@ -114,7 +115,6 @@ public abstract class ReactionLikeEvent extends Event {
         return entityFunctionalStatus;
     }
 
-    @Relationship(type = "entityFunctionalStatus")
     public void setEntityFunctionalStatus(List<EntityFunctionalStatus> entityFunctionalStatus) {
         this.entityFunctionalStatus = entityFunctionalStatus;
     }
@@ -123,7 +123,6 @@ public abstract class ReactionLikeEvent extends Event {
         return entityOnOtherCell;
     }
 
-    @Relationship(type = "entityOnOtherCell")
     public void setEntityOnOtherCell(List<PhysicalEntity> entityOnOtherCell) {
         this.entityOnOtherCell = entityOnOtherCell;
     }
@@ -132,17 +131,14 @@ public abstract class ReactionLikeEvent extends Event {
         return normalReaction;
     }
 
-    @Relationship(type = "normalReaction")
     public void setNormalReaction(ReactionLikeEvent normalReaction) {
         this.normalReaction = normalReaction;
     }
 
-    @Relationship(type = "regulatedBy")
     public List<Regulation> getRegulatedBy() {
         return regulatedBy;
     }
 
-    @Relationship(type = "regulatedBy")
     public void setRegulatedBy(List<Regulation> regulatedBy) {
         this.regulatedBy = regulatedBy;
     }
@@ -151,7 +147,6 @@ public abstract class ReactionLikeEvent extends Event {
         return regulationReference;
     }
 
-    @Relationship(type = "regulationReference")
     public void setRegulationReference(List<RegulationReference> regulationReference) {
         this.regulationReference = regulationReference;
     }
@@ -160,7 +155,6 @@ public abstract class ReactionLikeEvent extends Event {
         return requiredInputComponent;
     }
 
-    @Relationship(type = "requiredInputComponent")
     public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
     }
@@ -169,7 +163,6 @@ public abstract class ReactionLikeEvent extends Event {
         return hasInteraction;
     }
 
-    @Relationship(type = "hasInteraction")
     public void setHasInteraction(List<InteractionEvent> hasInteraction) {
         this.hasInteraction = hasInteraction;
     }
@@ -178,7 +171,6 @@ public abstract class ReactionLikeEvent extends Event {
         return reactionType;
     }
 
-    @Relationship(type = "reactionType")
     public void setReactionType(List<ReactionType> reactionType) {
         this.reactionType = reactionType;
     }
@@ -216,7 +208,7 @@ public abstract class ReactionLikeEvent extends Event {
             Input input = map.get(physicalEntity.getDbId());
             if (input == null) {
                 input = new Input();
-                input.setReactionLikeEvent(this);
+//                input.setReactionLikeEvent(this);
                 input.setPhysicalEntity(physicalEntity);
                 map.put(physicalEntity.getDbId(), input);
             } else {
@@ -236,6 +228,13 @@ public abstract class ReactionLikeEvent extends Event {
             Collections.sort(objects);
         }
         return objects;
+    }
+    //public Set<Output> getOutput(){
+    //    return this.output;
+    //}
+
+    public void setOutput(Set<Output> output) {
+        this.output = output;
     }
 
     public List<PhysicalEntity> getOutput() {
@@ -259,7 +258,7 @@ public abstract class ReactionLikeEvent extends Event {
             Output output = map.get(physicalEntity.getDbId());
             if (output == null) {
                 output = new Output();
-                output.setReactionLikeEvent(this);
+//                output.setReactionLikeEvent(this);
                 output.setPhysicalEntity(physicalEntity);
                 map.put(physicalEntity.getDbId(), output);
             } else {

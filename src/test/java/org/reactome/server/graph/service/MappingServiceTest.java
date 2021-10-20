@@ -1,26 +1,22 @@
 package org.reactome.server.graph.service;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
- */
 public class MappingServiceTest extends BaseTest {
 
     @Autowired
     private MappingService mappingService;
 
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + MappingServiceTest.class.getName() + " !!! --- \n");
     }
 
@@ -36,11 +32,11 @@ public class MappingServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent by gene name with species execution time: " + time + "ms");
 
-        assertNotNull("P60484 is present in the database", rles1);
-        assertNotNull("PTEN is present in the database", rles2);
-        assertTrue("P60484 is present in the database", !rles1.isEmpty());
-        assertTrue("PTEN is present in the database", !rles2.isEmpty());
-        assertTrue("",rles1.size() <= rles2.size());
+        assertNotNull(rles1, "P60484 is present in the database");
+        assertNotNull(rles2, "PTEN is present in the database");
+        assertFalse(rles1.isEmpty(), "P60484 is present in the database");
+        assertFalse(rles2.isEmpty(), "PTEN is present in the database");
+        assertTrue(rles1.size() <= rles2.size());
         logger.info("Finished");
     }
 
@@ -57,11 +53,11 @@ public class MappingServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent by name with species execution time: " + time + "ms");
 
-        assertNotNull("15377 is present in the database", rles1);
-        assertNotNull("water is present in the database", rles2);
-        assertTrue("15377 is present in the database", !rles1.isEmpty());
-        assertTrue("water is present in the database", !rles2.isEmpty());
-        assertTrue("",rles1.size() <= rles2.size());
+        assertNotNull(rles1,"15377 is present in the database");
+        assertNotNull(rles2, "water is present in the database");
+        assertFalse(rles1.isEmpty(), "15377 is present in the database");
+        assertFalse(rles2.isEmpty(), "water is present in the database");
+        assertTrue(rles1.size() <= rles2.size());
         logger.info("Finished");
     }
 
@@ -77,11 +73,11 @@ public class MappingServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getPathways by gene name with species execution time: " + time + "ms");
 
-        assertNotNull("P60484 is present in the database", ps1);
-        assertNotNull("PTEN is present in the database", ps2);
-        assertTrue("P60484 is present in the database", !ps1.isEmpty());
-        assertTrue("PTEN is present in the database", !ps2.isEmpty());
-        assertTrue("",ps1.size() <= ps2.size());
+        assertNotNull(ps1, "P60484 is present in the database");
+        assertNotNull(ps2, "PTEN is present in the database");
+        assertFalse(ps1.isEmpty(), "P60484 is present in the database");
+        assertFalse(ps2.isEmpty(), "PTEN is present in the database");
+        assertTrue(ps1.size() <= ps2.size());
         logger.info("Finished");
     }
 
@@ -98,11 +94,11 @@ public class MappingServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getPathways by name with species execution time: " + time + "ms");
 
-        assertNotNull("15377 is present in the database", ps1);
-        assertNotNull("water is present in the database", ps2);
-        assertTrue("15377 is present in the database", !ps1.isEmpty());
-        assertTrue("water is present in the database", !ps2.isEmpty());
-        assertTrue("",ps1.size() <= ps2.size());
+        assertNotNull(ps1, "15377 is present in the database");
+        assertNotNull(ps2, "water is present in the database");
+        assertFalse(ps1.isEmpty(), "15377 is present in the database");
+        assertFalse(ps2.isEmpty(), "water is present in the database");
+        assertTrue(ps1.size() <= ps2.size());
         logger.info("Finished");
     }
 }
