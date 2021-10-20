@@ -5,8 +5,9 @@ import org.reactome.server.graph.domain.model.Event;
 
 @SuppressWarnings("unused")
 public class SchemaDataDownload {
-    private String contentUrl;
-    private String fileFormat;
+    private final String contentUrl;
+    private final String fileFormat;
+    private final String encodingFormat = "UTF-8";
 
     public SchemaDataDownload(SchemaDataDownloadType dataDownloadType, Event event) {
         this.contentUrl = dataDownloadType.getUrl(event.getDbId());
@@ -19,6 +20,10 @@ public class SchemaDataDownload {
 
     public String getFileFormat() {
         return fileFormat;
+    }
+
+    public String getEncodingFormat() {
+        return encodingFormat;
     }
 
     @JsonGetter(value = "@type")

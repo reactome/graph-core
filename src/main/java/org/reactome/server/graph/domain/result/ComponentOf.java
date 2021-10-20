@@ -1,8 +1,11 @@
 package org.reactome.server.graph.domain.result;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
 
-import java.util.*;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by:
@@ -11,7 +14,7 @@ import java.util.*;
  * @since 18.04.16.
  */
 @SuppressWarnings("unused")
-@QueryResult
+
 public class ComponentOf {
 
     private String type;
@@ -21,6 +24,16 @@ public class ComponentOf {
     private List<String> species;
 
     public ComponentOf() {
+    }
+
+    public static ComponentOf build(Record record) {
+        ComponentOf cof = new ComponentOf();
+        cof.setType(record.get("type").asString());
+        cof.setNames(record.get("names").asList(Value::asString));
+        cof.setStIds(record.get("stIds").asList(Value::asString));
+        cof.setSchemaClasses(record.get("schemaClasses").asList(Value::asString));
+        cof.setSpecies(record.get("species").asList(Value::asString));
+        return cof;
     }
 
     public String getType() {

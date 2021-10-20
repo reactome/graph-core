@@ -10,15 +10,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 @Service
 @SuppressWarnings("WeakerAccess")
 public class OrthologyService {
 
+    private final OrthologyRepository orthologyRepository;
+
     @Autowired
-    private OrthologyRepository orthologyRepository;
+    public OrthologyService(OrthologyRepository orthologyRepository) {
+        this.orthologyRepository = orthologyRepository;
+    }
 
     public Collection<DatabaseObject> getOrthology(Object identifier, Long speciesId){
         String id = DatabaseObjectUtils.getIdentifier(identifier);

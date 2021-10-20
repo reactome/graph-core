@@ -1,23 +1,18 @@
 package org.reactome.server.graph.domain.result;
 
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.springframework.data.neo4j.annotation.QueryResult;
 
 import java.util.Collection;
+import java.util.Objects;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 @SuppressWarnings("unused")
-@QueryResult
 public class SimpleDatabaseObject implements DatabaseObjectLike {
 
     private Long dbId;
-
     private String stId;
-
     private String displayName;
-
     private String schemaClass;
 
     public SimpleDatabaseObject() {}
@@ -54,6 +49,32 @@ public class SimpleDatabaseObject implements DatabaseObjectLike {
         this.schemaClass = DatabaseObjectUtils.getSchemaClass(labels);
     }
 
+    public static SimpleDatabaseObject build(Record record) {
+        SimpleDatabaseObject simpleDatabaseObject = new SimpleDatabaseObject();
+        simpleDatabaseObject.setDbId(record.get("dbId").asLong());
+        simpleDatabaseObject.setStId(record.get("stId").asString(null));
+        simpleDatabaseObject.setDisplayName(record.get("displayName").asString());
+        simpleDatabaseObject.setLabels(record.get("labels").asList(Value::asString));
+        return simpleDatabaseObject;
+    }
+
+    public static SimpleDatabaseObject build(Value value) {
+        SimpleDatabaseObject simpleDatabaseObject = new SimpleDatabaseObject();
+        simpleDatabaseObject.setDbId(value.get("dbId").asLong());
+        simpleDatabaseObject.setStId(value.get("stId").asString(null));
+        simpleDatabaseObject.setDisplayName(value.get("displayName").asString());
+        if(!value.get("labels").isNull()) {
+            simpleDatabaseObject.setLabels(value.get("labels").asList(Value::asString));
+        } else {
+            simpleDatabaseObject.setSchemaClass(value.get("schemaClass").asString());
+        }
+        return simpleDatabaseObject;
+    }
+
+    private void setSchemaClass(String schemaClass) {
+        this.schemaClass = schemaClass;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,7 +82,7 @@ public class SimpleDatabaseObject implements DatabaseObjectLike {
 
         SimpleDatabaseObject that = (SimpleDatabaseObject) o;
 
-        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null;
+        return Objects.equals(dbId, that.dbId);
     }
 
     @Override

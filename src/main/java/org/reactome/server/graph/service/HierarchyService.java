@@ -11,23 +11,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 31.05.16.
- */
 @Service
 @SuppressWarnings("WeakerAccess")
 public class HierarchyService {
 
+    private final HierarchyRepository hierarchyRepository;
+
     @Autowired
-    private HierarchyRepository hierarchyRepository;
+    public HierarchyService(HierarchyRepository hierarchyRepository) {
+        this.hierarchyRepository = hierarchyRepository;
+    }
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------
 
     public PathwayBrowserNode getLocationsInPathwayBrowser(Object identifier, Boolean showDirectParticipants, Boolean omitNonDisplayableItems) {
-
         if (omitNonDisplayableItems == null) omitNonDisplayableItems = true;
         if (showDirectParticipants == null) showDirectParticipants = false;
         String id = DatabaseObjectUtils.getIdentifier(identifier);
@@ -52,7 +49,6 @@ public class HierarchyService {
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
     public PathwayBrowserNode getSubHierarchy(Object identifier) {
-
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return hierarchyRepository.getSubHierarchy(id);

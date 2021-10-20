@@ -1,45 +1,37 @@
 package org.reactome.server.graph.service;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-/**
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
- */
 public class StabilityAndConsistencyTest extends BaseTest {
 
     private static final String stId = "R-HSA-110243";
 
-    @Autowired
-    private DatabaseObjectService dbs;
+    @Autowired private DatabaseObjectService dbs;
+    @Autowired private SpeciesService speciesService;
+    @Autowired private SchemaService schemaService;
 
-    @Autowired
-    private SpeciesService speciesService;
-
-    @Autowired
-    private SchemaService schemaService;
-
-    @BeforeClass
-    public static void setUpClass() {
+    @BeforeTestClass
+    public void setUpClass() {
         logger.info(" --- !!! Running " + StabilityAndConsistencyTest.class.getName() + "!!! --- \n");
     }
 
     @Override
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if (!checkedOnce) {
-            isFit = generalService.fitForService();
+            isFit = fitForService();
             checkedOnce = true;
         }
 

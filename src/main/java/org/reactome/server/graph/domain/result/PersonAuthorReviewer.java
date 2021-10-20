@@ -1,9 +1,7 @@
 package org.reactome.server.graph.domain.result;
 
 import org.reactome.server.graph.domain.model.Person;
-import org.springframework.data.neo4j.annotation.QueryResult;
 
-@QueryResult
 public class PersonAuthorReviewer {
 
     private Person person;
@@ -12,6 +10,13 @@ public class PersonAuthorReviewer {
     private Long authoredReactions;
     private Long reviewedReactions;
 
+    public PersonAuthorReviewer(Person person, Long authoredPathways, Long reviewedPathways, Long authoredReactions, Long reviewedReactions) {
+        this.person = person;
+        this.authoredPathways = authoredPathways;
+        this.reviewedPathways = reviewedPathways;
+        this.authoredReactions = authoredReactions;
+        this.reviewedReactions = reviewedReactions;
+    }
 
     public Person getPerson() {
         return person;
@@ -32,4 +37,25 @@ public class PersonAuthorReviewer {
     public Long getReviewedReactions() {
         return reviewedReactions;
     }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public void setAuthoredPathways(Long authoredPathways) {
+        this.authoredPathways = authoredPathways;
+    }
+
+    public void setReviewedPathways(Long reviewedPathways) {
+        this.reviewedPathways = reviewedPathways;
+    }
+
+    public void setAuthoredReactions(Long authoredReactions) {
+        this.authoredReactions = authoredReactions;
+    }
+
+    public void setReviewedReactions(Long reviewedReactions) {
+        this.reviewedReactions = reviewedReactions;
+    }
+
 }

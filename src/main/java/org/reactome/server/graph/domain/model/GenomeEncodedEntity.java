@@ -1,15 +1,15 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 /**
  * A peptide or polynucleotide whose sequence is unknown and thus cannot be linked to external sequence databases or used for orthology inference.
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class GenomeEncodedEntity extends PhysicalEntity {
 
 
@@ -18,11 +18,14 @@ public class GenomeEncodedEntity extends PhysicalEntity {
 
     public GenomeEncodedEntity() {}
 
+    public GenomeEncodedEntity(Long dbId) {
+        super(dbId);
+    }
+
     public Taxon getSpecies() {
         return species;
     }
 
-    @Relationship(type = "species")
     public void setSpecies(Taxon species) {
         this.species = species;
     }

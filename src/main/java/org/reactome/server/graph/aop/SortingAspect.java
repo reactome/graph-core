@@ -49,7 +49,7 @@ public class SortingAspect {
             returnedValueAsList = (List<? extends DatabaseObject>) returnedValue;
 
             //noinspection Convert2Lambda, Do not apply lambda function here. ajc won't compile
-            Collections.sort(returnedValueAsList, new Comparator<DatabaseObject>() {
+            returnedValueAsList.sort(new Comparator<DatabaseObject>() {
                 @Override
                 public int compare(DatabaseObject o1, DatabaseObject o2) {
                     return o1.getDisplayName().compareTo(o2.getDisplayName());
@@ -78,7 +78,7 @@ public class SortingAspect {
             returnedValueAsList = new ArrayList<>(returnedValueSet);
 
             //noinspection Convert2Lambda, Do not apply lambda function here. ajc won't compile
-            Collections.sort(returnedValueAsList, new Comparator<DatabaseObject>() {
+            returnedValueAsList.sort(new Comparator<DatabaseObject>() {
                 @Override
                 public int compare(DatabaseObject o1, DatabaseObject o2) {
                     return o1.getDisplayName().compareTo(o2.getDisplayName());

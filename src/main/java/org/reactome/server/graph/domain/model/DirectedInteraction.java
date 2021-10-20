@@ -1,7 +1,7 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 /**
  * The name of the has been taken from Cytoscape.
@@ -10,10 +10,9 @@ import org.neo4j.ogm.annotation.Relationship;
  *
  *   (source) -[interacts]-> (target)
  *
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
-@NodeEntity
+@Node
 public class DirectedInteraction extends Interaction {
 
     @Relationship(type = "source")
@@ -28,7 +27,6 @@ public class DirectedInteraction extends Interaction {
         return source;
     }
 
-    @Relationship(type = "source")
     public void setSource(ReferenceEntity source) {
         this.source = source;
     }
@@ -37,7 +35,6 @@ public class DirectedInteraction extends Interaction {
         return target;
     }
 
-    @Relationship(type = "target")
     public void setTarget(ReferenceEntity target) {
         this.target = target;
     }

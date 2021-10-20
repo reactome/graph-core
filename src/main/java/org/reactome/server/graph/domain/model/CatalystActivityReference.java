@@ -1,9 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
-@NodeEntity
+@Node
 public class CatalystActivityReference extends ControlReference {
 
     @Relationship(type = "catalystActivity")
@@ -16,7 +16,6 @@ public class CatalystActivityReference extends ControlReference {
         return catalystActivity;
     }
 
-    @Relationship(type = "catalystActivity")
     public void setCatalystActivity(CatalystActivity catalystActivity) {
         this.catalystActivity = catalystActivity;
     }

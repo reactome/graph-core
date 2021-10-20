@@ -8,7 +8,6 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used to mark the fields that should not be added in the schema documentation
  *
- * @author Antonio Fabregat <fabregat@ebi.ac.uk>
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,65 +1,33 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 18.05.16.
- */
-@ContextConfiguration(classes = { Neo4jConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-public class TopLevelPathwayServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
-
-    @Autowired
-    private GeneralService generalService;
+@SpringBootTest
+public class TopLevelPathwayServiceTest extends BaseTest {
 
     @Autowired
     private TopLevelPathwayService topLevelPathwayService;
 
-    @BeforeClass
-    public static void setUpClass() {
-        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
+    @BeforeTestClass
+    public void setUpClass() {
+        logger.info(" --- !!! Running " + TopLevelPathwayServiceTest.class.getName() + " !!! --- \n");
     }
 
-    @AfterClass
-    public static void tearDownClass() {
+    @AfterTestClass
+    public void tearDownClass() {
         logger.info("\n\n");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-        DatabaseObjectFactory.clearCache();
     }
 
     @Test
@@ -144,5 +112,4 @@ public class TopLevelPathwayServiceTest {
         assertTrue(observedTlps.size() > 0);
         logger.info("Finished");
     }
-
 }

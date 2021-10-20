@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @Component
 public class DatabaseObjectUtils {
@@ -205,7 +204,7 @@ public class DatabaseObjectUtils {
     }
 
     public static boolean isDbId(String id) {
-        return id != null && StringUtils.isNumeric(id);
+        return StringUtils.isNumeric(id);
     }
 
     public static Class getClassForName(String className) throws ClassNotFoundException {

@@ -1,42 +1,27 @@
 package org.reactome.server.graph.domain.relationship;
 
-import org.neo4j.ogm.annotation.EndNode;
-import org.neo4j.ogm.annotation.GraphId;
-import org.neo4j.ogm.annotation.RelationshipEntity;
-import org.neo4j.ogm.annotation.StartNode;
 import org.reactome.server.graph.domain.model.AbstractModifiedResidue;
-import org.reactome.server.graph.domain.model.EntityWithAccessionedSequence;
+import org.springframework.data.neo4j.core.schema.GeneratedValue;
+import org.springframework.data.neo4j.core.schema.Id;
+import org.springframework.data.neo4j.core.schema.RelationshipProperties;
+import org.springframework.data.neo4j.core.schema.TargetNode;
+
+import java.util.Objects;
 
 /**
  * HasModifiedResidue is the relationship hasModifiedResidue of EntityWithAccessionedSequence.
  * It is needed to specify the stoichiometry and order of AbstractModifiedResidue instances.
  */
 @SuppressWarnings("unused")
-@RelationshipEntity(type = "hasModifiedResidue")
-public class HasModifiedResidue implements Comparable {
-
-    @GraphId
-    private Long id;
-
-    @StartNode
-    private EntityWithAccessionedSequence ewas;
-
-    @EndNode
-    private AbstractModifiedResidue abstractModifiedResidue;
+@RelationshipProperties
+public class HasModifiedResidue implements Comparable<HasModifiedResidue> {
+    @Id @GeneratedValue private Long id;
+    @TargetNode private AbstractModifiedResidue abstractModifiedResidue;
 
     private Integer stoichiometry = 1;
-
     private int order;
 
     public HasModifiedResidue() {}
-
-    public EntityWithAccessionedSequence getEntityWithAccessionedSequence() {
-        return ewas;
-    }
-
-    public void setEntityWithAccessionedSequence(EntityWithAccessionedSequence ewas) {
-        this.ewas = ewas;
-    }
 
     public AbstractModifiedResidue getAbstractModifiedResidue() {
         return abstractModifiedResidue;
@@ -66,22 +51,16 @@ public class HasModifiedResidue implements Comparable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        HasModifiedResidue that = (HasModifiedResidue) o;
-
-        if (ewas != null ? !ewas.equals(that.ewas) : that.ewas != null) return false;
-        return abstractModifiedResidue != null ? abstractModifiedResidue.equals(that.abstractModifiedResidue) : that.abstractModifiedResidue == null;
+        return Objects.equals(abstractModifiedResidue, ((HasModifiedResidue) o).getAbstractModifiedResidue());
     }
 
     @Override
     public int hashCode() {
-        int result = ewas != null ? ewas.hashCode() : 0;
-        result = 31 * result + (abstractModifiedResidue != null ? abstractModifiedResidue.hashCode() : 0);
-        return result;
+        return Objects.hash(abstractModifiedResidue);
     }
 
     @Override
-    public int compareTo(Object o) {
-        return this.order - ((HasModifiedResidue) o).order;
+    public int compareTo(HasModifiedResidue o) {
+        return this.order - o.order;
     }
 }

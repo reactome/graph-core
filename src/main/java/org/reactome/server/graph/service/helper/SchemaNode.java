@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service.helper;
 
-import javax.annotation.Nonnull;
+import org.springframework.lang.NonNull;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -86,7 +87,7 @@ public class SchemaNode implements Comparable<SchemaNode>{
     }
 
     @Override
-    public int compareTo(@Nonnull SchemaNode node) {
+    public int compareTo(@NonNull SchemaNode node) {
         return this.clazz.getSimpleName().compareTo(node.clazz.getSimpleName());
     }
 

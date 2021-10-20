@@ -1,15 +1,14 @@
 package org.reactome.server.graph.service.helper;
 
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.springframework.lang.NonNull;
 
-import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class AttributeProperties implements Comparable<AttributeProperties> {
@@ -55,7 +54,7 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
     }
 
     @Override
-    public int compareTo(@Nonnull AttributeProperties o) {
+    public int compareTo(@NonNull AttributeProperties o) {
         return comparator.compare(this, o);
     }
 }

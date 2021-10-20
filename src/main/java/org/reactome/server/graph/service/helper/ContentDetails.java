@@ -27,7 +27,8 @@ public class ContentDetails {
     }
 
     public void setComponentOf(Collection<ComponentOf> componentOfs) {
-        componentOfs.forEach(ComponentOf::sortByName);
+        // TODO sorting is not working as the list is unmodifiable
+//        componentOfs.forEach(ComponentOf::sortByName);
         this.componentOf = componentOfs;
     }
 

@@ -3,7 +3,6 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -13,16 +12,18 @@ import java.util.Set;
 /**
  * Created by:
  *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @author Guilherme Viter (gviteri@ebi.ac.uk)
- * @author Antonio Fabregat (fabregat@ebi.ac.uk)
+ * @author Florian Korninger
+ * @author Guilherme Viteri
  */
 @Service
 @SuppressWarnings({"WeakerAccess", "SpringAutowiredFieldsWarningInspection"})
 public class DatabaseObjectService {
 
-    @Autowired
-    private DatabaseObjectRepository databaseObjectRepository;
+    private final DatabaseObjectRepository databaseObjectRepository;
+
+    public DatabaseObjectService(DatabaseObjectRepository databaseObjectRepository) {
+        this.databaseObjectRepository = databaseObjectRepository;
+    }
 
     public <T extends DatabaseObject> T findById(Object identifier) {
         T rtn = null;

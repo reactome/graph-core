@@ -18,8 +18,12 @@ import java.util.Collection;
 @SuppressWarnings("WeakerAccess")
 public class TopLevelPathwayService {
 
+    public final TopLevelPathwayRepository topLevelPathwayRepository;
+
     @Autowired
-    public TopLevelPathwayRepository topLevelPathwayRepository;
+    public TopLevelPathwayService(TopLevelPathwayRepository topLevelPathwayRepository) {
+        this.topLevelPathwayRepository = topLevelPathwayRepository;
+    }
 
     public Collection<TopLevelPathway> getTopLevelPathways() {
         return topLevelPathwayRepository.getTopLevelPathways();

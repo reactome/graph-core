@@ -22,22 +22,21 @@ public class DatabaseObjectFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseObjectFactory.class);
 
-    /**
+    /*
      * The package name is used to create Object from GkInstance by reflection
      */
     private static final String PACKAGE_NAME = "org.reactome.server.graph.domain.model.";
     private static final DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    /**
+    /*
      * Reactome MySql database adapter
      */
-    @SuppressWarnings("CanBeFinal") //can not be final
     private static MySQLAdaptor dba;
 
-    /**
-     * Static initialisation block to create a connection to the Reactome MySql database.
-     * Properties inside of static init block can not be loaded by Spring (with eg. @Value annotation)
-     * Getting Properties as stream is the only option for retrieving properties for "static" class.
+    /*
+      Static initialisation block to create a connection to the Reactome MySql database.
+      Properties inside of static init block can not be loaded by Spring (with eg. @Value annotation)
+      Getting Properties as stream is the only option for retrieving properties for "static" class.
      */
     static {
         try {
@@ -116,13 +115,10 @@ public class DatabaseObjectFactory {
     /**
      * Method to create an object from a given Reactome identifier.
      * @param identifier StableIdentifier or dbId
-     * @param <T> TODO
      * @return Object that extends DatabaseObject
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> T createObject(String identifier)  {
-
-
         try {
             GKInstance instance  = getInstance(identifier);
             DatabaseObject databaseObject = createObject(instance);
@@ -144,7 +140,6 @@ public class DatabaseObjectFactory {
 
     @SuppressWarnings("unchecked")
     private static GKInstance getInstance(String identifier) throws Exception {
-
         identifier = identifier.trim().split("\\.")[0];
         if (identifier.startsWith("REACT")){
             return getInstance(dba.fetchInstanceByAttribute(ReactomeJavaConstants.StableIdentifier, "oldIdentifier", "=", identifier));
@@ -166,7 +161,7 @@ public class DatabaseObjectFactory {
 
     public static void clearCache() throws Exception {
         dba.refresh();
-//        dba.setUseCache(false);
+        dba.setUseCache(false);
     }
 
     private static void fill(DatabaseObject databaseObject, GKInstance instance) {
@@ -241,7 +236,6 @@ public class DatabaseObjectFactory {
 
     @SuppressWarnings("unchecked")
     private static DatabaseObject createObject(GKInstance instance) {
-
         String clazzName = PACKAGE_NAME + instance.getSchemClass().getName();
         try {
             Class<DatabaseObject> clazz = (Class<DatabaseObject>) Class.forName(clazzName);
@@ -291,11 +285,9 @@ public class DatabaseObjectFactory {
     }
 
     private static GKInstance getInstance(Collection<GKInstance> target) throws Exception {
-
         if(target==null || target.size()!=1) throw new Exception("Many options have been found fot the specified identifier");
+
         GKInstance stId = target.iterator().next();
         return (GKInstance) dba.fetchInstanceByAttribute(ReactomeJavaConstants.DatabaseObject, ReactomeJavaConstants.stableIdentifier, "=", stId).iterator().next();
     }
-
-
 }

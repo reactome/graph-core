@@ -1,15 +1,15 @@
 package org.reactome.server.graph.domain.model;
 
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-@NodeEntity
-public class ReferenceEntity extends DatabaseObject {
+@Node
+public abstract class ReferenceEntity extends DatabaseObject {
 
     // will be filled together with url
     private String databaseName;
@@ -29,7 +29,7 @@ public class ReferenceEntity extends DatabaseObject {
     private ReferenceDatabase referenceDatabase;
 
     @ReactomeRelationship
-    @Relationship(type = "referenceEntity", direction = Relationship.INCOMING)
+    @Relationship(type = "referenceEntity", direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> physicalEntity;
 
     public ReferenceEntity() {}
@@ -78,7 +78,6 @@ public class ReferenceEntity extends DatabaseObject {
         return crossReference;
     }
 
-    @Relationship(type = "crossReference")
     public void setCrossReference(List<DatabaseIdentifier> crossReference) {
         this.crossReference = crossReference;
     }
@@ -87,7 +86,6 @@ public class ReferenceEntity extends DatabaseObject {
         return referenceDatabase;
     }
 
-    @Relationship(type = "referenceDatabase")
     public void setReferenceDatabase(ReferenceDatabase referenceDatabase) {
         this.referenceDatabase = referenceDatabase;
     }
@@ -96,7 +94,6 @@ public class ReferenceEntity extends DatabaseObject {
         return physicalEntity;
     }
 
-    @Relationship(type = "referenceDatabase", direction = Relationship.INCOMING)
     public void setPhysicalEntity(List<PhysicalEntity> physicalEntity) {
         this.physicalEntity = physicalEntity;
     }

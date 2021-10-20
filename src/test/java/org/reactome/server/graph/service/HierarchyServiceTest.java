@@ -1,66 +1,32 @@
 package org.reactome.server.graph.service;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.reactome.server.graph.config.Neo4jConfig;
+import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
-import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * Created by:
- *
- * @author Florian Korninger (florian.korninger@ebi.ac.uk)
- * @since 31.05.16.
- */
-@ContextConfiguration(classes = {Neo4jConfig.class})
-@RunWith(SpringJUnit4ClassRunner.class)
-public class HierarchyServiceTest {
-
-    private static final Logger logger = LoggerFactory.getLogger("testLogger");
-
-    private static Boolean checkedOnce = false;
-    private static Boolean isFit = false;
+public class HierarchyServiceTest extends BaseTest {
 
     @Autowired
     private HierarchyService hierarchyService;
 
-    @Autowired
-    private GeneralService generalService;
-
-    @BeforeClass
-    public static void setUpClass() {
-        logger.info(" --- !!! Running " + DetailsServiceTest.class.getName() + " !!! --- \n");
+    @BeforeTestClass
+    public void setUpClass() {
+        logger.info(" --- !!! Running " + HierarchyServiceTest.class.getName() + " !!! --- \n");
     }
-    @AfterClass
-    public static void tearDownClass() {
+
+    @AfterTestClass
+    public void tearDownClass() {
         logger.info("\n\n");
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        if (!checkedOnce) {
-            isFit = generalService.fitForService();
-            checkedOnce = true;
-        }
-        assumeTrue(isFit);
-        DatabaseObjectFactory.clearCache();
     }
 
     @Test
@@ -92,16 +58,16 @@ public class HierarchyServiceTest {
     }
 
     @Test
-    public void getLocationInPathwayBrowserForPathwaysTest(){
+    public void getLocationInPathwayBrowserForPathwaysTest() {
         logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
-        List<Long> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L);
+        List<?> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L, "R-HSA-109581", "R-HSA-9612973");
         Set<PathwayBrowserNode> node = hierarchyService.getLocationInPathwayBrowserForPathways(pathways);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(2, node.size());
+        assertEquals(4, node.size());
         logger.info("Finished");
     }
 
@@ -118,6 +84,10 @@ public class HierarchyServiceTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(4, subHierarchy.getChildren().size());
+        assertTrue(subHierarchy.getHighlighted());
+        assertTrue(subHierarchy.isClickable());
+        assertEquals(6, subHierarchy.getChildren().iterator().next().getChildren().size());
+
         logger.info("Finished");
     }
 

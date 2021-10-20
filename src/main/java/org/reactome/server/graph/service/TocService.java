@@ -1,6 +1,6 @@
 package org.reactome.server.graph.service;
 
-import org.reactome.server.graph.domain.result.PathwayResult;
+import org.reactome.server.graph.domain.result.TocPathwayDTO;
 import org.reactome.server.graph.repository.TocRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class TocService {
      * related to this pathway, sub pathway and reactions.
      * Note: authors contains revised person
      */
-    public Collection<PathwayResult> getAllTocPathway() {
+    public Collection<TocPathwayDTO> getAllTocPathway() {
         return tocRepository.getTocPathways();
     }
 }
