@@ -113,6 +113,7 @@
         <maven.info.report.version>2.8.1</maven.info.report.version>
         <maven.jar.version>2.6</maven.jar.version>
         <maven.javadoc.version>2.10.3</maven.javadoc.version>
+        <maven.pmd.version>3.6</maven.pmd.version>
         <maven.release.version>2.5.3</maven.release.version>
         <maven.resources.version>3.0.1</maven.resources.version>
         <maven.site.version>3.4</maven.site.version>
@@ -120,7 +121,6 @@
         <maven.surefire.version>2.12.4</maven.surefire.version>
         <nexus-staging-maven-plugin>1.6.7</nexus-staging-maven-plugin>
         <jackrabbit.version>2.10</jackrabbit.version>
-        <pmd.version>3.6</pmd.version>
         <!-- will be set as system properties during testing phase -->
 
         <!-- Test dependencies -->
@@ -463,7 +463,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>${pmd.version}</version>
+                <version>${maven.pmd.version}</version>
                 <configuration>
                     <skipEmptyReport>false</skipEmptyReport>
                     <linkXRef>false</linkXRef>
