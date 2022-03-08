@@ -82,7 +82,7 @@ public class DiagramRepository {
         String query = "MATCH (root:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH path=(p:Pathway{hasDiagram:true})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(root) " +
                 "WHERE single(x IN nodes(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-                "OPTIONAL MATCH (d:Pathway{hasDiagram:true, stId:$stId}) " +
+                "OPTIONAL MATCH (d:Pathway{hasDiagram:true, dbId:$dbId}) " +
                 "WITH root, collect(DISTINCT d) + collect(DISTINCT p) AS directlyInDiagram " +
 
                 "OPTIONAL MATCH (root)-[:referenceEntity]->(:ReferenceEntity)<-[:interactor]-(:Interaction)-[:interactor]->(re:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
