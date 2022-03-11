@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service.helper;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.lang.NonNull;
 
 import java.util.Collections;
@@ -13,6 +15,7 @@ import java.util.TreeSet;
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @since 09.02.16.
  */
+@JsonPropertyOrder({"className", "count", "children"})
 public class SchemaNode implements Comparable<SchemaNode>{
 
     private final Class clazz;
@@ -27,8 +30,13 @@ public class SchemaNode implements Comparable<SchemaNode>{
     }
 
     @SuppressWarnings("unused") // clazz is used in the content service
+    @JsonIgnore
     public Class getClazz() {
         return clazz;
+    }
+
+    public String getClassName() {
+        return clazz.getSimpleName();
     }
 
     public Set<SchemaNode> getChildren() {
