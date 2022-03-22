@@ -93,12 +93,12 @@ public class DiagramServiceTest extends BaseTest {
         for (DiagramOccurrences o : dos) {
             assertNotNull(o.getDiagramStId());
             if(o.getDiagramStId().equals("R-HSA-168164")){
-                assertTrue(o.isInDiagram(), "'R-HSA-879382' is directly contained in 'R-HSA-168164'");
+                assertFalse(o.isInDiagram(), "'R-HSA-879382' should not be directly contained in 'R-HSA-168164'");
                 assertFalse(o.getOccurrences().isEmpty());
                 assertThat(o.getOccurrences()).containsAnyOf("R-HSA-445989", "R-HSA-109581", "R-HSA-450294");
             }
             if(o.getDiagramStId().equals("R-HSA-168928")){
-                assertTrue(o.isInDiagram(), "'R-HSA-879382' not directly contained in 'R-HSA-168928'");
+                assertTrue(o.isInDiagram(), "'R-HSA-879382' should be directly contained in 'R-HSA-168928'");
                 assertTrue(o.getOccurrences().isEmpty());
                 // TODO
             }

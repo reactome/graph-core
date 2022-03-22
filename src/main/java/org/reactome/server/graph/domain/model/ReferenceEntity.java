@@ -1,7 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -36,6 +38,12 @@ public abstract class ReferenceEntity extends DatabaseObject {
 
     public String getDatabaseName() {
         return databaseName;
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonIgnore
+    public String getSimplifiedDatabaseName() {
+        return databaseName.replace(" ", "-");
     }
 
     public void setDatabaseName(String databaseName) {
