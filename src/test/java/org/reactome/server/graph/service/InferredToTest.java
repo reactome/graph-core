@@ -62,13 +62,13 @@ public class InferredToTest extends BaseTest {
     public void getComputationallyInferredTest(){
         logger.info("Started testing InferredToTest.getComputationallyInferred");
         long start = System.currentTimeMillis();
-        Event event = databaseObjectService.findById("R-HSA-68827");
+        Event event = databaseObjectService.findById("R-SCE-9749401");
         Collection<Event> inferredTo = event.getOrthologousEvent();
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull(inferredTo, "The getOrthologousEvent for event 'R-HSA-68827' cannot be null");
-        assertFalse(inferredTo.isEmpty(), "The getOrthologousEvent for event 'R-HSA-68827' cannot be empty");
+        assertNotNull(inferredTo, "The getOrthologousEvent for event 'R-SCE-9749401' cannot be null");
+        assertFalse(inferredTo.isEmpty(), "The getOrthologousEvent for event 'R-SCE-9749401' cannot be empty");
     }
 
 }
