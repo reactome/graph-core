@@ -17,6 +17,8 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     private Boolean diagram;
     @JsonIgnore
     private Boolean unique;
+    @JsonIgnore
+    private Integer order;
 
     @JsonIgnore
     private boolean highlighted;
@@ -124,6 +126,18 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
         this.unique = unique;
     }
 
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public boolean isHighlighted() {
+        return highlighted;
+    }
+
     public Set<PathwayBrowserNode> getChildren() {
         return children;
     }
@@ -158,14 +172,22 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
 
     @Override
     public int compareTo(@NonNull PathwayBrowserNode node) {
-        // Sorting PathwayBrowserNode by species (if present) first, then sort by name.
+        // Sorting PathwayBrowserNode by species (if present) first, then sort by order, then by name.
+
         String thisSpecies = this.species == null ? "" : this.species;
         String nodeSpecies = node.getSpecies() == null ? "" : node.getSpecies();
         int speciesCompare = thisSpecies.compareTo(nodeSpecies);
         if (speciesCompare != 0) {
             return speciesCompare;
         } else {
-            return this.name.compareTo(node.getName());
+            int thisOrder = order == null ? 0 : order;
+            int nodeOrder = node.order == null ? 0 : node.order;
+            int diff = thisOrder - nodeOrder;
+            if (diff != 0) {
+                return diff;
+            } else {
+                return this.name.compareTo(node.getName());
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ public class HierarchyTreeItem {
     private String speciesName;
     private String schemaClass;
     private List<String> labels;
+    private int order;
 
     public HierarchyTreeItem() { }
 
@@ -29,6 +30,7 @@ public class HierarchyTreeItem {
         hierarchyTreeItem.setSpeciesName(valueNode.get(3).asString(null));
         hierarchyTreeItem.setSchemaClass(valueNode.get(4).asString(null));
         hierarchyTreeItem.setLabels(valueNode.get(5).asList(Value::asString));
+        hierarchyTreeItem.setOrder(valueNode.get(6).asInt());
         return hierarchyTreeItem;
     }
 
@@ -86,6 +88,14 @@ public class HierarchyTreeItem {
 
     public void setLabels(List<String> labels) {
         this.labels = labels;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     @Override
