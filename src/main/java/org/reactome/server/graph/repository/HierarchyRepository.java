@@ -304,8 +304,8 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
-                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
-                "collect( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n), 0] AS db, " +
+                "collect( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)), rel.order ]] ) AS nodePairCollection";
 
         return queryHierarchyWrapper(query, Collections.singletonMap("stId", stId));
     }
@@ -322,8 +322,8 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|activeUnit|catalystActivity|repeatedUnit|hasMember|hasCandidate|hasComponent|input|output|hasEvent*]-() " +
-                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
-                "collect( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n), 0] AS db, " +
+                "collect( [rel IN relationships(path)| [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)), rel.order ]] ) AS nodePairCollection";
 
         return queryHierarchyWrapper(query, Collections.singletonMap("dbId", dbId));
     }
@@ -343,8 +343,8 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|input|output|hasEvent*]-() " +
-                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
-                "collect( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n), 0] AS db, " +
+                "collect( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)), rel.order ]] ) AS nodePairCollection";
 
         return queryHierarchyWrapper(query, Collections.singletonMap("stId", stId));
     }
@@ -364,8 +364,8 @@ public class HierarchyRepository {
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH path=(n)<-[:regulatedBy|regulator|physicalEntity|catalystActivity|requiredInputComponent|diseaseEntity|entityFunctionalStatus|input|output|hasEvent*]-() " +
-                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n)] AS db, " +
-                "collect( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)) ]] ) AS nodePairCollection";
+                "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n), 0] AS db, " +
+                "collect( [rel IN relationships(path) | [startNode(rel).stId, startNode(rel).displayName, startNode(rel).hasDiagram,startNode(rel).speciesName, startNode(rel).schemaClass, labels(endNode(rel)), rel.order ]] ) AS nodePairCollection";
 
         return queryHierarchyWrapper(query, Collections.singletonMap("dbId", dbId));
     }
@@ -379,8 +379,8 @@ public class HierarchyRepository {
                 "WITH p, nodes(path) AS branch " +
                 "RETURN " +
                 "   CASE WHEN size(branch) > 0 " +
-                "   THEN [ na IN branch | [ na.stId, na.displayName, na.hasDiagram, na.speciesName, na.schemaClass, labels(na) ] ] " +
-                "   ELSE [ [ p.stId, p.displayName, p.hasDiagram, p.speciesName, p.schemaClass, labels(p) ] ]  " +
+                "   THEN [ na IN branch | [ na.stId, na.displayName, na.hasDiagram, na.speciesName, na.schemaClass, labels(na), 0 ] ] " +
+                "   ELSE [ [ p.stId, p.displayName, p.hasDiagram, p.speciesName, p.schemaClass, labels(p), 0 ] ]  " +
                 "END AS branch";
 
         List<String> stIds = new ArrayList<>();

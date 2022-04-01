@@ -18,7 +18,7 @@ public class HierarchyTreeItem {
     private String speciesName;
     private String schemaClass;
     private List<String> labels;
-    private int order;
+    private Integer order;
 
     public HierarchyTreeItem() { }
 
