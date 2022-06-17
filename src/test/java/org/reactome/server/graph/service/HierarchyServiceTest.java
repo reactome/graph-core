@@ -98,7 +98,7 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing eventService.getEventHierarchyBySpeciesNameTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy("Homo sapiens");
+        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy("Homo sapiens", false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -111,11 +111,26 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing eventService.getEventHierarchyByTaxIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy(9606);
+        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy(9606, false);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertTrue(eventHierarchy.size() > 20);
+        logger.info("Finished");
+    }
+
+    @Test
+    public void getPathwayHierarchyByTaxIdTest() {
+        logger.info("Started testing eventService.getEventHierarchyByTaxIdTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        Collection<PathwayBrowserNode> eventHierarchy = hierarchyService.getEventHierarchy(9606, true);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertTrue(eventHierarchy.size() > 20);
+        Set<String> possibleTypes = Set.of("TopLevelPathway", "Pathway");
+        assertTrue(eventHierarchy.stream().allMatch(pathwayBrowserNode -> possibleTypes.contains(pathwayBrowserNode.getType())));
         logger.info("Finished");
     }
 }

@@ -79,13 +79,13 @@ public class HierarchyRepository {
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------
 
-    public Collection<PathwayBrowserNode> getEventHierarchyBySpeciesName(String speciesName) {
-        Collection<HierarchyWrapper> result = getEventHierarchyBySpeciesNameRaw(speciesName);
+    public Collection<PathwayBrowserNode> getEventHierarchyBySpeciesName(String speciesName, String eventClass) {
+        Collection<HierarchyWrapper> result = getEventHierarchyBySpeciesNameRaw(speciesName, eventClass);
         return parseResults(result, false);
     }
 
-    public Collection<PathwayBrowserNode> getEventHierarchyByTaxId(String taxId) {
-        Collection<HierarchyWrapper> result = getEventHierarchyByTaxIdRaw(taxId);
+    public Collection<PathwayBrowserNode> getEventHierarchyByTaxId(String taxId, String eventClass) {
+        Collection<HierarchyWrapper> result = getEventHierarchyByTaxIdRaw(taxId, eventClass);
         return parseResults(result, false);
     }
 
@@ -267,27 +267,27 @@ public class HierarchyRepository {
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------
 
-    private Collection<HierarchyWrapper> getEventHierarchyBySpeciesNameRaw(String speciesName) {
+    private Collection<HierarchyWrapper> getEventHierarchyBySpeciesNameRaw(String speciesName, String eventClass) {
         //language=Cypher
         String query = "" +
-                "MATCH path=(n:TopLevelPathway{speciesName:$speciesName})-[:hasEvent*]->(m:Event) " +
+                "MATCH path=(n:TopLevelPathway{speciesName:$speciesName})-[:hasEvent*]->(m:" + eventClass + ") " +
                 "WITH *, relationships(path) AS r " +
                 "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n), 0] AS db, " +
                 "collect ( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass, labels(endNode(rel)), rel.order ]] ) AS nodePairCollection";
 
-        return queryHierarchyWrapper(query, Collections.singletonMap("speciesName", speciesName));
+        return queryHierarchyWrapper(query, Map.of("speciesName", speciesName, "eventClass", eventClass == null ? "Event" : eventClass));
     }
 
-    private Collection<HierarchyWrapper> getEventHierarchyByTaxIdRaw(String taxId) {
+    private Collection<HierarchyWrapper> getEventHierarchyByTaxIdRaw(String taxId, String eventClass) {
         //language=Cypher
         String query = "" +
                 "MATCH (s:Species{taxId:$taxId})<-[:species]-(n:TopLevelPathway)" +
-                "MATCH path=(n)-[:hasEvent*]->(m:Event) " +
+                "MATCH path=(n)-[:hasEvent*]->(m:" + eventClass + ") " +
                 "WITH *, relationships(path) AS r " +
                 "RETURN [n.stId, n.displayName, n.hasDiagram, n.speciesName, n.schemaClass, labels(n), 0] AS db, " +
                 "collect( [rel IN r | [endNode(rel).stId, endNode(rel).displayName, endNode(rel).hasDiagram, endNode(rel).speciesName, endNode(rel).schemaClass, labels(endNode(rel)), rel.order ]] ) AS nodePairCollection";
 
-        return queryHierarchyWrapper(query, Collections.singletonMap("taxId", taxId));
+        return queryHierarchyWrapper(query, Map.of("taxId", taxId, "eventClass", eventClass == null ? "Event" : eventClass));
     }
 
     // -------------------------------- Locations in the Pathway Browser -----------------------------------------------

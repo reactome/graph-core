@@ -33,7 +33,7 @@ public class HierarchyService {
                 return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(id, omitNonDisplayableItems);
             }
             return hierarchyRepository.getLocationsInPathwayBrowser(id, omitNonDisplayableItems);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             if (showDirectParticipants) {
                 return hierarchyRepository.getLocationsInPathwayBrowserDirectParticipants(Long.parseLong(id), omitNonDisplayableItems);
             }
@@ -42,7 +42,7 @@ public class HierarchyService {
         return null;
     }
 
-    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways){
+    public Set<PathwayBrowserNode> getLocationInPathwayBrowserForPathways(List<?> pathways) {
         return hierarchyRepository.getLocationInPathwayBrowserForPathways(pathways);
     }
 
@@ -52,7 +52,7 @@ public class HierarchyService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return hierarchyRepository.getSubHierarchy(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return hierarchyRepository.getSubHierarchy(Long.parseLong(id));
         }
         return null;
@@ -60,12 +60,12 @@ public class HierarchyService {
 
     // ------------------------------------------- Event Hierarchy -----------------------------------------------------
 
-    public Collection<PathwayBrowserNode> getEventHierarchy(Object species) {
+    public Collection<PathwayBrowserNode> getEventHierarchy(Object species, boolean pathwaysOnly) {
         String speciesString = species.toString();
         if (StringUtils.isNumeric(speciesString)) {
-            return hierarchyRepository.getEventHierarchyByTaxId(speciesString);
+            return hierarchyRepository.getEventHierarchyByTaxId(speciesString, pathwaysOnly ? "Pathway" : "Event");
         } else {
-            return hierarchyRepository.getEventHierarchyBySpeciesName(speciesString);
+            return hierarchyRepository.getEventHierarchyBySpeciesName(speciesString, pathwaysOnly ? "Pathway" : "Event");
         }
     }
 }
