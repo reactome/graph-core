@@ -213,7 +213,7 @@ public class LazyLoadingTest extends BaseTest {
     public void testRLEModified() {
         if (rle == null) preloadReactionLikeEvent();
         InstanceEdit modified = rle.getModified();
-        assertThat(modified).isEqualTo(new InstanceEdit(9644119L));
+        assertThat(modified).isEqualTo(new InstanceEdit(9762281L));
     }
 
     @Test
