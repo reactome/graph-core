@@ -85,6 +85,20 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
+    @Test
+    public void findNonRepositoryObjectById() {
+
+        logger.info("Started testing advancedDatabaseObjectService.findAllByProperty");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findById(9626685, 10);
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertThat(databaseObjectObserved.getClass().getName()).isEqualTo( "org.reactome.server.graph.domain.model.FragmentDeletionModification");
+        logger.info("Finished");
+    }
+
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
