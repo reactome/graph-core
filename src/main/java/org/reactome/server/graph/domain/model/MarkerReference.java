@@ -11,6 +11,9 @@ public class MarkerReference extends ControlReference {
     @Relationship(type = "marker")
     private List<EntityWithAccessionedSequence> marker;
 
+    @Relationship(type = "cell")
+    private List<Cell> cell;
+
     public MarkerReference() {
     }
 
@@ -22,4 +25,11 @@ public class MarkerReference extends ControlReference {
         this.marker = marker;
     }
 
+    public List<Cell> getCell() {
+        return cell;
+    }
+
+    public void setCell(List<Cell> cell) {
+        this.cell = cell;
+    }
 }
