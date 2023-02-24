@@ -5,19 +5,8 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @SuppressWarnings("unused")
 @Node
-public class EvidenceType extends DatabaseObject {
+public class EvidenceType extends ExternalOntology {
 
-    @ReactomeProperty
-    private String definition;
-
-    public EvidenceType() {}
-
-    public String getDefinition() {
-        return this.definition;
+    public EvidenceType() {
     }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
-    }
-
 }

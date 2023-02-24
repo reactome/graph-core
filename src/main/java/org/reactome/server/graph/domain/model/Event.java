@@ -102,6 +102,22 @@ public abstract class Event extends DatabaseObject {
     @Relationship(type = "negativePrecedingEvent")
     private List<NegativePrecedingEvent> negativePrecedingEvent;
 
+    /**
+     * For ReviewStatus-based star system
+     */
+    @Relationship(type = "reviewStatus")
+    private ReviewStatus reviewStatus;
+
+    @Relationship(type = "previousReviewStatus")
+    private ReviewStatus previousReviewStatus;
+
+    @Relationship(type = "internalReviewed", direction = Relationship.Direction.INCOMING)
+    private List<InstanceEdit> internalReviewed;
+
+    @Relationship(type = "structureModified", direction = Relationship.Direction.INCOMING)
+    private List<InstanceEdit> structureModified;
+
+
     public Event() {}
 
     public Event(Long dbId) {
@@ -341,5 +357,37 @@ public abstract class Event extends DatabaseObject {
 
     public void setNegativePrecedingEvent(List<NegativePrecedingEvent> negativePrecedingEvent) {
         this.negativePrecedingEvent = negativePrecedingEvent;
+    }
+
+    public ReviewStatus getReviewStatus() {
+        return reviewStatus;
+    }
+
+    public void setReviewStatus(ReviewStatus reviewStatus) {
+        this.reviewStatus = reviewStatus;
+    }
+
+    public ReviewStatus getPreviousReviewStatus() {
+        return previousReviewStatus;
+    }
+
+    public void setPreviousReviewStatus(ReviewStatus previousReviewStatus) {
+        this.previousReviewStatus = previousReviewStatus;
+    }
+
+    public List<InstanceEdit> getInternalReviewed() {
+        return internalReviewed;
+    }
+
+    public void setInternalReviewed(List<InstanceEdit> internalReviewed) {
+        this.internalReviewed = internalReviewed;
+    }
+
+    public List<InstanceEdit> getStructureModified() {
+        return structureModified;
+    }
+
+    public void setStructureModified(List<InstanceEdit> structureModified) {
+        this.structureModified = structureModified;
     }
 }
