@@ -1,16 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
-import org.reactome.server.graph.domain.relationship.HasEvent;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-
 @Node
-public class CellLineagePath extends Event {
-
-    @Relationship(type = "hasEvent")
-    private List<HasEvent> hasEvent;
+public class CellLineagePath extends Pathway {
 
     @Relationship(type = "tissue")
     private Anatomy tissue;
@@ -26,11 +22,10 @@ public class CellLineagePath extends Event {
         this.tissue = tissue;
     }
 
-    public List<HasEvent> getHasEvent() {
-        return hasEvent;
-    }
-
-    public void setHasEvent(List<HasEvent> hasEvent) {
-        this.hasEvent = hasEvent;
+    @ReactomeSchemaIgnore
+    @Override
+    @JsonIgnore
+    public String getExplanation() {
+        return "A collection of related Events. These events are mostly CellDevelopmentStep. This is used to describe tissues and cell differentiation ";
     }
 }
