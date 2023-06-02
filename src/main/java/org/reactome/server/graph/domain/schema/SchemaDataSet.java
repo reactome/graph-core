@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 @SuppressWarnings("unused")
 public class SchemaDataSet {
 
@@ -24,9 +26,10 @@ public class SchemaDataSet {
 
     public SchemaDataSet(Event event, Integer version) {
         this.name = event.getDisplayName();
-        this.description = event.getSummation() != null ? event.getSummation().get(0).getText() : "";
+
+        this.description = !isEmpty(event.getSummation()) ? event.getSummation().get(0).getText() : "";
         this.url = "https://reactome.org/PathwayBrowser/#/" + event.getStId();
-        this.version = "" + version;
+        this.version = String.valueOf(version);
         this.keywords = Collections.singletonList(event.getSchemaClass());
 
         if (event.getAuthored() != null) {
