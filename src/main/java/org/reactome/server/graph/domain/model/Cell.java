@@ -7,7 +7,7 @@ import java.util.List;
 
 @Node
 public class Cell extends PhysicalEntity {
-    @Relationship(type = "rnaMarker")
+    @Relationship(type = "RNAMarker")
     private List<EntityWithAccessionedSequence> RNAMarker;
 
     @Relationship(type = "markerReference")
