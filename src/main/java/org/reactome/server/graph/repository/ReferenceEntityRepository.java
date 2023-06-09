@@ -17,11 +17,11 @@ public interface ReferenceEntityRepository extends Neo4jRepository<ReferenceEnti
             "RETURN DISTINCT n")
     Collection<ReferenceEntity> getReferenceEntitiesFor(@Param("identifier") String identifier);
 
-    @Query(" MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
+    @Query(" MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|RNAMarker|proteinMarker|referenceEntity*]->(m:ReferenceEntity) " +
             "RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingReferenceEntities(@Param("dbId") Long dbId);
 
-    @Query(" MATCH (n:DatabaseObject{stId:$stId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(m:ReferenceEntity) " +
+    @Query(" MATCH (n:DatabaseObject{stId:$stId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|RNAMarker|proteinMarker|referenceEntity*]->(m:ReferenceEntity) " +
             "RETURN DISTINCT m")
     Collection<ReferenceEntity> getParticipatingReferenceEntities(@Param("stId") String stId);
 
