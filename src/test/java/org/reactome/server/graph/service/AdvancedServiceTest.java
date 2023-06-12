@@ -354,7 +354,7 @@ public class AdvancedServiceTest extends BaseTest {
         // are Lists of Number, Strings or List of Custom Objects.
         logger.info("Started testing advancedDatabaseObjectService.customQueryListOfCustomObjects");
 
-        String query = "MATCH (pe:Complex{speciesName:$species,stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity*]->(re) " +
+        String query = "MATCH (pe:Complex{speciesName:$species,stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity|proteinMarker|RNAMarker*]->(re) " +
                        "RETURN pe.stId AS stId, pe.displayName AS displayName, COLLECT(re.dbId) as dbIds, COLLECT(re.databaseName) as databaseNames, " +
                        "COLLECT({database:re.databaseName, identifier:re.identifier}) AS customReferences";
 

@@ -18,7 +18,7 @@ public interface MappingRepository extends Neo4jRepository<Event, Long> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe) " +
             "RETURN DISTINCT rle " +
             "ORDER BY rle.stId")
     Collection<ReactionLikeEvent> getReactionsLikeEvent(@Param("databaseName") String databaseName, @Param("identifier") String identifier);
@@ -28,7 +28,7 @@ public interface MappingRepository extends Neo4jRepository<Event, Long> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (:Species{taxId:$taxId})<-[:species]-(rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (:Species{taxId:$taxId})<-[:species]-(rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe) " +
             "RETURN DISTINCT rle " +
             "ORDER BY rle.stId")
     Collection<ReactionLikeEvent> getReactionsLikeEvent(@Param("databaseName") String databaseName, @Param("identifier") String identifier, @Param("taxId") String taxId);
@@ -38,7 +38,7 @@ public interface MappingRepository extends Neo4jRepository<Event, Long> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe) " +
             "WITH DISTINCT rle " +
             "MATCH (p:Pathway)-[:hasEvent]->(rle) " +
             "RETURN DISTINCT p " +
@@ -50,7 +50,7 @@ public interface MappingRepository extends Neo4jRepository<Event, Long> {
             "WITH DISTINCT n " +
             "MATCH (pe:PhysicalEntity)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n) " +
             "WITH DISTINCT pe " +
-            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (rle:ReactionLikeEvent)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe) " +
             "WITH DISTINCT rle " +
             "MATCH (:Species{taxId:$taxId})<-[:species]-(p:Pathway)-[:hasEvent]->(rle) " +
             "RETURN DISTINCT p " +

@@ -26,20 +26,20 @@ public interface PhysicalEntityRepository extends Neo4jRepository<PhysicalEntity
             "WITH DISTINCT n " +
             "MATCH (n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene*]-(pe:PhysicalEntity) " +
             "WITH DISTINCT pe " +
-            "MATCH (c:Complex)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe) " +
+            "MATCH (c:Complex)-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe) " +
             "RETURN DISTINCT c")
     Collection<Complex> getComplexesFor(@Param("identifier") String identifier, @Param("resource") String resource);
 
-    @Query("MATCH (:PhysicalEntity{dbId:$dbId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
+    @Query("MATCH (:PhysicalEntity{dbId:$dbId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunits(@Param("dbId") Long dbId);
 
-    @Query("MATCH (:PhysicalEntity{stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
+    @Query("MATCH (:PhysicalEntity{stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunits(@Param("stId") String stId);
 
-    @Query("MATCH (:PhysicalEntity{dbId:$dbId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
+    @Query("MATCH (:PhysicalEntity{dbId:$dbId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(@Param("dbId") Long dbId);
 
-    @Query("MATCH (:PhysicalEntity{stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
+    @Query("MATCH (:PhysicalEntity{stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(@Param("$stId") String stId);
 
     @Query(" MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
