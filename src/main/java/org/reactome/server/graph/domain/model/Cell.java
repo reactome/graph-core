@@ -1,5 +1,6 @@
 package org.reactome.server.graph.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -32,6 +33,7 @@ public class Cell extends PhysicalEntity {
 
     }
 
+    @JsonGetter("rnaMarker")
     public List<EntityWithAccessionedSequence> getRNAMarker() {
         return RNAMarker;
     }
