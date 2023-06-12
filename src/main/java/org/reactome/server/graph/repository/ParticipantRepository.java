@@ -24,7 +24,7 @@ public class ParticipantRepository {
 
     public Collection<Participant> getParticipants(Long dbId) {
         String query = " " +
-                "MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
+                "MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|RNAMarker|proteinMarker|regulator*]->(m:PhysicalEntity) " +
                 "OPTIONAL MATCH (m)-[:referenceEntity]->(re1:ReferenceEntity) " +
                 "OPTIONAL MATCH (m)-[:hasMember|hasComponent|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity)-[:referenceEntity]->(re2:ReferenceEntity) " +
                 "WITH DISTINCT m,  " +
