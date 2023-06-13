@@ -4,14 +4,14 @@
     <parent>
         <groupId>org.reactome.maven</groupId>
         <artifactId>reactome-parent</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.3</version>
     </parent>
 
     <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>2.0.8-SNAPSHOT</version>
+    <version>2.0.8</version>
     <name>Graph Core Next Generation</name>
 
     <description>
