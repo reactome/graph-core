@@ -24,7 +24,7 @@ public class ComponentOfLinkageRepository {
 
     public Collection<ComponentOf> getComponentsOf(String stId) {
         String query = " " +
-                "MATCH (n:DatabaseObject{stId:$stId})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
+                "MATCH (n:DatabaseObject{stId:$stId})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker]-(m) " +
                 "RETURN DISTINCT(TYPE(r)) AS type, " +
                 "       COLLECT(COALESCE(m.schemaClass, '')) AS schemaClasses, " +
                 "       COLLECT(COALESCE(m.displayName, '')) AS names, " +
@@ -36,7 +36,7 @@ public class ComponentOfLinkageRepository {
 
     public Collection<ComponentOf> getComponentsOf(Long dbId) {
         String query = " " +
-                "MATCH (n:DatabaseObject{dbId:$dbId})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
+                "MATCH (n:DatabaseObject{dbId:$dbId})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker]-(m) " +
                 "RETURN DISTINCT(TYPE(r)) AS type, " +
                 "       COLLECT(COALESCE(m.schemaClass, '')) AS schemaClasses, " +
                 "       COLLECT(COALESCE(m.displayName, '')) AS names, " +

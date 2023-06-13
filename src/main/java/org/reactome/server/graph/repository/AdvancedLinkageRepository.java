@@ -18,7 +18,7 @@ import java.util.Collection;
  */
 public interface AdvancedLinkageRepository extends Neo4jRepository<DatabaseObject, Long> {
 
-    @Query(" MATCH (n:DatabaseObject{stId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
+    @Query(" MATCH (n:DatabaseObject{stId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker]-(m) " +
             "RETURN DISTINCT(TYPE(r)) AS type, " +
             "       COLLECT(COALESCE(m.schemaClass, '')) AS schemaClasses, " +
             "       COLLECT(COALESCE(m.displayName, '')) AS names, " +
@@ -27,7 +27,7 @@ public interface AdvancedLinkageRepository extends Neo4jRepository<DatabaseObjec
     @Deprecated
     Collection<ComponentOf> getComponentsOf(String stId);
 
-    @Query(" MATCH (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit]-(m) " +
+    @Query(" MATCH (n:DatabaseObject{dbId:{0}})<-[r:hasEvent|input|output|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker]-(m) " +
             "RETURN DISTINCT(TYPE(r)) AS type, " +
             "       COLLECT(COALESCE(m.schemaClass, '')) AS schemaClasses, " +
             "       COLLECT(COALESCE(m.displayName, '')) AS names, " +

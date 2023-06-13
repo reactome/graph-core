@@ -26,14 +26,14 @@ public class SimpleDatabaseObjectRepository {
 
     public Collection<SimpleDatabaseObject> getPathwaysForIdentifierByStId(String identifier, Collection<String> pathways){
         String query = " " +
-                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
+                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) " +
                 "WHERE p.stId IN $stIds " +
                 "WITH DISTINCT p, pe " +
                 "MATCH (pe)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n)-->(rd:ReferenceDatabase) " +
                 "WHERE n.identifier = $identifier OR $identifier IN n.name OR $identifier IN n.geneName " +
                 "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels " +
                 "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
-                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:$identifier}) " +
+                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent|proteinMarker|RNAMarker*]->(pe:PhysicalEntity{stId:$identifier}) " +
                 "WHERE p.stId IN $stIds " +
                 "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels";
 
@@ -45,14 +45,14 @@ public class SimpleDatabaseObjectRepository {
 
     public Collection<SimpleDatabaseObject> getPathwaysForIdentifierByDbId(String identifier, Collection<Long> pathways){
         String query = " " +
-                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity) " +
+                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) " +
                 "WHERE p.dbId IN $stIds " +
                 "WITH DISTINCT p, pe " +
                 "MATCH (pe)-[:referenceEntity|referenceSequence|crossReference|referenceGene*]->(n)-->(rd:ReferenceDatabase) " +
                 "WHERE n.identifier = $identifier OR $identifier IN n.name OR $identifier IN n.geneName " +
                 "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels " +
                 "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
-                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent*]->(pe:PhysicalEntity{stId:$identifier}) " +
+                "MATCH (p:Pathway)-[:regulatedBy|regulator|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|hasMember|hasCandidate|hasComponent|repeatedUnit|input|output|hasEvent|proteinMarker|RNAMarker*]->(pe:PhysicalEntity{stId:$identifier}) " +
                 "WHERE p.dbId IN $stIds " +
                 "RETURN DISTINCT p.dbId AS dbId, p.stId AS stId, p.displayName AS displayName, labels(p) AS labels";
 
@@ -72,7 +72,7 @@ public class SimpleDatabaseObjectRepository {
                 "UNWIND ps AS p " +
                 "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
                 "WITH DISTINCT rle " +
-                "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]-(rle) " +
+                "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]-(pe)<-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]-(rle) " +
                 "WHERE n.identifier = $identifier OR $identifier IN n.name OR $identifier IN n.geneName " +
                 "RETURN DISTINCT pe.dbId AS dbId, pe.stId AS stId, pe.displayName AS displayName, labels(pe) AS labels " +
                 "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
@@ -85,7 +85,7 @@ public class SimpleDatabaseObjectRepository {
                 "WITH DISTINCT rle " +
                 "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
                 "WITH DISTINCT pe " +
-                "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(a:PhysicalEntity) " +
+                "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(a:PhysicalEntity) " +
                 "WITH DISTINCT pe, COLLECT(DISTINCT a.stId) AS participants " +
                 "WHERE pe.stId = $identifier OR $identifier IN participants " +
                 "RETURN DISTINCT pe.dbId AS dbId, pe.stId AS stId, pe.displayName AS displayName, labels(pe) AS labels";
@@ -106,7 +106,7 @@ public class SimpleDatabaseObjectRepository {
                 "UNWIND ps AS p " +
                 "MATCH (p)-[:hasEvent]->(rle:ReactionLikeEvent) " +
                 "WITH DISTINCT rle " +
-                "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit*]-(pe)<-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]-(rle) " +
+                "MATCH (rd:ReferenceDatabase)<--(n)<-[:referenceEntity|referenceSequence|crossReference|referenceGene|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]-(pe)<-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]-(rle) " +
                 "WHERE n.identifier = $identifier OR $identifier IN n.name OR $identifier IN n.geneName " +
                 "RETURN DISTINCT pe.dbId AS dbId, pe.stId AS stId, pe.displayName AS displayName, labels(pe) AS labels " +
                 "UNION " + //The second part is for the cases when identifier is STABLE_IDENTIFIER
@@ -119,7 +119,7 @@ public class SimpleDatabaseObjectRepository {
                 "WITH DISTINCT rle " +
                 "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(pe:PhysicalEntity) " +
                 "WITH DISTINCT pe " +
-                "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit*]->(a:PhysicalEntity) " +
+                "OPTIONAL MATCH (pe)-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(a:PhysicalEntity) " +
                 "WITH DISTINCT pe, COLLECT(DISTINCT a.stId) AS participants " +
                 "WHERE pe.stId = $identifier OR $identifier IN participants " +
                 "RETURN DISTINCT pe.dbId AS dbId, pe.stId AS stId, pe.displayName AS displayName, labels(pe) AS labels";

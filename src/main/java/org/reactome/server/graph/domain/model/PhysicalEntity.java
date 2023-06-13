@@ -130,6 +130,10 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @Relationship(type = "cellType")
     private List<CellType> cellType;
 
+    @ReactomeTransient
+    @Relationship(type = "marker", direction = Relationship.Direction.INCOMING)
+    private List<MarkerReference> markingReferences;
+
     public PhysicalEntity() {}
 
     public PhysicalEntity(Long dbId) {
@@ -399,7 +403,7 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.summation = summation;
     }
 
-//    public Set<RepeatedUnit> getRepeatedUnitOf(){
+    //    public Set<RepeatedUnit> getRepeatedUnitOf(){
 //        return repeatedUnitOf;
 //    }
     public List<Polymer> getRepeatedUnitOf() {
@@ -456,6 +460,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
             return rtn;
         }
         return null;
+    }
+
+    public List<MarkerReference> getMarkingReferences() {
+        return markingReferences != null ? new ArrayList<>(markingReferences) : null;
+    }
+
+    public void setMarkingReferences(List<MarkerReference> markingReferences) {
+        this.markingReferences = markingReferences;
     }
 
     public List<CellType> getCellType() {

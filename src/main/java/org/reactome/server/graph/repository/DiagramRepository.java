@@ -80,7 +80,7 @@ public class DiagramRepository {
     public Collection<DiagramOccurrences> getDiagramOccurrences(Long dbId) {
         //language=Cypher
         String query = "MATCH (root:DatabaseObject{dbId:$dbId}) " +
-                "OPTIONAL MATCH path=(p:Pathway{hasDiagram:true})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(root) " +
+                "OPTIONAL MATCH path=(p:Pathway{hasDiagram:true})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(root) " +
                 "WHERE single(x IN nodes(path) WHERE (x:Pathway) AND x.hasDiagram) " +
                 "OPTIONAL MATCH (d:Pathway{hasDiagram:true, dbId:$dbId}) " +
                 "WITH root, collect(DISTINCT d) + collect(DISTINCT p) AS directlyInDiagram " +
@@ -118,7 +118,7 @@ public class DiagramRepository {
         //language=Cypher
         String query = "" +
                 "MATCH (root:DatabaseObject{stId:$stId}) " +
-                "OPTIONAL MATCH path=(p:Pathway{hasDiagram:true})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit*]->(root) " +
+                "OPTIONAL MATCH path=(p:Pathway{hasDiagram:true})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(root) " +
                 "WHERE single(x IN nodes(path) WHERE (x:Pathway) AND x.hasDiagram) " +
                 "OPTIONAL MATCH (d:Pathway{hasDiagram:true, stId:$stId}) " +
                 "WITH root, collect(DISTINCT d) + collect(DISTINCT p) AS directlyInDiagram " +

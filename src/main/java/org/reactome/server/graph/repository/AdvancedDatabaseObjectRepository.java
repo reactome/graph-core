@@ -103,7 +103,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
                 "RETURN n, COLLECT(r1), COLLECT(m), COLLECT(r2), COLLECT(s), COLLECT(r3), COLLECT(o) ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
@@ -114,7 +114,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
                 "RETURN n, COLLECT(r1), COLLECT(m), COLLECT(r2), COLLECT(s), COLLECT(r3), COLLECT(o) ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
