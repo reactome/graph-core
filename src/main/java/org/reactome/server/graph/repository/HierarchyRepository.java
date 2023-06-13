@@ -233,7 +233,7 @@ public class HierarchyRepository {
             node.setHighlighted(false);
         }
 
-        if (node.getType().contains("Reaction") || node.getType().equals("BlackBoxEvent") || node.getType().contains("Polymerisation")) {
+        if (node.getType().contains("Reaction") || node.getType().equals("BlackBoxEvent") || node.getType().contains("Polymerisation") || node.getType().contains("CellDevelopmentStep")) {
             node.setClickable(true);
             node.setHighlighted(true);
         }
