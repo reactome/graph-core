@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.reactome.server.graph.domain.model.CellLineagePath;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
@@ -97,7 +98,7 @@ public abstract class PathwayBrowserLocationsUtils {
         tree.setClickable(leaf.isClickable());
         tree.setHighlighted(leaf.getHighlighted());
 
-        boolean isPathway = leaf.getType().equals(Pathway.class.getSimpleName()) || leaf.getType().equals(TopLevelPathway.class.getSimpleName());
+        boolean isPathway = leaf.getType().equals(Pathway.class.getSimpleName()) || leaf.getType().equals(CellLineagePath.class.getSimpleName()) || leaf.getType().equals(TopLevelPathway.class.getSimpleName());
         boolean hasDiagram = leaf.hasDiagram();
         leaf.setUnique(false);
 
