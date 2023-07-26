@@ -12,7 +12,7 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 @Node
-public abstract class PhysicalEntity extends DatabaseObject {
+public abstract class PhysicalEntity extends DatabaseObject implements Trackable, Deletable {
 
     @ReactomeProperty
     private String definition;
@@ -133,6 +133,14 @@ public abstract class PhysicalEntity extends DatabaseObject {
     @ReactomeTransient
     @Relationship(type = "marker", direction = Relationship.Direction.INCOMING)
     private List<MarkerReference> markingReferences;
+
+    @ReactomeTransient
+    @Relationship(type = "replacementInstances", direction = Relationship.Direction.INCOMING)
+    private List<Deleted> deleted;
+
+    @ReactomeTransient
+    @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
+    private List<UpdateTracker> updateTrackers;
 
     public PhysicalEntity() {}
 
@@ -476,5 +484,23 @@ public abstract class PhysicalEntity extends DatabaseObject {
 
     public void setCellType(List<CellType> cellType) {
         this.cellType = cellType;
+    }
+
+    @Override
+    public List<Deleted> getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(List<Deleted> deleted) {
+        this.deleted = deleted;
+    }
+
+    @Override
+    public List<UpdateTracker> getUpdateTrackers() {
+        return updateTrackers;
+    }
+
+    public void setUpdateTrackers(List<UpdateTracker> updateTrackers) {
+        this.updateTrackers = updateTrackers;
     }
 }

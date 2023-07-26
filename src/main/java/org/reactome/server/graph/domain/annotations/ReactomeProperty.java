@@ -16,4 +16,5 @@ public @interface ReactomeProperty {
 
     boolean addedField() default false;
 
+    String originName() default "";
 }

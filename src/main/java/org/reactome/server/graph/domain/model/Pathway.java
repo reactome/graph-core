@@ -39,6 +39,9 @@ public class Pathway extends Event {
     @ReactomeProperty
     private String isCanonical;
 
+    @ReactomeProperty
+    private String lastUpdatedDate;
+
     @Relationship(type = "hasEvent")
     private SortedSet<HasEvent> hasEvent;
 
@@ -157,6 +160,14 @@ public class Pathway extends Event {
 
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
+    }
+
+    public String getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(String lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 
     @ReactomeSchemaIgnore
