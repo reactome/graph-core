@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
+import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -15,6 +16,7 @@ public class UpdateTracker extends MetaDatabaseObject {
     private List<String> action;
 
     @Relationship(type = "release")
+    @ReactomeRelationship(originName = "_release")
     private Release release;
 
     @Relationship(type = "updatedInstance")

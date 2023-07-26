@@ -30,7 +30,7 @@ public abstract class ReferenceEntity extends DatabaseObject {
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
-    @ReactomeRelationship
+    @ReactomeRelationship(addedField = true)
     @Relationship(type = "referenceEntity", direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> physicalEntity;
 
