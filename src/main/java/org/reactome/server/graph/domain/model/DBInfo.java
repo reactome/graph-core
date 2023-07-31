@@ -8,6 +8,16 @@ public class DBInfo extends Release {
     private String name;
     private Long checksum;
 
+    /**
+     * @deprecated
+     * Use {@link Release#getReleaseNumber()} instead
+     * @return Database version
+     */
+    @Deprecated
+    public int getVersion() {
+        return this.getReleaseNumber();
+    }
+
     public DBInfo() {
     }
 
