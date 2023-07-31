@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class UpdateTrackerService {
+
     private UpdateTrackerRepository repository;
 
     @Autowired
@@ -17,12 +18,9 @@ public class UpdateTrackerService {
         this.repository = repository;
     }
 
-    public Optional<UpdateTracker> findById(Long id) {
-        return this.repository.findById(id);
-    }
 
-    public List<UpdateTracker> findByReleaseNumber(int releaseNumber) {
-        return this.repository.findByReleaseReleaseNumber(releaseNumber);
+    public Optional<UpdateTracker> findUpdateTrackerByDbId(Long dbId) {
+        return this.repository.findUpdateTrackerByDbId(dbId);
     }
 
     public List<UpdateTracker> findByUpdatedInstanceDbId(Long dbId) {
