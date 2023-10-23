@@ -57,8 +57,6 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "revised", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "summation")
-    private List<Summation> summation;
 
     public Regulation() {}
 
@@ -166,11 +164,4 @@ public abstract class Regulation extends DatabaseObject {
         this.revised = revised;
     }
 
-    public List<Summation> getSummation() {
-        return summation;
-    }
-
-    public void setSummation(List<Summation> summation) {
-        this.summation = summation;
-    }
 }
