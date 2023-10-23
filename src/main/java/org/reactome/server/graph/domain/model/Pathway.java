@@ -42,6 +42,9 @@ public class Pathway extends Event {
     @Relationship(type = "hasEvent")
     private SortedSet<HasEvent> hasEvent;
 
+    @ReactomeProperty
+    private String lastUpdatedDate;
+
     @ReactomeRelationship
     @Relationship(type = "hasEncapsulatedEvent")
     private SortedSet<HasEncapsulatedEvent> hasEncapsulatedEvent;
@@ -157,6 +160,14 @@ public class Pathway extends Event {
 
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
+    }
+
+    public String getLastUpdatedDate() {
+        return lastUpdatedDate;
+    }
+
+    public void setLastUpdatedDate(String lastUpdatedDate) {
+        this.lastUpdatedDate = lastUpdatedDate;
     }
 
     @ReactomeSchemaIgnore

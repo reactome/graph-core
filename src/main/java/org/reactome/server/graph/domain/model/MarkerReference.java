@@ -9,7 +9,7 @@ import java.util.List;
 public class MarkerReference extends ControlReference {
 
     @Relationship(type = "marker")
-    private List<EntityWithAccessionedSequence> marker;
+    private EntityWithAccessionedSequence marker;
 
     @Relationship(type = "cell")
     private List<Cell> cell;
@@ -17,11 +17,11 @@ public class MarkerReference extends ControlReference {
     public MarkerReference() {
     }
 
-    public List<EntityWithAccessionedSequence> getMarker() {
+    public EntityWithAccessionedSequence getMarker() {
         return marker;
     }
 
-    public void setMarker(List<EntityWithAccessionedSequence> marker) {
+    public void setMarker(EntityWithAccessionedSequence marker) {
         this.marker = marker;
     }
 
