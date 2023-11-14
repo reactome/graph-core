@@ -7,14 +7,15 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
-public class Affiliation extends  DatabaseObject{
+public class Affiliation extends DatabaseObject {
 
     @ReactomeProperty
     private String address;
     @ReactomeProperty
     private List<String> name;
 
-    public Affiliation() {}
+    public Affiliation() {
+    }
 
     public String getAddress() {
         return address;

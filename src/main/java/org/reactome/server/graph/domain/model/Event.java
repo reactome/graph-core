@@ -10,7 +10,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings("unused")
 
 @Node
 public abstract class Event extends DatabaseObject {

@@ -156,11 +156,11 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.name = name;
     }
 
-    public Boolean getInDisease() {
+    public Boolean getIsInDisease() {
         return isInDisease;
     }
 
-    public void setInDisease(Boolean inDisease) {
+    public void setIsInDisease(Boolean inDisease) {
         isInDisease = inDisease;
     }
 
@@ -225,13 +225,13 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.componentOf = componentOf;
     }
 
-    public void setComponentOf(List<PhysicalEntity> componentOf) {
+    public void setComponentOf(List<Complex> componentOf) {
         this.componentOf = new TreeSet<>();
         int order = 0;
-        for (PhysicalEntity pe : componentOf) {
+        for (Complex pe : componentOf) {
             HasComponentForComplex hc = new HasComponentForComplex();
 //            hc.setPhysicalEntity(this);
-            hc.setComplex((Complex) pe);
+            hc.setComplex(pe);
             hc.setOrder(order++);
             this.componentOf.add(hc);
         }
@@ -343,13 +343,13 @@ public abstract class PhysicalEntity extends DatabaseObject {
         this.repeatedUnitOf = repeatedUnitOf;
     }
 
-    public void setRepeatedUnitOf(List<PhysicalEntity> repeatedUnitOf) {
+    public void setRepeatedUnitOf(List<Polymer> repeatedUnitOf) {
         this.repeatedUnitOf = new TreeSet<>();
         int order = 0;
-        for (PhysicalEntity pe : repeatedUnitOf) {
+        for (Polymer polymer : repeatedUnitOf) {
             RepeatedUnitForPhysicalEntity ru = new RepeatedUnitForPhysicalEntity();
 //            ru.setPhysicalEntity(this);
-            ru.setPolymer((Polymer) pe);
+            ru.setPolymer(polymer);
             ru.setOrder(order++);
             this.repeatedUnitOf.add(ru);
         }

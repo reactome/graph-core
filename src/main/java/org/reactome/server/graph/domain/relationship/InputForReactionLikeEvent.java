@@ -25,8 +25,8 @@ public class InputForReactionLikeEvent implements Comparable<InputForReactionLik
         return reactionLikeEvent;
     }
 
-    public void setReactionLikeEvent(ReactionLikeEvent event) {
-        this.reactionLikeEvent = event;
+    public void setReactionLikeEvent(ReactionLikeEvent reactionLikeEvent) {
+        this.reactionLikeEvent = reactionLikeEvent;
     }
 
     public Integer getStoichiometry() {

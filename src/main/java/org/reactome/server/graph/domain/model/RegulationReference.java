@@ -12,11 +12,11 @@ public class RegulationReference extends ControlReference {
     public RegulationReference() {
     }
 
-    public Regulation getRegulatedBy() {
+    public Regulation getRegulation() {
         return regulation;
     }
 
-    public void setRegulatedBy(Regulation regulation) {
+    public void setRegulation(Regulation regulation) {
         this.regulation = regulation;
     }
 }

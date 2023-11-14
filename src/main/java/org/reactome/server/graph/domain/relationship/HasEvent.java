@@ -28,8 +28,8 @@ public class HasEvent implements Comparable<HasEvent> {
         return event;
     }
 
-    public void setEvent(Event hasEvent) {
-        this.event = hasEvent;
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     public int getOrder() {
