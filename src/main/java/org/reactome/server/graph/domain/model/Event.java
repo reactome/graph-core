@@ -207,7 +207,8 @@ public abstract class Event extends DatabaseObject {
     }
 
     // TODO This setCompartment break the reflection for testing against Relational DB. Renaming it fix the test, check impact
-    public void setHasCompartment(SortedSet<HasCompartment> compartment) {
+    // TODO Check setHasCompartment -> setCompartment impact
+    public void setCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
 

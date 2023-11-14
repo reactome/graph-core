@@ -11,16 +11,16 @@ import java.util.Objects;
 @RelationshipProperties
 public class PublicationAuthor implements Comparable<PublicationAuthor> {
     @Id @GeneratedValue private Long id;
-    @TargetNode private Person author;
+    @TargetNode private Person person;
 
     private int order;
 
-    public Person getAuthor() {
-        return author;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setAuthor(Person author) {
-        this.author = author;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public int getOrder() {
@@ -35,12 +35,12 @@ public class PublicationAuthor implements Comparable<PublicationAuthor> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(author, ((PublicationAuthor) o).author);
+        return Objects.equals(person, ((PublicationAuthor) o).person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(author);
+        return Objects.hash(person);
     }
 
     @Override
