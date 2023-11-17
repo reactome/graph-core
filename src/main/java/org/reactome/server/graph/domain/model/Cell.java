@@ -8,8 +8,8 @@ import java.util.List;
 
 @Node
 public class Cell extends PhysicalEntity {
-    @Relationship(type = "RNAMarker")
-    private List<EntityWithAccessionedSequence> RNAMarker;
+    @Relationship(type = "rnaMarker")
+    private List<EntityWithAccessionedSequence> rnaMarker;
 
     @Relationship(type = "markerReference")
     private List<MarkerReference> markerReference;
@@ -34,12 +34,12 @@ public class Cell extends PhysicalEntity {
     }
 
     @JsonGetter("rnaMarker")
-    public List<EntityWithAccessionedSequence> getRNAMarker() {
-        return RNAMarker;
+    public List<EntityWithAccessionedSequence> getRnaMarker() {
+        return rnaMarker;
     }
 
-    public void setRNAMarker(List<EntityWithAccessionedSequence> rNAMarker) {
-        RNAMarker = rNAMarker;
+    public void setRnaMarker(List<EntityWithAccessionedSequence> rnaMarker) {
+        this.rnaMarker = rnaMarker;
     }
 
     public List<MarkerReference> getMarkerReference() {
