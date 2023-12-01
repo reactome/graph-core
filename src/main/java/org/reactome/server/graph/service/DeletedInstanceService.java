@@ -22,7 +22,7 @@ public class DeletedInstanceService {
         return this.repository.getDeletedInstanceByDbId(dbId);
     }
 
-    public List<DeletedInstance> getBYDeletedDbId(Long dbId) {
+    public List<DeletedInstance> getByDeletedDbId(Long dbId) {
         return this.repository.getByDeletedDbId(dbId);
     }
 }

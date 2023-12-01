@@ -28,7 +28,7 @@ public class DeletedInstanceServiceTest extends BaseTest {
 
     @Test
     public void getByDeletedDbId() {
-        List<DeletedInstance> deletedInstances = this.deletedInstanceService.getBYDeletedDbId(5655667L);
-        Assertions.assertTrue(!deletedInstances.isEmpty());
+        List<DeletedInstance> deletedInstances = this.deletedInstanceService.getByDeletedDbId(5655667L);
+        Assertions.assertFalse(deletedInstances.isEmpty());
     }
 }

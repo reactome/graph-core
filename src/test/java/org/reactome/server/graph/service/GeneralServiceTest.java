@@ -97,7 +97,7 @@ public class GeneralServiceTest extends BaseTest {
                 "RETURN n.dbId AS dbId, n.displayName AS Name, m.displayName AS Modified " +
                 "ORDER BY Modified, dbId";
         Collection<Map<String,Object>> result = generalService.query(query, Collections.emptyMap());
-        System.out.println(result);
+//        System.out.println(result);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

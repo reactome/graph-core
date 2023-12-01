@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UpdateTrackerRepository extends Neo4jRepository<UpdateTracker, Long> {
 
     //language=cypher
-    @Query(" MATCH (d:UpdateTracker{dbId:$dbId}) " +
+    @Query(" MATCH (d:UpdateTracker {dbId:$dbId}) " +
             "OPTIONAL MATCH (d)-[r]-(m) " +
             "RETURN d, collect(r), collect(m)")
     Optional<UpdateTracker> findUpdateTrackerByDbId(@Param("dbId") Long dbId);
@@ -23,7 +23,7 @@ public interface UpdateTrackerRepository extends Neo4jRepository<UpdateTracker, 
     @Query(" MATCH(u:UpdateTracker)-[:updatedInstance]->(t:Trackable) " +
             "WHERE t.dbId = $dbId " +
             "RETURN u")
-    List<UpdateTracker> findByUpdatedInstanceDbId(Long dbId);
+    List<UpdateTracker> findByUpdatedInstanceDbId(@Param("dbId") Long dbId);
 
     //language=cypher
     @Query(" MATCH(d:UpdateTracker)-[:updatedInstance]->(t:Trackable) " +
