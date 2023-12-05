@@ -11,11 +11,12 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>2.0.8</version>
+    <version>2.0.9-SNAPSHOT</version>
     <name>Graph Core Next Generation</name>
 
     <description>
-        The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more information visit the reactome github repository.
+        The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more
+        information visit the reactome github repository.
     </description>
 
     <url>https://github.com/reactome/graph-core</url>
@@ -37,7 +38,6 @@
             <name>Florian Korninger</name>
         </developer>
     </developers>
-
 
 
     <properties>
@@ -171,6 +171,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <useIncrementalCompilation>false</useIncrementalCompilation>
                 </configuration>
             </plugin>
 
@@ -215,6 +216,17 @@
                         <goals>
                             <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
                             <goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+                        </goals>
+                    </execution>
+                    <execution>
+                        <!-- IMPORTANT -->
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <weaveMainSourceFolder>true</weaveMainSourceFolder>
+                        </configuration>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>

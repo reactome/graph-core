@@ -13,7 +13,7 @@ import java.util.*;
 @SuppressWarnings("unused")
 
 @Node
-public abstract class Event extends DatabaseObject {
+public abstract class Event extends DatabaseObject implements Trackable, Deletable {
 
     @ReactomeProperty
     private String definition;
@@ -116,6 +116,14 @@ public abstract class Event extends DatabaseObject {
 
     @Relationship(type = "structureModified", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> structureModified;
+
+    @ReactomeTransient
+    @Relationship(type = "replacementInstances", direction = Relationship.Direction.INCOMING)
+    private List<Deleted> deleted;
+
+    @ReactomeTransient
+    @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
+    private List<UpdateTracker> updateTrackers;
 
 
     public Event() {}
@@ -390,5 +398,23 @@ public abstract class Event extends DatabaseObject {
 
     public void setStructureModified(List<InstanceEdit> structureModified) {
         this.structureModified = structureModified;
+    }
+
+    @Override
+    public List<Deleted> getDeleted() {
+        return deleted;
+    }
+
+    public void setDeletedList(List<Deleted> deleted) {
+        this.deleted = deleted;
+    }
+
+    @Override
+    public List<UpdateTracker> getUpdateTrackers() {
+        return updateTrackers;
+    }
+
+    public void setUpdateTrackers(List<UpdateTracker> updateTrackers) {
+        this.updateTrackers = updateTrackers;
     }
 }
