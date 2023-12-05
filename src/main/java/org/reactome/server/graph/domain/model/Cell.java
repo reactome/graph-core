@@ -1,6 +1,7 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Node
 public class Cell extends PhysicalEntity {
     @Relationship(type = "rnaMarker")
+    @ReactomeRelationship(originName = "RNAMarker")
     private List<EntityWithAccessionedSequence> rnaMarker;
 
     @Relationship(type = "markerReference")
