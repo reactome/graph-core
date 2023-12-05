@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,10 +50,10 @@ public class DatabaseObjectFactory {
             String database = properties.getProperty("database.name");
             String user = properties.getProperty("database.user");
             String password = properties.getProperty("database.password");
-            dba = new MySQLAdaptor(host,database,user,password,Integer.parseInt(port));
+            dba = new MySQLAdaptor(host, database, user, password, Integer.parseInt(port));
             dba.setUseCache(false);
             logger.info("Established connection to Reactome database");
-        } catch (SQLException|IOException e) {
+        } catch (SQLException | IOException e) {
             logger.error("An error occurred while connection to the Reactome database", e);
         }
     }
@@ -63,8 +65,10 @@ public class DatabaseObjectFactory {
     public static String getDBName() {
         return dba.getDBName();
     }
+
     /**
      * Method used for loading all Reactome top level pathways.
+     *
      * @return List of DatabaseObject (list of top level pathways)
      */
     public static List<DatabaseObject> loadFrontPageItems() {
@@ -114,16 +118,17 @@ public class DatabaseObjectFactory {
 
     /**
      * Method to create an object from a given Reactome identifier.
+     *
      * @param identifier StableIdentifier or dbId
      * @return Object that extends DatabaseObject
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> T createObject(String identifier)  {
+    public static <T extends DatabaseObject> T createObject(String identifier) {
         try {
-            GKInstance instance  = getInstance(identifier);
+            GKInstance instance = getInstance(identifier);
             DatabaseObject databaseObject = createObject(instance);
             if (databaseObject != null) {
-                load(databaseObject,instance);
+                load(databaseObject, instance);
                 return (T) databaseObject;
             }
         } catch (Exception e) {
@@ -141,9 +146,9 @@ public class DatabaseObjectFactory {
     @SuppressWarnings("unchecked")
     private static GKInstance getInstance(String identifier) throws Exception {
         identifier = identifier.trim().split("\\.")[0];
-        if (identifier.startsWith("REACT")){
+        if (identifier.startsWith("REACT")) {
             return getInstance(dba.fetchInstanceByAttribute(ReactomeJavaConstants.StableIdentifier, "oldIdentifier", "=", identifier));
-        }else if (identifier.startsWith("R-")) {
+        } else if (identifier.startsWith("R-")) {
             return getInstance(dba.fetchInstanceByAttribute(ReactomeJavaConstants.StableIdentifier, ReactomeJavaConstants.identifier, "=", identifier));
         } else {
             return dba.fetchInstance(Long.parseLong(identifier));
@@ -152,10 +157,10 @@ public class DatabaseObjectFactory {
 
     private static void load(DatabaseObject databaseObject, GKInstance instance) {
         try {
-            fill(databaseObject,instance);
+            fill(databaseObject, instance);
         } catch (Exception e) {
             logger.error("An error occurred while trying to fill " + databaseObject.getSchemaClass() + ": " +
-                    databaseObject.getDbId() + " " + databaseObject,e);
+                    databaseObject.getDbId() + " " + databaseObject, e);
         }
     }
 
@@ -197,14 +202,20 @@ public class DatabaseObjectFactory {
                             }
                         }
                     }
-
-                    Method setMethod = getNamedMethod(databaseObject, "set" + propName);
+                    Object firstValue = attValues.get(0);
+                    Method setMethod;
+                    if (firstValue instanceof GKInstance) {
+                        String valuesType = ((GKInstance) firstValue).getSchemClass().getName();
+                        setMethod = getNamedMethodWithParameter(databaseObject, "set" + propName, valuesType);
+                    } else {
+                        setMethod = getNamedMethod(databaseObject, "set" + propName);
+                    }
                     if (setMethod == null) continue;
                     Class argType = setMethod.getParameterTypes()[0];
                     if (Collection.class.isAssignableFrom(argType)) {
                         Collection<Object> caValues;
                         if (Set.class.isAssignableFrom(argType)) {
-                            caValues = new HashSet<>();
+                            caValues = new TreeSet<>();
                         } else {
                             caValues = new ArrayList<>();
                         }
@@ -229,7 +240,7 @@ public class DatabaseObjectFactory {
                     }
                 }
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -248,16 +259,15 @@ public class DatabaseObjectFactory {
                     if (stableIdentifier != null) {
                         databaseObject.setStId((String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier));
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             return databaseObject;
-        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             logger.error("Error occurred when trying to get Class for Name " + clazzName);
         }
-        return null ;
+        return null;
     }
 
     private static List<String> getJavaBeanProperties(Class clazz) {
@@ -284,8 +294,44 @@ public class DatabaseObjectFactory {
         return null;
     }
 
+    private static Method getNamedMethodWithParameter(Object target, String methodName, String parameterType) {
+        Method[] methods = target.getClass().getMethods();
+        for (Method m : methods) {
+            if (m.getName().equals(methodName)) {
+                Type currentParameterType = m.getGenericParameterTypes()[0];
+                String simpleParameterType = getSimplifyTypeName(currentParameterType);
+                if (simpleParameterType.equals(parameterType)) {
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Extract the elements of generic types, and returns the core element
+     * <p>
+     * e.g.
+     * <ul>
+     *   <li>E ==> "E"</li>
+     *   <li>List<E> ==> "E"</li>
+     *   <li>Set<E> ==> "E"</li>
+     * </ul>
+     * @param clazz The type from which to extract the name
+     * @return the String simplified name
+     */
+    private static String getSimplifyTypeName(Type clazz) {
+        if (clazz instanceof ParameterizedType) {
+            ParameterizedType aType = (ParameterizedType) clazz;
+            Type[] fieldArgTypes = aType.getActualTypeArguments();
+            return ((Class<?>) fieldArgTypes[0]).getSimpleName();
+        }
+        return ((Class<?>) clazz).getSimpleName();
+    }
+
     private static GKInstance getInstance(Collection<GKInstance> target) throws Exception {
-        if(target==null || target.size()!=1) throw new Exception("Many options have been found fot the specified identifier");
+        if (target == null || target.size() != 1)
+            throw new Exception("Many options have been found fot the specified identifier");
 
         GKInstance stId = target.iterator().next();
         return (GKInstance) dba.fetchInstanceByAttribute(ReactomeJavaConstants.DatabaseObject, ReactomeJavaConstants.stableIdentifier, "=", stId).iterator().next();

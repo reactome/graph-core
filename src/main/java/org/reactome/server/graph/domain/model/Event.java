@@ -214,8 +214,12 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         return rtn;
     }
 
-    // TODO This setCompartment break the reflection for testing against Relational DB. Renaming it fix the test, check impact
-    // TODO Check setHasCompartment -> setCompartment impact
+    /**
+     *  This setCompartment break the reflection for testing against Relational DB. Renaming it fix the test, check impact
+     *  Check setHasCompartment -> setCompartment impact
+     *
+     *  This issue has been fixed, it now supports to use setCompartment instead of setHasCompartment
+     */
     public void setCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
