@@ -168,8 +168,8 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         return isInDisease;
     }
 
-    public void setIsInDisease(Boolean inDisease) {
-        isInDisease = inDisease;
+    public void setIsInDisease(Boolean isInDisease) {
+        this.isInDisease = isInDisease;
     }
 
     public String getSystematicName() {
