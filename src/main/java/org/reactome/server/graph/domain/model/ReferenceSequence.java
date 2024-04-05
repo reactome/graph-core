@@ -30,7 +30,10 @@ public abstract class ReferenceSequence extends ReferenceEntity {
     @Relationship(type = "species")
     private Species species;
 
-    public ReferenceSequence() {}
+    public ReferenceSequence() {
+        super();
+        this.setMoleculeType("Entity");
+    }
 
     public String getChecksum() {
         return checksum;

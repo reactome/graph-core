@@ -19,7 +19,10 @@ public class ReferenceGeneProduct extends ReferenceSequence {
     @Relationship(type = "referenceTranscript")
     private List<ReferenceRNASequence> referenceTranscript;
 
-    public ReferenceGeneProduct() {}
+    public ReferenceGeneProduct() {
+        super();
+        this.setMoleculeType("Protein");
+    }
 
     public List<String> getChain() {
         return chain;
