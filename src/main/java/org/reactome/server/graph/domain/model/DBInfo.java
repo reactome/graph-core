@@ -14,7 +14,7 @@ public class DBInfo extends Release {
      * @return Database version
      */
     @Deprecated
-    public int getVersion() {
+    public Integer getVersion() {
         return this.getReleaseNumber();
     }
 
