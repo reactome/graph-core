@@ -12,7 +12,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Node
-public abstract class Regulation extends DatabaseObject {
+public abstract class Regulation extends DatabaseObject implements Deletable {
 
     @ReactomeProperty
     private String releaseDate;
@@ -57,6 +57,12 @@ public abstract class Regulation extends DatabaseObject {
     @Relationship(type = "revised", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> revised;
 
+    @Relationship(type = "summation")
+    private List<Summation> summation;
+
+    @ReactomeTransient
+    @Relationship(type = "replacementInstances", direction = Relationship.Direction.INCOMING)
+    private List<Deleted> deleted;
 
     public Regulation() {}
 
@@ -164,4 +170,20 @@ public abstract class Regulation extends DatabaseObject {
         this.revised = revised;
     }
 
+    public List<Summation> getSummation() {
+        return summation;
+    }
+
+    public void setSummation(List<Summation> summation) {
+        this.summation = summation;
+    }
+
+    @Override
+    public List<Deleted> getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(List<Deleted> deleted) {
+        this.deleted = deleted;
+    }
 }
