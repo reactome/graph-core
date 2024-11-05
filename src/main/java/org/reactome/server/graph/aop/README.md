@@ -97,7 +97,7 @@ public LazyFetchAspect lazyFetchAspect() {
 
 #### What is the flag `enableAOP` ?
 
-The AOP is enabled by default, but in certain projects like [Content Service](https://github.com/reactome-pwp/content-service.git) where we respond a serialised JSON, the `@PointCut` will be invoked every where, every time, endless times. Thus, given the requirements of the `Content Service` it makes sense that we disable this feature. However, in the [Data Content](https://github.com/reactome/data-content) we kept it enabled.
+The AOP is enabled by default, but in certain projects like [Content Service](https://github.com/reactome/content-service.git) where we respond a serialised JSON, the `@PointCut` will be invoked every where, every time, endless times. Thus, given the requirements of the `Content Service` it makes sense that we disable this feature. However, in the [Data Content](https://github.com/reactome/data-content) we kept it enabled.
 
 
 =
