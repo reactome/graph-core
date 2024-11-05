@@ -39,13 +39,13 @@ public class Pathway extends Event {
     @ReactomeProperty
     private String isCanonical;
 
-    @Relationship(type = "hasEvent")
-    private SortedSet<HasEvent> hasEvent;
-
     @ReactomeProperty
     private String lastUpdatedDate;
 
-    @ReactomeRelationship
+    @Relationship(type = "hasEvent")
+    private SortedSet<HasEvent> hasEvent;
+
+    @ReactomeRelationship(addedField = true)
     @Relationship(type = "hasEncapsulatedEvent")
     private SortedSet<HasEncapsulatedEvent> hasEncapsulatedEvent;
 

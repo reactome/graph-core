@@ -286,6 +286,22 @@ public class AdvancedServiceTest extends BaseTest {
     }
 
     @Test
+    public void customQueryWithEWASTest() throws CustomQueryException {
+        // language=cypher
+        String query = "" +
+                "MATCH path=(p:Pathway{stId:$stId})-[:hasEvent*]->(rle:ReactionLikeEvent) " +
+                "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
+                "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:EntityWithAccessionedSequence) " +
+                "WITH DISTINCT pe " +
+                "MATCH (pe)-[hm:hasModifiedResidue]->(tm:TranslationalModification) " +
+                "RETURN DISTINCT pe, collect(hm), collect(tm) ";
+        Map<String, Object> params = new HashMap<>();
+        params.put("stId", "R-HSA-68877");
+        Collection<EntityWithAccessionedSequence> ewass = advancedDatabaseObjectService.getCustomQueryResults(EntityWithAccessionedSequence.class, query, params);
+        assertThat(ewass).allMatch(ewas -> ewas instanceof EntityWithAccessionedSequence);
+    }
+
+    @Test
     public void customQueryListOfCustomObjectTest() throws CustomQueryException {
         logger.info("Started testing advancedDatabaseObjectService.customQueryForObjects");
 
