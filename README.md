@@ -168,7 +168,7 @@ The Graph core library provides lazy loading functionality. When using a getter 
 
 The application follows a basic spring multi-tier architecture:
 
-* Presentation Layer - Outside of the scope of this project. The projects acts as a data access layer for the content service. To see details about the content service goto https://github.com/reactome-pwp/content-service 
+* Presentation Layer - Outside of the scope of this project. The projects acts as a data access layer for the content service. To see details about the content service goto https://github.com/reactome/content-service 
 * Service Layer - Service and Spring Transactions.
 * Persistence Layer - Provided by SpringDataNeo4j repositories and neo4jTemplate
 * Database - Neo4j Standalone server
