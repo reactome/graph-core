@@ -12,9 +12,9 @@
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logging.dir}/graph/graph-core.log</file>
+        <file>logging.dir}/graph/graph-core.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${logging.dir}/graph/graph-%i-log.zip</fileNamePattern>
+            <fileNamePattern>@logging.dir@/graph/graph-%i-log.zip</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>3</maxIndex>
         </rollingPolicy>
