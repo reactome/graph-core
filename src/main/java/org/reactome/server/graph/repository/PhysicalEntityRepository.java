@@ -36,6 +36,20 @@ public interface PhysicalEntityRepository extends Neo4jRepository<PhysicalEntity
     @Query("MATCH (:PhysicalEntity{stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunits(@Param("stId") String stId);
 
+    @Query(
+            ("MATCH path=(root:PhysicalEntity{:#{literal(#idType)}:$id})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*1..:#{literal(#maxDepth)}]->(pe:PhysicalEntity) " +
+                    "WITH root, nodes(path) as nodesPath, relationships(path) as rels " +
+                    "UNWIND nodesPath as nodePath " +
+                    "OPTIONAL MATCH p2=(nodePath)-[::#{literal(#attributes)}]->(attributes) " +
+                    "RETURN root, collect(nodesPath) + collect(nodes(p2)), collect(rels) + collect(relationships(p2))")
+    )
+    PhysicalEntity getBoundedPhysicalEntitySubunits(
+            @Param("idType") String idType,
+            @Param("id") Object id,
+            @Param("maxDepth") Integer maxDepth,
+            @Param("attributes") String attributes
+    );
+
     @Query("MATCH (:PhysicalEntity{dbId:$dbId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(pe:PhysicalEntity) WHERE NOT (pe:Complex) AND NOT(pe:EntitySet) RETURN DISTINCT pe")
     Collection<PhysicalEntity> getPhysicalEntitySubunitsNoStructures(@Param("dbId") Long dbId);
 
