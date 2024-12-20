@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -53,15 +54,21 @@ public class PhysicalEntityService {
         return null;
     }
 
-    public PhysicalEntity getBoundedPhysicalEntitySubunits(Object identifier, int maxDepth) {
+    public PhysicalEntity getPhysicalEntityInDepth(Object identifier, int maxDepth) {
+      return this.getPhysicalEntityInDepth(identifier, maxDepth, List.of("compartment", "species"));
+    }
+
+    public PhysicalEntity getPhysicalEntityInDepth(Object identifier, int maxDepth, List<String> attributes) {
         if (maxDepth == 0) maxDepth = 1;
         if (maxDepth < 0) maxDepth = Integer.MAX_VALUE;
+        if (attributes == null || attributes.isEmpty()) attributes = List.of("species");
 
         String id = DatabaseObjectUtils.getIdentifier(identifier);
+        String attributeString = String.join("|", attributes);
         if (DatabaseObjectUtils.isStId(id)) {
-            return physicalEntityRepository.getBoundedPhysicalEntitySubunits("stId", id, maxDepth, "compartment|species");
+            return physicalEntityRepository.getPhysicalEntityInDepth("stId", id, maxDepth, attributeString);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return physicalEntityRepository.getBoundedPhysicalEntitySubunits("dbId", Long.parseLong(id), maxDepth, "compartment|species");
+            return physicalEntityRepository.getPhysicalEntityInDepth("dbId", Long.parseLong(id), maxDepth, attributeString);
         }
         return null;
     }

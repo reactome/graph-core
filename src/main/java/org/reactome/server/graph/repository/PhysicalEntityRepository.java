@@ -43,7 +43,7 @@ public interface PhysicalEntityRepository extends Neo4jRepository<PhysicalEntity
                     "OPTIONAL MATCH p2=(nodePath)-[::#{literal(#attributes)}]->(attributes) " +
                     "RETURN root, collect(nodesPath) + collect(nodes(p2)), collect(rels) + collect(relationships(p2))")
     )
-    PhysicalEntity getBoundedPhysicalEntitySubunits(
+    PhysicalEntity getPhysicalEntityInDepth(
             @Param("idType") String idType,
             @Param("id") Object id,
             @Param("maxDepth") Integer maxDepth,

@@ -1,14 +1,19 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 @SuppressWarnings({"unused"})
 
@@ -205,30 +210,24 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         this.crossReference = crossReference;
     }
 
-    public List<Compartment> getCompartment() {
-        if(compartment == null) return null;
-        List<Compartment> rtn = new ArrayList<>();
-        for (HasCompartment c : compartment) {
-            rtn.add(c.getCompartment());
-        }
-        return rtn;
+    @JsonView(StoichiometryView.Nested.class)
+    public SortedSet<HasCompartment> getHasCompartment() {
+        return this.compartment;
     }
 
-    // TODO This setCompartment break the reflection for testing against Relational DB. Renaming it fix the test, check impact
+    @JsonView(StoichiometryView.Nested.class)
     public void setHasCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<Compartment> getCompartment() {
+        return Has.Util.expandStoichiometry(compartment);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public void setCompartment(List<Compartment> compartment) {
-        this.compartment = new TreeSet<>();
-        int order = 0;
-        for (Compartment c : compartment) {
-            HasCompartment hc = new HasCompartment();
-//            hc.setSource(this);
-            hc.setCompartment(c);
-            hc.setOrder(order++);
-            this.compartment.add(hc);
-        }
+        this.compartment = Has.Util.aggregateStoichiometry(compartment, HasCompartment::new);
     }
 
     public List<Disease> getDisease() {
