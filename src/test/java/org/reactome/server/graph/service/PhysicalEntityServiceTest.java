@@ -115,15 +115,15 @@ public class PhysicalEntityServiceTest extends BaseTest {
     protected LazyFetchAspect lazyFetchAspect;
 
     @Test
-    public void testGetComplexSubunitsBounded() {
+    public void testGetPhysicalEntityInDepth() {
         logger.info("Started testing physicalEntityService.testGetComplexSubunitsBounded");
         lazyFetchAspect.setEnableAOP(false);
         String identifier = "R-MMU-6814275";
-        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getBoundedPhysicalEntitySubunits(6814275, 1)), "dbId should work");
-        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getBoundedPhysicalEntitySubunits(identifier, 1)), "depth should match requested parameter");
-        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getBoundedPhysicalEntitySubunits(identifier, 0)), "depth of 0 correspond to first level");
-        assertEquals(5, recursiveCheckMaxDepth(0, physicalEntityService.getBoundedPhysicalEntitySubunits(identifier, 5)), "intermediate depth should work");
-        Complex totalComplex = (Complex) physicalEntityService.getBoundedPhysicalEntitySubunits(identifier, -1);
+        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(6814275, 1)), "dbId should work");
+        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 1)), "depth should match requested parameter");
+        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 0)), "depth of 0 correspond to first level");
+        assertEquals(5, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 5)), "intermediate depth should work");
+        Complex totalComplex = (Complex) physicalEntityService.getPhysicalEntityInDepth(identifier, -1);
         assertEquals(16, recursiveCheckMaxDepth(0, totalComplex), "using a depth of -1 should return the full composition");
         totalComplex.getHasComponent().stream()
                 .filter(component -> component instanceof Complex)

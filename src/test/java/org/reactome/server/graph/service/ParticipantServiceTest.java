@@ -37,7 +37,7 @@ public class ParticipantServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertEquals(34, participants.size());
         logger.info("Finished");
     }
 
@@ -55,7 +55,7 @@ public class ParticipantServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertEquals(34, participants.size());
         logger.info("Finished");
     }
 

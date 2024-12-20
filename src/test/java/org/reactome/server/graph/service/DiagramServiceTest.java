@@ -99,7 +99,7 @@ public class DiagramServiceTest extends BaseTest {
             }
             if(o.getDiagramStId().equals("R-HSA-168928")){
                 assertTrue(o.isInDiagram(), "'R-HSA-879382' should be directly contained in 'R-HSA-168928'");
-                assertTrue(o.getOccurrences().isEmpty());
+                assertTrue(o.getOccurrences().isEmpty()); //TODO check why false
                 // TODO
             }
         }
