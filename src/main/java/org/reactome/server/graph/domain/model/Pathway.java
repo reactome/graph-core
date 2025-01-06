@@ -55,7 +55,8 @@ public class Pathway extends Event implements CompositionAggregator {
         return Stream.of(hasEvent, hasEncapsulatedEvent);
     }
 
-    public Pathway() {}
+    public Pathway() {
+    }
 
     public Pathway(Long dbId) {
         super(dbId);
@@ -113,6 +114,7 @@ public class Pathway extends Event implements CompositionAggregator {
         this.isCanonical = isCanonical;
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<HasEvent> getEvents() {
         return hasEvent;

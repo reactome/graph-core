@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -242,19 +243,22 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
                 if (Collection.class.isAssignableFrom(methodReturnClazz)) {
                     ParameterizedType stringListType = (ParameterizedType) method.getGenericReturnType();
-                    Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
-                    String clazz = type.getSimpleName();
-                    if (DatabaseObject.class.isAssignableFrom(type)) {
-                        Collection<T> collection = (Collection<T>) method.invoke(this);
-                        if (collection != null) {
-                            for (DatabaseObject obj : collection) {
-                                DatabaseObject object = obj;
-                                if (object != null) {
-                                    if (object.preventLazyLoading == null) {
-                                        object.preventLazyLoading = false;
-                                    }
-                                    if (object.preventLazyLoading != preventLazyLoading) {
-                                        object.preventLazyLoading(preventLazyLoading);
+                    Type actualTypeArgument = stringListType.getActualTypeArguments()[0];
+                    if (actualTypeArgument instanceof Class) {
+                        Class<?> type = (Class<?>) actualTypeArgument;
+                        String clazz = type.getSimpleName();
+                        if (DatabaseObject.class.isAssignableFrom(type)) {
+                            Collection<T> collection = (Collection<T>) method.invoke(this);
+                            if (collection != null) {
+                                for (DatabaseObject obj : collection) {
+                                    DatabaseObject object = obj;
+                                    if (object != null) {
+                                        if (object.preventLazyLoading == null) {
+                                            object.preventLazyLoading = false;
+                                        }
+                                        if (object.preventLazyLoading != preventLazyLoading) {
+                                            object.preventLazyLoading(preventLazyLoading);
+                                        }
                                     }
                                 }
                             }

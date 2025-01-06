@@ -39,7 +39,8 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
         return Stream.of(hasModifiedResidue);
     }
 
-    public EntityWithAccessionedSequence() {}
+    public EntityWithAccessionedSequence() {
+    }
 
     public EntityWithAccessionedSequence(Long dbId) {
         super(dbId);
@@ -69,6 +70,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
         this.startCoordinate = startCoordinate;
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<HasModifiedResidue> getModifiedResidues() {
         return hasModifiedResidue;

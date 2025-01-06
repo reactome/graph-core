@@ -57,7 +57,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "hasEvent", direction=Relationship.Direction.INCOMING)
+    @Relationship(type = "hasEvent", direction = Relationship.Direction.INCOMING)
     private List<Pathway> eventOf;
 
     @Relationship(type = "evidenceType")
@@ -74,7 +74,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "precedingEvent", direction=Relationship.Direction.INCOMING)
+    @Relationship(type = "precedingEvent", direction = Relationship.Direction.INCOMING)
     private List<Event> followingEvent;
 
     @Relationship(type = "goBiologicalProcess")
@@ -131,7 +131,8 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     private List<UpdateTracker> updateTrackers;
 
 
-    public Event() {}
+    public Event() {
+    }
 
     public Event(Long dbId) {
         super(dbId);
@@ -210,6 +211,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         this.crossReference = crossReference;
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<HasCompartment> getHasCompartment() {
         return this.compartment;
