@@ -99,23 +99,29 @@ public class AdvancedDatabaseObjectRepository {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId) {
+        //language=cypher
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
                 "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
-                "RETURN n, COLLECT(r1), COLLECT(m), COLLECT(r2), COLLECT(s), COLLECT(r3), COLLECT(o) ";
+                "OPTIONAL MATCH (o:LiteratureReference)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:LiteratureReference)<-[r5:author]-(p2:Person) " +
+                "RETURN n,  [COLLECT(m), COLLECT(s),COLLECT(o), COLLECT(DISTINCT p),COLLECT(DISTINCT p2)] , [COLLECT(r1), COLLECT(r2), COLLECT(r3), COLLECT(r4), COLLECT(r5)]";
 
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectById(String stId) {
+        //language=cypher
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
                 "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
-                "RETURN n, COLLECT(r1), COLLECT(m), COLLECT(r2), COLLECT(s), COLLECT(r3), COLLECT(o) ";
+                "OPTIONAL MATCH (o:LiteratureReference)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:LiteratureReference)<-[r5:author]-(p2:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
