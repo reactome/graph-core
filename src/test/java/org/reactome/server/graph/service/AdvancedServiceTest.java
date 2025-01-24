@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @author Florian Korninger <florian.korninger@ebi.ac.uk>
+ * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  */
 @SpringBootTest
 public class AdvancedServiceTest extends BaseTest {
