@@ -143,6 +143,13 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
             </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>EPL-2.0.LICENSE</include>
+                </includes>
+            </resource>
         </resources>
 
         <testResources>
