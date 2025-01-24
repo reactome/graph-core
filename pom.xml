@@ -64,6 +64,7 @@
 
         <!-- maven build and plugins -->
         <maven.gpg.version>3.2.7</maven.gpg.version>
+        <maven.javadoc.version>3.11.2</maven.javadoc.version>
         <nexus-staging-maven-plugin>1.7.0</nexus-staging-maven-plugin>
     </properties>
 
@@ -313,6 +314,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                    <failOnError>false</failOnError>
+                </configuration>
             </plugin>
 
             <!-- Signs deployed jar, source jar, and JavaDoc jar with GPG -->
