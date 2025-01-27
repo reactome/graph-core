@@ -32,7 +32,6 @@ public class ReferralsLinkageRepository {
                 "       COLLECT(ref) AS objects " +
                 "LIMIT 1000";
         return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("stId", stId)).fetchAs(Referrals.class).mappedBy((t, record) -> Referrals.build(record)).all();
-
     }
 
     public Collection<Referrals> getReferralsTo(Long dbId) {
@@ -45,6 +44,5 @@ public class ReferralsLinkageRepository {
                 "       COLLECT(ref) AS objects " +
                 "LIMIT 1000";
         return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("dbId", dbId)).fetchAs(Referrals.class).mappedBy((t, record) -> Referrals.build(record)).all();
-
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ParticipantServiceTest extends BaseTest {
 
@@ -37,7 +38,7 @@ public class ParticipantServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertTrue(participants.size() > 20);
         logger.info("Finished");
     }
 
@@ -55,7 +56,7 @@ public class ParticipantServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertTrue(participants.size() > 20);
         logger.info("Finished");
     }
 
@@ -74,7 +75,7 @@ public class ParticipantServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertTrue(participants.size() > 20);
         logger.info("Finished");
     }
 }

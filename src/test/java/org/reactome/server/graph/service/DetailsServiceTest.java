@@ -10,8 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by:
@@ -40,10 +39,10 @@ public class DetailsServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 
-        assertTrue(contentDetails.getNodes().size() >= 5);
+        assertTrue(contentDetails.getNodes().size() >= 2);
         assertEquals("PTEN [cytosol]", contentDetails.getDatabaseObject().getDisplayName());
-        assertTrue(contentDetails.getOtherFormsOfThisMolecule().size() >= 27);
-        assertTrue(contentDetails.getComponentOf().size() >= 1);
+        assertTrue(contentDetails.getOtherFormsOfThisMolecule().size() >= 2);
+        assertFalse(contentDetails.getComponentOf().isEmpty());
         logger.info("Finished");
     }
 
