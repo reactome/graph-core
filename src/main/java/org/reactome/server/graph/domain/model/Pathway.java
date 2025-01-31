@@ -50,6 +50,9 @@ public class Pathway extends Event implements CompositionAggregator {
     @Relationship(type = "normalPathway")
     private Pathway normalPathway;
 
+    @Relationship(type = "normalPathway", direction = Relationship.Direction.INCOMING)
+    private List<Pathway> diseasePathways;
+
     @Override
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
         return Stream.of(hasEvent, hasEncapsulatedEvent);
@@ -151,6 +154,14 @@ public class Pathway extends Event implements CompositionAggregator {
 
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
+    }
+
+    public List<Pathway> getDiseasePathways() {
+        return diseasePathways;
+    }
+
+    public void setDiseasePathways(List<Pathway> diseasePathways) {
+        this.diseasePathways = diseasePathways;
     }
 
     public String getLastUpdatedDate() {
