@@ -16,7 +16,7 @@ public interface CompositionAggregator {
 
 
     @JsonIgnore
-     Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations();
+    Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations();
 
     @JsonView(StoichiometryView.NestedAggregated.class)
     @ReactomeSchemaIgnore
