@@ -214,8 +214,9 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
        return Has.Util.expandStoichiometry(compartment);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
-    public void setCompartment(SortedSet<HasCompartment> compartment) {
+    public void setCompartments(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
 
@@ -316,6 +317,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.memberOf = memberOf;
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public void setRepeatedUnitOf(Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
@@ -388,6 +390,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         return Has.Util.expandStoichiometry(consumedByEvent);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public List<InputForReactionLikeEvent> getInputFor() {
         return consumedByEvent;
@@ -398,6 +401,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         return Has.Util.expandStoichiometry(producedByEvent);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public List<OutputForReactionLikeEvent> getOutputFor() {
         return producedByEvent;

@@ -28,12 +28,15 @@ public class CandidateSet extends EntitySet implements CompositionAggregator {
         return Stream.concat(super.defineCompositionRelations(), Stream.of(hasCandidate));
     }
 
-    public CandidateSet() {}
+    public CandidateSet() {
+    }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<HasCandidate> getCandidates() {
         return hasCandidate;
     }
+
     @JsonView(StoichiometryView.Nested.class)
     public void setCandidates(SortedSet<HasCandidate> hasCandidate) {
         this.hasCandidate = hasCandidate;

@@ -48,7 +48,8 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
         return Stream.of(hasComponent);
     }
 
-    public Complex() {}
+    public Complex() {
+    }
 
     public Complex(Long dbId) {
         super(dbId);
@@ -67,6 +68,7 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
         return Has.Util.simplifiedSort(this.hasComponent);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<HasComponent> getComponents() {
         return this.hasComponent;
@@ -78,13 +80,13 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
     }
 
     @JsonView(StoichiometryView.Flatten.class)
-    public List<PhysicalEntity> getHasComponent(){
+    public List<PhysicalEntity> getHasComponent() {
         return Has.Util.expandStoichiometry(this.hasComponent);
     }
 
     @JsonView(StoichiometryView.Flatten.class)
     public void setHasComponent(List<PhysicalEntity> hasComponent) {
-       this.hasComponent = Has.Util.aggregateStoichiometry(hasComponent, HasComponent::new);
+        this.hasComponent = Has.Util.aggregateStoichiometry(hasComponent, HasComponent::new);
     }
 
     public Boolean getStoichiometryKnown() {

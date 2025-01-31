@@ -193,7 +193,7 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @JsonView(StoichiometryView.Flatten.class)
     public List<PhysicalEntity> getInput() {
-       return Has.Util.expandStoichiometry(input);
+        return Has.Util.expandStoichiometry(input);
     }
 
     @JsonView(StoichiometryView.Flatten.class)
@@ -201,6 +201,7 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
         this.input = Has.Util.aggregateStoichiometry(inputs, Input::new);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public Set<Input> getInputs() {
         return this.input;
@@ -230,6 +231,7 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
         this.output = Has.Util.aggregateStoichiometry(outputs, Output::new);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public Set<Output> getOutputs() {
         return this.output;

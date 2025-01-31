@@ -74,6 +74,7 @@ public class Polymer extends PhysicalEntity implements CompositionAggregator {
         return Has.Util.expandStoichiometry(repeatedUnit);
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<RepeatedUnit> getRepeatedUnits() {
         return repeatedUnit;

@@ -38,7 +38,8 @@ public abstract class EntitySet extends PhysicalEntity implements CompositionAgg
         return Stream.of(hasMember);
     }
 
-    public EntitySet() {}
+    public EntitySet() {
+    }
 
     public Boolean getIsOrdered() {
         return isOrdered;
@@ -48,6 +49,7 @@ public abstract class EntitySet extends PhysicalEntity implements CompositionAgg
         this.isOrdered = isOrdered;
     }
 
+    @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public SortedSet<HasMember> getMembers() {
         return hasMember;
