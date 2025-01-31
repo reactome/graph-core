@@ -1,10 +1,9 @@
 package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
-import org.neo4j.driver.summary.ResultSummary;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.Referrals;
-import org.reactome.server.graph.util.*;
+import org.reactome.server.graph.util.TestNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
@@ -18,13 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @EnableNeo4jRepositories(basePackages = "org.reactome.server.graph.util")
 public class AdvancedLinkageServiceTest extends BaseTest {
-
-    String neo4JtestIdentifier1 = "R-HSA-Test1";
-    String neo4JtestIdentifier2 = "R-HSA-Test2";
-
-
-    @Autowired
-    private TestNodeService testNodeService;
 
     @Autowired
     private AdvancedLinkageService advancedLinkageService;
@@ -43,36 +35,31 @@ public class AdvancedLinkageServiceTest extends BaseTest {
 
     @Test
     public void getComponentOfTest(){
-        ResultSummary resultSummaryCreate = testNodeService.createAdvancedLinkageServiceComponent();
         long start, time;
 
         logger.info("Started testing genericService.getComponentOfTest");
         start = System.currentTimeMillis();
-        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf("R-HSA-TestNode1");
+        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf(-1);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        ResultSummary resultSummaryDelete = testNodeService.deleteAdvancedLinkageServiceData(neo4JtestIdentifier1, neo4JtestIdentifier2);
-
         assertTrue(componentOfs.size() == 1);
         logger.info("Finished");
-
     }
 
 
     @Test
-    public void getReferralsToTest(){ // TODO DID this actually ever work???
+    public void getReferralsToTest(){
         logger.info("Started testing genericService.getReferralsToTest");
-        //ResultSummary resultSummary = testNodeService.createAdvancedLinkageServiceComponent(); // testidentifier not used yet !!!
 
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Referrals> referrals = advancedLinkageService.getReferralsTo("R-HSA-71291");
+        Collection<Referrals> referrals = advancedLinkageService.getReferralsTo("R-HSA-123456");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        //testNodeService.deleteAdvancedLinkageServiceData(neo4JtestIdentifier1, neo4JtestIdentifier2);
 
-        assertTrue(referrals.size() == 2);
+
+        assertTrue(referrals.size() == 1);
         logger.info("Finished");
     }
 }

@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
+import org.neo4j.driver.summary.ResultSummary;
 import org.reactome.server.graph.custom.CustomQueryComplex;
 import org.reactome.server.graph.custom.CustomQueryPhysicalEntity;
 import org.reactome.server.graph.custom.CustomQueryResult;
@@ -8,15 +9,13 @@ import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.reactome.server.graph.util.TestNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,33 +34,41 @@ public class AdvancedServiceTest extends BaseTest {
     @Autowired
     private AdvancedDatabaseObjectService advancedDatabaseObjectService;
 
+    @Autowired
+    private TestNodeService testNodeService;
+
     @BeforeTestClass
     public void setUpClass() {
         logger.info(" --- !!! Running " + AdvancedServiceTest.class.getName() + "!!! --- \n");
     }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
-
     @Test
     public void findEnhancedPhysicalEntityByIdTest() {
 
         logger.info("Started testing advancedDatabaseObjectService.findEnhancedPhysicalEntityByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        PhysicalEntity peObserved = advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
+        PhysicalEntity peObserved = advancedDatabaseObjectService.findEnhancedObjectById(1111111);
+
+        List<String> nodes = new ArrayList<>(Arrays.asList("R-HSA-1111111", "R-HSA-2222222", "R-HSA-3333333"));
+
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertEquals("R-HSA-113454", peObserved.getPositivelyRegulates().get(0).getRegulatedEntity().get(0).getStId());
+
+        assertTrue(peObserved.getDisplayName().equals("R-HSA-1111111 TestNode"));
         logger.info("Finished");
     }
 
     @Test
     public void findEnhancedEventByIdTest() {
 
+        // zusätzlicher Node for Reaction Like Event
+
         logger.info("Started testing advancedDatabaseObjectService.findEnhancedPathwayByIdTest");
         long start, time;
         start = System.currentTimeMillis();
-        ReactionLikeEvent rleObserved = advancedDatabaseObjectService.findEnhancedObjectById(2993780L);
+        ReactionLikeEvent rleObserved = advancedDatabaseObjectService.findEnhancedObjectById(1111111);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -103,7 +110,7 @@ public class AdvancedServiceTest extends BaseTest {
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
     @Test
-    public void findByPropertyTest() throws InvocationTargetException, IllegalAccessException {
+    public void findByPropertyTest() {
 
         logger.info("Started testing advancedDatabaseObjectService.findByProperty");
         long start, time;
@@ -337,7 +344,7 @@ public class AdvancedServiceTest extends BaseTest {
     }
 
 
-//    @Test
+    @Test
     public void customQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN DISTINCT n.identifier AS identifier";
         Collection<String> accessions = advancedDatabaseObjectService.getCustomQueryResults(String.class, query, null);
