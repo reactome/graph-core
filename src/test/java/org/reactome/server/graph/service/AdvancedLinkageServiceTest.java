@@ -12,6 +12,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
@@ -20,6 +21,8 @@ public class AdvancedLinkageServiceTest extends BaseTest {
 
     @Autowired
     private AdvancedLinkageService advancedLinkageService;
+
+    private static String TestStId = "R-TST-11";
 
     @BeforeTestClass
     public void setUpClass() {
@@ -39,11 +42,11 @@ public class AdvancedLinkageServiceTest extends BaseTest {
 
         logger.info("Started testing genericService.getComponentOfTest");
         start = System.currentTimeMillis();
-        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf(-1);
+        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf(TestStId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(componentOfs.size() == 1);
+        assertEquals(1, componentOfs.size());
         logger.info("Finished");
     }
 
@@ -54,12 +57,11 @@ public class AdvancedLinkageServiceTest extends BaseTest {
 
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Referrals> referrals = advancedLinkageService.getReferralsTo("R-HSA-123456");
+        Collection<Referrals> referrals = advancedLinkageService.getReferralsTo(TestStId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-
-        assertTrue(referrals.size() == 1);
+        assertEquals(1, referrals.size());
         logger.info("Finished");
     }
 }
