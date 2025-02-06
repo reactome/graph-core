@@ -36,6 +36,16 @@ public class AdvancedDatabaseObjectService {
         return null;
     }
 
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Object identifier) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(id);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(Long.parseLong(id));
+        }
+        return null;
+    }
+
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
 
     public <T extends DatabaseObject> T findById(Object identifier, Integer limit) {

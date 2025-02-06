@@ -104,7 +104,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
@@ -119,7 +119,37 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+
+        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Long dbId) {
+        //language=cypher
+        String query = "" +
+                "MATCH (n:DatabaseObject{dbId:$dbId}) " +
+                "OPTIONAL MATCH (n)-[r1]->(m) " +
+                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+
+        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(String stId) {
+        //language=cypher
+        String query = "" +
+                "MATCH (n:DatabaseObject{stId:$stId}) " +
+                "OPTIONAL MATCH (n)-[r1]->(m) " +
+                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +

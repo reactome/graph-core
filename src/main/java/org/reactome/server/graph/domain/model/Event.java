@@ -69,10 +69,6 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @Relationship(type = "precedingEvent")
     private List<Event> precedingEvent;
 
-    /**
-     * followingEvent is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "precedingEvent", direction = Relationship.Direction.INCOMING)
     private List<Event> followingEvent;
