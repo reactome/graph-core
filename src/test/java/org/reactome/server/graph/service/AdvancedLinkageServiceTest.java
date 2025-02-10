@@ -22,8 +22,6 @@ public class AdvancedLinkageServiceTest extends BaseTest {
     @Autowired
     private AdvancedLinkageService advancedLinkageService;
 
-    private static String TestStId = "R-TST-11";
-
     @BeforeTestClass
     public void setUpClass() {
         logger.info(" --- !!! Running {}!!! --- \n", AdvancedLinkageServiceTest.class.getName());
@@ -42,7 +40,7 @@ public class AdvancedLinkageServiceTest extends BaseTest {
 
         logger.info("Started testing genericService.getComponentOfTest");
         start = System.currentTimeMillis();
-        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf(TestStId);
+        Collection<ComponentOf> componentOfs = advancedLinkageService.getComponentsOf(Events.associationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -57,7 +55,7 @@ public class AdvancedLinkageServiceTest extends BaseTest {
 
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Referrals> referrals = advancedLinkageService.getReferralsTo(TestStId);
+        Collection<Referrals> referrals = advancedLinkageService.getReferralsTo(PhysicalEntities.catalystActivity.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

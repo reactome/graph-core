@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.domain.model.*;
-import org.reactome.server.graph.domain.relationship.Input;
-import org.reactome.server.graph.domain.relationship.Output;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.TestNodeService;
 import org.slf4j.Logger;
@@ -16,10 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 
 /**
  * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
@@ -27,8 +27,44 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SpringBootTest
 public abstract class BaseTest {
 
+        protected static class Events {
+            public static TopLevelPathway topLevelPathway;
+            public static Pathway ehldPathway;
+            public static Pathway diagramPathway;
+
+            public static CellLineagePath cellLineagePathway;
+
+            public static Reaction associationReaction;
+            public static Reaction dissociationReaction;
+            public static Reaction transitionReaction;
+            public static Reaction bindingReaction;
+
+            public static Polymerisation polymerisationReaction;
+            public static Depolymerisation depolymerisationReaction;
+
+            public static BlackBoxEvent blackBoxEvent;
+            public static CellDevelopmentStep cellDevelopmentStep;
+            public static FailedReaction failedReaction;
+
+        }
+
+        protected static class PhysicalEntities{
+            public static Complex complex;
+            public static EntityWithAccessionedSequence entityWithAccessionedSequence;
+            public static CatalystActivity catalystActivity;
+            public static PositiveRegulation positiveRegulation;
+            public static Compartment compartment;
+
+            public static FragmentModification fragmentDeletionModification;
+            public static ReferenceSequence referenceSequence;
+        }
+
+        protected static Species homoSapiensSpecies;
+
     protected static final Logger logger = LoggerFactory.getLogger("testLogger");
-    protected @Autowired TestNodeService testService;
+
+    @Autowired
+    protected TestNodeService testService;
 
     protected static Species testSpecies;
 
@@ -49,130 +85,137 @@ public abstract class BaseTest {
 
     @AfterAll
     public static void deleteTestData(@Autowired TestNodeService nodeService) {
-//        nodeService.deleteTest();
+        //nodeService.deleteTest();
     }
 
     @BeforeAll
     public static void createTestData(@Autowired TestNodeService testService) {
 
         //region Create Top Level Pathway
-        TopLevelPathway topLevelPathway = new TopLevelPathway();
-        topLevelPathway.setDisplayName("Test Top Level Pathway");
-        topLevelPathway.setHasEHLD(true);
+        Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
         //endregion
 
         //region Create Pathway with EHLD set true
-        Pathway ehldPathway = new Pathway();
-        ehldPathway.setDisplayName("Test EHLD Pathway");
-        ehldPathway.setHasEHLD(true);
-        topLevelPathway.setHasEvent(List.of(topLevelPathway));
+        Events.ehldPathway = createPathway("Test Ehld Pathway", true, true);
+        Events.topLevelPathway.setHasEvent(List.of(Events.ehldPathway));
         //endregion
 
         //region Create Pathway with diagram
-        Pathway diagramPathway = new Pathway();
-        diagramPathway.setDisplayName("Test Diagram Pathway");
-        diagramPathway.setHasEHLD(false);
-        diagramPathway.setHasDiagram(true);
-        ehldPathway.setHasEvent(List.of(diagramPathway));
+        Events.diagramPathway = createPathway("Test Diagram Pathway",false,true);
+        Events.ehldPathway.setHasEvent(List.of(Events.diagramPathway));
         //endregion
 
         //region Create Test Reactions
-        Reaction reactionAssociation = new Reaction();
-        reactionAssociation.setDisplayName("Test Reaction (Association)");
-        reactionAssociation.setCategory("association");
+        Events.associationReaction = createReaction(ReactionType.ASSOCIATION,"Test Reaction (Association)");
 
         // Dissociation
-        Reaction reactionDissociation = new Reaction();
-        reactionDissociation.setDisplayName("Test Reaction (Dissociation)");
-        reactionDissociation.setCategory("dissociation");
+        Events.dissociationReaction = createReaction(ReactionType.DISSOCIATION, "Test Reaction (Dissociation)");
 
         // Transition
-        Reaction reactionTransition = new Reaction();
-        reactionTransition.setDisplayName("Test Reaction (Transition)");
-        reactionTransition.setCategory("transition");
+        Events.transitionReaction = createReaction(ReactionType.TRANSITION, "Test Reaction (Transition)");
 
         // Binding
-        Reaction reactionBinding = new Reaction();
-        reactionBinding.setDisplayName("Test Reaction (Binding)");
-        reactionBinding.setCategory("binding");
+        Events.bindingReaction = createReaction(ReactionType.BINDING, "Test Reaction (Binding)");
 
         // Polymerisation
-        Polymerisation reactionPolymerisation = new Polymerisation();
-        reactionPolymerisation.setDisplayName("Test Reaction (Polymerisation)");
-        reactionPolymerisation.setCategory("transition");
+        Events.polymerisationReaction = new Polymerisation();
+        Events.polymerisationReaction.setCategory("polymerisation");
+        Events.polymerisationReaction.setDisplayName("Test Reaction (Polymerisation)");
 
         // Depolymerisation
-        Depolymerisation reactionDepolymerisation = new Depolymerisation();
-        reactionDepolymerisation.setDisplayName("Test Reaction (Depolymerisation)");
-        reactionDepolymerisation.setCategory("transition");
+        Events.depolymerisationReaction = new Depolymerisation();
+        Events.depolymerisationReaction.setDisplayName("Test Reaction (Depolymerisation)");
+        Events.depolymerisationReaction.setCategory("transition");
 
         // BlackBoxEvent
-        BlackBoxEvent reactionBlackBoxEvent = new BlackBoxEvent();
-        reactionBlackBoxEvent.setDisplayName("Test Reaction (BlackBox Event)");
-        reactionBlackBoxEvent.setCategory("omitted");
+        Events.blackBoxEvent = new BlackBoxEvent();
+        Events.blackBoxEvent.setDisplayName("Test Reaction (BlackBox Event)");
+        Events.blackBoxEvent.setCategory("omitted");
 
         // CellDevelopmentStep
-        CellDevelopmentStep reactionCellDevelopmentStep = new CellDevelopmentStep();
-        reactionCellDevelopmentStep.setDisplayName("Test Reaction (CellDevelopment Step)");
-        reactionCellDevelopmentStep.setCategory("transition");
+        Events.cellDevelopmentStep = new CellDevelopmentStep();
+        Events.cellDevelopmentStep.setDisplayName("Test Reaction (CellDevelopment Step)");
+        Events.cellDevelopmentStep.setCategory("transition");
 
         // Failed Reaction
-        FailedReaction reactionFailedReaction = new FailedReaction();
-        reactionFailedReaction.setDisplayName("Test Reaction (FailedReaction)");
-        reactionFailedReaction.setCategory("transition");
+        Events.failedReaction = new FailedReaction();
+        Events.failedReaction.setDisplayName("Test Reaction (FailedReaction)");
+        Events.failedReaction.setCategory("transition");
 
-        diagramPathway.setHasEvent(List.of(reactionAssociation, reactionDissociation, reactionTransition,
-                reactionBinding, reactionPolymerisation, reactionDepolymerisation, reactionBlackBoxEvent,
-                reactionCellDevelopmentStep, reactionFailedReaction));
-        testService.saveTest(diagramPathway);
+        Events.diagramPathway.setHasEvent(List.of(Events.associationReaction, Events.dissociationReaction, Events.transitionReaction,
+                Events.bindingReaction,Events.polymerisationReaction,Events.depolymerisationReaction,Events.blackBoxEvent,
+                Events.cellDevelopmentStep,Events.failedReaction));
+
+        PhysicalEntities.compartment = new Compartment();
+        PhysicalEntities.compartment.setDisplayName("Test Compartment");
+        Events.dissociationReaction.setCompartment(List.of(PhysicalEntities.compartment));
         //endregion
 
         //region Create In/Output for Reaction
-        PhysicalEntity inputSimpleEntity1 = new SimpleEntity();
-        inputSimpleEntity1.setDisplayName("Simple Entity 1");
+        homoSapiensSpecies = new Species();
+        homoSapiensSpecies.setDisplayName("Homo sapiens");
+        homoSapiensSpecies.setName(List.of("Homo sapiens"));
 
-        PhysicalEntity inputSimpleEntity2 = new SimpleEntity();
-        inputSimpleEntity2.setDisplayName("Simple Entity 2");
-
-        PhysicalEntity outputSimpleEntity = new SimpleEntity();
-        outputSimpleEntity.setDisplayName("Simple Entity 3");
-
-        PhysicalEntity outputGenomeEntity = new GenomeEncodedEntity();
-        outputGenomeEntity.setDisplayName("Simple Entity 4");
-
-        // create complex for output
-        Complex testComplex = new Complex();
-        testComplex.setDisplayName("Test Complex");
-        testComplex.setHasComponent(List.of(outputSimpleEntity, outputGenomeEntity));
-        reactionAssociation.setOutput(List.of(testComplex));
+        //create Complex
+        PhysicalEntities.complex = createComplex("Test Complex", 4, List.of(homoSapiensSpecies));
+        Events.associationReaction.setOutput(List.of(PhysicalEntities.complex));
 
         // create EWAS
-        EntityWithAccessionedSequence testEWAS = new EntityWithAccessionedSequence();
-        testEWAS.setDisplayName("Test Entity With Accessioned Sequence");
-        testComplex.setHasComponent(List.of(testEWAS));
-        reactionAssociation.setInput(List.of(testComplex));
+        PhysicalEntities.entityWithAccessionedSequence = createEwas("Test Entity With Accessioned Sequence", homoSapiensSpecies);
+        PhysicalEntities.complex.setHasComponent(List.of(PhysicalEntities.entityWithAccessionedSequence));
+        Events.associationReaction.setInput(List.of(PhysicalEntities.complex));
+        //endregion
+
+        //region Create Positive Regulation
+        PhysicalEntities.positiveRegulation = new PositiveRegulation();
+        PhysicalEntities.positiveRegulation.setDisplayName("Test Positive Regulation");
+        PhysicalEntities.entityWithAccessionedSequence.setPositivelyRegulates(List.of(PhysicalEntities.positiveRegulation));
+        Events.associationReaction.setRegulatedBy(List.of(PhysicalEntities.positiveRegulation));
         //endregion
 
         //region Create Catalyst Activity
-        CatalystActivity testCatalystActivity = new CatalystActivity();
-        testCatalystActivity.setDisplayName("Test Catalyst Activity");
-        testCatalystActivity.setPhysicalEntity(testEWAS);
-        testCatalystActivity.setCatalyzedEvent(List.of(reactionAssociation));
-        testService.saveTest(testCatalystActivity);
+        PhysicalEntities.catalystActivity = createTestCatalystActivity("Test Catalyst", PhysicalEntities.entityWithAccessionedSequence);
+        Events.associationReaction.setCatalystActivity(List.of(PhysicalEntities.catalystActivity));
         //endregion
 
-        //region Create reference Protein
-        ReferenceGeneProduct testReferenceEntity = new ReferenceGeneProduct();
-        testReferenceEntity.setDisplayName("Test Refrence Entity");
-        testReferenceEntity.setDatabaseName("Some protein DB");
-
-        ReferenceDatabase referenceDatabase = new ReferenceDatabase();
-        referenceDatabase.setDisplayName("Test Reference Database");
-        testReferenceEntity.setReferenceDatabase(referenceDatabase);
-        testEWAS.setReferenceEntity(testReferenceEntity);
-        //endregion
+        PhysicalEntities.fragmentDeletionModification = createFragmentModification("Test Fragment Deletion Modification", FragmentModificationType.DELETION);
+        PhysicalEntities.referenceSequence = createReferenceSequence("Test Ref");
+        PhysicalEntities.fragmentDeletionModification.setReferenceSequence(PhysicalEntities.referenceSequence);
+        testService.saveTest(PhysicalEntities.fragmentDeletionModification);
 
         //region Branch CellLineage Pathway
+        Events.cellLineagePathway = createCellLineagePath();
+        Events.topLevelPathway.setHasEvent(List.of(Events.ehldPathway, Events.cellLineagePathway));
+        //endregion
+
+        testService.saveTest( Events.topLevelPathway);
+    }
+
+    protected static FragmentModification createFragmentModification(String displayName, FragmentModificationType fragmentModificationType) {
+        FragmentModification fragmentModification;
+
+        switch (fragmentModificationType) {
+            case DELETION:
+                fragmentModification = new FragmentDeletionModification();
+                break;
+            case INSERTION:
+                fragmentModification = new FragmentInsertionModification();
+                break;
+            case REPLACEMENT:
+                fragmentModification = new FragmentReplacedModification();
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported modification type: " + fragmentModificationType);
+        }
+
+        fragmentModification.setDisplayName(displayName);
+        fragmentModification.setEndPositionInReferenceSequence(719);
+        fragmentModification.setStartPositionInReferenceSequence(800);
+
+        return fragmentModification;
+    }
+
+    protected static CellLineagePath createCellLineagePath(){
         CellLineagePath cellLineagePath = new CellLineagePath();
         cellLineagePath.setDisplayName("Test Cell Lineage Path");
 
@@ -188,19 +231,96 @@ public abstract class BaseTest {
         cellDevelopmentStep.setInput(List.of(developingCell));
         cellDevelopmentStep.setOutput(List.of(developedCell));
         cellLineagePath.setHasEvent(List.of(cellDevelopmentStep));
-        topLevelPathway.setHasEvent(List.of(ehldPathway, cellLineagePath));
-        //endregion
-
-        testService.saveTest(topLevelPathway);
+        return cellLineagePath;
     }
 
-    //EWAS proteins, genes, rna,
-    private static EntityWithAccessionedSequence createEWAS(ReferenceSequence reference, Compartment compartment, Species species) {
-        EntityWithAccessionedSequence physicalEntity = new EntityWithAccessionedSequence();
-        physicalEntity.setReferenceEntity(reference);
-        physicalEntity.setCompartment(List.of(compartment));
-        physicalEntity.setSpecies(species);
-        return physicalEntity;
+    protected static CatalystActivity createTestCatalystActivity(String displayName, EntityWithAccessionedSequence ewas){
+        CatalystActivity catalystActivity = new CatalystActivity();
+        catalystActivity.setDisplayName(displayName);
+        catalystActivity.setActiveUnit(Set.of(ewas));
+        catalystActivity.setPhysicalEntity(ewas);
+        return catalystActivity;
+    }
+
+    protected static ReferenceSequence createReferenceSequence(String displayName){
+        ReferenceSequence referenceSequence = new ReferenceRNASequence();
+        referenceSequence.setDisplayName(displayName);
+        referenceSequence.setSpecies(homoSapiensSpecies);
+        referenceSequence.setDatabaseName(displayName);
+        referenceSequence.setName(List.of(displayName));
+
+        ReferenceDatabase referenceDatabase = new ReferenceDatabase();
+        referenceDatabase.setDisplayName(displayName);
+        referenceDatabase.setName(List.of(displayName));
+        referenceSequence.setReferenceDatabase(referenceDatabase);
+        return referenceSequence;
+    }
+
+    protected static EntityWithAccessionedSequence createEwas(String displayName, Species species){
+        EntityWithAccessionedSequence testEWAS = new EntityWithAccessionedSequence();
+        testEWAS.setDisplayName(displayName);
+        testEWAS.setSpecies(species);
+        testEWAS.setSpeciesName(species.getDisplayName());
+
+        ReferenceSequence referenceSequence = new ReferenceRNASequence();
+        referenceSequence.setDisplayName("Test Reference Database");
+        referenceSequence.setDatabaseName("Some protein DB");
+        referenceSequence.setIdentifier("Some protein ID");
+
+        ReferenceDatabase referenceDatabase = new ReferenceDatabase();
+        referenceDatabase.setDisplayName("Test Reference Database");
+        referenceSequence.setReferenceDatabase(referenceDatabase);
+        testEWAS.setReferenceEntity(referenceSequence);
+        return testEWAS;
+    }
+
+    protected static Complex createComplex(String displayName, int noSimpleEntities, List<Species> species){
+        List<PhysicalEntity>simpleEntities = new ArrayList<>();
+        for (int i = 0; i < noSimpleEntities; i++) {
+            PhysicalEntity simpleEntity = new SimpleEntity();
+            simpleEntity.setDisplayName("Simple Entity " + i);
+            simpleEntities.add(simpleEntity);
+        }
+        Complex complex = new Complex();
+        complex.setDisplayName(displayName);
+        complex.setHasComponent(simpleEntities);
+        complex.setSpecies(species);
+        return complex;
+    }
+
+    protected static Reaction createReaction(ReactionType reactionType, String displayName) {
+        Reaction reaction = new Reaction();
+        reaction.setDisplayName(displayName);
+        switch (reactionType) {
+            case ASSOCIATION:
+                reaction.setCategory("association");
+                break;
+            case DISSOCIATION:
+                reaction.setCategory("dissociation");
+                break;
+            case TRANSITION:
+                reaction.setCategory("transition");
+                break;
+            case BINDING:
+                reaction.setCategory("binding");
+                break;
+        }
+        return reaction;
+    }
+
+    protected static Pathway createPathway(String displayName, Boolean ehld, Boolean diagram) {
+        Pathway pathway = new Pathway();
+        pathway.setDisplayName(displayName);
+        pathway.setHasEHLD(ehld);
+        pathway.setHasDiagram(diagram);
+        return pathway;
+    }
+
+    protected static TopLevelPathway createTopLevelPathway(String displayName, Boolean ehld) {
+        TopLevelPathway pathway = new TopLevelPathway();
+        pathway.setDisplayName(displayName);
+        pathway.setHasEHLD(ehld);
+        return pathway;
     }
 
     @BeforeEach
