@@ -80,6 +80,20 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
     }
 
+    @Test
+    public void findByDbIdNoRelationsTest() {
+
+        logger.info("Started testing databaseObjectService.findByDbIdNoRelationsTest");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObjectObserved = databaseObjectService.findByIdNoRelations(Events.associationReaction.getDbId());
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(Events.associationReaction.getDbId(), databaseObjectObserved.getDbId());
+        logger.info("Finished");
+
+    }
 
     @Test
     public void findByStIdRelationsTest() {
@@ -97,6 +111,22 @@ public class DatabaseObjectServiceTest extends BaseTest {
     }
 
     @Test
+    public void testFindByDbIds() {
+
+        logger.info("Started testing databaseObjectService.findByDbId");
+        long start, time;
+        start = System.currentTimeMillis();
+
+        Collection<DatabaseObject> databaseObjectsObserved = databaseObjectService.findByIdsNoRelations(Arrays.asList(Events.associationReaction.getDbId(),Events.dissociationReaction.getDbId(), Events.transitionReaction.getDbId()));
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals(3, databaseObjectsObserved.size());
+        logger.info("Finished");
+
+    }
+
+    @Test
     public void findByStIdsTest() {
 
         logger.info("Started testing databaseObjectService.findByStIds");
@@ -107,6 +137,21 @@ public class DatabaseObjectServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertEquals(3, databaseObjectsObserved.size());
+        logger.info("Finished");
+
+    }
+
+    @Test
+    public void useOldStableIdentifier() { // depricated!!! this does not work anymore!
+
+        logger.info("Started testing databaseObjectService.useOldStableIdentifier");
+        long start, time;
+        start = System.currentTimeMillis();
+        DatabaseObject databaseObject = databaseObjectService.findById("REACT_13");
+        time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+
+        assertEquals("R-HSA-71291", databaseObject.getStId(), "The old StId for R-HSA-71291 is REACT_13. Wrong one found " + databaseObject.getStId());
         logger.info("Finished");
 
     }
