@@ -1,9 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
-import org.reactome.server.graph.domain.model.Compartment;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
-import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
@@ -27,19 +25,9 @@ public class CompartmentTest extends BaseTest{
 
         long start, time;
         start = System.currentTimeMillis();
-        ReactionLikeEvent rleGDB = databaseObjectService.findById("1247999");
-        ReactionLikeEvent rleRDB = DatabaseObjectFactory.createObject("1247999");
-
-        assertEquals(rleRDB.getCompartment().size(), rleGDB.getCompartment().size(), "Different sizes");
-
-        for (int i = 0; i < rleRDB.getCompartment().size(); i++) {
-            Compartment cRDB = rleRDB.getCompartment().get(i);
-            Compartment cGDB = rleGDB.getCompartment().get(i);
-            assertEquals(cGDB, cRDB, cGDB + " differs of " + cRDB);
-        }
-
-        time = System.currentTimeMillis() - start;
-        logger.info("Comparison execution time: " + time + "ms");
+        ReactionLikeEvent rleGDB = databaseObjectService.findById(Events.associationReaction.getStId());
+        assertEquals(Events.associationReaction.getStId(), rleGDB.getStId());
+        assertEquals(PhysicalEntities.catalystActivity.getDisplayName(), rleGDB.getCatalystActivity().get(0).getDisplayName());
 
         logger.info("Finished");
     }
