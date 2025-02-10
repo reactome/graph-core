@@ -16,19 +16,17 @@ public class DeletedInstanceServiceTest extends BaseTest {
 
     @Test
     public void getDeletedInstanceByDbId() {
-        Optional<DeletedInstance> deletedInstance = this.deletedInstanceService.getDeletedInstanceByDbId(9745160L);
+        Long dbId = deletedInstance.getDbId();
+        Optional<DeletedInstance> deletedInstance = this.deletedInstanceService.getDeletedInstanceByDbId(dbId);
         Assertions.assertTrue(deletedInstance.isPresent());
 
-        int deletedInstanceDbId = deletedInstance.get().getDeletedInstanceDbId();
-        Assertions.assertNotNull(deletedInstanceDbId);
-
-        String deletedStId = deletedInstance.get().getDeletedStId();
-        Assertions.assertNotNull(deletedStId);
+        Assertions.assertNotNull(deletedInstance.get().getDeletedInstanceDbId());
+        Assertions.assertNotNull(deletedInstance.get().getDeletedStId());
     }
 
     @Test
     public void getByDeletedDbId() {
-        List<DeletedInstance> deletedInstances = this.deletedInstanceService.getByDeletedDbId(5655667L);
+        List<DeletedInstance> deletedInstances = this.deletedInstanceService.getByDeletedDbId(deleted.getDbId());
         Assertions.assertFalse(deletedInstances.isEmpty());
     }
 }
