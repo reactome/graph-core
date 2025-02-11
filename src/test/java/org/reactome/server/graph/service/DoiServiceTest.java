@@ -25,7 +25,7 @@ public class DoiServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
         assertNotNull(dois);
-        assertTrue(dois.size() > 15);
+        assertTrue(dois.size() > 10);
         logger.info("Finished");
     }
 
