@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service;
 
+import javassist.compiler.ast.Pair;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -53,12 +57,15 @@ public abstract class BaseTest {
             public static EntityWithAccessionedSequence entityWithAccessionedSequence;
             public static CatalystActivity catalystActivity;
             public static PositiveRegulation positiveRegulation;
+            public static NegativeRegulation negativeRegulation;
             public static Compartment compartment;
 
             public static FragmentModification fragmentDeletionModification;
             public static ReferenceSequence referenceSequence;
         }
 
+        protected static DeletedInstance deletedInstance;
+        protected static Deleted deleted;
         protected static Species homoSapiensSpecies;
 
     protected static final Logger logger = LoggerFactory.getLogger("testLogger");
@@ -91,8 +98,13 @@ public abstract class BaseTest {
     @BeforeAll
     public static void createTestData(@Autowired TestNodeService testService) {
 
+        homoSapiensSpecies = new Species();
+        homoSapiensSpecies.setDisplayName("Homo sapiens");
+        homoSapiensSpecies.setName(List.of("Homo sapiens"));
+
         //region Create Top Level Pathway
         Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
+        Events.topLevelPathway.setSpecies(List.of(homoSapiensSpecies));
         //endregion
 
         //region Create Pathway with EHLD set true
@@ -152,16 +164,13 @@ public abstract class BaseTest {
         //endregion
 
         //region Create In/Output for Reaction
-        homoSapiensSpecies = new Species();
-        homoSapiensSpecies.setDisplayName("Homo sapiens");
-        homoSapiensSpecies.setName(List.of("Homo sapiens"));
-
         //create Complex
         PhysicalEntities.complex = createComplex("Test Complex", 4, List.of(homoSapiensSpecies));
         Events.associationReaction.setOutput(List.of(PhysicalEntities.complex));
 
         // create EWAS
         PhysicalEntities.entityWithAccessionedSequence = createEwas("Test Entity With Accessioned Sequence", homoSapiensSpecies);
+        PhysicalEntities.entityWithAccessionedSequence.setSpecies(homoSapiensSpecies);
         PhysicalEntities.complex.setHasComponent(List.of(PhysicalEntities.entityWithAccessionedSequence));
         Events.associationReaction.setInput(List.of(PhysicalEntities.complex));
         //endregion
@@ -170,7 +179,6 @@ public abstract class BaseTest {
         PhysicalEntities.positiveRegulation = new PositiveRegulation();
         PhysicalEntities.positiveRegulation.setDisplayName("Test Positive Regulation");
         PhysicalEntities.entityWithAccessionedSequence.setPositivelyRegulates(List.of(PhysicalEntities.positiveRegulation));
-        Events.associationReaction.setRegulatedBy(List.of(PhysicalEntities.positiveRegulation));
         //endregion
 
         //region Create Catalyst Activity
@@ -188,7 +196,31 @@ public abstract class BaseTest {
         Events.topLevelPathway.setHasEvent(List.of(Events.ehldPathway, Events.cellLineagePathway));
         //endregion
 
-        testService.saveTest( Events.topLevelPathway);
+        deletedInstance = createDeletedInstance();
+        deleted = createDelete();
+        deleted.setDeletedInstance(List.of(deletedInstance));
+
+        PhysicalEntities.negativeRegulation = new NegativeRegulation();
+        PhysicalEntities.negativeRegulation.setDisplayName("Test Negative Regulation");
+        deleted.setReplacementInstances(List.of(PhysicalEntities.negativeRegulation));
+        testService.saveTest(deleted);
+        testService.saveTest(Events.topLevelPathway);
+    }
+
+    protected static Deleted createDelete(){
+        Deleted deleted = new Deleted();
+        deleted.setDisplayName("Test Deleted");
+        deleted.setCuratorComment("Test Comment");
+        return deleted;
+    }
+
+    protected static DeletedInstance createDeletedInstance() {
+        DeletedInstance deletedInstance = new DeletedInstance();
+        deletedInstance.setName("Test Deleted Instance");
+        deletedInstance.setClazz("Pathway");
+        deletedInstance.setDeletedInstanceDbId(123450);
+        deletedInstance.setDeletedStId("R-HSA-123450");
+        return deletedInstance;
     }
 
     protected static FragmentModification createFragmentModification(String displayName, FragmentModificationType fragmentModificationType) {
@@ -313,13 +345,30 @@ public abstract class BaseTest {
         pathway.setDisplayName(displayName);
         pathway.setHasEHLD(ehld);
         pathway.setHasDiagram(diagram);
+        pathway.setDiagramHeight(5);
+        pathway.setDiagramWidth(5);
+        pathway.setDoi("123.22.444");
         return pathway;
     }
 
     protected static TopLevelPathway createTopLevelPathway(String displayName, Boolean ehld) {
         TopLevelPathway pathway = new TopLevelPathway();
         pathway.setDisplayName(displayName);
+        pathway.setName(List.of(displayName));
+        pathway.setStIdVersion("TST");
+        pathway.setOldStId("REACT_TST");
+        pathway.setDoi("123.22.444");
+        //pathway.setSpecies(homoSapiensSpecies);
+        pathway.setReleaseDate(LocalDate.now().toString());
+        pathway.setReleaseStatus("Released");
+        pathway.setHasDiagram(true);
         pathway.setHasEHLD(ehld);
+        pathway.setDiagramHeight(5);
+        pathway.setDiagramWidth(5);
+        pathway.setIsInferred(true);
+        pathway.setIsInDisease(true);
+        pathway.setDefinition("Test top Level Pathway");
+        //pathway.setIsCanonical();
         return pathway;
     }
 
