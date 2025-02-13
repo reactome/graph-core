@@ -54,6 +54,7 @@ public abstract class BaseTest {
 
         protected static class PhysicalEntities{
             public static Complex complex;
+            public static Complex complexInferred;
             public static EntityWithAccessionedSequence entityWithAccessionedSequence;
             public static CatalystActivity catalystActivity;
             public static PositiveRegulation positiveRegulation;
@@ -67,13 +68,14 @@ public abstract class BaseTest {
         protected static DeletedInstance deletedInstance;
         protected static Deleted deleted;
         protected static Species homoSapiensSpecies;
+        protected static Species testSpecies;
+
 
     protected static final Logger logger = LoggerFactory.getLogger("testLogger");
 
     @Autowired
     protected TestNodeService testService;
 
-    protected static Species testSpecies;
 
     static Boolean checkedOnce = false;
     static Boolean isFit = false;
@@ -92,7 +94,7 @@ public abstract class BaseTest {
 
     @AfterAll
     public static void deleteTestData(@Autowired TestNodeService nodeService) {
-        //nodeService.deleteTest();
+        nodeService.deleteTest();
     }
 
     @BeforeAll
@@ -110,49 +112,54 @@ public abstract class BaseTest {
         //region Create Pathway with EHLD set true
         Events.ehldPathway = createPathway("Test Ehld Pathway", true, true);
         Events.topLevelPathway.setHasEvent(List.of(Events.ehldPathway));
+        Events.ehldPathway.setSpecies(List.of(homoSapiensSpecies));
         //endregion
 
         //region Create Pathway with diagram
         Events.diagramPathway = createPathway("Test Diagram Pathway",false,true);
         Events.ehldPathway.setHasEvent(List.of(Events.diagramPathway));
+        Events.diagramPathway.setSpecies(List.of(homoSapiensSpecies));
         //endregion
 
         //region Create Test Reactions
         Events.associationReaction = createReaction(ReactionType.ASSOCIATION,"Test Reaction (Association)");
-
+        Events.associationReaction.setSpecies(List.of(homoSapiensSpecies));
         // Dissociation
         Events.dissociationReaction = createReaction(ReactionType.DISSOCIATION, "Test Reaction (Dissociation)");
-
+        Events.dissociationReaction.setSpecies(List.of(homoSapiensSpecies));
         // Transition
         Events.transitionReaction = createReaction(ReactionType.TRANSITION, "Test Reaction (Transition)");
-
+        Events.transitionReaction.setSpecies(List.of(homoSapiensSpecies));
         // Binding
         Events.bindingReaction = createReaction(ReactionType.BINDING, "Test Reaction (Binding)");
+        Events.bindingReaction.setSpecies(List.of(homoSapiensSpecies));
+        Events.transitionReaction.setInferredFrom(Set.of(Events.transitionReaction));
 
         // Polymerisation
         Events.polymerisationReaction = new Polymerisation();
         Events.polymerisationReaction.setCategory("polymerisation");
         Events.polymerisationReaction.setDisplayName("Test Reaction (Polymerisation)");
-
+        Events.polymerisationReaction.setSpecies(List.of(homoSapiensSpecies));
         // Depolymerisation
         Events.depolymerisationReaction = new Depolymerisation();
         Events.depolymerisationReaction.setDisplayName("Test Reaction (Depolymerisation)");
         Events.depolymerisationReaction.setCategory("transition");
-
+        Events.depolymerisationReaction.setSpecies(List.of(homoSapiensSpecies));
         // BlackBoxEvent
         Events.blackBoxEvent = new BlackBoxEvent();
         Events.blackBoxEvent.setDisplayName("Test Reaction (BlackBox Event)");
         Events.blackBoxEvent.setCategory("omitted");
-
+        Events.blackBoxEvent.setSpecies(List.of(homoSapiensSpecies));
         // CellDevelopmentStep
         Events.cellDevelopmentStep = new CellDevelopmentStep();
         Events.cellDevelopmentStep.setDisplayName("Test Reaction (CellDevelopment Step)");
         Events.cellDevelopmentStep.setCategory("transition");
-
+        Events.cellDevelopmentStep.setSpecies(List.of(homoSapiensSpecies));
         // Failed Reaction
         Events.failedReaction = new FailedReaction();
         Events.failedReaction.setDisplayName("Test Reaction (FailedReaction)");
         Events.failedReaction.setCategory("transition");
+        Events.failedReaction.setSpecies(List.of(homoSapiensSpecies));
 
         Events.diagramPathway.setHasEvent(List.of(Events.associationReaction, Events.dissociationReaction, Events.transitionReaction,
                 Events.bindingReaction,Events.polymerisationReaction,Events.depolymerisationReaction,Events.blackBoxEvent,
@@ -167,6 +174,9 @@ public abstract class BaseTest {
         //create Complex
         PhysicalEntities.complex = createComplex("Test Complex", 4, List.of(homoSapiensSpecies));
         Events.associationReaction.setOutput(List.of(PhysicalEntities.complex));
+        PhysicalEntities.complexInferred = createComplex("Inferred Test Complex", 8, List.of(homoSapiensSpecies));
+        PhysicalEntities.complex.setInferredTo(List.of(PhysicalEntities.complexInferred));
+
 
         // create EWAS
         PhysicalEntities.entityWithAccessionedSequence = createEwas("Test Entity With Accessioned Sequence", homoSapiensSpecies);
@@ -188,6 +198,7 @@ public abstract class BaseTest {
 
         PhysicalEntities.fragmentDeletionModification = createFragmentModification("Test Fragment Deletion Modification", FragmentModificationType.DELETION);
         PhysicalEntities.referenceSequence = createReferenceSequence("Test Ref");
+        PhysicalEntities.referenceSequence.setSpecies(homoSapiensSpecies);
         PhysicalEntities.fragmentDeletionModification.setReferenceSequence(PhysicalEntities.referenceSequence);
         testService.saveTest(PhysicalEntities.fragmentDeletionModification);
 
@@ -277,7 +288,6 @@ public abstract class BaseTest {
     protected static ReferenceSequence createReferenceSequence(String displayName){
         ReferenceSequence referenceSequence = new ReferenceRNASequence();
         referenceSequence.setDisplayName(displayName);
-        referenceSequence.setSpecies(homoSapiensSpecies);
         referenceSequence.setDatabaseName(displayName);
         referenceSequence.setName(List.of(displayName));
 
@@ -348,7 +358,52 @@ public abstract class BaseTest {
         pathway.setDiagramHeight(5);
         pathway.setDiagramWidth(5);
         pathway.setDoi("123.22.444");
+        pathway.setSpeciesName("Homo Sapiens");
         return pathway;
+    }
+
+    protected static void createPathwayWithReferences(TestNodeService testService){
+        Species testSpecies = new Species();
+        testSpecies.setDisplayName("Test species");
+        testSpecies.setName(List.of("Test species"));
+        testSpecies.setAbbreviation("TST");
+        testSpecies.setTaxId("12301");
+
+        Pathway pathway = new Pathway();
+        pathway.setHasEHLD(true);
+        pathway.setHasDiagram(true);
+        pathway.setSpecies(List.of(testSpecies));
+        pathway.setDoi("123.22.444");
+        pathway.setDisplayName("Test Pathway");
+
+        ReactionLikeEvent reactionLikeEvent = new Reaction();
+        reactionLikeEvent.setCategory("transition");
+        reactionLikeEvent.setDisplayName("Display name");
+        reactionLikeEvent.setSpecies(List.of(testSpecies));
+        reactionLikeEvent.setIsChimeric(true);
+        reactionLikeEvent.setSystematicName("Transition test");
+
+        pathway.setHasEvent(List.of(reactionLikeEvent));
+
+        SimpleEntity physicalEntity = new SimpleEntity();
+        physicalEntity.setDisplayName("Physical Entity");
+        physicalEntity.setDefinition("Display name");
+        //physicalEntity.setSpecies(testSpecies);
+        reactionLikeEvent.setInput(List.of(physicalEntity));
+
+        ReferenceMolecule referenceEntity = new ReferenceMolecule();
+        referenceEntity.setDisplayName("Molecule");
+        referenceEntity.setDatabaseName("Test");
+        referenceEntity.setIdentifier("123123123");
+        physicalEntity.setReferenceEntity(referenceEntity);
+
+        ReferenceDatabase referenceDatabase = new ReferenceDatabase();
+        referenceDatabase.setDisplayName("Test");
+        referenceDatabase.setName(List.of("Test"));
+        referenceDatabase.setResourceIdentifier("12345");
+        referenceEntity.setReferenceDatabase(referenceDatabase);
+
+        testService.saveTest(pathway);
     }
 
     protected static TopLevelPathway createTopLevelPathway(String displayName, Boolean ehld) {
@@ -368,6 +423,7 @@ public abstract class BaseTest {
         pathway.setIsInferred(true);
         pathway.setIsInDisease(true);
         pathway.setDefinition("Test top Level Pathway");
+        pathway.setSpeciesName("Homo Sapiens");
         //pathway.setIsCanonical();
         return pathway;
     }
