@@ -31,7 +31,7 @@ public class CustomInteractionsRepository {
                         "OPTIONAL MATCH (se:Species)<-[s:species]-(re) " +
                         "WITH in, re, se, pe, t " +
                         "ORDER BY in.score DESC " +
-                        "RETURN DISTINCT in.dbId AS dbId, in.score AS score, SIZE(in.accession) AS evidenceCount, re.identifier AS identifier, re.databaseName AS databaseName, re.displayName AS displayName, re.variantIdentifier as variantIdentifier, re.geneName AS geneName, in.url AS evidenceURL,  se.displayName AS speciesName, COUNT(pe) AS entitiesCount";
+                        "RETURN DISTINCT in.dbId AS dbId, in.score AS score, SIZE(in.accession) AS evidenceCount, re.identifier AS identifier, re.databaseName AS databaseName, re.displayName AS displayName, re.variantIdentifier as variantIdentifier, re.geneName AS geneName, re.url as url, in.url AS evidenceURL,  se.displayName AS speciesName, COUNT(pe) AS entitiesCount";
 
         return neo4jClient.query(query).in(databaseName).bindAll(Collections.singletonMap("identifier", identifier)).fetchAs(CustomInteraction.class).mappedBy((typeSystem, record) -> new CustomInteraction(record)).all();
     }
