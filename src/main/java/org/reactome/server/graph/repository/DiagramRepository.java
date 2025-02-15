@@ -55,20 +55,20 @@ public class DiagramRepository {
         String query = " MATCH (d:Pathway{stId:$stId, hasDiagram:true}) " +
                 "RETURN d.stId AS diagramStId, [] AS events, d.diagramWidth AS width, d.diagramHeight AS height, 1 AS level " +
                 "UNION " +
-                "MATCH path=(d:Pathway{hasDiagram:true})-[:hasEvent*]->(s:Pathway{stId:$stId, hasDiagram:false}) " +
+                "MATCH path=(d:Pathway{hasDiagram:true})-[:hasEvent*1..100]->(s:Pathway{stId:$stId, hasDiagram:false}) " +
                 "WHERE single(x IN nodes(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-                "OPTIONAL MATCH aux=(s)-[:hasEvent*]->(rle:ReactionLikeEvent) " +
+                "OPTIONAL MATCH aux=(s)-[:hasEvent*1..100]->(rle:ReactionLikeEvent) " +
                 "WHERE none(x IN nodes(aux) WHERE (x:Pathway) AND x.hasDiagram) " +
                 "WITH DISTINCT d, s, collect(DISTINCT rle.stId) AS events " +
-                "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+                "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*1..100]->(d)) " +
                 "WHERE NOT (d:TopLevelPathway) " +
                 "RETURN d.stId AS diagramStId, events, d.diagramWidth AS width, d.diagramHeight AS height, size(nodes(depth)) AS level " +
                 "ORDER BY level LIMIT 1 " +
                 "UNION " +
-                "MATCH path=(d:Pathway{hasDiagram:true})-[:hasEvent*]->(r:ReactionLikeEvent{stId:$stId}) " +
+                "MATCH path=(d:Pathway{hasDiagram:true})-[:hasEvent*1..100]->(r:ReactionLikeEvent{stId:$stId}) " +
                 "WHERE single(x IN nodes(path) WHERE (x:Pathway) AND x.hasDiagram) " +
                 "WITH DISTINCT d, r " +
-                "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*]->(d)) " +
+                "OPTIONAL MATCH depth=shortestPath((tlp:TopLevelPathway)-[:hasEvent*1..100]->(d)) " +
                 "WHERE NOT (d:TopLevelPathway) " +
                 "RETURN d.stId AS diagramStId, [r.stId] AS events, d.diagramWidth AS width, d.diagramHeight AS height, size(nodes(depth)) AS level " +
                 "ORDER BY level LIMIT 1";
