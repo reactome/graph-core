@@ -15,6 +15,7 @@ public class CustomInteraction {
     String identifier;
     Double score;
     Long evidenceCount;
+    String url;
     String evidenceURL;
     List<String> geneName;
     String databaseName;
@@ -31,6 +32,7 @@ public class CustomInteraction {
         identifier = record.get("identifier").asString();
         score = record.get("score").asDouble();
         evidenceCount = record.get("evidenceCount").asLong();
+        url = record.get("url").asString();
         evidenceURL = record.get("evidenceURL").asString();
         geneName = !record.get("geneName").isNull()? record.get("geneName").asList(Value::asString) : Collections.emptyList();
         databaseName = record.get("databaseName").asString();
@@ -127,5 +129,13 @@ public class CustomInteraction {
 
     public void setVariantIdentifier(String variantIdentifier) {
         this.variantIdentifier = variantIdentifier;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
