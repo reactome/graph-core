@@ -401,7 +401,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         return deleted;
     }
 
-    public void setDeletedList(List<Deleted> deleted) {
+    public void setDeleted(List<Deleted> deleted) {
         this.deleted = deleted;
     }
 
