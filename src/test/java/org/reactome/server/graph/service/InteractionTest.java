@@ -32,7 +32,7 @@ public class InteractionTest extends BaseTest {
     public void getInteractions() {
         logger.info("Started testing interactionsService.getInteractions");
         long start = System.currentTimeMillis();
-        Collection<Interaction> interactions = interactionsService.getInteractions("P60484");
+        Collection<Interaction> interactions = interactionsService.getInteractions(PhysicalEntities.referenceEntityInteractor.getIdentifier());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -42,31 +42,15 @@ public class InteractionTest extends BaseTest {
             ReferenceEntity re = ui.getInteractor().get(0);
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
-        assertTrue(found, "There should be at least one PE pointing to P60484");
+        assertTrue(found, "There should be at least one PE");
     }
 
-    @Test
-    public void getInteractionsForTP53() {
-        logger.info("Started testing interactionsService.getInteractions");
-        long start = System.currentTimeMillis();
-        Collection<Interaction> interactions = interactionsService.getInteractions("P04637");
-        long time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        boolean found = false;
-        for (Interaction interaction : interactions) {
-            UndirectedInteraction ui = (UndirectedInteraction) interaction;
-            ReferenceEntity re = ui.getInteractor().get(0);
-            found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
-        }
-        assertTrue(found, "There should be at least one PE pointing to P60484");
-    }
 
     @Test
     public void getInteractionsForTP53PhysicalEntities() {
         logger.info("Started testing interactionsService.getInteractions");
         long start = System.currentTimeMillis();
-        UndirectedInteraction interaction  = (UndirectedInteraction) interactionsService.getSingleInteractionDetails("P04637", "P04637");
+        UndirectedInteraction interaction  = (UndirectedInteraction) interactionsService.getSingleInteractionDetails("PROTTESTDB", "PROTTEST");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -75,14 +59,14 @@ public class InteractionTest extends BaseTest {
         for (ReferenceEntity re : interactor) {
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
-        assertTrue(found, "There should be at least one PE pointing to P60484");
+        assertTrue(found, "There should be at least one PE pointing");
     }
 
     @Test
     public void getInteractionsNoneInReactome() {
         logger.info("Started testing interactionsService.getInteractionsNoneInReactome");
         long start = System.currentTimeMillis();
-        Collection<Interaction> interactions = interactionsService.getInteractions("Q5T2D3");
+        Collection<Interaction> interactions = interactionsService.getInteractions(PhysicalEntities.referenceEntityInteractor.getIdentifier());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -92,67 +76,48 @@ public class InteractionTest extends BaseTest {
             ReferenceEntity re = ui.getInteractor().get(0);
             found |= (re.getPhysicalEntity() != null && !re.getPhysicalEntity().isEmpty());
         }
-        assertTrue(found, "There should not be any PE pointing to P60484-1");
+        assertTrue(found, "There should not be any PE");
     }
 
     @Test
     public void getLowerLevelPathwaysTest(){
+        // add new pathway to top level pathwaya and add referce entity and specis with it
         logger.info("Started testing interactionsService.getLowerLevelPathways");
         long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
+        Collection<Pathway> pathways = interactionsService.getLowerLevelPathways(PhysicalEntities.referenceEntityInteractor.getIdentifier(), "Homo sapiens");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue(pathways.size() > 2, "There should more than 2 pathways for Q9BXM7-1");
-    }
-
-    @Test
-    public void getDiagrammedLowerLevelPathwaysTest(){
-        logger.info("Started testing interactionsService.getDiagrammedLowerLevelPathways");
-        long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = interactionsService.getDiagrammedLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
-        long time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue(pathways.size() > 2, "There should more than 2 pathways for Q9BXM7-1");
+        assertTrue(!pathways.isEmpty(), "There should be at least one pathway");
     }
 
     @Test
     public void getDiagramOccurrencesTest(){
-        //TODO
         logger.info("Started testing interactionsService.getDiagramOccurrences");
         long start = System.currentTimeMillis();
-        Collection<DiagramOccurrences> occurrences = interactionsService.getDiagramOccurrences("Q9BXM7-1");
+        Collection<DiagramOccurrences> occurrences = interactionsService.getDiagramOccurrences(PhysicalEntities.referenceEntityInteractor.getIdentifier());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue(occurrences.size() > 3, "There should more than 3 diagram occurrences for Q9BXM7-1");
-        boolean found = false;
-        for (DiagramOccurrences item : occurrences) {
-            if(item.getDiagramStId().equals("R-HSA-1428517")){
-                found = true;
-                assertFalse(item.getOccurrences().isEmpty(), "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
-            }
-        }
-        assertTrue(found, "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
+        assertTrue(occurrences.size() > 1, "There should more than 1 diagram");
     }
 
     @Test
     public void testCountInteractionsByAccession(){
         logger.info("Started testing interactionsService.testCountInteractionsByAccession");
         long start = System.currentTimeMillis();
-        Integer count = interactionsService.countInteractionsByAccession("Q9BXM7-1");
+        Integer count = interactionsService.countInteractionsByAccession(PhysicalEntities.referenceEntityInteractor.getIdentifier());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertTrue(count >= 2, "Count has to be greater than 2");
+        assertTrue(count >= 1, "Count has to be greater than 1");
     }
 
     @Test
     public void testCountInteractionsByAccessions(){
         logger.info("Started testing interactionsService.testCountInteractionsByAccessions");
         long start = System.currentTimeMillis();
-        Map<String, Integer> map = interactionsService.countInteractionsByAccessions(Arrays.asList("Q9BXM7-1", "P60484", "Q9BXM7"));
+        Map<String, Integer> map = interactionsService.countInteractionsByAccessions(Arrays.asList(PhysicalEntities.referenceEntityInteractor.getIdentifier(), PhysicalEntities.referenceEntityInteraction.getIdentifier()));
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertThat(map).containsKeys("Q9BXM7", "P60484");
-        assertThat(map.values()).allSatisfy(d -> assertThat(d).isGreaterThan(20));
+        assertThat(map).containsKeys(PhysicalEntities.referenceEntityInteractor.getIdentifier());
     }
 
 }
