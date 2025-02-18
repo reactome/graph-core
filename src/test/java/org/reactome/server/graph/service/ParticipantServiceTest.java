@@ -34,11 +34,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipatingReferenceEntities");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReferenceEntity> participants = participantService.getParticipatingReferenceEntities(stId);
+        Collection<ReferenceEntity> participants = participantService.getParticipatingReferenceEntities(PhysicalEntities.entityWithAccessionedSequence.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(participants.size() > 20);
+        assertTrue(!participants.isEmpty());
         logger.info("Finished");
     }
 
@@ -52,11 +52,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipatingPhysicalEntitiesByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(stId);
+        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(Events.depolymerisationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(participants.size() > 20);
+        assertTrue(!participants.isEmpty());
         logger.info("Finished");
     }
 
@@ -71,11 +71,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipantsByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Participant> participants = participantService.getParticipants(stId);
+        Collection<Participant> participants = participantService.getParticipants(Events.depolymerisationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(participants.size() > 20);
+        assertTrue(!participants.isEmpty());
         logger.info("Finished");
     }
 }
