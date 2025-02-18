@@ -28,7 +28,7 @@ public class MappingServiceTest extends BaseTest {
     public void testGetReactionsLikeEventProteinAndGeneName() {
         logger.info("Started testing mappingService.testGetReactionsLikeEvent");
         long start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> rles = mappingService.getReactionsLikeEvent( "Test Reference Database", "Some protein ID");
+        Collection<ReactionLikeEvent> rles = mappingService.getReactionsLikeEvent(PhysicalEntities.referenceSequence.getDisplayName(), PhysicalEntities.referenceSequence.getDisplayName());
         long time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent execution time: " + time + "ms");
 
@@ -47,11 +47,11 @@ public class MappingServiceTest extends BaseTest {
 
         long start = System.currentTimeMillis();
         //"ChEBI",  "15377", "Homo sapiens"
-        Collection<ReactionLikeEvent> rles = mappingService.getReactionsLikeEvent("Test", "123123123", "Test species");
+        Collection<ReactionLikeEvent> rles = mappingService.getReactionsLikeEvent("Test", "123123123","Test species");
         long time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent with species execution time: " + time + "ms");
 
-        deleteTestData(testService);
+        //deleteTestData(testService);
         assertNotNull(rles,"Data is present in the database");
         assertFalse(rles.isEmpty(), "Data is present in the database");
         logger.info("Finished");
@@ -91,5 +91,3 @@ public class MappingServiceTest extends BaseTest {
         logger.info("Finished");
     }
 }
-
-
