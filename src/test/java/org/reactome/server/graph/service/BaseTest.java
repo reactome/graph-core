@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.relationship.AuthorPublication;
+import org.reactome.server.graph.domain.relationship.PublicationAuthor;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.TestNodeService;
 import org.slf4j.Logger;
@@ -68,9 +70,15 @@ public abstract class BaseTest {
             public static EntityWithAccessionedSequence interactionEWAS;
 
             public static EntityWithAccessionedSequence ewasDepolymerisation;
+
+            public static ReferenceDatabase referenceDatabase;
         }
 
-        protected static DeletedInstance deletedInstance;
+        protected static Person testPerson;
+        protected static LiteratureReference testPublication;
+        protected static InstanceEdit instanceEdit;
+
+    protected static DeletedInstance deletedInstance;
         protected static Deleted deleted;
         protected static Species homoSapiensSpecies;
         protected static Species testSpecies;
@@ -80,7 +88,6 @@ public abstract class BaseTest {
 
     @Autowired
     protected TestNodeService testService;
-
 
     static Boolean checkedOnce = false;
     static Boolean isFit = false;
@@ -104,6 +111,27 @@ public abstract class BaseTest {
 
     @BeforeAll
     public static void createTestData(@Autowired TestNodeService testService) {
+
+        //region
+        testPerson = new Person();
+        testPerson.setFirstname("FName");
+        testPerson.setDisplayName("FName LName");
+        testPerson.setSurname("LName");
+        testPerson.setOrcidId("1234-1234-1234-1234");
+        testPerson.setOldStId("1234-1234-1234-1234");
+        testPerson.setProject("Pathway Curation");
+
+        testPublication = new LiteratureReference();
+        testPublication.setTitle("Reference Publication");
+        testPublication.setJournal("Reference Publication");
+        testPublication.setPages("4");
+        testPublication.setAuthor(List.of(testPerson));
+        instanceEdit = new InstanceEdit();
+        instanceEdit.setDisplayName("Instance Edit");
+        instanceEdit.setNote("Instance Edit");
+        testService.saveTest(instanceEdit);
+        testService.saveTest(testPublication);
+        //endregion
 
         homoSapiensSpecies = new Species();
         homoSapiensSpecies.setDisplayName("Homo sapiens");
@@ -214,10 +242,13 @@ public abstract class BaseTest {
 
         PhysicalEntities.fragmentDeletionModification = createFragmentModification("Test Fragment Deletion Modification", FragmentModificationType.DELETION);
         PhysicalEntities.referenceSequence = createReferenceSequence("Test Ref");
+        PhysicalEntities.referenceSequence.setIdentifier("TestIdentifier");
         PhysicalEntities.referenceSequence.setSpecies(homoSapiensSpecies);
         PhysicalEntities.fragmentDeletionModification.setReferenceSequence(PhysicalEntities.referenceSequence);
         testService.saveTest(PhysicalEntities.fragmentDeletionModification);
-
+        PhysicalEntities.referenceDatabase = new ReferenceDatabase();
+        PhysicalEntities.referenceDatabase.setDisplayName("Test Reference Database");
+        PhysicalEntities.referenceSequence.setReferenceDatabase(PhysicalEntities.referenceDatabase);
 
         //region Branch CellLineage Pathway
         Events.cellLineagePathway = createCellLineagePath();
@@ -250,6 +281,11 @@ public abstract class BaseTest {
         testService.saveTest(Events.topLevelPathway);
         testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.referenceEntityInteractor.getStId(), "referenceEntity");
         testService.createRelationship( PhysicalEntities.ewasDepolymerisation.getStId(),  PhysicalEntities.referenceSequence.getStId(), "referenceEntity");
+        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), "author");
+        testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"authored");
+        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(),"authored");
+        testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"reviewed");
+        testService.createRelationship(instanceEdit.getStId(),Events.depolymerisationReaction.getStId(),"reviewed");
     }
 
     private static ReferenceSequence createReferenceEntity(String testReferenceEntity, String proteinTestDb, String prottestdb) {
