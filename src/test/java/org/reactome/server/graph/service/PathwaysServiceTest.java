@@ -34,7 +34,7 @@ public class PathwaysServiceTest extends BaseTest {
     public void getContainedEventsByStIdTest(){
         logger.info("Started testing pathwaysService.getContainedEventsByStIdTest");
         long start = System.currentTimeMillis();
-        Collection<Event> events = pathwaysService.getContainedEvents("R-HSA-5673001");
+        Collection<Event> events = pathwaysService.getContainedEvents(Events.diagramPathway.getStId());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -45,7 +45,7 @@ public class PathwaysServiceTest extends BaseTest {
     public void getContainedEventsByDbIdTest(){
         logger.info("Started testing pathwaysService.getContainedEventsByDbIdTest");
         long start = System.currentTimeMillis();
-        Collection<Event> events = pathwaysService.getContainedEvents(5673001L);
+        Collection<Event> events = pathwaysService.getContainedEvents(Events.diagramPathway.getDbId());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -56,54 +56,53 @@ public class PathwaysServiceTest extends BaseTest {
     public void getPathwaysForTest(){
         logger.info("Started testing fireworksService.getPathwaysForTest");
         long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = pathwaysService.getPathwaysFor("R-ALL-113592", "9606");
+        Collection<Pathway> pathways = pathwaysService.getPathwaysFor(Events.ehldPathway.getStId(),"");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 429 or more pathways with ATP (R-ALL-113592) in human", pathways.size() >= 429);
+        assertFalse("This event contains other events", pathways.isEmpty());
     }
 
     @Test
     public void getPathwaysForAllFormsOfTest(){
         logger.info("Started testing fireworksService.getPathwaysForAllFormsOfTest");
         long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = pathwaysService.getPathwaysForAllFormsOf("R-ALL-113592", "9606");
+        Collection<Pathway> pathways = pathwaysService.getPathwaysForAllFormsOf(PhysicalEntities.entityWithAccessionedSequence.getStId(), "");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 591 or more pathways for all forms of ATP (R-ALL-113592) in human", pathways.size() >= 591);
+        assertFalse("This event contains other events", pathways.isEmpty());
     }
 
     @Test
     public void getPathwaysWithDiagramForTest(){
         logger.info("Started testing fireworksService.getPathwaysWithDiagramForTest");
         long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = pathwaysService.getPathwaysWithDiagramFor("R-HSA-199420", "9606");
+        Collection<Pathway> pathways = pathwaysService.getPathwaysWithDiagramFor(PhysicalEntities.entityWithAccessionedSequence.getStId(), "");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 5 or more pathways with diagram PTEN (R-HSA-199420) in human", pathways.size() >= 5);
+        assertFalse("This event contains other events", pathways.isEmpty());
     }
 
     @Test
     public void getPathwaysWithDiagramForAllFormsOfTest(){
         logger.info("Started testing fireworksService.getPathwaysWithDiagramForAllFormsOfTest");
         long start = System.currentTimeMillis();
-        Collection<Pathway> pathways = pathwaysService.getPathwaysWithDiagramForAllFormsOf("R-HSA-199420", "9606");
+        Collection<Pathway> pathways = pathwaysService.getPathwaysWithDiagramForAllFormsOf(PhysicalEntities.entityWithAccessionedSequence.getStId(), "");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 5 or more pathways with diagram for all forms of PTEN (R-HSA-199420) in human", pathways.size() >= 6);
+        assertFalse("This event contains other events", pathways.isEmpty());
     }
 
     @Test
-    public void getLowerLevelPathwaysForIdentifierTest(){
+    public void getLowerLevelPathwaysForIdentifierTest(){           // the tested method only works with species taxId
         logger.info("Started testing pathwaysService.getLowerLevelPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = pathwaysService.getLowerLevelPathwaysForIdentifier("PTEN", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-
         assertTrue("There should be 9 or more pathways containing PTEN in human", pathways.size() >= 9);
     }
 
@@ -112,21 +111,21 @@ public class PathwaysServiceTest extends BaseTest {
     public void getPathwaysForIdentifierTest(){
         logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-68875");
+        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier(PhysicalEntities.referenceSequence.getIdentifier(), Events.diagramPathway.getStId());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 1 or more pathways containing POM121C", pathways.size() > 0);
+        assertFalse("This event contains other events", pathways.isEmpty());
     }
 
     @Test
     public void getDiagramEntitiesForIdentifierTest(){
         logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "SLC2A12");
+        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier( Events.diagramPathway.getStId(), PhysicalEntities.referenceSequence.getIdentifier());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be more than 1 entity in the pathway containing POM121C", entities.size() > 0);
+        assertFalse("This event contains other events", entities.isEmpty());
     }
 }
