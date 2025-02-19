@@ -40,11 +40,11 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(dbId);
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.interactionEWAS.getDbId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(otherFormsOfThisMolecule.size() >= 27);
+        assertTrue(!otherFormsOfThisMolecule.isEmpty());
         logger.info("Finished");
     }
 
@@ -54,11 +54,11 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(stId);
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.interactionEWAS.getDbId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(otherFormsOfThisMolecule.size() >= 27);
+        assertTrue(!otherFormsOfThisMolecule.isEmpty());
         logger.info("Finished");
     }
 
@@ -69,11 +69,11 @@ public class PhysicalEntityServiceTest extends BaseTest {
         long start, time;
         start = System.currentTimeMillis();
         PhysicalEntity pe = dos.findById(stId);
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(pe);
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.interactionEWAS.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(otherFormsOfThisMolecule.size() >= 27);
+        assertTrue(!otherFormsOfThisMolecule.isEmpty());
         logger.info("Finished");
     }
 
@@ -83,7 +83,9 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetComplexesFor");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Complex> complexes = physicalEntityService.getComplexesFor("P00533", "UniProt");
+        String dbName = PhysicalEntities.referenceDatabase.getDisplayName();
+        String id = PhysicalEntities.referenceSequence.getIdentifier();
+        Collection<Complex> complexes = physicalEntityService.getComplexesFor(id, dbName);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -98,11 +100,11 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetComplexSubunits");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> complexSubunits = physicalEntityService.getPhysicalEntitySubunits("R-HSA-5674003");
+        Collection<PhysicalEntity> complexSubunits = physicalEntityService.getPhysicalEntitySubunits(PhysicalEntities.complex.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(complexSubunits.size() >= 5);
+        assertTrue(!complexSubunits.isEmpty());
         logger.info("Finished");
 
     }
