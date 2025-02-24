@@ -57,7 +57,7 @@ public class SpeciesService {
                     if (StringUtils.isNumeric(aux)) {
                         num = aux;
                     } else {
-                        return getSpeciesByName(StringUtils.capitalize(aux.toLowerCase().replaceAll("[_ ]+", " ")));
+                       return getSpeciesByName(StringUtils.capitalize(aux.toLowerCase().replaceAll("[_ ]+", " ")));
                     }
                 }
             } else if (obj instanceof Number && !(obj instanceof Double)) {
