@@ -18,8 +18,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class SortingAspectsTest extends BaseTest {
 
-    private static final String stId = "R-HSA-2466381";
-
     @Autowired
     private DatabaseObjectService dbs;
 
@@ -49,7 +47,7 @@ public class SortingAspectsTest extends BaseTest {
     @Test
     public void sortingTest() throws InvocationTargetException, IllegalAccessException {
         logger.info("Testing AOP Sorting");
-        Complex databaseObjectObserved =  dbs.findById(stId);
+        Complex databaseObjectObserved =  dbs.findById(PhysicalEntities.complex.getStId());
         assertTrue(isSorted(databaseObjectObserved.getHasComponent()));
         logger.info("Finished");
     }
