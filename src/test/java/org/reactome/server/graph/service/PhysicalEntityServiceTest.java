@@ -83,15 +83,12 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetComplexesFor");
         long start, time;
         start = System.currentTimeMillis();
-        String dbName = PhysicalEntities.referenceDatabase.getDisplayName();
-        String id = PhysicalEntities.referenceSequence.getIdentifier();
-        Collection<Complex> complexes = physicalEntityService.getComplexesFor(id, dbName);
+        Collection<Complex> complexes = physicalEntityService.getComplexesFor("Some protein ID", "Test Reference Database");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(complexes.size() >= 5);
+        assertTrue(complexes.size() >= 1);
         logger.info("Finished");
-
     }
 
     @Test

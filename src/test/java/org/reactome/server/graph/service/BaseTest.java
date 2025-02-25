@@ -18,6 +18,7 @@ import org.springframework.test.context.event.annotation.AfterTestClass;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -78,11 +79,12 @@ public abstract class BaseTest {
         protected static LiteratureReference testPublication;
         protected static InstanceEdit instanceEdit;
 
-    protected static DeletedInstance deletedInstance;
+        protected static DeletedInstance deletedInstance;
         protected static Deleted deleted;
         protected static Species homoSapiensSpecies;
         protected static Species testSpecies;
 
+        protected static UpdateTracker testUpdateTracker;
 
     protected static final Logger logger = LoggerFactory.getLogger("testLogger");
 
@@ -123,6 +125,7 @@ public abstract class BaseTest {
 
         testPublication = new LiteratureReference();
         testPublication.setTitle("Reference Publication");
+        testPublication.setDisplayName("Reference Publication Literature");
         testPublication.setJournal("Reference Publication");
         testPublication.setPages("4");
         testPublication.setAuthor(List.of(testPerson));
@@ -136,6 +139,7 @@ public abstract class BaseTest {
         homoSapiensSpecies = new Species();
         homoSapiensSpecies.setDisplayName("Homo sapiens");
         homoSapiensSpecies.setName(List.of("Homo sapiens"));
+        homoSapiensSpecies.setAbbreviation("HSA");
 
         //region Create Top Level Pathway
         Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
@@ -237,6 +241,8 @@ public abstract class BaseTest {
 
         //region Create Catalyst Activity
         PhysicalEntities.catalystActivity = createTestCatalystActivity("Test Catalyst", PhysicalEntities.entityWithAccessionedSequence);
+        PhysicalEntities.catalystActivity.setActiveUnit(Set.of(PhysicalEntities.entityWithAccessionedSequence));
+        Set<PhysicalEntity>set = PhysicalEntities.catalystActivity.getActiveUnit();
         Events.associationReaction.setCatalystActivity(List.of(PhysicalEntities.catalystActivity));
         //endregion
 
@@ -272,6 +278,7 @@ public abstract class BaseTest {
         PhysicalEntities.referenceEntityInteraction = createReferenceEntity("Interaction Ref Entity", "Prot Test DB", "PROTTESTDB");
         Events.undirectedInteraction = createInteraction(List.of(PhysicalEntities.referenceEntityInteractor, PhysicalEntities.referenceEntityInteraction));
         PhysicalEntities.interactionEWAS = createEwas("SomeEWAS", "Homo sapiens");
+        PhysicalEntities.interactionEWAS.setReferenceEntity(PhysicalEntities.referenceSequence);
         testService.saveTest(Events.undirectedInteraction);
         //PhysicalEntities.interactionEWAS.setReferenceEntity(PhysicalEntities.referenceEntityInteraction);
         testService.saveTest(PhysicalEntities.interactionEWAS);
@@ -286,6 +293,17 @@ public abstract class BaseTest {
         testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(),"authored");
         testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"reviewed");
         testService.createRelationship(instanceEdit.getStId(),Events.depolymerisationReaction.getStId(),"reviewed");
+        testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(),PhysicalEntities.referenceSequence.getStId(), "referenceDatabase");
+        //testService.createRelationship(PhysicalEntities.catalystActivity.getStId(), PhysicalEntities.ewasDepolymerisation.getStId(), "activeUnit");
+
+        //Update Tracker
+        testUpdateTracker = new UpdateTracker();
+        testUpdateTracker.setDisplayName("Test Update Tracker");
+        Release release = new Release();
+        release.setReleaseNumber(1);
+        testUpdateTracker.setRelease(release);
+        testService.saveTest(testUpdateTracker);
+        testService.createRelationship(testUpdateTracker.getStId(), Events.topLevelPathway.getStId(),"updatedInstance");
     }
 
     private static ReferenceSequence createReferenceEntity(String testReferenceEntity, String proteinTestDb, String prottestdb) {
@@ -358,7 +376,7 @@ public abstract class BaseTest {
     protected static CatalystActivity createTestCatalystActivity(String displayName, EntityWithAccessionedSequence ewas){
         CatalystActivity catalystActivity = new CatalystActivity();
         catalystActivity.setDisplayName(displayName);
-        catalystActivity.setActiveUnit(Set.of(ewas));
+        ///catalystActivity.setActiveUnit(Set.of(ewas));
         catalystActivity.setPhysicalEntity(ewas);
         return catalystActivity;
     }
@@ -502,6 +520,15 @@ public abstract class BaseTest {
         referenceEntity.setReferenceDatabase(referenceDatabase);
 
         testService.saveTest(pathway);
+    }
+
+    protected static void createSpecies(TestNodeService testService, String name){
+        Species species = new Species();
+        species.setDisplayName(name);
+        species.setName(List.of(name));
+        species.setAbbreviation("HSA");
+        species.setTaxId("123");
+        testService.saveTest(species);
     }
 
     protected static TopLevelPathway createTopLevelPathway(String displayName, Boolean ehld) {
