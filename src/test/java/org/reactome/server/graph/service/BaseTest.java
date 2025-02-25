@@ -141,6 +141,11 @@ public abstract class BaseTest {
         homoSapiensSpecies.setName(List.of("Homo sapiens"));
         homoSapiensSpecies.setAbbreviation("HSA");
 
+        testSpecies  = new Species();
+        testSpecies.setDisplayName("Fantasy species");
+        testSpecies.setName(List.of("Fantasy species"));
+        testSpecies.setAbbreviation("HSA");
+
         //region Create Top Level Pathway
         Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
         Events.topLevelPathway.setSpecies(List.of(homoSapiensSpecies));
@@ -224,7 +229,7 @@ public abstract class BaseTest {
         Events.associationReaction.setOutput(List.of(PhysicalEntities.complex));
         PhysicalEntities.complexInferred = createComplex("Inferred Test Complex", 8, List.of(homoSapiensSpecies));
         PhysicalEntities.complex.setInferredTo(List.of(PhysicalEntities.complexInferred));
-
+        PhysicalEntities.complex.setSpecies(List.of(homoSapiensSpecies, testSpecies));
 
         // create EWAS
         PhysicalEntities.entityWithAccessionedSequence = createEwas("Test Entity With Accessioned Sequence", homoSapiensSpecies);
@@ -242,6 +247,7 @@ public abstract class BaseTest {
         //region Create Catalyst Activity
         PhysicalEntities.catalystActivity = createTestCatalystActivity("Test Catalyst", PhysicalEntities.entityWithAccessionedSequence);
         PhysicalEntities.catalystActivity.setActiveUnit(Set.of(PhysicalEntities.entityWithAccessionedSequence));
+        PhysicalEntities.entityWithAccessionedSequence.setCatalystActivities(List.of(PhysicalEntities.catalystActivity));
         Set<PhysicalEntity>set = PhysicalEntities.catalystActivity.getActiveUnit();
         Events.associationReaction.setCatalystActivity(List.of(PhysicalEntities.catalystActivity));
         //endregion
@@ -294,7 +300,6 @@ public abstract class BaseTest {
         testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"reviewed");
         testService.createRelationship(instanceEdit.getStId(),Events.depolymerisationReaction.getStId(),"reviewed");
         testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(),PhysicalEntities.referenceSequence.getStId(), "referenceDatabase");
-        //testService.createRelationship(PhysicalEntities.catalystActivity.getStId(), PhysicalEntities.ewasDepolymerisation.getStId(), "activeUnit");
 
         //Update Tracker
         testUpdateTracker = new UpdateTracker();

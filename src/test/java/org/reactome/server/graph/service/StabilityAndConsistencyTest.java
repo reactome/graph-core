@@ -4,12 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.reactome.server.graph.util.TestNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
@@ -44,7 +46,7 @@ public class StabilityAndConsistencyTest extends BaseTest {
 
     @SuppressWarnings("Duplicates")
     @Test
-    public void libraryStabilityTest() {
+    public void libraryStabilityTest() {  // This test makes no sense
         logger.info("Testing libraryStabilityTest");
 
         ReactionLikeEvent rle = dbs.findById(stId);
@@ -72,19 +74,16 @@ public class StabilityAndConsistencyTest extends BaseTest {
     public void lazyLoadingStoichiometryTest(){
         logger.info("Testing lazyLoadingStoichiometryTest");
 
-
-        Species species = speciesService.getSpeciesByName("Homo sapiens");
-
         int comps1 = -1;
-        Collection<Complex> complexes = schemaService.getByClass(Complex.class, species);
+        Collection<Complex> complexes = schemaService.getByClass(Complex.class, "Fantasy species");
         for (Complex complex : complexes) {
-            if (complex.getStId().equals("R-HSA-83538")) {
+            if (complex.getStId().equals(PhysicalEntities.complex.getStId())) {
                 List<PhysicalEntity> hasComponent = complex.getHasComponent();
                 comps1 = hasComponent.size();
             }
         }
 
-        Complex complex = dbs.findById("R-HSA-83538");
+        Complex complex = dbs.findById(PhysicalEntities.complex.getStId());
         List<PhysicalEntity> hasComponent = complex.getHasComponent();
         int comps2 = hasComponent.size();
 
