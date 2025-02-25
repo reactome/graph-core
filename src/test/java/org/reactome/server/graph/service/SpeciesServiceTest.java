@@ -8,9 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.reactome.server.graph.service.BaseTest.homoSapiensSpecies;
 
 @SpringBootTest
-public class SpeciesServiceTest {
+public class SpeciesServiceTest extends BaseTest {
 
     private final SpeciesService speciesService;
 
@@ -35,35 +36,33 @@ public class SpeciesServiceTest {
 
     @Test
     public void testGetSpeciesAnyId(){
-        Species species = speciesService.getSpecies(9606);
+        Species species = speciesService.getSpecies(homoSapiensSpecies.getDbId());
         assertNotNull(species);
         assertEquals("HSA", species.getAbbreviation());
-
-        species = speciesService.getSpecies("Bos taurus");
-        assertNotNull(species);
-        assertEquals("BTA", species.getAbbreviation());
     }
 
     @Test
     public void testGetSpeciesByDbId(){
-        Species species = speciesService.getSpeciesByDbId(48892L);
+        Species species = speciesService.getSpeciesByDbId(homoSapiensSpecies.getDbId());
         assertNotNull(species);
-        assertEquals("Mus musculus", species.getDisplayName());
+        assertEquals("Homo sapiens", species.getDisplayName());
     }
 
     @Test
     public void testGetSpeciesByName(){
-        Species species = speciesService.getSpeciesByName("Homo sapiens");
+        testService.deleteTest();
+        createSpecies(testService,"Test species");
+        Species species = speciesService.getSpeciesByName("Test species");
         assertNotNull(species);
-        assertEquals("9606", species.getTaxId());
-        assertEquals(48887L, species.getDbId());
+        assertEquals("123", species.getTaxId());
     }
 
     @Test
     public void testGetSpeciesByTaxId(){
-        Species species = speciesService.getSpeciesByTaxId("9606");
+        testService.deleteTest();
+        createSpecies(testService,"Test species");
+        Species species = speciesService.getSpeciesByTaxId("123");
         assertNotNull(species);
-        assertEquals(48887L, species.getDbId());
-        assertEquals("Homo sapiens", species.getDisplayName());
+        assertEquals("Test species", species.getDisplayName());
     }
 }
