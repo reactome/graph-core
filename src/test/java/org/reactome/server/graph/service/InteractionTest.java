@@ -47,10 +47,10 @@ public class InteractionTest extends BaseTest {
 
 
     @Test
-    public void getInteractionsForTP53PhysicalEntities() {
+    public void getInteractionsDetailsForPhysicalEntities() {
         logger.info("Started testing interactionsService.getInteractions");
         long start = System.currentTimeMillis();
-        UndirectedInteraction interaction  = (UndirectedInteraction) interactionsService.getSingleInteractionDetails("PROTTESTDB", "PROTTEST");
+        UndirectedInteraction interaction  = (UndirectedInteraction) interactionsService.getSingleInteractionDetails("PROTTESTDB", "PROTTESTDB");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
