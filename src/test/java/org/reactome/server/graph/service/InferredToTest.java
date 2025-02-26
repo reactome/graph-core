@@ -31,7 +31,7 @@ public class InferredToTest extends BaseTest {
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertNotNull(inferredTo, "The inferredTo for complex 'R-HSA-5682892' cannot be null");
+        assertNotNull(inferredTo, "inferredTo for complex cannot be null");
         PhysicalEntity aux = null;
         for (PhysicalEntity pe : inferredTo) {
             if (pe.getStId().equals(PhysicalEntities.complexInferred.getStId())) aux = pe;

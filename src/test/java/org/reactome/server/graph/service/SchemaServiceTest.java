@@ -7,6 +7,7 @@ import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
 import org.reactome.server.graph.domain.result.SimpleReferenceObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.reactome.server.graph.util.TestNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
@@ -24,6 +25,8 @@ public class SchemaServiceTest extends BaseTest {
 
     @Autowired
     private SchemaService schemaService;
+    @Autowired
+    private TestNodeService testNodeService;
 
     @BeforeTestClass
     public void setUpClass() {
@@ -184,8 +187,8 @@ public class SchemaServiceTest extends BaseTest {
     }
 
     @Test
-    public void getSimpleDatabaseObjectByClassNameTest() throws ClassNotFoundException {
-
+    public void getSimpleDatabaseObjectByClassNameTest() throws ClassNotFoundException { //TODO this test is failing!!!
+        testNodeService.deleteTest();
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClass");
         long start, time;
         start = System.currentTimeMillis();

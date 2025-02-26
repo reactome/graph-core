@@ -3,6 +3,7 @@ package org.reactome.server.graph.util;
 import org.gk.model.GKInstance;
 import org.gk.model.ReactomeJavaConstants;
 import org.gk.persistence.MySQLAdaptor;
+import org.gk.schema.Schema;
 import org.gk.schema.SchemaClass;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.Species;
@@ -48,10 +49,10 @@ public class DatabaseObjectFactory {
             String database = properties.getProperty("database.name");
             String user = properties.getProperty("database.user");
             String password = properties.getProperty("database.password");
-            dba = new MySQLAdaptor(host,database,user,password,Integer.parseInt(port));
+            dba = new MySQLAdaptor(host, database, user, password, Integer.parseInt(port));
             dba.setUseCache(false);
             logger.info("Established connection to Reactome database");
-        } catch (SQLException|IOException e) {
+        } catch (SQLException | IOException e) {
             logger.error("An error occurred while connection to the Reactome database", e);
         }
     }
@@ -63,8 +64,10 @@ public class DatabaseObjectFactory {
     public static String getDBName() {
         return dba.getDBName();
     }
+
     /**
      * Method used for loading all Reactome top level pathways.
+     *
      * @return List of DatabaseObject (list of top level pathways)
      */
     public static List<DatabaseObject> loadFrontPageItems() {
@@ -114,22 +117,31 @@ public class DatabaseObjectFactory {
 
     /**
      * Method to create an object from a given Reactome identifier.
+     *
      * @param identifier StableIdentifier or dbId
      * @return Object that extends DatabaseObject
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> T createObject(String identifier)  {
+    public static <T extends DatabaseObject> T createObject(String identifier) {
         try {
-            GKInstance instance  = getInstance(identifier);
+            GKInstance instance = getInstance(identifier);
             DatabaseObject databaseObject = createObject(instance);
             if (databaseObject != null) {
-                load(databaseObject,instance);
+                load(databaseObject, instance);
                 return (T) databaseObject;
             }
         } catch (Exception e) {
             logger.error("An error occurred while trying to create an object from identifier " + identifier, e);
         }
         return (T) DatabaseObject.emptyObject();
+    }
+
+
+    public static GKInstance createGKInstance(DatabaseObject databaseObject) throws Exception {
+        GKInstance gkInstance = new GKInstance();
+        gkInstance.setDBID(databaseObject.getDbId());
+        gkInstance.setDisplayName(databaseObject.getDisplayName());
+        return gkInstance;
     }
 
     public static boolean isValidAttribute(String className, String attribute) {
@@ -141,9 +153,9 @@ public class DatabaseObjectFactory {
     @SuppressWarnings("unchecked")
     private static GKInstance getInstance(String identifier) throws Exception {
         identifier = identifier.trim().split("\\.")[0];
-        if (identifier.startsWith("REACT")){
+        if (identifier.startsWith("REACT")) {
             return getInstance(dba.fetchInstanceByAttribute(ReactomeJavaConstants.StableIdentifier, "oldIdentifier", "=", identifier));
-        }else if (identifier.startsWith("R-")) {
+        } else if (identifier.startsWith("R-")) {
             return getInstance(dba.fetchInstanceByAttribute(ReactomeJavaConstants.StableIdentifier, ReactomeJavaConstants.identifier, "=", identifier));
         } else {
             return dba.fetchInstance(Long.parseLong(identifier));
@@ -152,10 +164,10 @@ public class DatabaseObjectFactory {
 
     private static void load(DatabaseObject databaseObject, GKInstance instance) {
         try {
-            fill(databaseObject,instance);
+            fill(databaseObject, instance);
         } catch (Exception e) {
             logger.error("An error occurred while trying to fill " + databaseObject.getSchemaClass() + ": " +
-                    databaseObject.getDbId() + " " + databaseObject,e);
+                    databaseObject.getDbId() + " " + databaseObject, e);
         }
     }
 
@@ -229,7 +241,7 @@ public class DatabaseObjectFactory {
                     }
                 }
             }
-        }catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -248,16 +260,15 @@ public class DatabaseObjectFactory {
                     if (stableIdentifier != null) {
                         databaseObject.setStId((String) stableIdentifier.getAttributeValue(ReactomeJavaConstants.identifier));
                     }
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             return databaseObject;
-        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             logger.error("Error occurred when trying to get Class for Name " + clazzName);
         }
-        return null ;
+        return null;
     }
 
     private static List<String> getJavaBeanProperties(Class clazz) {
@@ -285,7 +296,8 @@ public class DatabaseObjectFactory {
     }
 
     private static GKInstance getInstance(Collection<GKInstance> target) throws Exception {
-        if(target==null || target.size()!=1) throw new Exception("Many options have been found fot the specified identifier");
+        if (target == null || target.size() != 1)
+            throw new Exception("Many options have been found for the specified identifier");
 
         GKInstance stId = target.iterator().next();
         return (GKInstance) dba.fetchInstanceByAttribute(ReactomeJavaConstants.DatabaseObject, ReactomeJavaConstants.stableIdentifier, "=", stId).iterator().next();

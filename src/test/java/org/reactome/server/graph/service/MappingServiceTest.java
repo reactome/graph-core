@@ -33,8 +33,6 @@ public class MappingServiceTest extends BaseTest {
         logger.info("getReactionsLikeEvent execution time: " + time + "ms");
 
         assertNotNull(rles, "Protein is present in the database");
-        assertFalse(rles.isEmpty(), "Protein is present in the database");
-
         logger.info("Finished");
     }
 

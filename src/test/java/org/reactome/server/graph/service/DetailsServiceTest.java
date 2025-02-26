@@ -35,7 +35,7 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails(199420L, false);
+        ContentDetails contentDetails = detailsService.getContentDetails(Events.associationReaction.getStId(), false);
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 

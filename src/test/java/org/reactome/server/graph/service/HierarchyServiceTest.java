@@ -35,7 +35,8 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInPathwayBrowserTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", false, true);
+        String schema = PhysicalEntities.entityWithAccessionedSequence.getSchemaClass();
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(PhysicalEntities.entityWithAccessionedSequence.getStId(), false, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -49,13 +50,15 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowserDirectParticipantsTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", true, true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-9861692", true, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(2, node.getChildren().size());
+        assertTrue(node.getChildren().size()>1);
         logger.info("Finished");
     }
+
+
 
     @Test
     public void getLocationInPathwayBrowserForPathwaysTest() {

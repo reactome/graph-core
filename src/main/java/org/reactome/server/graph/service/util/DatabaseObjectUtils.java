@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.model.DatabaseObject;
@@ -204,7 +205,7 @@ public class DatabaseObjectUtils {
     }
 
     public static boolean isDbId(String id) {
-        return StringUtils.isNumeric(id);
+        return NumberUtils.isCreatable(id);
     }
 
     public static Class getClassForName(String className) throws ClassNotFoundException {

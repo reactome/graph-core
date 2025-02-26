@@ -3,13 +3,10 @@ package org.reactome.server.graph.util;
 
 import org.neo4j.driver.summary.ResultSummary;
 import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.reactome.server.graph.domain.model.EntityWithAccessionedSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class TestNodeService {
@@ -32,6 +29,19 @@ public class TestNodeService {
     public <T extends DatabaseObject> T saveTest(T toBeSaved) {
         return this.neo4jTemplate.save(toBeSaved);
     }
+
+    public ResultSummary createRelationship(String stId, String connectedNodeId, String relationshipType) {
+        String query = "MATCH (a:DatabaseObject), (b:DatabaseObject)  \n" +
+                "WHERE a.stId = $stId AND b.stId = $connectedNodeId  \n" +
+                "CREATE (a)-[r:" + relationshipType + "]->(b)  \n" +
+                "RETURN a, b, r;";
+
+        return neo4jClient.query(query)
+                .bind(stId).to("stId")
+                .bind(connectedNodeId).to("connectedNodeId")
+                .run();
+    }
+
 
     public ResultSummary deleteTest(){
         String query = "MATCH (dbObject) WHERE dbObject.dbId < 0  DETACH DELETE dbObject;";
