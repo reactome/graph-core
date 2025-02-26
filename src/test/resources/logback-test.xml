@@ -13,7 +13,7 @@
 
     <appender name="TEST" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${logging.dir}/graph/graph-tests-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>@logging.dir@/graph/graph-tests-%d{yyyy-MM-dd}.log</fileNamePattern>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
             <maxHistory>-1</maxHistory>
         </rollingPolicy>

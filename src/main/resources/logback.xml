@@ -7,14 +7,14 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+            <pattern>%d %-5level [@project.name@ - logback] [%thread] %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logging.dir}/graph/graph-core.log</file>
+        <file>logging.dir}/graph/graph-core.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${logging.dir}/graph/graph-%i-log.zip</fileNamePattern>
+            <fileNamePattern>@logging.dir@/graph/graph-%i-log.zip</fileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>3</maxIndex>
         </rollingPolicy>
@@ -23,12 +23,13 @@
             <maxFileSize>10MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
-            <pattern>%d %-5level [%thread] %class{36} %logger{0}: %msg%n</pattern>
+            <pattern>%d %-5level [@project.name@ - logback] [%thread] %class{36} %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
 
     <logger name="org.neo4j" level="ERROR" /> <!-- Remove neo4j info logging. It prints user credentials -->
     <logger name="org.springframework" level="ERROR" />
+    <logger name="org.springframework.data.neo4j.cypher" level="ERROR"/>
 
     <logger name="deng" level="DEBUG"/>
 

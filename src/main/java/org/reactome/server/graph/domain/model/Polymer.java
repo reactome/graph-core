@@ -1,24 +1,29 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. The repeated unit(s) is(are) identified in the repeatedUnit slot.
- *
+ * <p>
  * Logic in getter/setter of input and output is needed for retrieving data import using the GKInstance.
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
 @Node
-public class Polymer extends PhysicalEntity {
+public class Polymer extends PhysicalEntity implements CompositionAggregator {
 
     @ReactomeProperty
     private Integer maxUnitCount;
@@ -31,7 +36,13 @@ public class Polymer extends PhysicalEntity {
     @Relationship(type = "species")
     private List<Species> species;
 
-    public Polymer() {}
+    @Override
+    public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
+        return Stream.of(repeatedUnit);
+    }
+
+    public Polymer() {
+    }
 
     public Polymer(Long dbId) {
         super(dbId);
@@ -55,47 +66,28 @@ public class Polymer extends PhysicalEntity {
 
     @JsonIgnore
     public List<StoichiometryObject> fetchRepeatedUnit() {
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if(repeatedUnit!=null) {
-            for (RepeatedUnit aux : repeatedUnit) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
-            }
-            Collections.sort(objects);
-        }
-
-        return objects;
+        return Has.Util.simplifiedSort(repeatedUnit);
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
     public List<PhysicalEntity> getRepeatedUnit() {
-        List<PhysicalEntity> rtn = null;
-        if (this.repeatedUnit != null) {
-            rtn = new ArrayList<>();
-            for (RepeatedUnit repeatedUnit : this.repeatedUnit) {
-                for (int i = 0; i < repeatedUnit.getStoichiometry(); i++) {
-                    rtn.add(repeatedUnit.getPhysicalEntity());
-                }
-            }
-        }
-        return rtn;
+        return Has.Util.expandStoichiometry(repeatedUnit);
     }
 
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public SortedSet<RepeatedUnit> getRepeatedUnits() {
+        return repeatedUnit;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public void setRepeatedUnit(List<PhysicalEntity> repeatedUnit) {
-        if (repeatedUnit == null) return;
-        Map<Long, RepeatedUnit> repeatedUnits = new LinkedHashMap<>();
-        int order = 0;
-        for (PhysicalEntity physicalEntity : repeatedUnit) {
-            RepeatedUnit re = repeatedUnits.get(physicalEntity.getDbId());
-            if (re != null) {
-                re.setStoichiometry(re.getStoichiometry() + 1);
-            } else {
-                re = new RepeatedUnit();
-//                re.setPolymer(this);
-                re.setPhysicalEntity(physicalEntity);
-                re.setOrder(order++);
-                repeatedUnits.put(physicalEntity.getDbId(), re);
-            }
-        }
-        this.repeatedUnit = new TreeSet<>(repeatedUnits.values());
+        this.repeatedUnit = Has.Util.aggregateStoichiometry(repeatedUnit, RepeatedUnit::new);
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setRepeatedUnits(SortedSet<RepeatedUnit> repeatedUnits) {
+        this.repeatedUnit = repeatedUnits;
     }
 
     public List<Species> getSpecies() {

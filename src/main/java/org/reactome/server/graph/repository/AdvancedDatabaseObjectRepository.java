@@ -99,23 +99,61 @@ public class AdvancedDatabaseObjectRepository {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId) {
+        //language=cypher
         String query = "" +
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
-                "RETURN n, COLLECT(r1), COLLECT(m), COLLECT(r2), COLLECT(s), COLLECT(r3), COLLECT(o) ";
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectById(String stId) {
+        //language=cypher
         String query = "" +
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
-                "RETURN n, COLLECT(r1), COLLECT(m), COLLECT(r2), COLLECT(s), COLLECT(r3), COLLECT(o) ";
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+
+        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Long dbId) {
+        //language=cypher
+        String query = "" +
+                "MATCH (n:DatabaseObject{dbId:$dbId}) " +
+                "OPTIONAL MATCH (n)-[r1]->(m) " +
+                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+
+        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(String stId) {
+        //language=cypher
+        String query = "" +
+                "MATCH (n:DatabaseObject{stId:$stId}) " +
+                "OPTIONAL MATCH (n)-[r1]->(m) " +
+                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
+                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
@@ -239,7 +277,7 @@ public class AdvancedDatabaseObjectRepository {
             databaseObjects = new ArrayList<>(list.size());
             for (QueryResultWrapper wrapper : list) {
                 //Here stoichiometry has to be taken into account
-                for (int i = 0; i <  wrapper.getStoichiometry(); ++i) {
+                for (int i = 0; i < wrapper.getStoichiometry(); ++i) {
                     databaseObjects.add(wrapper.getDatabaseObject());
                 }
             }
@@ -277,17 +315,17 @@ public class AdvancedDatabaseObjectRepository {
 
         BiFunction<TypeSystem, MapAccessor, DatabaseObject> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(DatabaseObject.class);
         return neo4jClient.query(query)
-                        .bindAll(Map.of("dbId", dbId))
-                        .fetchAs(QueryResultWrapper.class)
-                        .mappedBy((typeSystem, record) -> {
-                            DatabaseObject databaseObject = mappingFunction.apply(typeSystem, record.get("m"));
-                            return new QueryResultWrapper(databaseObject, record.get("n").asInt());
-                        }).all();
+                .bindAll(Map.of("dbId", dbId))
+                .fetchAs(QueryResultWrapper.class)
+                .mappedBy((typeSystem, record) -> {
+                    DatabaseObject databaseObject = mappingFunction.apply(typeSystem, record.get("m"));
+                    return new QueryResultWrapper(databaseObject, record.get("n").asInt());
+                }).all();
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
 
-    public void customQuery(String query, Map<String, Object> parameters){
+    public void customQuery(String query, Map<String, Object> parameters) {
         neo4jClient.query(query).bindAll(parameters).run();
     }
 
@@ -308,7 +346,7 @@ public class AdvancedDatabaseObjectRepository {
             constructor.setAccessible(true);
 
             return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz)
-                    .mappedBy( (t,r) -> {
+                    .mappedBy((t, r) -> {
                         try {
                             T tt = constructor.newInstance();
                             return ReflectionUtils.build(tt, r);
@@ -339,7 +377,7 @@ public class AdvancedDatabaseObjectRepository {
             constructor.setAccessible(true);
 
             return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz)
-                    .mappedBy( (t,r) -> {
+                    .mappedBy((t, r) -> {
                         try {
                             T tt = constructor.newInstance();
                             return ReflectionUtils.build(tt, r);

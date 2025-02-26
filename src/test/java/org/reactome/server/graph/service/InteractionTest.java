@@ -5,6 +5,7 @@ import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.model.UndirectedInteraction;
+import org.reactome.server.graph.domain.result.CustomInteraction;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
@@ -120,4 +121,13 @@ public class InteractionTest extends BaseTest {
         assertThat(map).containsKeys(PhysicalEntities.referenceEntityInteractor.getIdentifier());
     }
 
+    @Test
+    public void testCustomInteractions(){
+        logger.info("Started testing interactionsService.testCustomInteractions");
+        long start = System.currentTimeMillis();
+        Collection<CustomInteraction> interactions = interactionsService.getCustomInteractions("P11142");
+        long time = System.currentTimeMillis() - start;
+        logger.info("GraphDb execution time: " + time + "ms");
+        assertThat(interactions.size()).isGreaterThan(2);
+    }
 }
