@@ -11,8 +11,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -43,11 +42,11 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByDbId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.interactionEWAS.getDbId());
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.entityWithAccessionedSequence2.getDbId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!otherFormsOfThisMolecule.isEmpty());
+        assertFalse(otherFormsOfThisMolecule.isEmpty());
         logger.info("Finished");
     }
 
@@ -57,7 +56,7 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetOtherFormsOfThisMoleculeByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.interactionEWAS.getDbId());
+        Collection<PhysicalEntity> otherFormsOfThisMolecule = physicalEntityService.getOtherFormsOf(PhysicalEntities.entityWithAccessionedSequence2.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
