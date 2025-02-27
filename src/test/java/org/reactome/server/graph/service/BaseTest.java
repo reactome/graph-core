@@ -71,6 +71,7 @@ public abstract class BaseTest {
             public static EntityWithAccessionedSequence interactionEWAS;
 
             public static EntityWithAccessionedSequence ewasDepolymerisation;
+            public static EntityWithAccessionedSequence entityWithAccessionedSequence2;
 
             public static ReferenceDatabase referenceDatabase;
         }
@@ -176,6 +177,7 @@ public abstract class BaseTest {
         // Transition
         Events.transitionReaction = createReaction(ReactionType.TRANSITION, "Test Reaction (Transition)");
         Events.transitionReaction.setSpecies(List.of(homoSapiensSpecies));
+
         // Binding
         Events.bindingReaction = createReaction(ReactionType.BINDING, "Test Reaction (Binding)");
         Events.bindingReaction.setSpecies(List.of(homoSapiensSpecies));
@@ -300,6 +302,12 @@ public abstract class BaseTest {
         testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"reviewed");
         testService.createRelationship(instanceEdit.getStId(),Events.depolymerisationReaction.getStId(),"reviewed");
         testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(),PhysicalEntities.referenceSequence.getStId(), "referenceDatabase");
+
+        // add another ewas
+        PhysicalEntities.entityWithAccessionedSequence2 = new EntityWithAccessionedSequence();
+        PhysicalEntities.entityWithAccessionedSequence2.setDisplayName("Test Entity With Accessioned Sequence 2");
+        testService.saveTest(PhysicalEntities.entityWithAccessionedSequence2);
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence2.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity");
 
         //Update Tracker
         testUpdateTracker = new UpdateTracker();
