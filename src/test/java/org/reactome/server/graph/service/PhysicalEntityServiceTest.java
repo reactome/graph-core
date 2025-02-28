@@ -60,7 +60,7 @@ public class PhysicalEntityServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!otherFormsOfThisMolecule.isEmpty());
+        assertFalse(otherFormsOfThisMolecule.isEmpty());
         logger.info("Finished");
     }
 

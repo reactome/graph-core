@@ -9,8 +9,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParticipantServiceTest extends BaseTest {
 
@@ -52,7 +51,7 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipatingPhysicalEntitiesByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(Events.depolymerisationReaction.getStId());
+        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(Events.associationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -71,11 +70,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipantsByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Participant> participants = participantService.getParticipants(Events.depolymerisationReaction.getStId());
+        Collection<Participant> participants = participantService.getParticipants(Events.associationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!participants.isEmpty());
+        assertFalse(participants.isEmpty());
         logger.info("Finished");
     }
 }

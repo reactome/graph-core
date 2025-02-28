@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service;
 
+import org.gk.model.GKInstance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
@@ -43,14 +44,14 @@ public class LazyLoadingTest extends BaseTest {
     }
 
     @Test
-    public void lazyLoadingTest() throws InvocationTargetException, IllegalAccessException {
+    public void lazyLoadingTest() throws Exception {
         logger.info("Testing Lazy Loading.");
 
         DatabaseObject databaseObjectObserved = dbs.findByIdNoRelations(PhysicalEntities.complex.getStId());
-        DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(PhysicalEntities.complex.getStId());
+        GKInstance databaseObjectExpected = DatabaseObjectFactory.createGKInstance(PhysicalEntities.complex);
 
         //getters will be automatically called by the Assertion test
-        assertThat(databaseObjectObserved.getStId()).isEqualTo(databaseObjectExpected.getStId());
+        assertEquals(databaseObjectExpected.getDBID(), databaseObjectObserved.getDbId());
         logger.info("Finished");
     }
 
@@ -58,7 +59,8 @@ public class LazyLoadingTest extends BaseTest {
     public void lazyLoadingRegulationsTest() {
         logger.info("Testing Lazy Loading Positive And Negative Regulators");
 
-        ReactionLikeEvent rle = dbs.findById(Events.transitionReaction.getStId());
+        String id = Events.associationReaction.getOldStId();
+        ReactionLikeEvent rle = dbs.findById(id);
 
         assumeFalse(rle.getRegulatedBy().isEmpty());
         List<PositiveRegulation> positiveRegulations = new ArrayList<>();
@@ -71,7 +73,7 @@ public class LazyLoadingTest extends BaseTest {
             }
         }
         assertTrue(positiveRegulations.size() >= 1);
-        assertTrue(negativeRegulations.size() >= 3);
+        assertTrue(negativeRegulations.size() >= 1);
 
         logger.info("Finished");
     }

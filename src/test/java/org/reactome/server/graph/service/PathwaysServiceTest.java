@@ -122,7 +122,7 @@ public class PathwaysServiceTest extends BaseTest {
     public void getDiagramEntitiesForIdentifierTest(){
         logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier( Events.diagramPathway.getStId(), PhysicalEntities.referenceSequence.getIdentifier());
+        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier(Events.diagramPathway.getStId(), PhysicalEntities.referenceSequence.getIdentifier());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

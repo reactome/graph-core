@@ -2,6 +2,7 @@ package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Species;
+import org.reactome.server.graph.util.TestNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -14,6 +15,8 @@ import static org.reactome.server.graph.service.BaseTest.homoSapiensSpecies;
 public class SpeciesServiceTest extends BaseTest {
 
     private final SpeciesService speciesService;
+    @Autowired
+    private TestNodeService testNodeService;
 
     @Autowired
     public SpeciesServiceTest(SpeciesService speciesService) {
@@ -36,33 +39,29 @@ public class SpeciesServiceTest extends BaseTest {
 
     @Test
     public void testGetSpeciesAnyId(){
-        Species species = speciesService.getSpecies(homoSapiensSpecies.getDbId());
+        Species species = speciesService.getSpecies(testSpecies.getDbId());
         assertNotNull(species);
         assertEquals("HSA", species.getAbbreviation());
     }
 
     @Test
     public void testGetSpeciesByDbId(){
-        Species species = speciesService.getSpeciesByDbId(homoSapiensSpecies.getDbId());
+        Species species = speciesService.getSpeciesByDbId(testSpecies.getDbId());
         assertNotNull(species);
-        assertEquals("Homo sapiens", species.getDisplayName());
+        assertEquals(testSpecies.getDisplayName(), species.getDisplayName());
     }
 
     @Test
     public void testGetSpeciesByName(){
-        testService.deleteTest();
-        createSpecies(testService,"Test species");
-        Species species = speciesService.getSpeciesByName("Test species");
+        Species species = speciesService.getSpeciesByName(testSpecies.getDisplayName());
         assertNotNull(species);
-        assertEquals("123", species.getTaxId());
+        assertEquals(testSpecies.getTaxId(), species.getTaxId());
     }
 
     @Test
     public void testGetSpeciesByTaxId(){
-        testService.deleteTest();
-        createSpecies(testService,"Test species");
-        Species species = speciesService.getSpeciesByTaxId("123");
+        Species species = speciesService.getSpeciesByTaxId(testSpecies.getTaxId());
         assertNotNull(species);
-        assertEquals("Test species", species.getDisplayName());
+        assertEquals(testSpecies.getDisplayName(), species.getDisplayName());
     }
 }
