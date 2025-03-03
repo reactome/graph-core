@@ -74,6 +74,7 @@ public abstract class BaseTest {
             public static EntityWithAccessionedSequence entityWithAccessionedSequence2;
 
             public static ReferenceDatabase referenceDatabase;
+            public static PositiveRegulation regulation;
         }
 
         protected static Person testPerson;
@@ -152,7 +153,7 @@ public abstract class BaseTest {
 
         //region Create Top Level Pathway
         Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
-        Events.topLevelPathway.setSpeciesName("Homo sapiens");
+        Events.topLevelPathway.setSpeciesName("Fantasy species");
         testService.saveTest(Events.topLevelPathway);
 
         Events.ehldPathway = createPathway("Test Ehld Pathway", true, true);
@@ -164,8 +165,6 @@ public abstract class BaseTest {
         Events.diagramPathway.setSpeciesName("Homo sapiens");
         testService.saveTest(Events.diagramPathway);
         //endregion
-
-
 
         //region Create Test Reactions
         Events.associationReaction = createReaction(ReactionType.ASSOCIATION,"Test Reaction (Association)");
@@ -232,6 +231,10 @@ public abstract class BaseTest {
         PhysicalEntities.positiveRegulation.setDisplayName("Test Positive Regulation");
         testService.saveTest(PhysicalEntities.positiveRegulation);
 
+        PhysicalEntities.regulation = new PositiveRegulation();
+        PhysicalEntities.regulation.setDisplayName("Test Regulation (Positive Regulation)");
+        testService.saveTest(PhysicalEntities.regulation);
+
         PhysicalEntities.catalystActivity = createTestCatalystActivity("Test Catalyst", PhysicalEntities.entityWithAccessionedSequence);
         testService.saveTest(PhysicalEntities.catalystActivity);
 
@@ -263,6 +266,7 @@ public abstract class BaseTest {
 
         testService.createRelationship(Events.associationReaction.getStId(),homoSapiensSpecies.getStId(),"species");
         testService.createRelationship(Events.associationReaction.getStId(),testSpecies.getStId(),"species");
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.positiveRegulation.getStId(),"regulatedBy");
         testService.createRelationship(Events.diagramPathway.getStId(),Events.associationReaction.getStId(),"hasEvent");
 
         testService.createRelationship(Events.dissociationReaction.getStId(),homoSapiensSpecies.getStId(),"species");
@@ -320,6 +324,8 @@ public abstract class BaseTest {
 
         testService.createRelationship( PhysicalEntities.referenceSequence.getStId(),PhysicalEntities.referenceDatabase.getStId(),"referenceDatabase");
 
+        testService.createRelationship(Events.depolymerisationReaction.getStId(),PhysicalEntities.regulation.getStId(),"regulatedBy");
+        testService.createRelationship(Events.transitionReaction.getStId(),PhysicalEntities.regulation.getStId(),"regulatedBy");
 
         // Cell Linaege Pathway Data
         Events.cellLineagePathway = createCellLineagePath();

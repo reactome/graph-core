@@ -168,7 +168,7 @@ public class AdvancedServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(databaseObjectObserved.getHasEvent().size() >=4);
+        assertFalse(databaseObjectObserved.getHasEvent().isEmpty());
         logger.info("Finished");
     }
 

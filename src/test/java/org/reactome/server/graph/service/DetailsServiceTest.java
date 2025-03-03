@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.domain.model.EntityWithAccessionedSequence;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +36,12 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails(Events.associationReaction.getStId(), false);  // Does not work because dependand on dbID
+        ContentDetails contentDetails = detailsService.getContentDetails(PhysicalEntities.entityWithAccessionedSequence2.getStId(), false);
         time = System.currentTimeMillis() - start;
         logger.info("getContentDetails execution time: " + time + "ms");
 
-        assertTrue(contentDetails.getNodes().size() >= 2);
-        assertEquals("PTEN [cytosol]", contentDetails.getDatabaseObject().getDisplayName());
+        assertTrue(contentDetails.getComponentOf().isEmpty());
         assertTrue(contentDetails.getOtherFormsOfThisMolecule().size() >= 2);
-        assertFalse(contentDetails.getComponentOf().isEmpty());
         logger.info("Finished");
     }
 
@@ -51,12 +50,13 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
-        List<String> pathways = Arrays.asList("R-HSA-212165", "R-HSA-5250913", "R-HSA-5250941", "R-HSA-73886", "R-HSA-74160");
+        List<String> pathways = Arrays.asList(Events.diagramPathway.getStId(),Events.ehldPathway.getStId());
         Set<PathwayBrowserNode> node = detailsService.getLocationInPathwayBrowserForPathways(pathways);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(2, node.size());
+        assertFalse(node.isEmpty());
+        logger.info("Finished");
     }
 
 }

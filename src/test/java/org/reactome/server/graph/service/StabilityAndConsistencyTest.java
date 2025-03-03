@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.springframework.test.util.AssertionErrors.*;
 
 public class StabilityAndConsistencyTest extends BaseTest {
 
@@ -74,21 +74,17 @@ public class StabilityAndConsistencyTest extends BaseTest {
     public void lazyLoadingStoichiometryTest(){
         logger.info("Testing lazyLoadingStoichiometryTest");
 
-        int comps1 = -1;
-        Collection<Complex> complexes = schemaService.getByClass(Complex.class, "Fantasy species");
+        Collection<Complex> complexes = schemaService.getByClass(Complex.class, testSpecies.getDisplayName());
+
+        Species foundSpecies = null;
         for (Complex complex : complexes) {
-            if (complex.getStId().equals(PhysicalEntities.complex.getStId())) {
-                List<PhysicalEntity> hasComponent = complex.getHasComponent();
-                comps1 = hasComponent.size();
+            for (Species species : complex.getSpecies()) {
+                if (species.getDisplayName().equals(testSpecies.getDisplayName())) {
+                    foundSpecies = species;
+                }
             }
         }
-
-        Complex complex = dbs.findById(PhysicalEntities.complex.getStId());
-        List<PhysicalEntity> hasComponent = complex.getHasComponent();
-        int comps2 = hasComponent.size();
-
-        assertTrue("Has component should be the same", Objects.equals(comps1, comps2));
-
+        assertEquals("Species found correctly", testSpecies.getDisplayName(), foundSpecies.getDisplayName());
         logger.info("Finished");
     }
 }

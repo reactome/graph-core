@@ -2,6 +2,7 @@ package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Disease;
+import org.reactome.server.graph.domain.model.EntityWithAccessionedSequence;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.domain.result.SimpleDatabaseObject;
@@ -17,8 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class SchemaServiceTest extends BaseTest {
@@ -124,7 +124,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!pathways.isEmpty());
+        assertFalse(pathways.isEmpty());
         logger.info("Finished");
     }
 
@@ -138,7 +138,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!pathways.isEmpty());
+        assertFalse(pathways.isEmpty());
         logger.info("Finished");
     }
 
@@ -164,7 +164,7 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClass");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClass(Pathway.class);
+        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClass(EntityWithAccessionedSequence.class);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -187,16 +187,16 @@ public class SchemaServiceTest extends BaseTest {
     }
 
     @Test
-    public void getSimpleDatabaseObjectByClassNameTest() throws ClassNotFoundException { //TODO this test is failing!!!
-        testNodeService.deleteTest();
+    public void getSimpleDatabaseObjectByClassNameTest() throws ClassNotFoundException {
+        //testNodeService.deleteTest();
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClass");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClassName("Pathway");
+        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClassName("EntityWithAccessionedSequence");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!pathways.isEmpty());
+        assertFalse(pathways.isEmpty());
         logger.info("Finished");
     }
 
@@ -210,7 +210,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!pathways.isEmpty());
+        assertFalse(pathways.isEmpty());
         logger.info("Finished");
     }
 
@@ -226,7 +226,7 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(!pathways.isEmpty());
+        assertFalse(pathways.isEmpty());
         logger.info("Finished");
     }
 

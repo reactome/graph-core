@@ -10,8 +10,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InferredToTest extends BaseTest {
 
@@ -52,7 +51,7 @@ public class InferredToTest extends BaseTest {
         assertNotNull(inferredTo, "The orthologous events for reaction cannot be null");
         Event aux = null;
         for (Event pe : inferredTo) {
-            if (pe.getStId().equals(Events.transitionReaction.getStId())) aux = pe;
+            if (pe.getStId().equals(Events.cellLineagePathway.getStId())) aux = pe;
         }
 
         assertNotNull(aux, "The reaction has references");

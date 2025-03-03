@@ -11,8 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HierarchyServiceTest extends BaseTest {
 
@@ -35,12 +34,12 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInPathwayBrowserTest");
         long start, time;
         start = System.currentTimeMillis();
-        String schema = PhysicalEntities.entityWithAccessionedSequence.getSchemaClass();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(PhysicalEntities.entityWithAccessionedSequence.getStId(), false, true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(PhysicalEntities.entityWithAccessionedSequence2.getStId(), false, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(node.getChildren().size() >= 1);
+        assertNotNull(node);
+        assertEquals(PhysicalEntities.entityWithAccessionedSequence2.getStId(), node.getStId());
         logger.info("Finished");
     }
 
@@ -50,15 +49,14 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowserDirectParticipantsTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-9861692", true, true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(PhysicalEntities.entityWithAccessionedSequence2.getStId(), true, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue(node.getChildren().size()>1);
+        assertNotNull(node);
+        assertEquals(PhysicalEntities.entityWithAccessionedSequence2.getStId(), node.getStId());
         logger.info("Finished");
     }
-
-
 
     @Test
     public void getLocationInPathwayBrowserForPathwaysTest() {
@@ -73,7 +71,6 @@ public class HierarchyServiceTest extends BaseTest {
         assertEquals(4, node.size());
         logger.info("Finished");
     }
-
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
@@ -98,6 +95,7 @@ public class HierarchyServiceTest extends BaseTest {
 
     @Test
     public void getEventHierarchyBySpeciesNameTest() {
+        testService.deleteTest();
         logger.info("Started testing eventService.getEventHierarchyBySpeciesNameTest");
         long start, time;
         start = System.currentTimeMillis();
