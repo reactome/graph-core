@@ -76,12 +76,12 @@ public class LazyLoadingTest extends BaseTest {
 
     @Test
     public void lazyLoadingRepeatedUnitOfTest() {
-        logger.info("Testing Lazy Loading for Polymer RepeatedUnit"); //TODO
+        logger.info("Testing Lazy Loading for Polymer RepeatedUnit");
         PhysicalEntity dbObj = dbs.findByIdNoRelations(PhysicalEntities.entityWithAccessionedSequence.getStId());
 
         assumeFalse(dbObj.getRepeatedUnitOf().isEmpty());
         List<Polymer> targets = dbObj.getRepeatedUnitOf();
-
+        assertFalse(targets.isEmpty());
         logger.info("Finished");
     }
 

@@ -91,6 +91,8 @@ public abstract class BaseTest {
         public static ModifiedResidue modifiedResidue;
 
         public static CandidateSet candidateSet;
+
+        public static Polymer polymer;
     }
 
     protected static Person testPerson;
@@ -345,13 +347,17 @@ public abstract class BaseTest {
         testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.regulation.getStId(), "regulatedBy",1,1);
         testService.createRelationship(Events.transitionReaction.getStId(), PhysicalEntities.regulation.getStId(), "regulatedBy",1,1);
 
-        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(), PhysicalEntities.positiveRegulation.getStId(), "repeatedUnit",0,1);
+        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "repeatedUnit",0,1);
         PhysicalEntities.modifiedResidue = new ModifiedResidue();
         PhysicalEntities.modifiedResidue.setDisplayName("Modified residue");
         PhysicalEntities.modifiedResidue.setLabel("R");
         testService.saveTest(PhysicalEntities.modifiedResidue);
         testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(),PhysicalEntities.modifiedResidue.getStId(),"hasModifiedResidue",0,1);
 
+        PhysicalEntities.polymer = new Polymer();
+        PhysicalEntities.polymer.setDisplayName("Polymer");
+        testService.saveTest(PhysicalEntities.polymer);
+        testService.createRelationship(PhysicalEntities.polymer.getStId(),PhysicalEntities.entityWithAccessionedSequence.getStId(),"repeatedUnit",0,1);
 
         // Cell Linaege Pathway Data
         Events.cellLineagePathway = createCellLineagePath();
