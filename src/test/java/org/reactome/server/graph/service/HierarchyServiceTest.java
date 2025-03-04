@@ -1,6 +1,7 @@
 package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.domain.model.Reaction;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.AfterTestClass;
@@ -34,12 +35,12 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInPathwayBrowserTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(PhysicalEntities.entityWithAccessionedSequence2.getStId(), false, true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(Events.topLevelPathway.getStId(), false, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertNotNull(node);
-        assertEquals(PhysicalEntities.entityWithAccessionedSequence2.getStId(), node.getStId());
+        assertEquals(Events.topLevelPathway.getStId(), node.getStId());
         logger.info("Finished");
     }
 
