@@ -39,6 +39,7 @@ public class DetailsServiceTest extends BaseTest {
         start = System.currentTimeMillis();
         ContentDetails contentDetails = detailsService.getContentDetails(Events.topLevelPathway.getStId(), false);
         time = System.currentTimeMillis() - start;
+
         logger.info("getContentDetails execution time: " + time + "ms");
 
         assertNotNull(contentDetails);
