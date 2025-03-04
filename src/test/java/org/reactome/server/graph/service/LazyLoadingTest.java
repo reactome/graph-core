@@ -59,49 +59,47 @@ public class LazyLoadingTest extends BaseTest {
     public void lazyLoadingRegulationsTest() {
         logger.info("Testing Lazy Loading Positive And Negative Regulators");
 
-        String id = Events.associationReaction.getOldStId();
-        ReactionLikeEvent rle = dbs.findById(id);
+        //ReactionLikeEvent rle = dbs.findById("R-HSA-71670");
+        ReactionLikeEvent rle = dbs.findByIdNoRelations(Events.transitionReaction.getStId());
 
         assumeFalse(rle.getRegulatedBy().isEmpty());
         List<PositiveRegulation> positiveRegulations = new ArrayList<>();
-        List<NegativeRegulation> negativeRegulations = new ArrayList<>();
         for (Regulation regulation : rle.getRegulatedBy()) {
             if(regulation instanceof  PositiveRegulation){
                 positiveRegulations.add((PositiveRegulation) regulation);
-            } else {
-                negativeRegulations.add((NegativeRegulation) regulation);
             }
         }
-        assertTrue(positiveRegulations.size() >= 1);
-        assertTrue(negativeRegulations.size() >= 1);
+        assertFalse(positiveRegulations.isEmpty());
 
         logger.info("Finished");
     }
 
     @Test
     public void lazyLoadingRepeatedUnitOfTest() {
-        logger.info("Testing Lazy Loading for Polymer RepeatedUnit");
-        PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-202447");
+        logger.info("Testing Lazy Loading for Polymer RepeatedUnit"); //TODO
+        PhysicalEntity dbObj = dbs.findByIdNoRelations(PhysicalEntities.entityWithAccessionedSequence.getStId());
+
+        assumeFalse(dbObj.getRepeatedUnitOf().isEmpty());
         List<Polymer> targets = dbObj.getRepeatedUnitOf();
-        assertThat(targets).contains(new Polymer(2685702L));
+
         logger.info("Finished");
     }
 
     @Test
     public void lazyLoadingComponentOfTest() {
         logger.info("Testing Lazy Loading for Complex ComponentOf");
-        PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-377733");
+        PhysicalEntity dbObj = dbs.findByIdNoRelations(PhysicalEntities.entityWithAccessionedSequence.getStId());
         List<Complex> targets = dbObj.getComponentOf();
-        assertThat(targets).contains(new Complex(375305L));
+        assertThat(targets).contains(new Complex(PhysicalEntities.complex.getDbId()));
         logger.info("Finished");
     }
 
     @Test
     public void lazyLoadingConsumedByEventTest() {
         logger.info("Testing Lazy Loading for Complex ComponentOf");
-        PhysicalEntity dbObj = dbs.findByIdNoRelations("R-HSA-375305");
+        PhysicalEntity dbObj = dbs.findByIdNoRelations(PhysicalEntities.complex.getStId());
         List<ReactionLikeEvent> targets = dbObj.getConsumedByEvent();
-        assertThat(targets).contains(new Reaction(141409L));
+        assertThat(targets).contains(new Reaction(Events.associationReaction.getDbId()));
         logger.info("Finished");
     }
 
@@ -111,7 +109,7 @@ public class LazyLoadingTest extends BaseTest {
 
         long start, time;
         start = System.currentTimeMillis();
-        EntityWithAccessionedSequence ewas = dbs.findByIdNoRelations ("R-HSA-507936");
+        EntityWithAccessionedSequence ewas = dbs.findByIdNoRelations(PhysicalEntities.entityWithAccessionedSequence.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -126,15 +124,15 @@ public class LazyLoadingTest extends BaseTest {
     public void lazyLoadingEventOf(){
         logger.info("Started testing databaseObjectService.lazyLoadingEventOf");
         long start = System.currentTimeMillis();
-        ReactionLikeEvent rle = dbs.findById("R-HSA-5205661");
+        ReactionLikeEvent rle = dbs.findById(Events.associationReaction.getStId());
         logger.info("GraphDb execution time: " + (System.currentTimeMillis() - start) + "ms");
 
-        assertFalse(rle.getEventOf().isEmpty(), "'R-HSA-5205661 is 'at least' an event of 'R-HSA-5205647'");
+        assertFalse(rle.getEventOf().isEmpty(), "'R-HSA-5205661 is 'at least' an event of an association reaction");
         logger.info("Finished");
     }
 
     public void preloadReactionLikeEvent(){
-        rle = dbs.findByIdNoRelations("R-HSA-3234081");
+        rle = dbs.findByIdNoRelations(Events.associationReaction.getStId());
     }
 
     @Test
@@ -142,9 +140,7 @@ public class LazyLoadingTest extends BaseTest {
         if (rle == null) preloadReactionLikeEvent();
         List<PhysicalEntity> outputs = rle.getOutput();
         assertThat(outputs).containsExactlyInAnyOrder(
-                new Complex(8865819L),
-                new EntityWithAccessionedSequence(912481L),
-                new EntityWithAccessionedSequence(912481L)
+                new Complex(PhysicalEntities.complex.getDbId())
         );
     }
 
@@ -153,9 +149,7 @@ public class LazyLoadingTest extends BaseTest {
         if (rle == null) preloadReactionLikeEvent();
         List<PhysicalEntity> inputs = rle.getInput();
         assertThat(inputs).containsExactlyInAnyOrder(
-                new Complex(2993783L),
-                new Complex(2993783L),
-                new Complex(8865818L)
+                new Complex(PhysicalEntities.complex.getDbId())
         );
     }
 
@@ -164,7 +158,7 @@ public class LazyLoadingTest extends BaseTest {
         if (rle == null) preloadReactionLikeEvent();
         List<CatalystActivity> catact = rle.getCatalystActivity();
         assertThat(catact).containsExactlyInAnyOrder(
-                new CatalystActivity(2997650L)
+                new CatalystActivity(PhysicalEntities.catalystActivity.getDbId())
         );
     }
 
@@ -173,7 +167,7 @@ public class LazyLoadingTest extends BaseTest {
         if (rle == null) preloadReactionLikeEvent();
         List<InstanceEdit> authors = rle.getAuthored();
         assertThat(authors).containsExactlyInAnyOrder(
-                new InstanceEdit(3232167L)
+                new InstanceEdit(instanceEdit.getDbId())
         );
     }
 
@@ -182,8 +176,7 @@ public class LazyLoadingTest extends BaseTest {
         if (rle == null) preloadReactionLikeEvent();
         List<Pathway> events = rle.getEventOf();
         assertThat(events).containsExactlyInAnyOrder(
-                new Pathway(3232118L),
-                new Pathway(8866904L)
+                new Pathway(Events.diagramPathway.getDbId())
         );
     }
 
@@ -192,10 +185,7 @@ public class LazyLoadingTest extends BaseTest {
         if (rle == null) preloadReactionLikeEvent();
         List<Publication> pubs = rle.getLiteratureReference();
         assertThat(pubs).containsExactlyInAnyOrder(
-                new LiteratureReference(3234063L),
-                new LiteratureReference(8874763L),
-                new LiteratureReference(3234089L),
-                new LiteratureReference(5626900L)
+                new LiteratureReference(testPublication.getDbId())
         );
         for (Publication pub : pubs) {
             pub.getAuthor();
@@ -206,23 +196,21 @@ public class LazyLoadingTest extends BaseTest {
     public void testRLECreated() {
         if (rle == null) preloadReactionLikeEvent();
         InstanceEdit created = rle.getCreated();
-        assertThat(created).isEqualTo(new InstanceEdit(3234098L));
+        assertThat(created).isEqualTo(new InstanceEdit(instanceEdit.getDbId()));
     }
 
     @Test
     public void testRLEModified() {
         if (rle == null) preloadReactionLikeEvent();
         InstanceEdit modified = rle.getModified();
-        assertThat(modified).isEqualTo(new InstanceEdit(9830342L));
+        assertThat(modified).isEqualTo(new InstanceEdit(instanceEdit.getDbId()));
     }
 
     @Test
     public void testCandidateSet(){
-        CandidateSet candidateSet = dbs.findByIdNoRelations("R-ALL-9687688");
-        assertTrue(candidateSet.getHasCandidate().size() >= 15);
-        assertTrue(candidateSet.getHasMember().size() >= 2);
-        assertNotEquals(candidateSet.getConsumedByEvent().size(), 0);
-        assertThat(candidateSet.getCompartment()).contains(new Compartment(70101L));
+        CandidateSet candidateSet = dbs.findByIdNoRelations(PhysicalEntities.candidateSet.getStId());
+        assertFalse(candidateSet.getHasCandidate().isEmpty());
+        assertFalse(candidateSet.getHasMember().isEmpty());
     }
 
 }

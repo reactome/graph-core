@@ -5,8 +5,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.domain.model.*;
-import org.reactome.server.graph.domain.relationship.AuthorPublication;
-import org.reactome.server.graph.domain.relationship.PublicationAuthor;
+import org.reactome.server.graph.domain.relationship.HasCandidate;
+import org.reactome.server.graph.domain.relationship.HasMember;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.TestNodeService;
 import org.slf4j.Logger;
@@ -16,14 +16,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 
+import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+
+enum Test {
+    AUTHOR("author"),
+    CREATED("created"),;
+
+    public final String value;
+
+    Test(String value) {
+        this.value = value;
+    }
+}
 
 /**
  * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
@@ -31,62 +43,66 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 @SpringBootTest
 public abstract class BaseTest {
 
-        protected static class Events {
-            public static TopLevelPathway topLevelPathway;
-            public static Pathway ehldPathway;
-            public static Pathway diagramPathway;
+    protected static class Events {
+        public static TopLevelPathway topLevelPathway;
+        public static Pathway ehldPathway;
+        public static Pathway diagramPathway;
 
-            public static CellLineagePath cellLineagePathway;
+        public static CellLineagePath cellLineagePathway;
 
-            public static Reaction associationReaction;
-            public static Reaction dissociationReaction;
-            public static Reaction transitionReaction;
-            public static Reaction bindingReaction;
+        public static Reaction associationReaction;
+        public static Reaction dissociationReaction;
+        public static Reaction transitionReaction;
+        public static Reaction bindingReaction;
 
-            public static Polymerisation polymerisationReaction;
-            public static Depolymerisation depolymerisationReaction;
+        public static Polymerisation polymerisationReaction;
+        public static Depolymerisation depolymerisationReaction;
 
-            public static BlackBoxEvent blackBoxEvent;
-            public static CellDevelopmentStep cellDevelopmentStep;
-            public static FailedReaction failedReaction;
+        public static BlackBoxEvent blackBoxEvent;
+        public static CellDevelopmentStep cellDevelopmentStep;
+        public static FailedReaction failedReaction;
 
-            public static UndirectedInteraction undirectedInteraction;
-        }
+        public static UndirectedInteraction undirectedInteraction;
+    }
 
-        protected static class PhysicalEntities{
-            public static Complex complex;
-            public static Complex complexInferred;
-            public static EntityWithAccessionedSequence entityWithAccessionedSequence;
-            public static CatalystActivity catalystActivity;
-            public static PositiveRegulation positiveRegulation;
-            public static NegativeRegulation negativeRegulation;
-            public static Compartment compartment;
+    protected static class PhysicalEntities {
+        public static Complex complex;
+        public static Complex complexInferred;
+        public static EntityWithAccessionedSequence entityWithAccessionedSequence;
+        public static CatalystActivity catalystActivity;
+        public static PositiveRegulation positiveRegulation;
+        public static NegativeRegulation negativeRegulation;
+        public static Compartment compartment;
 
-            public static FragmentModification fragmentDeletionModification;
-            public static ReferenceSequence referenceSequence;
+        public static FragmentModification fragmentDeletionModification;
+        public static ReferenceSequence referenceSequence;
 
-            public static ReferenceSequence referenceEntityInteraction;
-            public static ReferenceSequence referenceEntityInteractor;
+        public static ReferenceSequence referenceEntityInteraction;
+        public static ReferenceSequence referenceEntityInteractor;
 
-            public static EntityWithAccessionedSequence interactionEWAS;
+        public static EntityWithAccessionedSequence interactionEWAS;
 
-            public static EntityWithAccessionedSequence ewasDepolymerisation;
-            public static EntityWithAccessionedSequence entityWithAccessionedSequence2;
+        public static EntityWithAccessionedSequence ewasDepolymerisation;
+        public static EntityWithAccessionedSequence entityWithAccessionedSequence2;
 
-            public static ReferenceDatabase referenceDatabase;
-            public static PositiveRegulation regulation;
-        }
+        public static ReferenceDatabase referenceDatabase;
+        public static PositiveRegulation regulation;
 
-        protected static Person testPerson;
-        protected static LiteratureReference testPublication;
-        protected static InstanceEdit instanceEdit;
+        public static ModifiedResidue modifiedResidue;
 
-        protected static DeletedInstance deletedInstance;
-        protected static Deleted deleted;
-        protected static Species homoSapiensSpecies;
-        protected static Species testSpecies;
+        public static CandidateSet candidateSet;
+    }
 
-        protected static UpdateTracker testUpdateTracker;
+    protected static Person testPerson;
+    protected static LiteratureReference testPublication;
+    protected static InstanceEdit instanceEdit;
+
+    protected static DeletedInstance deletedInstance;
+    protected static Deleted deleted;
+    protected static Species homoSapiensSpecies;
+    protected static Species testSpecies;
+
+    protected static UpdateTracker testUpdateTracker;
 
     protected static final Logger logger = LoggerFactory.getLogger("testLogger");
 
@@ -126,6 +142,8 @@ public abstract class BaseTest {
         testPerson.setProject("Pathway Curation");
         testService.saveTest(testPerson);
 
+        String test = Test.AUTHOR.value;
+
         testPublication = new LiteratureReference();
         testPublication.setTitle("Reference Publication");
         testPublication.setDisplayName("Reference Publication Literature");
@@ -144,7 +162,7 @@ public abstract class BaseTest {
         homoSapiensSpecies.setAbbreviation("HSA");
         testService.saveTest(homoSapiensSpecies);
 
-        testSpecies  = new Species();
+        testSpecies = new Species();
         testSpecies.setDisplayName("Fantasy species");
         testSpecies.setName(List.of("Fantasy species"));
         testSpecies.setAbbreviation("HSA");
@@ -160,14 +178,14 @@ public abstract class BaseTest {
         testService.saveTest(Events.ehldPathway);
 
         //region Create Pathway with diagram
-        Events.diagramPathway = createPathway("Test Diagram Pathway",false,true);
+        Events.diagramPathway = createPathway("Test Diagram Pathway", false, true);
         Events.diagramPathway.setIsInferred(true);
         Events.diagramPathway.setSpeciesName("Homo sapiens");
         testService.saveTest(Events.diagramPathway);
         //endregion
 
         //region Create Test Reactions
-        Events.associationReaction = createReaction(ReactionType.ASSOCIATION,"Test Reaction (Association)");
+        Events.associationReaction = createReaction(ReactionType.ASSOCIATION, "Test Reaction (Association)");
         Events.associationReaction.setOldStId("REACT_123");
         testService.saveTest(Events.associationReaction);
 
@@ -250,82 +268,90 @@ public abstract class BaseTest {
         testService.saveTest(PhysicalEntities.referenceDatabase);
 
         // Relationships
-        testService.createRelationship(testPerson.getStId(),testPublication.getStId(),"author");
-        testService.createRelationship(testPerson.getStId(),instanceEdit.getStId(),"author");
+        testService.createRelationship(testPerson.getStId(), testPublication.getStId(), "author",1,1);
+        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), "author",1,1);
 
-        testService.createRelationship(Events.topLevelPathway.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.topLevelPathway.getStId(),testSpecies.getStId(),"species");
-        testService.createRelationship(Events.topLevelPathway.getStId(),Events.ehldPathway.getStId(),"hasEvent");
+        testService.createRelationship(Events.topLevelPathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.topLevelPathway.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.topLevelPathway.getStId(), Events.ehldPathway.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.diagramPathway.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.diagramPathway.getStId(),testSpecies.getStId(),"species");
+        testService.createRelationship(Events.diagramPathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), testSpecies.getStId(), "species",1,1);
 
-        testService.createRelationship(Events.ehldPathway.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.ehldPathway.getStId(),testSpecies.getStId(),"species");
-        testService.createRelationship(Events.ehldPathway.getStId(),Events.diagramPathway.getStId(),"hasEvent");
+        testService.createRelationship(Events.ehldPathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.ehldPathway.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.ehldPathway.getStId(), Events.diagramPathway.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.associationReaction.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.associationReaction.getStId(),testSpecies.getStId(),"species");
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.positiveRegulation.getStId(),"regulatedBy");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.associationReaction.getStId(),"hasEvent");
+        testService.createRelationship(Events.associationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.positiveRegulation.getStId(), "regulatedBy",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.associationReaction.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.dissociationReaction.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.dissociationReaction.getStId(),testSpecies.getStId(),"species");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.dissociationReaction.getStId(),"hasEvent");
+        testService.createRelationship(Events.dissociationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.dissociationReaction.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.dissociationReaction.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.transitionReaction.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.transitionReaction.getStId(),testSpecies.getStId(),"species");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.transitionReaction.getStId(),"hasEvent");
+        testService.createRelationship(Events.transitionReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.transitionReaction.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.transitionReaction.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.bindingReaction.getStId(),homoSapiensSpecies.getStId(),"species");
-        testService.createRelationship(Events.bindingReaction.getStId(),testSpecies.getStId(),"species");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.bindingReaction.getStId(),"hasEvent");
+        testService.createRelationship(Events.bindingReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.bindingReaction.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.bindingReaction.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.polymerisationReaction.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(Events.polymerisationReaction.getStId(), testSpecies.getStId(), "species");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.polymerisationReaction.getStId(),"hasEvent");
+        testService.createRelationship(Events.polymerisationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.polymerisationReaction.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.polymerisationReaction.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), testSpecies.getStId(), "species");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.depolymerisationReaction.getStId(),"hasEvent");
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.depolymerisationReaction.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.ewasDepolymerisation.getStId(), "input");
-        testService.createRelationship(Events.blackBoxEvent.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(Events.blackBoxEvent.getStId(), testSpecies.getStId(), "species");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.blackBoxEvent.getStId(),"hasEvent");
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.ewasDepolymerisation.getStId(), "input",1,1);
+        testService.createRelationship(Events.blackBoxEvent.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.blackBoxEvent.getStId(), testSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.blackBoxEvent.getStId(), "hasEvent",1,1);
 
-        testService.createRelationship(Events.cellDevelopmentStep.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(Events.cellDevelopmentStep.getStId(), testSpecies.getStId(), "species");
+        testService.createRelationship(Events.cellDevelopmentStep.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.cellDevelopmentStep.getStId(), testSpecies.getStId(), "species",1,1);
 
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.cellDevelopmentStep.getStId(),"hasEvent");
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.cellDevelopmentStep.getStId(),"inferredTo");
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.cellDevelopmentStep.getStId(), "hasEvent",1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.cellDevelopmentStep.getStId(), "inferredTo",1,1);
 
-        testService.createRelationship(Events.diagramPathway.getStId(),Events.failedReaction.getStId(),"hasEvent");
-        testService.createRelationship(Events.failedReaction.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(Events.failedReaction.getStId(), testSpecies.getStId(), "species");
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.failedReaction.getStId(), "hasEvent",1,1);
+        testService.createRelationship(Events.failedReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.failedReaction.getStId(), testSpecies.getStId(), "species",1,1);
 
-        testService.createRelationship(Events.dissociationReaction.getStId(),PhysicalEntities.compartment.getStId(), "compartment");
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), "output");
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), "input");
+        testService.createRelationship(Events.dissociationReaction.getStId(), PhysicalEntities.compartment.getStId(), "compartment",1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), "output",1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), "input",1,1);
 
-        testService.createRelationship(PhysicalEntities.complex.getStId(),PhysicalEntities.complexInferred.getStId(),"inferredTo");
-        testService.createRelationship(PhysicalEntities.complex.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(PhysicalEntities.complex.getStId(), testSpecies.getStId(), "species");
+        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.complexInferred.getStId(), "inferredTo",1,1);
+        testService.createRelationship(PhysicalEntities.complex.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(PhysicalEntities.complex.getStId(), testSpecies.getStId(), "species",1,1);
 
-        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(),"hasComponent");
-        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(),PhysicalEntities.entityWithAccessionedSequence.getStId(),"regulator");
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "hasComponent",1,1);
+        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "regulator",1,1);
 
-        testService.createRelationship(PhysicalEntities.catalystActivity.getStId(),PhysicalEntities.entityWithAccessionedSequence.getStId(),"activeUnit");
-        testService.createRelationship(Events.associationReaction.getStId(),PhysicalEntities.catalystActivity.getStId(),"catalystActivity");
+        testService.createRelationship(PhysicalEntities.catalystActivity.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "activeUnit",1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.catalystActivity.getStId(), "catalystActivity",1,1);
 
-        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship( PhysicalEntities.fragmentDeletionModification.getStId(),PhysicalEntities.referenceSequence.getStId(),"referenceSequence");
+        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(PhysicalEntities.fragmentDeletionModification.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceSequence",1,1);
 
-        testService.createRelationship( PhysicalEntities.referenceSequence.getStId(),PhysicalEntities.referenceDatabase.getStId(),"referenceDatabase");
+        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), PhysicalEntities.referenceDatabase.getStId(), "referenceDatabase",1,1);
 
-        testService.createRelationship(Events.depolymerisationReaction.getStId(),PhysicalEntities.regulation.getStId(),"regulatedBy");
-        testService.createRelationship(Events.transitionReaction.getStId(),PhysicalEntities.regulation.getStId(),"regulatedBy");
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.regulation.getStId(), "regulatedBy",1,1);
+        testService.createRelationship(Events.transitionReaction.getStId(), PhysicalEntities.regulation.getStId(), "regulatedBy",1,1);
+
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(), PhysicalEntities.positiveRegulation.getStId(), "repeatedUnit",0,1);
+        PhysicalEntities.modifiedResidue = new ModifiedResidue();
+        PhysicalEntities.modifiedResidue.setDisplayName("Modified residue");
+        PhysicalEntities.modifiedResidue.setLabel("R");
+        testService.saveTest(PhysicalEntities.modifiedResidue);
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(),PhysicalEntities.modifiedResidue.getStId(),"hasModifiedResidue",0,1);
+
 
         // Cell Linaege Pathway Data
         Events.cellLineagePathway = createCellLineagePath();
@@ -333,25 +359,25 @@ public abstract class BaseTest {
         Events.cellLineagePathway.setSpeciesName("Homo sapiens");
 
         testService.saveTest(Events.cellLineagePathway);
-        testService.createRelationship(Events.transitionReaction.getStId(), Events.cellLineagePathway.getStId(),"inferredTo");
-        testService.createRelationship(Events.cellLineagePathway.getStId(), homoSapiensSpecies.getStId(), "species");
-        testService.createRelationship(Events.topLevelPathway.getStId(), Events.cellLineagePathway.getStId(), "hasEvent");
+        testService.createRelationship(Events.transitionReaction.getStId(), Events.cellLineagePathway.getStId(), "inferredTo",1,1);
+        testService.createRelationship(Events.cellLineagePathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
+        testService.createRelationship(Events.topLevelPathway.getStId(), Events.cellLineagePathway.getStId(), "hasEvent",1,1);
 
         deletedInstance = createDeletedInstance();
         testService.saveTest(deletedInstance);
 
         deleted = createDelete();
         testService.saveTest(deleted);
-        testService.createRelationship(deleted.getStId(),deletedInstance.getStId(),"deletedInstance");
+        testService.createRelationship(deleted.getStId(), deletedInstance.getStId(), "deletedInstance",1,1);
 
         PhysicalEntities.negativeRegulation = new NegativeRegulation();
         PhysicalEntities.negativeRegulation.setDisplayName("Test Negative Regulation");
         testService.saveTest(PhysicalEntities.negativeRegulation);
-        testService.createRelationship(deleted.getStId(), PhysicalEntities.negativeRegulation.getStId(),"replacementInstances");
+        testService.createRelationship(deleted.getStId(), PhysicalEntities.negativeRegulation.getStId(), "replacementInstances",1,1);
 
 
         // Reference and Interactions
-        PhysicalEntities.referenceEntityInteractor = createReferenceEntity("Test Reference Entity","Protein Test DB", "PROTTESTDB");
+        PhysicalEntities.referenceEntityInteractor = createReferenceEntity("Test Reference Entity", "Protein Test DB", "PROTTESTDB");
         testService.saveTest(PhysicalEntities.referenceEntityInteractor);
 
         PhysicalEntities.referenceEntityInteraction = createReferenceEntity("Interaction Ref Entity", "Prot Test DB", "PROTTESTDB");
@@ -364,24 +390,58 @@ public abstract class BaseTest {
         testService.saveTest(PhysicalEntities.interactionEWAS);
 
         PhysicalEntities.interactionEWAS.setReferenceEntity(PhysicalEntities.referenceSequence);
-        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceSequence.getStId(),"referenceEntity");
-        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceEntityInteraction.getStId(), "referenceEntity");
+        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity",1,1);
+        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceEntityInteraction.getStId(), "referenceEntity",1,1);
 
 
-        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.referenceEntityInteractor.getStId(), "referenceEntity");
-        testService.createRelationship( PhysicalEntities.ewasDepolymerisation.getStId(),  PhysicalEntities.referenceSequence.getStId(), "referenceEntity");
-        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), "author");
-        testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"authored");
-        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(),"authored");
-        testService.createRelationship(instanceEdit.getStId(),Events.diagramPathway.getStId(),"reviewed");
-        testService.createRelationship(instanceEdit.getStId(),Events.depolymerisationReaction.getStId(),"reviewed");
-        testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(),PhysicalEntities.referenceSequence.getStId(), "referenceDatabase");
+        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.referenceEntityInteractor.getStId(), "referenceEntity",1,1);
+        testService.createRelationship(PhysicalEntities.ewasDepolymerisation.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity",1,1);
+        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), "author",1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.diagramPathway.getStId(), "authored",1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(), "authored",1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.diagramPathway.getStId(), "reviewed",1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(), "reviewed",1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), "authored",1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), testPublication.getStId(), "literatureReference",0,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), "created",0,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), "modified",0,1);
+        testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceDatabase",1,1);
+
+        PhysicalEntities.candidateSet = new CandidateSet();
+        PhysicalEntities.candidateSet.setDisplayName("Test CandidateSet");
+        Drug chemicalDrug = new ChemicalDrug();
+        chemicalDrug.setDisplayName("Drug");
+        HasCandidate hasCandidate = new HasCandidate();
+        hasCandidate.setPhysicalEntity(chemicalDrug);
+
+        Drug chemicalDrug2 = new ChemicalDrug();
+        chemicalDrug2.setDisplayName("Drug 2");
+        HasCandidate hasCandidate2 = new HasCandidate();
+        hasCandidate2.setPhysicalEntity(chemicalDrug2);
+
+        SortedSet<HasCandidate>candidateSets = new TreeSet<>();
+        candidateSets.add(hasCandidate);
+        candidateSets.add(hasCandidate2);
+        PhysicalEntities.candidateSet.setCandidates(candidateSets);
+        SortedSet<HasMember>membersSet = new TreeSet<>();
+        HasMember hasMember = new HasMember();
+        hasMember.setPhysicalEntity(chemicalDrug);
+        HasMember hasMember2 = new HasMember();
+        hasMember.setPhysicalEntity(chemicalDrug2);
+
+        membersSet.add(hasMember);
+        membersSet.add(hasMember2);
+
+        PhysicalEntities.candidateSet.setMembers(membersSet);
+        testService.saveTest(PhysicalEntities.candidateSet);
 
         // add another ewas
         PhysicalEntities.entityWithAccessionedSequence2 = new EntityWithAccessionedSequence();
         PhysicalEntities.entityWithAccessionedSequence2.setDisplayName("Test Entity With Accessioned Sequence 2");
         testService.saveTest(PhysicalEntities.entityWithAccessionedSequence2);
-        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence2.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity");
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence2.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity",1,1);
+        testService.createRelationship(PhysicalEntities.candidateSet.getStId(), PhysicalEntities.entityWithAccessionedSequence2.getStId(), "hasMember",0,1);
+
 
         //Update Tracker
         testUpdateTracker = new UpdateTracker();
@@ -390,7 +450,7 @@ public abstract class BaseTest {
         release.setReleaseNumber(1);
         testUpdateTracker.setRelease(release);
         testService.saveTest(testUpdateTracker);
-        testService.createRelationship(testUpdateTracker.getStId(), Events.topLevelPathway.getStId(),"updatedInstance");
+        testService.createRelationship(testUpdateTracker.getStId(), Events.topLevelPathway.getStId(), "updatedInstance",1,1);
     }
 
     private static ReferenceSequence createReferenceEntity(String testReferenceEntity, String proteinTestDb, String prottestdb) {
@@ -401,7 +461,7 @@ public abstract class BaseTest {
         return referenceEntity;
     }
 
-    protected static Deleted createDelete(){
+    protected static Deleted createDelete() {
         Deleted deleted = new Deleted();
         deleted.setDisplayName("Test Deleted");
         deleted.setCuratorComment("Test Comment");
@@ -441,7 +501,7 @@ public abstract class BaseTest {
         return fragmentModification;
     }
 
-    protected static CellLineagePath createCellLineagePath(){
+    protected static CellLineagePath createCellLineagePath() {
         CellLineagePath cellLineagePath = new CellLineagePath();
         cellLineagePath.setDisplayName("Test Cell Lineage Path");
 
@@ -460,14 +520,14 @@ public abstract class BaseTest {
         return cellLineagePath;
     }
 
-    protected static CatalystActivity createTestCatalystActivity(String displayName, EntityWithAccessionedSequence ewas){
+    protected static CatalystActivity createTestCatalystActivity(String displayName, EntityWithAccessionedSequence ewas) {
         CatalystActivity catalystActivity = new CatalystActivity();
         catalystActivity.setDisplayName(displayName);
         catalystActivity.setPhysicalEntity(ewas);
         return catalystActivity;
     }
 
-    protected static ReferenceSequence createReferenceSequence(String displayName){
+    protected static ReferenceSequence createReferenceSequence(String displayName) {
         ReferenceSequence referenceSequence = new ReferenceRNASequence();
         referenceSequence.setDisplayName(displayName);
         referenceSequence.setDatabaseName(displayName);
@@ -481,7 +541,7 @@ public abstract class BaseTest {
         return referenceSequence;
     }
 
-    protected static EntityWithAccessionedSequence createEwas(String displayName){
+    protected static EntityWithAccessionedSequence createEwas(String displayName) {
         EntityWithAccessionedSequence testEWAS = new EntityWithAccessionedSequence();
         testEWAS.setDisplayName(displayName);
 
@@ -501,14 +561,14 @@ public abstract class BaseTest {
         return testEWAS;
     }
 
-    protected static EntityWithAccessionedSequence createEwas(String displayName, String speciesName){
+    protected static EntityWithAccessionedSequence createEwas(String displayName, String speciesName) {
         EntityWithAccessionedSequence testEWAS = new EntityWithAccessionedSequence();
         testEWAS.setDisplayName(displayName);
         testEWAS.setSpeciesName(speciesName);
         return testEWAS;
     }
 
-    protected static UndirectedInteraction createInteraction(List<ReferenceEntity> referenceEntities){
+    protected static UndirectedInteraction createInteraction(List<ReferenceEntity> referenceEntities) {
         UndirectedInteraction undirectedInteraction = new UndirectedInteraction();
         undirectedInteraction.setDisplayName("Test Interaction");
         undirectedInteraction.setInteractor(referenceEntities);
@@ -516,8 +576,8 @@ public abstract class BaseTest {
         return undirectedInteraction;
     }
 
-    protected static Complex createComplex(String displayName, int noSimpleEntities){
-        List<PhysicalEntity>simpleEntities = new ArrayList<>();
+    protected static Complex createComplex(String displayName, int noSimpleEntities) {
+        List<PhysicalEntity> simpleEntities = new ArrayList<>();
         for (int i = 0; i < noSimpleEntities; i++) {
             PhysicalEntity simpleEntity = new SimpleEntity();
             simpleEntity.setDisplayName("Simple Entity " + i);
@@ -561,7 +621,7 @@ public abstract class BaseTest {
         return pathway;
     }
 
-    protected static void createPathwayWithReferences(TestNodeService testService){
+    protected static void createPathwayWithReferences(TestNodeService testService) {
         Species testSpecies = new Species();
         testSpecies.setDisplayName("Test species");
         testSpecies.setName(List.of("Test species"));
@@ -605,7 +665,7 @@ public abstract class BaseTest {
         testService.saveTest(pathway);
     }
 
-    protected static void createSpecies(TestNodeService testService, String name){
+    protected static void createSpecies(TestNodeService testService, String name) {
         Species species = new Species();
         species.setDisplayName(name);
         species.setName(List.of(name));
