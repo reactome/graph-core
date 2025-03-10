@@ -3,22 +3,23 @@ package org.reactome.server.graph.domain.model;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import javax.management.relation.Relation;
 import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
 public class GO_CellularComponent extends GO_Term {
 
-    @Relationship(type = "componentOf")
+    @Relationship(type = Relationships.COMPONENT_OF)
     private List<GO_CellularComponent> componentOf;
 
-    @Relationship(type = "hasPart")
+    @Relationship(type = Relationships.HAS_PART)
     private List<GO_CellularComponent> hasPart;
 
-    @Relationship(type = "instanceOf")
+    @Relationship(type = Relationships.INSTANCE_OF)
     private List<GO_CellularComponent> instanceOf;
 
-    @Relationship(type = "surroundedBy")
+    @Relationship(type = Relationships.SURROUNDED_BY)
     private List<GO_CellularComponent> surroundedBy;
 
     public GO_CellularComponent() {}

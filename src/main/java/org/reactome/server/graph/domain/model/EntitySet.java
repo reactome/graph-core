@@ -24,13 +24,13 @@ public abstract class EntitySet extends PhysicalEntity implements CompositionAgg
     @ReactomeProperty
     private Boolean isOrdered;
 
-    @Relationship(type = "hasMember")
+    @Relationship(type = Relationships.HAS_MEMBER)
     private SortedSet<HasMember> hasMember;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Species> species;
 
-    @Relationship(type = "relatedSpecies")
+    @Relationship(type = Relationships.RELATED_SPECIES)
     private List<Species> relatedSpecies;
 
     @Override

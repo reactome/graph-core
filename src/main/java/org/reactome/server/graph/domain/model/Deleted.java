@@ -6,6 +6,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import javax.management.relation.Relation;
 import java.util.List;
 
 @Node
@@ -14,13 +15,13 @@ public class Deleted extends MetaDatabaseObject{
     @ReactomeProperty
     private String curatorComment;
 
-    @Relationship(type = "deletedInstance")
+    @Relationship(type = Relationships.DELETED_INSTANCE)
     private List<DeletedInstance> deletedInstance;
 
-    @Relationship(type="reason")
+    @Relationship(type= Relationships.REASON)
     private DeletedControlledVocabulary reason;
 
-    @Relationship(type="replacementInstances")
+    @Relationship(type=Relationships.REPLACEMENT_INSTANCES)
     private List<Deletable> replacementInstances;
 
     @Deprecated

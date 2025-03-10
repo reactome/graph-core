@@ -15,10 +15,10 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Node
 public class DirectedInteraction extends Interaction {
 
-    @Relationship(type = "source")
+    @Relationship(type = Relationships.SOURCE)
     private ReferenceEntity source;
 
-    @Relationship(type = "target")
+    @Relationship(type = Relationships.TARGET)
     private ReferenceEntity target;
 
     public DirectedInteraction() { }

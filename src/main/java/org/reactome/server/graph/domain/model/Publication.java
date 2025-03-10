@@ -18,7 +18,7 @@ public abstract class Publication extends DatabaseObject {
     @ReactomeProperty
     private String title;
 
-    @Relationship(type = "author", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.AUTHOR, direction = Relationship.Direction.INCOMING)
     private SortedSet<PublicationAuthor> author;
 
     public Publication() {}

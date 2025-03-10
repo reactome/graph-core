@@ -13,10 +13,10 @@ public class ReferenceGeneProduct extends ReferenceSequence {
     @ReactomeProperty
     private List<String> chain;
 
-    @Relationship(type = "referenceGene")
+    @Relationship(type = Relationships.REFERENCE_GENE)
     private List<ReferenceDNASequence> referenceGene;
 
-    @Relationship(type = "referenceTranscript")
+    @Relationship(type =  Relationships.REFERENCE_TRANSCRIPT)
     private List<ReferenceRNASequence> referenceTranscript;
 
     public ReferenceGeneProduct() {

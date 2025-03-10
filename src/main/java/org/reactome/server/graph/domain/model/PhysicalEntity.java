@@ -10,6 +10,7 @@ import org.reactome.server.graph.domain.relationship.*;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import javax.management.relation.Relation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @ReactomeProperty
     private String systematicName;
 
-    @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.AUTHORED, direction = Relationship.Direction.INCOMING)
     private InstanceEdit authored;
 
     /**
@@ -39,10 +40,10 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "physicalEntity", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.PHYSICAL_ENTITY, direction = Relationship.Direction.INCOMING)
     private List<CatalystActivity> catalystActivities;
 
-    @Relationship(type = "compartment")
+    @Relationship(type = Relationships.COMPARTMENT)
     private SortedSet<HasCompartment> compartment;
 
     /**
@@ -50,29 +51,29 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "hasComponent", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.HAS_COMPONENT, direction = Relationship.Direction.INCOMING)
     private SortedSet<HasComponentForComplex> componentOf;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "disease")
+    @Relationship(type = Relationships.DISEASE)
     private List<Disease> disease;
 
-    @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.EDITED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
-    @Relationship(type = "figure")
+    @Relationship(type = Relationships.FIGURE)
     private List<Figure> figure;
 
-    @Relationship(type = "goCellularComponent")
+    @Relationship(type = Relationships.GO_CELLULAR_COMPONENT)
     private GO_CellularComponent goCellularComponent;
 
-    @Relationship(type = "inferredTo")
+    @Relationship(type =  Relationships.INFERRED_TO)
     private List<PhysicalEntity> inferredTo;
 
     @ReactomeTransient
-    @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.INFERRED_TO, direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
     /**
@@ -80,10 +81,10 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REGULATOR, direction = Relationship.Direction.INCOMING)
     private List<Requirement> isRequired;
 
-    @Relationship(type = "literatureReference")
+    @Relationship(type = Relationships.LITERATURE_REFERENCE)
     private List<Publication> literatureReference;
 
     /**
@@ -91,7 +92,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "hasMember", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.HAS_MEMBER, direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> memberOf;
 
     /**
@@ -99,7 +100,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REGULATOR, direction = Relationship.Direction.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
     /**
@@ -107,44 +108,44 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REGULATOR, direction = Relationship.Direction.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "repeatedUnit", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REPEATED_UNIT, direction = Relationship.Direction.INCOMING)
     private Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf;
 
     @ReactomeTransient
-    @Relationship(type = "input", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.INPUT, direction = Relationship.Direction.INCOMING)
     private List<InputForReactionLikeEvent> consumedByEvent;
 
     @ReactomeTransient
-    @Relationship(type = "output", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.OUTPUT, direction = Relationship.Direction.INCOMING)
     private List<OutputForReactionLikeEvent> producedByEvent;
 
-    @Relationship(type = "reviewed", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REVIEWED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REVISED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "summation")
+    @Relationship(type =  Relationships.SUMMATION)
     private List<Summation> summation;
 
-    @Relationship(type = "cellType")
+    @Relationship(type = Relationships.CELL_TYPE)
     private List<CellType> cellType;
 
     @ReactomeTransient
-    @Relationship(type = "marker", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.MARKER, direction = Relationship.Direction.INCOMING)
     private List<MarkerReference> markingReferences;
 
     @ReactomeTransient
-    @Relationship(type = "replacementInstances", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REPLACEMENT_INSTANCES, direction = Relationship.Direction.INCOMING)
     private List<Deleted> deleted;
 
     @ReactomeTransient
-    @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.UPDATED_INSTANCES, direction = Relationship.Direction.INCOMING)
     private List<UpdateTracker> updateTrackers;
 
     public PhysicalEntity() {}

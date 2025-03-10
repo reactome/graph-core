@@ -23,7 +23,7 @@ public class DeletedInstance extends MetaDatabaseObject {
     @ReactomeProperty(addedField = true)
     private String deletedStId;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Taxon> species;
 
     public DeletedInstance() {

@@ -13,25 +13,25 @@ import java.util.stream.Stream;
 
 @Node
 public class Cell extends PhysicalEntity implements CompositionAggregator {
-    @Relationship(type = "RNAMarker")
+    @Relationship(type = Relationships.RNA_MARKER)
     private List<EntityWithAccessionedSequence> RNAMarker;
 
-    @Relationship(type = "markerReference")
+    @Relationship(type = Relationships.MARKER_REFERENCE)
     private List<MarkerReference> markerReference;
 
-    @Relationship(type = "organ")
+    @Relationship(type = Relationships.ORGAN)
     private Anatomy organ;
 
-    @Relationship(type = "proteinMarker")
+    @Relationship(type = Relationships.PROTEIN_MARKER)
     private List<EntityWithAccessionedSequence> proteinMarker;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Taxon> species;
 
-    @Relationship(type = "tissue")
+    @Relationship(type = Relationships.TISSUE)
     private Anatomy tissue;
 
-    @Relationship(type = "tissueLayer")
+    @Relationship(type = Relationships.TISSUE_LAYER)
     private Anatomy tissueLayer;
 
     @Override

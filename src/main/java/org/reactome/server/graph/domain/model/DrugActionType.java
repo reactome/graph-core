@@ -8,7 +8,7 @@ import java.util.List;
 @Node
 public class DrugActionType extends ReactionType {
 
-    @Relationship(type = "instanceOf")
+    @Relationship(type = Relationships.INSTANCE_OF)
     private List<DrugActionType> instanceOf;
 
     public DrugActionType() {

@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /**
- * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerisation. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
+ * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerization. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
  * <p>
  * Logic in getter/setter of input and output is needed for retrieving data import using the GKInstance.
  * This is still used for testing if graph and sql produce the same data import
@@ -33,40 +33,40 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
     @ReactomeProperty
     private String category;
 
-    @Relationship(type = "catalystActivity")
+    @Relationship(type = Relationships.CATALYST_ACTIVITY)
     private List<CatalystActivity> catalystActivity;
 
-    @Relationship(type = "catalystActivityReference")
+    @Relationship(type = Relationships.CATALYST_ACTIVITY_REFERENCE)
     private CatalystActivityReference catalystActivityReference;
 
-    @Relationship(type = "entityFunctionalStatus")
+    @Relationship(type = Relationships.ENTITY_FUNCTIONAL_STATUS)
     private List<EntityFunctionalStatus> entityFunctionalStatus;
 
-    @Relationship(type = "entityOnOtherCell")
+    @Relationship(type = Relationships.ENTITY_ON_OTHER_CELL)
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "input")
+    @Relationship(type = Relationships.INPUT)
     private Set<Input> input;
 
-    @Relationship(type = "output")
+    @Relationship(type = Relationships.OUTPUT)
     private Set<Output> output;
 
-    @Relationship(type = "normalReaction")
+    @Relationship(type = Relationships.NORMAL_REACTION)
     private ReactionLikeEvent normalReaction;
 
-    @Relationship(type = "regulatedBy")
+    @Relationship(type =  Relationships.REGULATED_BY)
     private List<Regulation> regulatedBy;
 
-    @Relationship(type = "regulationReference")
+    @Relationship(type = Relationships.REGULATION_REFERENCE)
     private List<RegulationReference> regulationReference;
 
-    @Relationship(type = "requiredInputComponent")
+    @Relationship(type = Relationships.REQUIRED_INPUT_COMPONENT)
     private Set<PhysicalEntity> requiredInputComponent;
 
-    @Relationship(type = "hasInteraction")
+    @Relationship(type = Relationships.HAS_INTERACTION)
     private List<InteractionEvent> hasInteraction;
 
-    @Relationship(type = "reactionType")
+    @Relationship(type = Relationships.REACTION_TYPE)
     private List<ReactionType> reactionType;
 
     @Override

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.relationship.HasCandidate;
+import org.springframework.data.neo4j.core.schema.Relationship;
 import org.reactome.server.graph.domain.relationship.HasMember;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.TestNodeService;
@@ -15,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.test.context.event.annotation.AfterTestClass;
-
-import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,16 +25,7 @@ import java.util.TreeSet;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 
-enum Test {
-    AUTHOR("author"),
-    CREATED("created"),;
 
-    public final String value;
-
-    Test(String value) {
-        this.value = value;
-    }
-}
 
 /**
  * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
@@ -134,7 +124,7 @@ public abstract class BaseTest {
     @BeforeAll
     public static void createTestData(@Autowired TestNodeService testService) {
 
-        //region
+        //region Entities
         testPerson = new Person();
         testPerson.setFirstname("FName");
         testPerson.setDisplayName("FName LName");
@@ -143,8 +133,6 @@ public abstract class BaseTest {
         testPerson.setOldStId("1234-1234-1234-1234");
         testPerson.setProject("Pathway Curation");
         testService.saveTest(testPerson);
-
-        String test = Test.AUTHOR.value;
 
         testPublication = new LiteratureReference();
         testPublication.setTitle("Reference Publication");
@@ -171,7 +159,6 @@ public abstract class BaseTest {
         testSpecies.setTaxId("1234-1234-1234-1234");
         testService.saveTest(testSpecies);
 
-        //region Create Top Level Pathway
         Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
         Events.topLevelPathway.setSpeciesName("Fantasy species");
         testService.saveTest(Events.topLevelPathway);
@@ -179,14 +166,11 @@ public abstract class BaseTest {
         Events.ehldPathway = createPathway("Test Ehld Pathway", true, true);
         testService.saveTest(Events.ehldPathway);
 
-        //region Create Pathway with diagram
         Events.diagramPathway = createPathway("Test Diagram Pathway", false, true);
         Events.diagramPathway.setIsInferred(true);
         Events.diagramPathway.setSpeciesName("Homo sapiens");
         testService.saveTest(Events.diagramPathway);
-        //endregion
 
-        //region Create Test Reactions
         Events.associationReaction = createReaction(ReactionType.ASSOCIATION, "Test Reaction (Association)");
         Events.associationReaction.setOldStId("REACT_123");
         testService.saveTest(Events.associationReaction);
@@ -269,118 +253,29 @@ public abstract class BaseTest {
         PhysicalEntities.referenceDatabase.setDisplayName("Test Reference Database");
         testService.saveTest(PhysicalEntities.referenceDatabase);
 
-        // Relationships
-        testService.createRelationship(testPerson.getStId(), testPublication.getStId(), "author",1,1);
-        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), "author",1,1);
-
-        testService.createRelationship(Events.topLevelPathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.topLevelPathway.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.topLevelPathway.getStId(), Events.ehldPathway.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.diagramPathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), testSpecies.getStId(), "species",1,1);
-
-        testService.createRelationship(Events.ehldPathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.ehldPathway.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.ehldPathway.getStId(), Events.diagramPathway.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.associationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.associationReaction.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.positiveRegulation.getStId(), "regulatedBy",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.associationReaction.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.dissociationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.dissociationReaction.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.dissociationReaction.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.transitionReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.transitionReaction.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.transitionReaction.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.bindingReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.bindingReaction.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.bindingReaction.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.polymerisationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.polymerisationReaction.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.polymerisationReaction.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.depolymerisationReaction.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.ewasDepolymerisation.getStId(), "input",1,1);
-        testService.createRelationship(Events.blackBoxEvent.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.blackBoxEvent.getStId(), testSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.blackBoxEvent.getStId(), "hasEvent",1,1);
-
-        testService.createRelationship(Events.cellDevelopmentStep.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.cellDevelopmentStep.getStId(), testSpecies.getStId(), "species",1,1);
-
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.cellDevelopmentStep.getStId(), "hasEvent",1,1);
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.cellDevelopmentStep.getStId(), "inferredTo",1,1);
-
-        testService.createRelationship(Events.diagramPathway.getStId(), Events.failedReaction.getStId(), "hasEvent",1,1);
-        testService.createRelationship(Events.failedReaction.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.failedReaction.getStId(), testSpecies.getStId(), "species",1,1);
-
-        testService.createRelationship(Events.dissociationReaction.getStId(), PhysicalEntities.compartment.getStId(), "compartment",1,1);
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), "output",1,1);
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), "input",1,1);
-
-        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.complexInferred.getStId(), "inferredTo",1,1);
-        testService.createRelationship(PhysicalEntities.complex.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(PhysicalEntities.complex.getStId(), testSpecies.getStId(), "species",1,1);
-
-        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "hasComponent",1,1);
-        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "regulator",1,1);
-
-        testService.createRelationship(PhysicalEntities.catalystActivity.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "activeUnit",1,1);
-        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.catalystActivity.getStId(), "catalystActivity",1,1);
-
-        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(PhysicalEntities.fragmentDeletionModification.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceSequence",1,1);
-
-        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), PhysicalEntities.referenceDatabase.getStId(), "referenceDatabase",1,1);
-
-        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.regulation.getStId(), "regulatedBy",1,1);
-        testService.createRelationship(Events.transitionReaction.getStId(), PhysicalEntities.regulation.getStId(), "regulatedBy",1,1);
-
-        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), "repeatedUnit",0,1);
         PhysicalEntities.modifiedResidue = new ModifiedResidue();
         PhysicalEntities.modifiedResidue.setDisplayName("Modified residue");
         PhysicalEntities.modifiedResidue.setLabel("R");
         testService.saveTest(PhysicalEntities.modifiedResidue);
-        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(),PhysicalEntities.modifiedResidue.getStId(),"hasModifiedResidue",0,1);
-
         PhysicalEntities.polymer = new Polymer();
         PhysicalEntities.polymer.setDisplayName("Polymer");
         testService.saveTest(PhysicalEntities.polymer);
-        testService.createRelationship(PhysicalEntities.polymer.getStId(),PhysicalEntities.entityWithAccessionedSequence.getStId(),"repeatedUnit",0,1);
 
         // Cell Linaege Pathway Data
         Events.cellLineagePathway = createCellLineagePath();
         Events.cellLineagePathway.setIsInferred(true);
         Events.cellLineagePathway.setSpeciesName("Homo sapiens");
-
         testService.saveTest(Events.cellLineagePathway);
-        testService.createRelationship(Events.transitionReaction.getStId(), Events.cellLineagePathway.getStId(), "inferredTo",1,1);
-        testService.createRelationship(Events.cellLineagePathway.getStId(), homoSapiensSpecies.getStId(), "species",1,1);
-        testService.createRelationship(Events.topLevelPathway.getStId(), Events.cellLineagePathway.getStId(), "hasEvent",1,1);
 
         deletedInstance = createDeletedInstance();
         testService.saveTest(deletedInstance);
 
         deleted = createDelete();
         testService.saveTest(deleted);
-        testService.createRelationship(deleted.getStId(), deletedInstance.getStId(), "deletedInstance",1,1);
 
         PhysicalEntities.negativeRegulation = new NegativeRegulation();
         PhysicalEntities.negativeRegulation.setDisplayName("Test Negative Regulation");
         testService.saveTest(PhysicalEntities.negativeRegulation);
-        testService.createRelationship(deleted.getStId(), PhysicalEntities.negativeRegulation.getStId(), "replacementInstances",1,1);
-
 
         // Reference and Interactions
         PhysicalEntities.referenceEntityInteractor = createReferenceEntity("Test Reference Entity", "Protein Test DB", "PROTTESTDB");
@@ -396,23 +291,6 @@ public abstract class BaseTest {
         testService.saveTest(PhysicalEntities.interactionEWAS);
 
         PhysicalEntities.interactionEWAS.setReferenceEntity(PhysicalEntities.referenceSequence);
-        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity",1,1);
-        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceEntityInteraction.getStId(), "referenceEntity",1,1);
-
-
-        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.referenceEntityInteractor.getStId(), "referenceEntity",1,1);
-        testService.createRelationship(PhysicalEntities.ewasDepolymerisation.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity",1,1);
-        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), "author",1,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.diagramPathway.getStId(), "authored",1,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(), "authored",1,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.diagramPathway.getStId(), "reviewed",1,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(), "reviewed",1,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), "authored",1,1);
-        testService.createRelationship(Events.associationReaction.getStId(), testPublication.getStId(), "literatureReference",0,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), "created",0,1);
-        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), "modified",0,1);
-        testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceDatabase",1,1);
-
         PhysicalEntities.candidateSet = new CandidateSet();
         PhysicalEntities.candidateSet.setDisplayName("Test CandidateSet");
         Drug chemicalDrug = new ChemicalDrug();
@@ -445,9 +323,6 @@ public abstract class BaseTest {
         PhysicalEntities.entityWithAccessionedSequence2 = new EntityWithAccessionedSequence();
         PhysicalEntities.entityWithAccessionedSequence2.setDisplayName("Test Entity With Accessioned Sequence 2");
         testService.saveTest(PhysicalEntities.entityWithAccessionedSequence2);
-        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence2.getStId(), PhysicalEntities.referenceSequence.getStId(), "referenceEntity",1,1);
-        testService.createRelationship(PhysicalEntities.candidateSet.getStId(), PhysicalEntities.entityWithAccessionedSequence2.getStId(), "hasMember",0,1);
-
 
         //Update Tracker
         testUpdateTracker = new UpdateTracker();
@@ -456,7 +331,119 @@ public abstract class BaseTest {
         release.setReleaseNumber(1);
         testUpdateTracker.setRelease(release);
         testService.saveTest(testUpdateTracker);
-        testService.createRelationship(testUpdateTracker.getStId(), Events.topLevelPathway.getStId(), "updatedInstance",1,1);
+
+        //endregion Entities
+
+        //region Relationships
+        testService.createRelationship(testPerson.getStId(), testPublication.getStId(), Relationships.AUTHOR, 1,1);
+        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), Relationships.AUTHOR,1,1);
+
+        testService.createRelationship(Events.topLevelPathway.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.topLevelPathway.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.topLevelPathway.getStId(), Events.ehldPathway.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.diagramPathway.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+
+        testService.createRelationship(Events.ehldPathway.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.ehldPathway.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.ehldPathway.getStId(), Events.diagramPathway.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.associationReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.positiveRegulation.getStId(), Relationships.REGULATED_BY,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.associationReaction.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.dissociationReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.dissociationReaction.getStId(), testSpecies.getStId(),  Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.dissociationReaction.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.transitionReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.transitionReaction.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.transitionReaction.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.bindingReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.bindingReaction.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.bindingReaction.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.polymerisationReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.polymerisationReaction.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.polymerisationReaction.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.depolymerisationReaction.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.ewasDepolymerisation.getStId(), Relationships.INPUT,1,1);
+        testService.createRelationship(Events.blackBoxEvent.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.blackBoxEvent.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.blackBoxEvent.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(Events.cellDevelopmentStep.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.cellDevelopmentStep.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.cellDevelopmentStep.getStId(), Relationships.HAS_EVENT,1,1);
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.cellDevelopmentStep.getStId(), Relationships.INFERRED_TO,1,1);
+
+        testService.createRelationship(Events.diagramPathway.getStId(), Events.failedReaction.getStId(), Relationships.HAS_EVENT,1,1);
+        testService.createRelationship(Events.failedReaction.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.failedReaction.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+
+        testService.createRelationship(Events.dissociationReaction.getStId(), PhysicalEntities.compartment.getStId(), Relationships.COMPARTMENT,1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), Relationships.OUTPUT,1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.complex.getStId(), Relationships.INPUT,1,1);
+
+        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.complexInferred.getStId(), Relationships.INFERRED_TO,1,1);
+        testService.createRelationship(PhysicalEntities.complex.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(PhysicalEntities.complex.getStId(), testSpecies.getStId(), Relationships.SPECIES,1,1);
+
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), Relationships.HAS_COMPONENT,1,1);
+        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), Relationships.REGULATOR,1,1);
+
+        testService.createRelationship(PhysicalEntities.catalystActivity.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), Relationships.ACTIVE_UNIT,1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), PhysicalEntities.catalystActivity.getStId(), Relationships.CATALYST_ACTIVITY,1,1);
+
+        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(PhysicalEntities.fragmentDeletionModification.getStId(), PhysicalEntities.referenceSequence.getStId(), Relationships.REFERENCE_SEQUENCE,1,1);
+
+        testService.createRelationship(PhysicalEntities.referenceSequence.getStId(), PhysicalEntities.referenceDatabase.getStId(), Relationships.REFERENCE_DATABASE,1,1);
+
+        testService.createRelationship(Events.depolymerisationReaction.getStId(), PhysicalEntities.regulation.getStId(), Relationships.REGULATED_BY,1,1);
+        testService.createRelationship(Events.transitionReaction.getStId(), PhysicalEntities.regulation.getStId(), Relationships.REGULATED_BY,1,1);
+
+        testService.createRelationship(PhysicalEntities.positiveRegulation.getStId(), PhysicalEntities.entityWithAccessionedSequence.getStId(), Relationships.REPEATED_UNIT,0,1);
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence.getStId(),PhysicalEntities.modifiedResidue.getStId(),Relationships.HAS_MODIFIED_RESIDUE,0,1);
+        testService.createRelationship(PhysicalEntities.polymer.getStId(),PhysicalEntities.entityWithAccessionedSequence.getStId(),Relationships.REPEATED_UNIT,0,1);
+        testService.createRelationship(Events.transitionReaction.getStId(), Events.cellLineagePathway.getStId(), Relationships.INFERRED_TO,1,1);
+        testService.createRelationship(Events.cellLineagePathway.getStId(), homoSapiensSpecies.getStId(), Relationships.SPECIES,1,1);
+        testService.createRelationship(Events.topLevelPathway.getStId(), Events.cellLineagePathway.getStId(), Relationships.HAS_EVENT,1,1);
+
+        testService.createRelationship(deleted.getStId(), deletedInstance.getStId(), Relationships.DELETED_INSTANCE,1,1);
+        testService.createRelationship(deleted.getStId(), PhysicalEntities.negativeRegulation.getStId(), Relationships.REPLACEMENT_INSTANCES,1,1);
+
+        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceSequence.getStId(), Relationships.REFERENCE_ENTITY,1,1);
+        testService.createRelationship(PhysicalEntities.interactionEWAS.getStId(), PhysicalEntities.referenceEntityInteraction.getStId(), Relationships.REFERENCE_ENTITY,1,1);
+
+
+        testService.createRelationship(PhysicalEntities.complex.getStId(), PhysicalEntities.referenceEntityInteractor.getStId(), Relationships.REFERENCE_ENTITY,1,1);
+        testService.createRelationship(PhysicalEntities.ewasDepolymerisation.getStId(), PhysicalEntities.referenceSequence.getStId(), Relationships.REFERENCE_ENTITY,1,1);
+        testService.createRelationship(testPerson.getStId(), instanceEdit.getStId(), Relationships.AUTHOR,1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.diagramPathway.getStId(), Relationships.AUTHORED,1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(), Relationships.AUTHORED,1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.diagramPathway.getStId(), Relationships.REVIEWED,1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.depolymerisationReaction.getStId(), Relationships.REVIEWED,1,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), Relationships.AUTHORED,1,1);
+        testService.createRelationship(Events.associationReaction.getStId(), testPublication.getStId(), Relationships.LITERATURE_REFERENCE,0,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), Relationships.CREATED,0,1);
+        testService.createRelationship(instanceEdit.getStId(), Events.associationReaction.getStId(), Relationships.MODIFIED,0,1);
+        testService.createRelationship(PhysicalEntities.referenceDatabase.getStId(), PhysicalEntities.referenceSequence.getStId(), Relationships.REFERENCE_DATABASE,1,1);
+
+        testService.createRelationship(PhysicalEntities.entityWithAccessionedSequence2.getStId(), PhysicalEntities.referenceSequence.getStId(), Relationships.REFERENCE_ENTITY,1,1);
+        testService.createRelationship(PhysicalEntities.candidateSet.getStId(), PhysicalEntities.entityWithAccessionedSequence2.getStId(), Relationships.HAS_MEMBER,0,1);
+        testService.createRelationship(testUpdateTracker.getStId(), Events.topLevelPathway.getStId(), Relationships.UPDATED_INSTANCES,1,1);
+        //endregion Relationships
+
     }
 
     private static ReferenceSequence createReferenceEntity(String testReferenceEntity, String proteinTestDb, String prottestdb) {

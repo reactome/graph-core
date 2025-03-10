@@ -78,11 +78,11 @@ public class GeneralServiceTest extends BaseTest {
         logger.info("GraphDb execution time: " + time + "ms");
 
         start = System.currentTimeMillis();
-        String dBNameExpected = DatabaseObjectFactory.getDBName();         // TODO this might be an issue !!!
+        String dBNameExpected = DatabaseObjectFactory.getDBName();
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        //assertEquals(dBNameExpected, dBNameObserved);                 // TODO ADD tag in the servers
+        //assertEquals(dBNameExpected, dBNameObserved);
         logger.info("Finished");
     }
 

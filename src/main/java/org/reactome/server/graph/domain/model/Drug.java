@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Node
 public abstract class Drug extends PhysicalEntity {
 
-    @Relationship(type = "referenceEntity")
+    @Relationship(type = Relationships.REFERENCE_ENTITY)
     private ReferenceTherapeutic referenceEntity;
 
     public Drug() {}

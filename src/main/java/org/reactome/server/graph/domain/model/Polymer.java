@@ -30,10 +30,10 @@ public class Polymer extends PhysicalEntity implements CompositionAggregator {
     @ReactomeProperty
     private Integer minUnitCount;
 
-    @Relationship(type = "repeatedUnit")
+    @Relationship(type =  Relationships.REPEATED_UNIT)
     private SortedSet<RepeatedUnit> repeatedUnit;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Species> species;
 
     @Override

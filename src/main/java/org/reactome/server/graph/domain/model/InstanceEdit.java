@@ -15,7 +15,7 @@ public class InstanceEdit extends DatabaseObject {
     @ReactomeProperty
     private String note;
 
-    @Relationship(type = "author", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.AUTHOR, direction = Relationship.Direction.INCOMING)
     private List<Person> author;
 
     public InstanceEdit() {}

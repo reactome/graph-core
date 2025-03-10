@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 @Node
 public class CandidateSet extends EntitySet implements CompositionAggregator {
 
-    @Relationship(type = "hasCandidate")
+    @Relationship(type = Relationships.HAS_CANDIDATE)
     private SortedSet<HasCandidate> hasCandidate;
 
     @Override

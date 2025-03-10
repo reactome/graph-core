@@ -56,10 +56,10 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @JsonIgnore
     private transient String oldStId;
 
-    @Relationship(type = "created", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.CREATED, direction = Relationship.Direction.INCOMING)
     private InstanceEdit created;
 
-    @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.MODIFIED, direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
 
     public DatabaseObject() {

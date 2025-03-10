@@ -13,7 +13,7 @@ public class ReplacedResidue extends GeneticallyModifiedResidue {
     @ReactomeProperty
     private Integer coordinate;
 
-    @Relationship(type = "psiMod")
+    @Relationship(type = Relationships.PSI_MOD)
     private List<PsiMod> psiMod;
     
     public ReplacedResidue() {}

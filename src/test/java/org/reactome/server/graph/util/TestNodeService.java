@@ -3,18 +3,18 @@ package org.reactome.server.graph.util;
 
 import org.neo4j.driver.summary.ResultSummary;
 import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 public class TestNodeService {
-//
-//    @Autowired
-//    private TestNodeRepository testNodeRepository;
-
 
     private final Neo4jTemplate neo4jTemplate;
     private final Neo4jClient neo4jClient;
@@ -37,29 +37,11 @@ public class TestNodeService {
                 "CREATE (a)-[r:" + relationshipType + " {order:"+order+", stoichiometry:"+stoichiometry+"}]->(b)  \n" +
                 "RETURN a, b, r;";
 
-        // [r:FRIENDS   {since: 2020, closeness: 'high'}
         return neo4jClient.query(query)
                 .bind(stId).to("stId")
                 .bind(connectedNodeId).to("connectedNodeId")
                 .run();
     }
-
-//    public ResultSummary createRelationship(DatabaseObject origin, Has<?> relationship) {
-//
-//        String query = "MATCH (a:DatabaseObject), (b:DatabaseObject)  \n" +
-//                "WHERE a.stId = $stId AND b.stId = $connectedNodeId  \n" +
-//                "CREATE (a)-[r:" + relationship.getType() + " {order: $order, stoichiometry: $stoichiometry}]->(b)  \n" +
-//                "RETURN a, b, r;";
-//
-//
-//        return neo4jClient.query(query)
-//                .bind(origin.getStId()).to("stId")
-//                .bind(relationship.getElement().getStId()).to("connectedNodeId")
-//                .bind(relationship.getOrder()).to("order")
-//                .bind(relationship.getStoichiometry()).to("stoichiometry")
-//                .run();
-//    }
-
 
     public ResultSummary deleteTest(){
         String query = "MATCH (dbObject) WHERE dbObject.dbId < 0  DETACH DELETE dbObject;";

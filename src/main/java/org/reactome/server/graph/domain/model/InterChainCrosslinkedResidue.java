@@ -10,10 +10,10 @@ import java.util.Set;
 @Node
 public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
 
-    @Relationship(type = "equivalentTo")
+    @Relationship(type = Relationships.EQUIVALENT_TO)
     private List<InterChainCrosslinkedResidue> equivalentTo;
 
-    @Relationship(type = "secondReferenceSequence")
+    @Relationship(type = Relationships.SECOND_REFERENCE_SEQUENCE)
     private Set<ReferenceSequence> secondReferenceSequence;
     
     public InterChainCrosslinkedResidue() {}

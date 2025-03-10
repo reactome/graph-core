@@ -19,7 +19,7 @@ public class BlackBoxEvent extends ReactionLikeEvent {
 
     }
 
-    @Relationship(type = "templateEvent")
+    @Relationship(type = Relationships.TEMPLATE_EVENT)
     private Event templateEvent;
 
     public BlackBoxEvent() {}

@@ -12,7 +12,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Node
 public class Reaction extends ReactionLikeEvent {
 
-    @Relationship(type = "reverseReaction")
+    @Relationship(type = Relationships.REVERSE_REACTION)
     private Reaction reverseReaction;
 
     public Reaction() {}

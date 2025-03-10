@@ -28,10 +28,10 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
     @ReactomeProperty
     private Integer startCoordinate;
 
-    @Relationship(type = "hasModifiedResidue")
+    @Relationship(type = Relationships.HAS_MODIFIED_RESIDUE)
     private SortedSet<HasModifiedResidue> hasModifiedResidue;
 
-    @Relationship(type = "referenceEntity")
+    @Relationship(type = Relationships.REFERENCE_ENTITY)
     private ReferenceSequence referenceEntity;
 
     @Override

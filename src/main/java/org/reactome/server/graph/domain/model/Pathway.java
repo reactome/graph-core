@@ -10,6 +10,7 @@ import org.reactome.server.graph.domain.relationship.HasEvent;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import javax.management.relation.Relation;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -40,17 +41,17 @@ public class Pathway extends Event implements CompositionAggregator {
     @ReactomeProperty
     private String lastUpdatedDate;
 
-    @Relationship(type = "hasEvent")
+    @Relationship(type = Relationships.HAS_EVENT)
     private SortedSet<HasEvent> hasEvent;
 
     @ReactomeRelationship(addedField = true)
-    @Relationship(type = "hasEncapsulatedEvent")
+    @Relationship(type = Relationships.HAS_ENCAPSULATED_EVENT)
     private SortedSet<HasEncapsulatedEvent> hasEncapsulatedEvent;
 
-    @Relationship(type = "normalPathway")
+    @Relationship(type = Relationships.NORMAL_PATHWAY)
     private Pathway normalPathway;
 
-    @Relationship(type = "normalPathway", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.NORMAL_PATHWAY, direction = Relationship.Direction.INCOMING)
     private List<Pathway> diseasePathways;
 
     @Override

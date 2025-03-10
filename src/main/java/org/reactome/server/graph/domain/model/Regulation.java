@@ -18,50 +18,50 @@ public abstract class Regulation extends DatabaseObject implements Deletable {
     private String releaseDate;
 
     @ReactomeProperty
-    @Relationship(type = "activeUnit")
+    @Relationship(type = Relationships.ACTIVE_UNIT)
     private List<PhysicalEntity> activeUnit;
 
     @ReactomeProperty
-    @Relationship(type = "activity")
+    @Relationship(type = Relationships.ACTIVITY)
     private GO_MolecularFunction activity;
 
-    @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.AUTHORED, direction = Relationship.Direction.INCOMING)
     private InstanceEdit authored;
 
-    @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.EDITED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
-    @Relationship(type = "goBiologicalProcess")
+    @Relationship(type =  Relationships.GO_BIOLOGICAL_PROCESS)
     private GO_BiologicalProcess goBiologicalProcess;
 
-    @Relationship(type = "inferredTo")
+    @Relationship(type = Relationships.INFERRED_TO)
     private List<Regulation> inferredTo;
 
     @ReactomeTransient
-    @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
+    @Relationship(type =  Relationships.INFERRED_TO, direction = Relationship.Direction.INCOMING)
     private List<Regulation> inferredFrom;
 
-    @Relationship(type = "literatureReference")
+    @Relationship(type = Relationships.LITERATURE_REFERENCE)
     private List<Publication> literatureReference;
 
     @ReactomeTransient
-    @Relationship(type = "regulatedBy", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REGULATED_BY, direction = Relationship.Direction.INCOMING)
     private List<ReactionLikeEvent> regulatedEntity;
 
-    @Relationship(type = "regulator")
+    @Relationship(type = Relationships.REGULATOR)
     private PhysicalEntity regulator;
 
-    @Relationship(type = "reviewed", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REVIEWED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> reviewed;
 
-    @Relationship(type = "revised", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REVISED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> revised;
 
-    @Relationship(type = "summation")
+    @Relationship(type = Relationships.SUMMATION)
     private List<Summation> summation;
 
     @ReactomeTransient
-    @Relationship(type = "replacementInstances", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REPLACEMENT_INSTANCES, direction = Relationship.Direction.INCOMING)
     private List<Deleted> deleted;
 
     public Regulation() {}

@@ -4,11 +4,13 @@ import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import javax.management.relation.Relation;
+
 @SuppressWarnings("unused")
 @Node
 public class GroupModifiedResidue extends TranslationalModification {
 
-    @Relationship(type = "modification")
+    @Relationship(type = Relationships.MODIFICATION)
     @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})
     private DatabaseObject modification;
 

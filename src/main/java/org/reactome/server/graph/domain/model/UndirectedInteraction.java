@@ -15,7 +15,7 @@ import java.util.List;
 @Node
 public class UndirectedInteraction extends Interaction {
 
-    @Relationship(type = "interactor")
+    @Relationship(type = Relationships.INTERACTOR)
     private List<ReferenceEntity> interactor;
 
     public UndirectedInteraction() { }

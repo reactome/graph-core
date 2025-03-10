@@ -25,22 +25,22 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
     @ReactomeProperty
     private Boolean isChimeric;
 
-    @Relationship(type = "hasComponent")
+    @Relationship(type = Relationships.HAS_COMPONENT)
     private SortedSet<HasComponent> hasComponent;
 
     @ReactomeProperty
     private Boolean stoichiometryKnown;
 
-    @Relationship(type = "entityOnOtherCell")
+    @Relationship(type = Relationships.ENTITY_ON_OTHER_CELL)
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "includedLocation")
+    @Relationship(type = Relationships.INCLUDED_LOCATION)
     private SortedSet<HasCompartment> includedLocation;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Species> species;
 
-    @Relationship(type = "relatedSpecies")
+    @Relationship(type = Relationships.RELATED_SPECIES)
     private List<Species> relatedSpecies;
 
     @Override

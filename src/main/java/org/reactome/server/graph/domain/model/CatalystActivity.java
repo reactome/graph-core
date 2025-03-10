@@ -15,10 +15,10 @@ import java.util.Set;
 @Node
 public class CatalystActivity extends DatabaseObject  {
 
-    @Relationship(type = "activeUnit")
+    @Relationship(type = Relationships.ACTIVE_UNIT)
     private Set<PhysicalEntity> activeUnit;
 
-    @Relationship(type = "activity")
+    @Relationship(type = Relationships.ACTIVITY)
     private GO_MolecularFunction activity;
 
     /**
@@ -26,13 +26,13 @@ public class CatalystActivity extends DatabaseObject  {
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "catalystActivity", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.CATALYST_ACTIVITY, direction = Relationship.Direction.INCOMING)
     private List<ReactionLikeEvent> catalyzedEvent;
 
-    @Relationship(type = "physicalEntity")
+    @Relationship(type =  Relationships.PHYSICAL_ENTITY)
     private PhysicalEntity physicalEntity;
 
-    @Relationship(type = "literatureReference")
+    @Relationship(type = Relationships.LITERATURE_REFERENCE)
     private List<Publication> literatureReference;
 
     public CatalystActivity() {}

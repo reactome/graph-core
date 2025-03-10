@@ -17,10 +17,10 @@ public class DatabaseIdentifier extends DatabaseObject {
     @ReactomeProperty(addedField = true)
     private String url;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = Relationships.REFERENCE_DATABASE)
     private ReferenceDatabase referenceDatabase;
 
     public DatabaseIdentifier() {}

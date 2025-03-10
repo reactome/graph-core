@@ -37,19 +37,19 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @ReactomeProperty(addedField = true)
     private String speciesName;
 
-    @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.AUTHORED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> authored;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "compartment")
+    @Relationship(type = Relationships.COMPARTMENT)
     private SortedSet<HasCompartment> compartment;
 
-    @Relationship(type = "disease")
+    @Relationship(type = Relationships.DISEASE)
     private List<Disease> disease;
 
-    @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.EDITED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
     /**
