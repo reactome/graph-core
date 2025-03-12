@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.domain.relationship.HasCandidate;
-import org.springframework.data.neo4j.core.schema.Relationship;
+import org.reactome.server.graph.util.ReactionType;
 import org.reactome.server.graph.domain.relationship.HasMember;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.reactome.server.graph.util.TestNodeService;
@@ -171,20 +171,20 @@ public abstract class BaseTest {
         Events.diagramPathway.setSpeciesName("Homo sapiens");
         testService.saveTest(Events.diagramPathway);
 
-        Events.associationReaction = createReaction(ReactionType.ASSOCIATION, "Test Reaction (Association)");
+        Events.associationReaction = createReaction(org.reactome.server.graph.util.ReactionType.ASSOCIATION, "Test Reaction (Association)");
         Events.associationReaction.setOldStId("REACT_123");
         testService.saveTest(Events.associationReaction);
 
         // Dissociation
-        Events.dissociationReaction = createReaction(ReactionType.DISSOCIATION, "Test Reaction (Dissociation)");
+        Events.dissociationReaction = createReaction(org.reactome.server.graph.util.ReactionType.DISSOCIATION, "Test Reaction (Dissociation)");
         testService.saveTest(Events.dissociationReaction);
 
         // Transition
-        Events.transitionReaction = createReaction(ReactionType.TRANSITION, "Test Reaction (Transition)");
+        Events.transitionReaction = createReaction(org.reactome.server.graph.util.ReactionType.TRANSITION, "Test Reaction (Transition)");
         testService.saveTest(Events.transitionReaction);
 
         // Binding
-        Events.bindingReaction = createReaction(ReactionType.BINDING, "Test Reaction (Binding)");
+        Events.bindingReaction = createReaction(org.reactome.server.graph.util.ReactionType.BINDING, "Test Reaction (Binding)");
         testService.saveTest(Events.bindingReaction);
 
         // Polymerisation
@@ -640,7 +640,6 @@ public abstract class BaseTest {
         SimpleEntity physicalEntity = new SimpleEntity();
         physicalEntity.setDisplayName("Physical Entity");
         physicalEntity.setDefinition("Display name");
-        //physicalEntity.setSpecies(testSpecies);
         reactionLikeEvent.setInput(List.of(physicalEntity));
 
         ReferenceMolecule referenceEntity = new ReferenceMolecule();
@@ -656,15 +655,6 @@ public abstract class BaseTest {
         referenceEntity.setReferenceDatabase(referenceDatabase);
 
         testService.saveTest(pathway);
-    }
-
-    protected static void createSpecies(TestNodeService testService, String name) {
-        Species species = new Species();
-        species.setDisplayName(name);
-        species.setName(List.of(name));
-        species.setAbbreviation("HSA");
-        species.setTaxId("123");
-        testService.saveTest(species);
     }
 
     protected static TopLevelPathway createTopLevelPathway(String displayName, Boolean ehld) {
