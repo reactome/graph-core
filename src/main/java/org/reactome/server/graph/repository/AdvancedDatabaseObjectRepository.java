@@ -108,7 +108,8 @@ public class AdvancedDatabaseObjectRepository {
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+                "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) " +
+                "RETURN  n,[collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3),collect(DISTINCT c)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6),collect(DISTINCT r7)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
@@ -123,7 +124,8 @@ public class AdvancedDatabaseObjectRepository {
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+                "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) " +
+                "RETURN  n,[collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3),collect(DISTINCT c)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6),collect(DISTINCT r7)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
@@ -138,7 +140,7 @@ public class AdvancedDatabaseObjectRepository {
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+                "RETURN  n,[collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
@@ -153,7 +155,7 @@ public class AdvancedDatabaseObjectRepository {
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  n,[COLLECT(m), COLLECT(s), COLLECT(o), COLLECT(DISTINCT p), COLLECT(DISTINCT p2),COLLECT(DISTINCT p3)], [COLLECT(DISTINCT r1), COLLECT(DISTINCT r2), COLLECT(DISTINCT r3), COLLECT(DISTINCT r4), COLLECT(r5),COLLECT(DISTINCT r6)] ";
+                "RETURN  n,[collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
