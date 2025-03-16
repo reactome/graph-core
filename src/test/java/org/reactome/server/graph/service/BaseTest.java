@@ -156,7 +156,7 @@ public abstract class BaseTest {
         testSpecies.setDisplayName("Fantasy species");
         testSpecies.setName(List.of("Fantasy species"));
         testSpecies.setAbbreviation("HSA");
-        testSpecies.setTaxId("1234-1234-1234-1234");
+        testSpecies.setTaxId("1234512345");
         testService.saveTest(testSpecies);
 
         Events.topLevelPathway = createTopLevelPathway("Test Top Level Pathway", true);
