@@ -104,7 +104,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
@@ -120,7 +120,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
@@ -136,7 +136,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{dbId:$dbId}) " +
                 "OPTIONAL MATCH (n)-[r1]->(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
@@ -151,7 +151,7 @@ public class AdvancedDatabaseObjectRepository {
                 "MATCH (n:DatabaseObject{stId:$stId}) " +
                 "OPTIONAL MATCH (n)-[r1]->(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker]-(o) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
