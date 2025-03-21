@@ -3,7 +3,7 @@ package org.reactome.server.graph.custom;
 /**
  * POJO for testing the Custom Cypher Queries
  *
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * @author Guilherme S Viteri (gviteri@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class CustomReference {

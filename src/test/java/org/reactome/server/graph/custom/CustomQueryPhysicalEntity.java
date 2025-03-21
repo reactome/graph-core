@@ -6,7 +6,7 @@ import org.reactome.server.graph.domain.result.CustomQuery;
 /**
  * POJO for testing the Custom Cypher Queries
  *
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * @author Guilherme S Viteri (gviteri@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class CustomQueryPhysicalEntity implements CustomQuery {

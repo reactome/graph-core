@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Custom object used to test the custom queries methods
  *
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * @author Guilherme S Viteri (gviteri@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class CustomQueryResult implements CustomQuery {

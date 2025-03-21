@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * POJO for testing the Custom Cypher Queries
  *
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * @author Guilherme S Viteri (gviteri@ebi.ac.uk)
  */
 @SuppressWarnings("unused")
 public class CustomQueryComplex implements CustomQuery {

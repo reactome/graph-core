@@ -13,7 +13,7 @@ import org.springframework.test.context.event.annotation.AfterTestClass;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * @author Guilherme S Viteri (gviteri@ebi.ac.uk)
  */
 @SpringBootTest
 public abstract class BaseTest {

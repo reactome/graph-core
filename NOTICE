@@ -1,0 +1,17 @@
+NOTICE
+
+This project is licensed under the Apache License, Version 2.0.
+You may obtain a copy of the Apache License, Version 2.0 at:
+    https://www.apache.org/licenses/LICENSE-2.0
+
+This project makes use of the following third-party library, which is licensed under a different license:
+
+1. AspectJ Runtime (aspectjrt)
+   - License: Eclipse Public License 2.0 (EPL-2.0)
+   - Copyright © Eclipse Foundation
+   - License URL: https://www.eclipse.org/legal/epl-2.0/
+   - Summary: AspectJ Runtime provides runtime support for AspectJ's aspect-oriented programming framework.
+
+The inclusion of `aspectjrt` in this project does not alter the licensing terms of this project, which remains licensed under the Apache License, Version 2.0. However, users of this project must comply with the terms of the Eclipse Public License 2.0 when using `aspectjrt`.
+
+Please review the above license for details about your rights and responsibilities when using this dependency.
