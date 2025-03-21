@@ -30,7 +30,7 @@ public class HierarchyTreeItem {
         hierarchyTreeItem.setSpeciesName(valueNode.get(3).asString(null));
         hierarchyTreeItem.setSchemaClass(valueNode.get(4).asString(null));
         hierarchyTreeItem.setLabels(valueNode.get(5).asList(Value::asString));
-        hierarchyTreeItem.setOrder(valueNode.get(6).asInt());
+        hierarchyTreeItem.setOrder(valueNode.get(6).asInt(0));
         return hierarchyTreeItem;
     }
 

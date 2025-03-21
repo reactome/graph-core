@@ -321,7 +321,7 @@ public class AdvancedDatabaseObjectRepository {
                 .fetchAs(QueryResultWrapper.class)
                 .mappedBy((typeSystem, record) -> {
                     DatabaseObject databaseObject = mappingFunction.apply(typeSystem, record.get("m"));
-                    return new QueryResultWrapper(databaseObject, record.get("n").asInt());
+                    return new QueryResultWrapper(databaseObject, record.get("n").asInt(1));
                 }).all();
     }
 
