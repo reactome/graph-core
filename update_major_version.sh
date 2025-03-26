@@ -24,7 +24,7 @@ echo "New version: $new_version"
 mvn versions:set -DnewVersion=$new_version
 
 if grep -q "^${PACKAGE_NAME}=" /var/go/versions.properties; then
-    sed -i "s/^${PACKAGE_NAME}=.*/${PACKAGE_NAME}=${new_version}/" /var/go/versions.properties
+    sed -i "s/^${PACKAGE_NAME}=.*/${PACKAGE_NAME}=${new_version}/" "${VERSIONS_FILE_PATH}"
 else
-    echo "${PACKAGE_NAME}=${new_version}" >> /var/go/versions.properties
+    echo "${PACKAGE_NAME}=${new_version}" >> "${VERSIONS_FILE_PATH}"
 fi
