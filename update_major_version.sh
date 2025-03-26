@@ -1,6 +1,12 @@
 #!/bin/bash
 
-PACKAGE_NAME=graph.core
+PACKAGE_NAME=GRAPH_CORE_VERSION
+
+# Check if VERSIONS_FILE_PATH is not set or empty
+if [ -z "${VERSIONS_FILE_PATH}" ]; then
+    echo "Error: Please define \${VERSIONS_FILE_PATH} in the GO-CD environment or in the server."
+    exit 1
+fi
 
 # Get the current project version using Maven
 current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
