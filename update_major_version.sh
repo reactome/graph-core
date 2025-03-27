@@ -14,17 +14,19 @@ if [ ! -f "${VERSIONS_FILE_PATH}" ]; then
     exit 1
 fi
 
-# Extract version from the file
-if grep -q "^${PACKAGE_NAME}=" "${VERSIONS_FILE_PATH}"; then
-    current_version=$(grep "^${PACKAGE_NAME}=" "${VERSIONS_FILE_PATH}" | cut -d'=' -f2)
-else
-    echo "Error: ${PACKAGE_NAME} not found in ${VERSIONS_FILE_PATH}"
-    exit 1
-fi
+# Load versions to be used
+# shellcheck source="${VERSIONS_FILE_PATH}"
+source "${VERSIONS_FILE_PATH}"
 
-echo "Version read from ${VERSIONS_FILE_PATH}: ${current_version}"
+#add parents version and current version
+xmlstarlet ed -L \
+  -u "//_:project/_:parent/_:version" -v "${REACTOME_PARENT_VERSION}" \
+  -u "//_:project/_:version" -v "${!PACKAGE_NAME}" \
+   "pom.xml"
 
-# Set the extracted version in Maven
-mvn versions:set -DnewVersion="${current_version}"
+echo "Maven ${PACKAGE_NAME} updated to ${!PACKAGE_NAME}"
+echo "Maven parent updated to ${REACTOME_PARENT_VERSION}"
 
-echo "Maven version updated to ${current_version}"
+
+# deleting custom versions of org.reactome.server
+xmlstarlet ed -L -d "//_:dependency[_:groupId[starts-with(text(),'org.reactome')]]/_:version" pom.xml
