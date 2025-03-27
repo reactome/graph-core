@@ -13,7 +13,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 public class GenomeEncodedEntity extends PhysicalEntity {
 
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private Taxon species;
 
     public GenomeEncodedEntity() {}

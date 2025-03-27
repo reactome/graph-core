@@ -9,10 +9,12 @@ import java.util.List;
 @Node
 public class ReferenceRNASequence extends ReferenceSequence {
 
-    @Relationship(type = "referenceGene")
+    @Relationship(type = Relationships.REFERENCE_GENE)
     private List<ReferenceDNASequence> referenceGene;
     
-    public ReferenceRNASequence() {}
+    public ReferenceRNASequence() {
+        super();
+    }
 
     public List<ReferenceDNASequence> getReferenceGene() {
         return referenceGene;

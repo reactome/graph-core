@@ -16,7 +16,7 @@ public abstract class TranslationalModification extends AbstractModifiedResidue 
     @ReactomeProperty(addedField = true) //filled by the diagram-converter
     private String label;
 
-    @Relationship(type = "psiMod")
+    @Relationship(type = Relationships.PSI_MOD)
     private PsiMod psiMod;
     
     public TranslationalModification() {}

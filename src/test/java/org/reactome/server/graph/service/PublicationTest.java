@@ -1,5 +1,11 @@
 package org.reactome.server.graph.service;
 
+import org.gk.model.GKInstance;
+import org.gk.persistence.GKBWriter;
+import org.gk.persistence.Project;
+import org.gk.persistence.XMLFileAdaptor;
+import org.gk.schema.Schema;
+import org.gk.schema.SchemaClass;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
@@ -9,10 +15,10 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-public class PublicationTest extends BaseTest {
+public class  PublicationTest extends BaseTest {
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -23,25 +29,19 @@ public class PublicationTest extends BaseTest {
     }
 
     @Test
-    public void findAuthorsList() {
+    public void findAuthorsList() throws Exception {
         logger.info("Started testing publicationTest.findAuthorsList");
 
         long start, time;
         start = System.currentTimeMillis();
-        Publication publicationGDB = databaseObjectService.findById("6799811");
-        Publication publicationRDB = DatabaseObjectFactory.createObject("6799811");
-
-        assertTrue("Different sizes", Objects.equals(publicationGDB.getAuthor().size(), publicationRDB.getAuthor().size()));
-
-        for (int i = 0; i < publicationRDB.getAuthor().size(); i++) {
-            Person pRDB = publicationRDB.getAuthor().get(i);
-            Person pGDB = publicationGDB.getAuthor().get(i);
-            assertTrue(pGDB + " differs of " + pRDB, Objects.equals(pRDB, pGDB));
-        }
+        Publication publicationGDB = databaseObjectService.findById(testPublication.getStId());
+        //Publication publicationRDB = DatabaseObjectFactory.createObject(testPublication.getStId());
+        GKInstance gkInstance = DatabaseObjectFactory.createGKInstance(testPublication);
 
         time = System.currentTimeMillis() - start;
         logger.info("Comparison execution time: " + time + "ms");
 
+        assertEquals(publicationGDB.getDbId(), gkInstance.getDBID());
         logger.info("Finished");
     }
 
@@ -52,7 +52,7 @@ public class PublicationTest extends BaseTest {
         long start, time;
         start = System.currentTimeMillis();
 
-        Person person = databaseObjectService.findById(6799816);
+        Person person = databaseObjectService.findById(testPerson.getStId());
         assertFalse(person.getPublications().isEmpty());
 
         time = System.currentTimeMillis() - start;

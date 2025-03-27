@@ -15,7 +15,10 @@ public class ReferenceMolecule extends ReferenceEntity {
     @ReactomeProperty(addedField = true)
     private Boolean trivial;
 
-    public ReferenceMolecule() {}
+    public ReferenceMolecule() {
+        super();
+        this.setMoleculeType("Chemical");
+    }
 
     public String getFormula() {
         return formula;

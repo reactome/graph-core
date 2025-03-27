@@ -9,14 +9,14 @@ import java.util.List;
 @Node
 public class EntityFunctionalStatus extends DatabaseObject {
 
-    @Relationship(type = "functionalStatus")
+    @Relationship(type = Relationships.FUNCTIONAL_STATUS)
     private List<FunctionalStatus> functionalStatus;
 
     //Formerly "physicalEntity"
-    @Relationship(type = "diseaseEntity")
+    @Relationship(type = Relationships.DISEASE_ENTITY)
     private PhysicalEntity diseaseEntity;
 
-    @Relationship(type = "normalEntity")
+    @Relationship(type = Relationships.NORMAL_ENTITY)
     private PhysicalEntity normalEntity;
 
     public EntityFunctionalStatus() {}

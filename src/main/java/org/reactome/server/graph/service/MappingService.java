@@ -33,7 +33,8 @@ public class MappingService {
     public Collection<ReactionLikeEvent> getReactionsLikeEvent(String databaseName, String identifier, Object species) {
         Species s = speciesService.getSpecies(species);
         if (s != null && databaseName != null && !databaseName.isEmpty() && identifier != null && !identifier.isEmpty()) {
-            return mappingRepository.getReactionsLikeEvent(databaseName, identifier, s.getTaxId());
+            Collection<ReactionLikeEvent> events = mappingRepository.getReactionsLikeEvent(databaseName, identifier, s.getTaxId());
+            return events;
         }
         return new ArrayList<>();
     }

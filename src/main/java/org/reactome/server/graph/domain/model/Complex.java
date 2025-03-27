@@ -1,45 +1,55 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.reactome.server.graph.domain.relationship.HasComponent;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * An entity formed by the association of two or more component entities (these components can themselves be complexes). Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components. At least one component must be specified.
  */
 @SuppressWarnings("unused")
 @Node
-public class Complex extends PhysicalEntity {
+public class Complex extends PhysicalEntity implements CompositionAggregator {
 
     @ReactomeProperty
     private Boolean isChimeric;
 
-    @Relationship(type = "hasComponent")
+    @Relationship(type = Relationships.HAS_COMPONENT)
     private SortedSet<HasComponent> hasComponent;
 
     @ReactomeProperty
     private Boolean stoichiometryKnown;
 
-    @Relationship(type = "entityOnOtherCell")
+    @Relationship(type = Relationships.ENTITY_ON_OTHER_CELL)
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "includedLocation")
+    @Relationship(type = Relationships.INCLUDED_LOCATION)
     private SortedSet<HasCompartment> includedLocation;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Species> species;
 
-    @Relationship(type = "relatedSpecies")
+    @Relationship(type = Relationships.RELATED_SPECIES)
     private List<Species> relatedSpecies;
 
-    public Complex() {}
+    @Override
+    public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
+        return Stream.of(hasComponent);
+    }
+
+    public Complex() {
+    }
 
     public Complex(Long dbId) {
         super(dbId);
@@ -55,46 +65,28 @@ public class Complex extends PhysicalEntity {
 
     @JsonIgnore
     public List<StoichiometryObject> fetchHasComponent() {
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if(hasComponent!=null) {
-            for (HasComponent aux : hasComponent) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
-            }
-            Collections.sort(objects);
-        }
-
-        return objects;
+        return Has.Util.simplifiedSort(this.hasComponent);
     }
 
-    public List<PhysicalEntity> getHasComponent(){
-        List<PhysicalEntity> rtn = null;
-        if (this.hasComponent != null) {
-            rtn = new ArrayList<>();
-            for (HasComponent component : this.hasComponent) {
-                for (int i = 0; i < component.getStoichiometry(); i++) {
-                    rtn.add(component.getPhysicalEntity());
-                }
-            }
-        }
-        return rtn;
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public SortedSet<HasComponent> getComponents() {
+        return this.hasComponent;
     }
 
+    @JsonView(StoichiometryView.Nested.class)
+    public void setHasComponentNested(Collection<HasComponent> hasComponent) {
+        this.hasComponent = new TreeSet<>(hasComponent);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<PhysicalEntity> getHasComponent() {
+        return Has.Util.expandStoichiometry(this.hasComponent);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public void setHasComponent(List<PhysicalEntity> hasComponent) {
-        if (hasComponent == null) return;
-        Map<Long, HasComponent> components = new LinkedHashMap<>();
-        int order = 0;
-        for (PhysicalEntity physicalEntity : hasComponent) {
-            HasComponent component = components.get(physicalEntity.getDbId());
-            if (component != null) {
-                component.setStoichiometry(component.getStoichiometry() + 1);
-            } else {
-                component = new HasComponent();
-                component.setPhysicalEntity(physicalEntity);
-                component.setOrder(order++);
-                components.put(physicalEntity.getDbId(), component);
-            }
-        }
-        this.hasComponent = new TreeSet<>(components.values());
+        this.hasComponent = Has.Util.aggregateStoichiometry(hasComponent, HasComponent::new);
     }
 
     public Boolean getStoichiometryKnown() {
@@ -114,12 +106,7 @@ public class Complex extends PhysicalEntity {
     }
 
     public List<Compartment> getIncludedLocation() {
-        if (includedLocation == null) return null;
-        List<Compartment> rtn = new ArrayList<>();
-        for (HasCompartment c : includedLocation) {
-            rtn.add(c.getCompartment());
-        }
-        return rtn;
+        return Has.Util.expandStoichiometry(includedLocation);
     }
 
     public void setIncludedLocation(SortedSet<HasCompartment> includedLocation) {
@@ -127,14 +114,7 @@ public class Complex extends PhysicalEntity {
     }
 
     public void setIncludedLocation(List<Compartment> includedLocation) {
-        this.includedLocation = new TreeSet<>();
-        int order = 0;
-        for (Compartment c : includedLocation) {
-            HasCompartment hc = new HasCompartment();
-            hc.setCompartment(c);
-            hc.setOrder(order++);
-            this.includedLocation.add(hc);
-        }
+        this.includedLocation = Has.Util.aggregateStoichiometry(includedLocation, HasCompartment::new);
     }
 
     public List<Species> getSpecies() {

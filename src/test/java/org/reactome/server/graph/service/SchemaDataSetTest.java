@@ -3,7 +3,9 @@ package org.reactome.server.graph.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.domain.model.DBInfo;
 import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.schema.SchemaDataSet;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ import static org.springframework.test.util.AssertionErrors.assertTrue;
  */
 public class SchemaDataSetTest extends BaseTest {
 
-    private static final String stId = "R-HSA-6807070";
+    //private static final String stId = "R-HSA-6807070";
 
     @Autowired
     private DatabaseObjectService dbs;
@@ -64,8 +66,17 @@ public class SchemaDataSetTest extends BaseTest {
 
         logger.info("Testing schema.org DataSet.");
 
-        Event eventObserved = dbs.findByIdNoRelations(stId);
-        SchemaDataSet schemaDataSet = new SchemaDataSet(eventObserved, generalService.getDBInfo().getReleaseNumber());
+//        private static DBInfo dbInfo = null;   // WTF ?!
+//
+//        public DBInfo getDBInfo() {
+//            //if(dbInfo == null) dbInfo = dbInfoRepository.getDBInfo();
+//            dbInfo = dbInfoRepository.getDBInfo();
+//            return dbInfo;
+//        }
+//
+
+        Event eventObserved = dbs.findByIdNoRelations(Events.ehldPathway.getStId()); // use different pathway data!!!
+        SchemaDataSet schemaDataSet = new SchemaDataSet(eventObserved, generalService.getDBInfo().getReleaseNumber()); // cannot be mocked
 
         ObjectMapper mapper = new ObjectMapper();
         try {

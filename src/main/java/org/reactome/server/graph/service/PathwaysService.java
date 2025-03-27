@@ -143,7 +143,8 @@ public class PathwaysService {
         if (s != null) {
             return pathwayRepository.getLowerLevelPathwaysForIdentifierAndSpeciesTaxId(identifier, s.getTaxId());
         } else {
-            return pathwayRepository.getLowerLevelPathwaysForIdentifier(identifier);
+            Collection<Pathway>pathways = pathwayRepository.getLowerLevelPathwaysForIdentifier(identifier); // This
+            return pathways;
         }
     }
 

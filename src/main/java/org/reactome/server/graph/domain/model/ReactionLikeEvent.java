@@ -1,8 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
+import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.Input;
 import org.reactome.server.graph.domain.relationship.Output;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
@@ -10,16 +14,17 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
- * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerisation. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
+ * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerization. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
  * <p>
  * Logic in getter/setter of input and output is needed for retrieving data import using the GKInstance.
  * This is still used for testing if graph and sql produce the same data import
  */
 @SuppressWarnings("unused")
 @Node
-public abstract class ReactionLikeEvent extends Event {
+public abstract class ReactionLikeEvent extends Event implements CompositionAggregator {
 
     @ReactomeProperty
     private Boolean isChimeric;
@@ -28,41 +33,46 @@ public abstract class ReactionLikeEvent extends Event {
     @ReactomeProperty
     private String category;
 
-    @Relationship(type = "catalystActivity")
+    @Relationship(type = Relationships.CATALYST_ACTIVITY)
     private List<CatalystActivity> catalystActivity;
 
-    @Relationship(type = "catalystActivityReference")
+    @Relationship(type = Relationships.CATALYST_ACTIVITY_REFERENCE)
     private CatalystActivityReference catalystActivityReference;
 
-    @Relationship(type = "entityFunctionalStatus")
+    @Relationship(type = Relationships.ENTITY_FUNCTIONAL_STATUS)
     private List<EntityFunctionalStatus> entityFunctionalStatus;
 
-    @Relationship(type = "entityOnOtherCell")
+    @Relationship(type = Relationships.ENTITY_ON_OTHER_CELL)
     private List<PhysicalEntity> entityOnOtherCell;
 
-    @Relationship(type = "input")
+    @Relationship(type = Relationships.INPUT)
     private Set<Input> input;
 
-    @Relationship(type = "output")
+    @Relationship(type = Relationships.OUTPUT)
     private Set<Output> output;
 
-    @Relationship(type = "normalReaction")
+    @Relationship(type = Relationships.NORMAL_REACTION)
     private ReactionLikeEvent normalReaction;
 
-    @Relationship(type = "regulatedBy")
+    @Relationship(type =  Relationships.REGULATED_BY)
     private List<Regulation> regulatedBy;
 
-    @Relationship(type = "regulationReference")
+    @Relationship(type = Relationships.REGULATION_REFERENCE)
     private List<RegulationReference> regulationReference;
 
-    @Relationship(type = "requiredInputComponent")
+    @Relationship(type = Relationships.REQUIRED_INPUT_COMPONENT)
     private Set<PhysicalEntity> requiredInputComponent;
 
-    @Relationship(type = "hasInteraction")
+    @Relationship(type = Relationships.HAS_INTERACTION)
     private List<InteractionEvent> hasInteraction;
 
-    @Relationship(type = "reactionType")
+    @Relationship(type = Relationships.REACTION_TYPE)
     private List<ReactionType> reactionType;
+
+    @Override
+    public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
+        return Stream.of(input, output, Has.Util.wrapUniqueElements(catalystActivity, "catalyst"), Has.Util.wrapUniqueElements(regulatedBy, "regulation"));
+    }
 
     public ReactionLikeEvent() {
     }
@@ -98,6 +108,7 @@ public abstract class ReactionLikeEvent extends Event {
     public List<CatalystActivity> getCatalystActivity() {
         return catalystActivity;
     }
+
 
     public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
         this.catalystActivity = catalystActivity;
@@ -177,95 +188,58 @@ public abstract class ReactionLikeEvent extends Event {
 
     @JsonIgnore
     public List<StoichiometryObject> fetchInput() {
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if (input != null) {
-            for (Input aux : input) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
-            }
-            Collections.sort(objects);
-        }
-        return objects;
+        return Has.Util.simplifiedSort(input);
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
     public List<PhysicalEntity> getInput() {
-        List<PhysicalEntity> rtn = null;
-        if (input != null) {
-            rtn = new ArrayList<>();
-            for (Input aux : input) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
-                    rtn.add(aux.getPhysicalEntity());
-                }
-            }
-        }
-        return rtn;
+        return Has.Util.expandStoichiometry(input);
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
     public void setInput(List<PhysicalEntity> inputs) {
-        if (inputs == null) return;
-        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
-        Map<Long, Input> map = new LinkedHashMap<>();
-        for (PhysicalEntity physicalEntity : inputs) {
-            Input input = map.get(physicalEntity.getDbId());
-            if (input == null) {
-                input = new Input();
-//                input.setReactionLikeEvent(this);
-                input.setPhysicalEntity(physicalEntity);
-                map.put(physicalEntity.getDbId(), input);
-            } else {
-                input.setStoichiometry(input.getStoichiometry() + 1);
-            }
-        }
-        this.input = new HashSet<>(map.values());
+        this.input = Has.Util.aggregateStoichiometry(inputs, Input::new);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public Set<Input> getInputs() {
+        return this.input;
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setInputs(Set<Input> inputs) {
+        this.input = inputs;
     }
 
     @JsonIgnore
     public List<StoichiometryObject> fetchOutput() {
-        List<StoichiometryObject> objects = new ArrayList<>();
-        if (output != null) {
-            for (Output aux : output) {
-                objects.add(new StoichiometryObject(aux.getStoichiometry(), aux.getPhysicalEntity()));
-            }
-            Collections.sort(objects);
-        }
-        return objects;
+        return Has.Util.simplifiedSort(output);
     }
-    //public Set<Output> getOutput(){
-    //    return this.output;
-    //}
 
     public void setOutput(Set<Output> output) {
         this.output = output;
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
     public List<PhysicalEntity> getOutput() {
-        List<PhysicalEntity> rtn = null;
-        if (output != null) {
-            rtn = new ArrayList<>();
-            for (Output aux : output) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
-                    rtn.add(aux.getPhysicalEntity());
-                }
-            }
-        }
-        return rtn;
+        return Has.Util.expandStoichiometry(output);
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
     public void setOutput(List<PhysicalEntity> outputs) {
-        if (outputs == null) return;
-        // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
-        Map<Long, Output> map = new LinkedHashMap<>();
-        for (PhysicalEntity physicalEntity : outputs) {
-            Output output = map.get(physicalEntity.getDbId());
-            if (output == null) {
-                output = new Output();
-//                output.setReactionLikeEvent(this);
-                output.setPhysicalEntity(physicalEntity);
-                map.put(physicalEntity.getDbId(), output);
-            } else {
-                output.setStoichiometry(output.getStoichiometry() + 1);
-            }
-        }
-        this.output = new HashSet<>(map.values());
+        this.output = Has.Util.aggregateStoichiometry(outputs, Output::new);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public Set<Output> getOutputs() {
+        return this.output;
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setOutputs(Set<Output> outputs) {
+        this.output = outputs;
     }
 
     @ReactomeSchemaIgnore

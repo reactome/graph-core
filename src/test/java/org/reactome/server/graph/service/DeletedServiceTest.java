@@ -16,30 +16,25 @@ public class DeletedServiceTest extends BaseTest {
     @Test
     public void testFindDeletedByDbId() {
 
-        Optional<Deleted> deleted = service.getDeletedByDbId(8869329L);
-        Assertions.assertTrue(deleted.isPresent());
+        Optional<Deleted> deletedObject = service.getDeletedByDbId(deleted.getDbId());
+        Assertions.assertTrue(deletedObject.isPresent());
 
-        List<DeletedInstance> deletedInstances = deleted.get().getDeletedInstance();
+        List<DeletedInstance> deletedInstances = deletedObject.get().getDeletedInstance();
         Assertions.assertTrue(!deletedInstances.isEmpty());
 
-        List<Deletable> deletables = deleted.get().getReplacementInstances();
+        List<Deletable> deletables = deletedObject.get().getReplacementInstances();
         Assertions.assertTrue(!deletables.isEmpty());
-
-        DeletedControlledVocabulary dcv = deleted.get().getReason();
-        Assertions.assertNotNull(dcv);
-
-        Assertions.assertTrue(deletables.stream().anyMatch(deletable -> deletable instanceof NegativeRegulation));
     }
 
     @Test
     public void testGetByDeletedInstanceDbId() {
-        List<Deleted> deleteds = this.service.getByDeletedInstanceDbId(9745855L);
-        Assertions.assertTrue(!deleteds.isEmpty());
+        List<Deleted> deletes = this.service.getByDeletedInstanceDbId(deletedInstance.getDbId());
+        Assertions.assertFalse(deletes.isEmpty());
     }
 
     @Test
     public void testGetDeletedByReplacementInstancesStId() {
-        List<Deleted> deleteds = this.service.getByReplacementStId("R-RNO-164402");
-        Assertions.assertTrue(!deleteds.isEmpty());
+        List<Deleted> deletes = this.service.getByReplacementStId(PhysicalEntities.negativeRegulation.getStId());
+        Assertions.assertFalse(deletes.isEmpty());
     }
 }

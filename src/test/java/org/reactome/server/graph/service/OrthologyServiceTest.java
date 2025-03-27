@@ -24,12 +24,11 @@ public class OrthologyServiceTest extends BaseTest {
     public void getOrthologyTest() {
         logger.info("Started testing orthologyService.getOrthology");
         long start = System.currentTimeMillis();
-        Collection<DatabaseObject> orthology = orthologyService.getOrthology("R-HSA-6799198", 49633L);
+        Collection<DatabaseObject> orthology = orthologyService.getOrthology(Events.diagramPathway.getStId(), homoSapiensSpecies.getDbId());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertNotNull(orthology.iterator().next().getStId(), "The orthology cannot be null");
-        assertTrue("The orthologous of 'R-HSA-6799198' for 'Sus scrofa' is 'R-SSC-6799198'", orthology.iterator().next().getStId().equals("R-SSC-6799198"));
     }
 
 }

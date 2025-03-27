@@ -1,26 +1,25 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
-import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
-import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.reactome.server.graph.domain.annotations.*;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasEncapsulatedEvent;
 import org.reactome.server.graph.domain.relationship.HasEvent;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import javax.management.relation.Relation;
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * A collection of related Events. These events can be ReactionLikeEvents or Pathways
  */
 @SuppressWarnings("unused")
 @Node
-public class Pathway extends Event {
+public class Pathway extends Event implements CompositionAggregator {
 
     @ReactomeProperty
     private String doi;
@@ -42,17 +41,26 @@ public class Pathway extends Event {
     @ReactomeProperty
     private String lastUpdatedDate;
 
-    @Relationship(type = "hasEvent")
+    @Relationship(type = Relationships.HAS_EVENT)
     private SortedSet<HasEvent> hasEvent;
 
     @ReactomeRelationship(addedField = true)
-    @Relationship(type = "hasEncapsulatedEvent")
+    @Relationship(type = Relationships.HAS_ENCAPSULATED_EVENT)
     private SortedSet<HasEncapsulatedEvent> hasEncapsulatedEvent;
 
-    @Relationship(type = "normalPathway")
+    @Relationship(type = Relationships.NORMAL_PATHWAY)
     private Pathway normalPathway;
 
-    public Pathway() {}
+    @Relationship(type = Relationships.NORMAL_PATHWAY, direction = Relationship.Direction.INCOMING)
+    private List<Pathway> diseasePathways;
+
+    @Override
+    public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
+        return Stream.of(hasEvent, hasEncapsulatedEvent);
+    }
+
+    public Pathway() {
+    }
 
     public Pathway(Long dbId) {
         super(dbId);
@@ -110,48 +118,35 @@ public class Pathway extends Event {
         this.isCanonical = isCanonical;
     }
 
-    public List<Event> getHasEvent() {
-        if (hasEvent == null) return null;
-        List<Event> rtn = new ArrayList<>();
-
-        for (HasEvent he : hasEvent) {
-            rtn.add(he.getEvent());
-        }
-        return rtn;
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public SortedSet<HasEvent> getEvents() {
+        return hasEvent;
     }
 
+    @JsonView(StoichiometryView.Nested.class)
+    public void setEvents(SortedSet<HasEvent> hasEvent) {
+        this.hasEvent = hasEvent;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<Event> getHasEvent() {
+        return Has.Util.expandStoichiometry(hasEvent);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public void setHasEvent(List<Event> hasEvent) {
-        this.hasEvent = new TreeSet<>();
-        int order = 0;
-        for (Event event : hasEvent) {
-            HasEvent aux = new HasEvent();
-            aux.setEvent(event);
-            aux.setOrder(order++);
-            this.hasEvent.add(aux);
-        }
+        this.hasEvent = Has.Util.aggregateStoichiometry(hasEvent, HasEvent::new);
     }
 
     @ReactomeSchemaIgnore
     @JsonIgnore
     public List<Event> getHasEncapsulatedEvent() {
-        if (hasEncapsulatedEvent == null) return null;
-        List<Event> rtn = new ArrayList<>();
-        for (HasEncapsulatedEvent hee : hasEncapsulatedEvent) {
-            rtn.add(hee.getEvent());
-        }
-        return rtn;
+        return Has.Util.expandStoichiometry(hasEncapsulatedEvent);
     }
 
     public void setHasEncapsulatedEvent(List<Event> hasEncapsulatedEvent) {
-        this.hasEncapsulatedEvent = new TreeSet<>();
-        int order = 0;
-        for (Event event : hasEncapsulatedEvent) {
-            HasEncapsulatedEvent aux = new HasEncapsulatedEvent();
-//            aux.setPathway(this);
-            aux.setEvent(event);
-            aux.setOrder(order++);
-            this.hasEncapsulatedEvent.add(aux);
-        }
+        this.hasEncapsulatedEvent = Has.Util.aggregateStoichiometry(hasEncapsulatedEvent, HasEncapsulatedEvent::new);
     }
 
     public Pathway getNormalPathway() {
@@ -160,6 +155,14 @@ public class Pathway extends Event {
 
     public void setNormalPathway(Pathway normalPathway) {
         this.normalPathway = normalPathway;
+    }
+
+    public List<Pathway> getDiseasePathways() {
+        return diseasePathways;
+    }
+
+    public void setDiseasePathways(List<Pathway> diseasePathways) {
+        this.diseasePathways = diseasePathways;
     }
 
     public String getLastUpdatedDate() {

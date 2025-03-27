@@ -12,10 +12,10 @@ public class NegativePrecedingEvent extends DatabaseObject {
     @ReactomeProperty
     private String comment;
 
-    @Relationship(type = "negativePrecedingEvent", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.NEGATIVE_PRECEDING_EVENT, direction = Relationship.Direction.INCOMING)
     private List<Event> precedingEvent;
 
-    @Relationship(type = "reason")
+    @Relationship(type = Relationships.REASON)
     private NegativePrecedingEventReason reason;
 
     public NegativePrecedingEvent() {

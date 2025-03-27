@@ -10,7 +10,7 @@ import java.util.List;
 @Node
 public abstract class Interaction extends DatabaseObject {
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = Relationships.REFERENCE_DATABASE)
     private ReferenceDatabase referenceDatabase;
     @ReactomeProperty
     private String databaseName;

@@ -3,11 +3,12 @@ package org.reactome.server.graph.domain.model;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+
 @SuppressWarnings("unused")
 @Node
 public abstract class AbstractModifiedResidue extends DatabaseObject {
 
-    @Relationship(type = "referenceSequence")
+    @Relationship(type = Relationships.REFERENCE_SEQUENCE)
     private ReferenceSequence referenceSequence;
 
     public AbstractModifiedResidue() {}

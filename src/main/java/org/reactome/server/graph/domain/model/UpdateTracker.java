@@ -15,11 +15,11 @@ public class UpdateTracker extends MetaDatabaseObject {
     @ReactomeProperty
     private List<String> action;
 
-    @Relationship(type = "release")
+    @Relationship(type = Relationships.RELEASE)
     @ReactomeRelationship(originName = "_release")
     private Release release;
 
-    @Relationship(type = "updatedInstance")
+    @Relationship(type = Relationships.UPDATED_INSTANCES)
     private List<Trackable> updatedInstance;
 
     public UpdateTracker() {

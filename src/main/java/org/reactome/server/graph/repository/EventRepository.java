@@ -25,13 +25,13 @@ public class EventRepository {
     }
 
     public Collection<Event> getContainedEventsByStId(String stId){
-        String query = "MATCH (p:Pathway)-[r:hasEvent*]->(e:Event) WHERE p.stId = $stId RETURN e, COLLECT(r), COLLECT(p)";
+        String query = "MATCH (p:Pathway)-[r:hasEvent*1..100]->(e:Event) WHERE p.stId = $stId RETURN e, COLLECT(r), COLLECT(p)";
         return neo4jTemplate.findAll(query, Map.of("stId", stId), Event.class);
     }
 
 
     public Collection<Event> getContainedEventsByDbId(Long dbId) {
-        String query  = "MATCH (p:Pathway)-[r:hasEvent*]->(e:Event) WHERE p.dbId = $dbId RETURN e, COLLECT(r), COLLECT(p)";
+        String query  = "MATCH (p:Pathway)-[r:hasEvent*1..100]->(e:Event) WHERE p.dbId = $dbId RETURN e, COLLECT(r), COLLECT(p)";
         return neo4jTemplate.findAll(query, Map.of("dbId", dbId), Event.class);
     }
 

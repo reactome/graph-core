@@ -228,7 +228,7 @@ public class HierarchyRepository {
 
 
     private void doHighlighting(PathwayBrowserNode node) {
-        if (node.getType().equals("TopLevelPathway")) {
+        if (node.getType().equals("TopLevelPathway")) { //FAILS HERE
             node.setClickable(true);
             node.setHighlighted(false);
         }

@@ -1,33 +1,46 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 @Node
-public class Cell extends PhysicalEntity {
-    @Relationship(type = "RNAMarker")
+public class Cell extends PhysicalEntity implements CompositionAggregator {
+    @Relationship(type = Relationships.RNA_MARKER)
     private List<EntityWithAccessionedSequence> RNAMarker;
 
-    @Relationship(type = "markerReference")
+    @Relationship(type = Relationships.MARKER_REFERENCE)
     private List<MarkerReference> markerReference;
 
-    @Relationship(type = "organ")
+    @Relationship(type = Relationships.ORGAN)
     private Anatomy organ;
 
-    @Relationship(type = "proteinMarker")
+    @Relationship(type = Relationships.PROTEIN_MARKER)
     private List<EntityWithAccessionedSequence> proteinMarker;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private List<Taxon> species;
 
-    @Relationship(type = "tissue")
+    @Relationship(type = Relationships.TISSUE)
     private Anatomy tissue;
 
-    @Relationship(type = "tissueLayer")
+    @Relationship(type = Relationships.TISSUE_LAYER)
     private Anatomy tissueLayer;
+
+    @Override
+    public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
+        return Stream.of(
+                Has.Util.wrapUniqueElements(RNAMarker, "rnaMarker"),
+                Has.Util.wrapUniqueElements(proteinMarker, "proteinMarker")
+        );
+    }
 
     public Cell() {
 

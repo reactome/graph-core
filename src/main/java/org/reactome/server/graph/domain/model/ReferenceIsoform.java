@@ -13,10 +13,12 @@ public class ReferenceIsoform extends ReferenceGeneProduct {
     @ReactomeProperty
     private String variantIdentifier;
 
-    @Relationship(type = "isoformParent")
+    @Relationship(type = Relationships.ISOFORM_PARENT)
     private List<ReferenceGeneProduct> isoformParent;
 
-    public ReferenceIsoform() {}
+    public ReferenceIsoform() {
+        super();
+    }
 
     public String getVariantIdentifier() {
         return this.variantIdentifier;

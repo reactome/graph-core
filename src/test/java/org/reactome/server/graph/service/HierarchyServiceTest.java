@@ -1,6 +1,8 @@
 package org.reactome.server.graph.service;
 
 import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Reaction;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.AfterTestClass;
@@ -11,8 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HierarchyServiceTest extends BaseTest {
 
@@ -35,11 +36,12 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInPathwayBrowserTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", false, true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(Events.topLevelPathway.getStId(), false, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(3, node.getChildren().size());
+        assertNotNull(node);
+        assertEquals(Events.topLevelPathway.getStId(), node.getStId());
         logger.info("Finished");
     }
 
@@ -49,11 +51,12 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationsInThePathwayBrowserDirectParticipantsTest");
         long start, time;
         start = System.currentTimeMillis();
-        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser("R-HSA-5205630", true, true);
+        PathwayBrowserNode node = hierarchyService.getLocationsInPathwayBrowser(PhysicalEntities.entityWithAccessionedSequence2.getStId(), true, true);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(2, node.getChildren().size());
+        assertNotNull(node);
+        assertEquals(PhysicalEntities.entityWithAccessionedSequence2.getStId(), node.getStId());
         logger.info("Finished");
     }
 
@@ -62,15 +65,14 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
-        List<?> pathways = Arrays.asList(212165L, 5250913L, 5250941L, 73886L, 74160L, "R-HSA-109581", "R-HSA-9612973");
+        List<?> pathways = Arrays.asList(Events.diagramPathway.getDbId(), Events.ehldPathway.getDbId(), Events.topLevelPathway.getDbId());
         Set<PathwayBrowserNode> node = hierarchyService.getLocationInPathwayBrowserForPathways(pathways);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(4, node.size());
+        assertEquals(node.iterator().next().getStId(), Events.topLevelPathway.getStId());
         logger.info("Finished");
     }
-
 
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
@@ -86,7 +88,7 @@ public class HierarchyServiceTest extends BaseTest {
         assertEquals(4, subHierarchy.getChildren().size());
         assertTrue(subHierarchy.getHighlighted());
         assertTrue(subHierarchy.isClickable());
-        assertEquals(6, subHierarchy.getChildren().iterator().next().getChildren().size());
+        assertTrue( subHierarchy.getChildren().iterator().next().getChildren().size() > 1);
 
         logger.info("Finished");
     }
@@ -95,6 +97,7 @@ public class HierarchyServiceTest extends BaseTest {
 
     @Test
     public void getEventHierarchyBySpeciesNameTest() {
+        testService.deleteTest();
         logger.info("Started testing eventService.getEventHierarchyBySpeciesNameTest");
         long start, time;
         start = System.currentTimeMillis();

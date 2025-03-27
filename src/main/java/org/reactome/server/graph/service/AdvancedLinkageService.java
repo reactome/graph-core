@@ -38,7 +38,9 @@ public class AdvancedLinkageService {
     public Collection<Referrals> getReferralsTo(Object identifier){
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return referralsLinkageRepository.getReferralsTo(id);
+             Collection<Referrals>referrals = referralsLinkageRepository.getReferralsTo(id);
+            System.out.println(referrals);
+             return referrals;
         } else if (DatabaseObjectUtils.isDbId(id)) {
             return referralsLinkageRepository.getReferralsTo(Long.parseLong(id));
         }

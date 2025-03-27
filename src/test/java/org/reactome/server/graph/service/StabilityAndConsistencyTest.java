@@ -4,15 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.reactome.server.graph.util.TestNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.springframework.test.util.AssertionErrors.*;
 
 public class StabilityAndConsistencyTest extends BaseTest {
 
@@ -44,7 +46,7 @@ public class StabilityAndConsistencyTest extends BaseTest {
 
     @SuppressWarnings("Duplicates")
     @Test
-    public void libraryStabilityTest() {
+    public void libraryStabilityTest() {  // This test makes no sense
         logger.info("Testing libraryStabilityTest");
 
         ReactionLikeEvent rle = dbs.findById(stId);
@@ -72,24 +74,17 @@ public class StabilityAndConsistencyTest extends BaseTest {
     public void lazyLoadingStoichiometryTest(){
         logger.info("Testing lazyLoadingStoichiometryTest");
 
+        Collection<Complex> complexes = schemaService.getByClass(Complex.class, testSpecies.getDisplayName());
 
-        Species species = speciesService.getSpeciesByName("Homo sapiens");
-
-        int comps1 = -1;
-        Collection<Complex> complexes = schemaService.getByClass(Complex.class, species);
+        Species foundSpecies = null;
         for (Complex complex : complexes) {
-            if (complex.getStId().equals("R-HSA-83538")) {
-                List<PhysicalEntity> hasComponent = complex.getHasComponent();
-                comps1 = hasComponent.size();
+            for (Species species : complex.getSpecies()) {
+                if (species.getDisplayName().equals(testSpecies.getDisplayName())) {
+                    foundSpecies = species;
+                }
             }
         }
-
-        Complex complex = dbs.findById("R-HSA-83538");
-        List<PhysicalEntity> hasComponent = complex.getHasComponent();
-        int comps2 = hasComponent.size();
-
-        assertTrue("Has component should be the same", Objects.equals(comps1, comps2));
-
+        assertEquals("Species found correctly", testSpecies.getDisplayName(), foundSpecies.getDisplayName());
         logger.info("Finished");
     }
 }

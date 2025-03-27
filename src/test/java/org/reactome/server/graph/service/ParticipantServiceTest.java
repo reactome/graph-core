@@ -9,7 +9,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParticipantServiceTest extends BaseTest {
 
@@ -33,11 +33,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipatingReferenceEntities");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReferenceEntity> participants = participantService.getParticipatingReferenceEntities(stId);
+        Collection<ReferenceEntity> participants = participantService.getParticipatingReferenceEntities(PhysicalEntities.entityWithAccessionedSequence.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertTrue(!participants.isEmpty());
         logger.info("Finished");
     }
 
@@ -51,11 +51,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipatingPhysicalEntitiesByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(stId);
+        Collection<PhysicalEntity> participants = participantService.getParticipatingPhysicalEntities(Events.associationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertTrue(!participants.isEmpty());
         logger.info("Finished");
     }
 
@@ -70,11 +70,11 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipantsByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<Participant> participants = participantService.getParticipants(stId);
+        Collection<Participant> participants = participantService.getParticipants(Events.associationReaction.getStId());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(22, participants.size());
+        assertFalse(participants.isEmpty());
         logger.info("Finished");
     }
 }

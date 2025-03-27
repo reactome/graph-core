@@ -24,14 +24,17 @@ public abstract class ReferenceEntity extends DatabaseObject {
     @ReactomeProperty(addedField = true)
     private String url;
 
-    @Relationship(type = "crossReference")
+    @ReactomeProperty(addedField = true)
+    private String moleculeType;
+
+    @Relationship(type =  Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = Relationships.REFERENCE_DATABASE)
     private ReferenceDatabase referenceDatabase;
 
     @ReactomeRelationship(addedField = true)
-    @Relationship(type = "referenceEntity", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.REFERENCE_ENTITY, direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> physicalEntity;
 
     public ReferenceEntity() {}
@@ -104,5 +107,13 @@ public abstract class ReferenceEntity extends DatabaseObject {
 
     public void setPhysicalEntity(List<PhysicalEntity> physicalEntity) {
         this.physicalEntity = physicalEntity;
+    }
+
+    public String getMoleculeType() {
+        return moleculeType;
+    }
+
+    public void setMoleculeType(String moleculeType) {
+        this.moleculeType = moleculeType;
     }
 }

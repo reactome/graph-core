@@ -1,14 +1,19 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 @SuppressWarnings({"unused"})
 
@@ -32,19 +37,19 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @ReactomeProperty(addedField = true)
     private String speciesName;
 
-    @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.AUTHORED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> authored;
 
-    @Relationship(type = "crossReference")
+    @Relationship(type = Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "compartment")
+    @Relationship(type = Relationships.COMPARTMENT)
     private SortedSet<HasCompartment> compartment;
 
-    @Relationship(type = "disease")
+    @Relationship(type = Relationships.DISEASE)
     private List<Disease> disease;
 
-    @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.EDITED, direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
     /**
@@ -52,7 +57,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
      */
     @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "hasEvent", direction=Relationship.Direction.INCOMING)
+    @Relationship(type = "hasEvent", direction = Relationship.Direction.INCOMING)
     private List<Pathway> eventOf;
 
     @Relationship(type = "evidenceType")
@@ -64,12 +69,8 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @Relationship(type = "precedingEvent")
     private List<Event> precedingEvent;
 
-    /**
-     * followingEvent is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
-    @Relationship(type = "precedingEvent", direction=Relationship.Direction.INCOMING)
+    @Relationship(type = "precedingEvent", direction = Relationship.Direction.INCOMING)
     private List<Event> followingEvent;
 
     @Relationship(type = "goBiologicalProcess")
@@ -126,7 +127,8 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     private List<UpdateTracker> updateTrackers;
 
 
-    public Event() {}
+    public Event() {
+    }
 
     public Event(Long dbId) {
         super(dbId);
@@ -205,30 +207,25 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         this.crossReference = crossReference;
     }
 
-    public List<Compartment> getCompartment() {
-        if(compartment == null) return null;
-        List<Compartment> rtn = new ArrayList<>();
-        for (HasCompartment c : compartment) {
-            rtn.add(c.getCompartment());
-        }
-        return rtn;
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public SortedSet<HasCompartment> getHasCompartment() {
+        return this.compartment;
     }
 
-    // TODO This setCompartment break the reflection for testing against Relational DB. Renaming it fix the test, check impact
+    @JsonView(StoichiometryView.Nested.class)
     public void setHasCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<Compartment> getCompartment() {
+        return Has.Util.expandStoichiometry(compartment);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public void setCompartment(List<Compartment> compartment) {
-        this.compartment = new TreeSet<>();
-        int order = 0;
-        for (Compartment c : compartment) {
-            HasCompartment hc = new HasCompartment();
-//            hc.setSource(this);
-            hc.setCompartment(c);
-            hc.setOrder(order++);
-            this.compartment.add(hc);
-        }
+        this.compartment = Has.Util.aggregateStoichiometry(compartment, HasCompartment::new);
     }
 
     public List<Disease> getDisease() {
@@ -404,7 +401,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         return deleted;
     }
 
-    public void setDeletedList(List<Deleted> deleted) {
+    public void setDeleted(List<Deleted> deleted) {
         this.deleted = deleted;
     }
 

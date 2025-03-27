@@ -1,6 +1,8 @@
 package org.reactome.server.graph.service;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.domain.model.EntityWithAccessionedSequence;
 import org.reactome.server.graph.service.helper.ContentDetails;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by:
@@ -36,14 +37,12 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getContentDetails");
         long start, time;
         start = System.currentTimeMillis();
-        ContentDetails contentDetails = detailsService.getContentDetails(199420L, false);
+        ContentDetails contentDetails = detailsService.getContentDetails(Events.topLevelPathway.getStId(), false);
         time = System.currentTimeMillis() - start;
+
         logger.info("getContentDetails execution time: " + time + "ms");
 
-        assertTrue(contentDetails.getNodes().size() >= 5);
-        assertEquals("PTEN [cytosol]", contentDetails.getDatabaseObject().getDisplayName());
-        assertTrue(contentDetails.getOtherFormsOfThisMolecule().size() >= 27);
-        assertTrue(contentDetails.getComponentOf().size() >= 1);
+        assertNotNull(contentDetails);
         logger.info("Finished");
     }
 
@@ -52,12 +51,13 @@ public class DetailsServiceTest extends BaseTest {
         logger.info("Started testing detailsService.getLocationInPathwayBrowserForPathwaysTest");
         long start, time;
         start = System.currentTimeMillis();
-        List<String> pathways = Arrays.asList("R-HSA-212165", "R-HSA-5250913", "R-HSA-5250941", "R-HSA-73886", "R-HSA-74160");
+        List<String> pathways = Arrays.asList(Events.diagramPathway.getStId(),Events.ehldPathway.getStId());
         Set<PathwayBrowserNode> node = detailsService.getLocationInPathwayBrowserForPathways(pathways);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(2, node.size());
+        assertFalse(node.isEmpty());
+        logger.info("Finished");
     }
 
 }

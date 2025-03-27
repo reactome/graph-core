@@ -10,7 +10,7 @@ public class ModifiedNucleotide extends TranscriptionalModification {
     @ReactomeProperty
     private Integer coordinate;
 
-    @Relationship(type = "modification")
+    @Relationship(type = Relationships.MODIFICATION)
     private DatabaseObject modification;
 
     public ModifiedNucleotide() {

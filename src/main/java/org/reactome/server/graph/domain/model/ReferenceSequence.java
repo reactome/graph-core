@@ -27,10 +27,13 @@ public abstract class ReferenceSequence extends ReferenceEntity {
     @ReactomeProperty
     private Integer sequenceLength;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private Species species;
 
-    public ReferenceSequence() {}
+    public ReferenceSequence() {
+        super();
+        this.setMoleculeType("Entity");
+    }
 
     public String getChecksum() {
         return checksum;

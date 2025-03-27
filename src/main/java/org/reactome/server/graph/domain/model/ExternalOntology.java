@@ -23,10 +23,10 @@ public abstract class ExternalOntology extends DatabaseObject {
     @ReactomeProperty(addedField = true)
     private String url;
 
-    @Relationship(type = "instanceOf")
+    @Relationship(type = Relationships.INSTANCE_OF)
     private List<ExternalOntology> instanceOf;
 
-    @Relationship(type = "referenceDatabase")
+    @Relationship(type = Relationships.REFERENCE_DATABASE)
     private ReferenceDatabase referenceDatabase;
 
     public ExternalOntology() {}

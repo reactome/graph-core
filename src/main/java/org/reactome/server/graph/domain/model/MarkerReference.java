@@ -8,10 +8,10 @@ import java.util.List;
 @Node
 public class MarkerReference extends ControlReference {
 
-    @Relationship(type = "marker")
+    @Relationship(type = Relationships.MARKER)
     private EntityWithAccessionedSequence marker;
 
-    @Relationship(type = "cell")
+    @Relationship(type = Relationships.CELL)
     private List<Cell> cell;
 
     public MarkerReference() {

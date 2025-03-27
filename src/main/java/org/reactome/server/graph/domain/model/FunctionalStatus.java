@@ -7,10 +7,10 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Node
 public class FunctionalStatus extends DatabaseObject {
 
-    @Relationship(type = "functionalStatusType")
+    @Relationship(type = Relationships.FUNCTIONAL_STATUS_TYPE)
     private FunctionalStatusType functionalStatusType;
 
-    @Relationship(type = "structuralVariant")
+    @Relationship(type = Relationships.STRUCTURAL_VARIANT)
     private SequenceOntology structuralVariant;
     
     public FunctionalStatus() {}

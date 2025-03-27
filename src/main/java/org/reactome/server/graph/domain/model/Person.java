@@ -25,15 +25,15 @@ public class Person extends DatabaseObject {
     @ReactomeProperty
     private String surname;
 
-    @Relationship(type = "affiliation")
+    @Relationship(type = Relationships.AFFILIATION)
     private List<Affiliation> affiliation;
 
     @Deprecated
-    @Relationship(type = "crossReference")
+    @Relationship(type = Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
     @ReactomeTransient
-    @Relationship(type = "author")
+    @Relationship(type = Relationships.AUTHOR)
     private List<AuthorPublication> publicationAuthorList;
 
     public Person() {}

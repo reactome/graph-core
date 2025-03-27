@@ -8,7 +8,7 @@ import java.util.List;
 @Node
 public class InteractionEvent extends Event {
 
-    @Relationship(type = "partners")
+    @Relationship(type = Relationships.PARTNERS)
     private List<PhysicalEntity> partners;
 
     public InteractionEvent() { }

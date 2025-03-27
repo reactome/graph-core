@@ -17,10 +17,10 @@ public class SimpleEntity extends PhysicalEntity {
     @ReactomeProperty(addedField = true)
     private String referenceType;
 
-    @Relationship(type = "referenceEntity")
+    @Relationship(type = Relationships.REFERENCE_ENTITY)
     private ReferenceMolecule referenceEntity;
 
-    @Relationship(type = "species")
+    @Relationship(type = Relationships.SPECIES)
     private Species species;
 
     public SimpleEntity() {}

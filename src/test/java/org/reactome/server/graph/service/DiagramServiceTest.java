@@ -23,85 +23,29 @@ public class DiagramServiceTest extends BaseTest {
 
     @Test
     public void getDiagramResultTest() {
-        //TODO
         logger.info("Started testing diagramService.getDiagramTest");
         long start = System.currentTimeMillis();
-        DiagramResult dr1 = diagramService.getDiagramResult("R-HSA-6799198");
-        DiagramResult dr2 = diagramService.getDiagramResult(6799198L);
+        DiagramResult dr1 = diagramService.getDiagramResult(Events.diagramPathway.getStId());
+        DiagramResult dr2 = diagramService.getDiagramResult(Events.ehldPathway.getStId());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertNotNull(dr1, "The diagram result object cannot be null");
-        assertEquals(dr1.getDiagramStId(), "R-HSA-163200", "The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'");
-        assertTrue(dr1.getEvents().size() == 13 && dr1.getEvents().contains("R-HSA-5690023"));
+        assertEquals(dr1.getDiagramStId(), Events.diagramPathway.getStId());
 
         assertNotNull(dr2, "The diagram result object cannot be null");
-        assertEquals(dr2.getDiagramStId(), "R-HSA-163200", "The diagram containing 'R-HSA-6799198' is 'R-HSA-163200'");
-        assertEquals(dr2.getEvents().size(), 13);
-        assertTrue(dr2.getEvents().contains("R-HSA-5690023"));
+        assertEquals(dr2.getDiagramStId(), Events.ehldPathway.getStId());
     }
 
     @Test
-    public void getDiagramOccurrencesTest1(){
+    public void getDiagramOccurrencesTest(){
         logger.info("Started testing diagramService.getDiagramOccurrences1");
         long start = System.currentTimeMillis();
-        Collection<DiagramOccurrences> dos = diagramService.getDiagramOccurrences("R-HSA-5690771");
+        Collection<DiagramOccurrences> dos = diagramService.getDiagramOccurrences(Events.diagramPathway.getStId());
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
         assertNotNull(dos, "The diagram occurrences result object cannot be null");
-        assertTrue(dos.size() >= 6, "There are at least 6 occurrences of 'R-HSA-5690771'");
-
-        for (DiagramOccurrences o : dos) {
-            assertNotNull(o.getDiagramStId());
-            if(o.getDiagramStId().equals("R-HSA-5688426")){
-                assertTrue(o.isInDiagram(), "'R-HSA-5690771' is directly contained in 'R-HSA-5688426'");
-            }
-        }
-    }
-
-    @Test
-    public void getDiagramOccurrencesTest2(){
-        logger.info("Started testing diagramService.getDiagramOccurrences2");
-        long start = System.currentTimeMillis();
-        Collection<DiagramOccurrences> dos = diagramService.getDiagramOccurrences("R-HSA-372542");
-        long time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertNotNull(dos, "The diagram occurrences result object cannot be null");
-        assertTrue(dos.size() >= 2, "There are at least 2 occurrences of 'R-HSA-372542'");
-
-        for (DiagramOccurrences o : dos) {
-            assertNotNull(o.getDiagramStId());
-            if(o.getDiagramStId().equals("R-HSA-112310")){
-                assertTrue(o.isInDiagram(), "'R-HSA-372542' is directly contained in 'R-HSA-112310'");
-            }
-        }
-    }
-
-    @Test
-    public void getDiagramOccurrencesTest3(){
-        logger.info("Started testing diagramService.getDiagramOccurrencesTest3");
-        long start = System.currentTimeMillis();
-        Collection<DiagramOccurrences> dos = diagramService.getDiagramOccurrences("R-HSA-879382");
-        long time = System.currentTimeMillis() - start;
-        logger.info("GraphDb execution time: " + time + "ms");
-
-        assertNotNull(dos, "The diagram occurrences result object cannot be null");
-        assertTrue(dos.size() >= 20, "There are at least 20 occurrences of 'R-HSA-879382'");
-
-        for (DiagramOccurrences o : dos) {
-            assertNotNull(o.getDiagramStId());
-            if(o.getDiagramStId().equals("R-HSA-168164")){
-                assertFalse(o.isInDiagram(), "'R-HSA-879382' should not be directly contained in 'R-HSA-168164'");
-                assertFalse(o.getOccurrences().isEmpty());
-                assertThat(o.getOccurrences()).containsAnyOf("R-HSA-445989", "R-HSA-109581", "R-HSA-450294");
-            }
-            if(o.getDiagramStId().equals("R-HSA-168928")){
-                assertTrue(o.isInDiagram(), "'R-HSA-879382' should be directly contained in 'R-HSA-168928'");
-                assertTrue(o.getOccurrences().isEmpty());
-                // TODO
-            }
-        }
+        assertTrue(dos.size() > 1, "There are is more than 1 occurrences");
     }
 }

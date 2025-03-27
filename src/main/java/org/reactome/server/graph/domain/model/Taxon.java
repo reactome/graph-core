@@ -16,10 +16,10 @@ public class Taxon extends DatabaseObject {
     private String taxId;
 
     @Deprecated
-    @Relationship(type = "crossReference")
+    @Relationship(type = Relationships.CROSS_REFERENCE)
     private List<DatabaseIdentifier> crossReference;
 
-    @Relationship(type = "superTaxon")
+    @Relationship(type = Relationships.SUPER_TAXON)
     private Taxon superTaxon;
     
     public Taxon() {}

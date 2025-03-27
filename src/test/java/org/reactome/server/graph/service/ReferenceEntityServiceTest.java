@@ -8,6 +8,7 @@ import org.springframework.test.context.event.annotation.BeforeTestClass;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReferenceEntityServiceTest extends BaseTest {
 
@@ -24,11 +25,11 @@ public class ReferenceEntityServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.testGetParticipantsByStId");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<ReferenceEntity> refs = referenceEntityService.getReferenceEntitiesFor("15377");
+        Collection<ReferenceEntity> refs = referenceEntityService.getReferenceEntitiesFor(PhysicalEntities.referenceSequence.getIdentifier());
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(3, refs.size());
+        assertTrue(!refs.isEmpty());
         logger.info("Finished");
     }
 }

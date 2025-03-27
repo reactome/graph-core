@@ -15,7 +15,6 @@ import org.springframework.lang.NonNull;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -57,10 +56,10 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @JsonIgnore
     private transient String oldStId;
 
-    @Relationship(type = "created", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.CREATED, direction = Relationship.Direction.INCOMING)
     private InstanceEdit created;
 
-    @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = Relationships.MODIFIED, direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
 
     public DatabaseObject() {
@@ -241,24 +240,19 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
                 }
 
                 if (Collection.class.isAssignableFrom(methodReturnClazz)) {
-                    ParameterizedType stringListType = (ParameterizedType) method.getGenericReturnType();
-                    Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
-                    String clazz = type.getSimpleName();
-                    if (DatabaseObject.class.isAssignableFrom(type)) {
-                        Collection<T> collection = (Collection<T>) method.invoke(this);
-                        if (collection != null) {
-                            for (DatabaseObject obj : collection) {
-                                DatabaseObject object = obj;
-                                if (object != null) {
-                                    if (object.preventLazyLoading == null) {
-                                        object.preventLazyLoading = false;
-                                    }
-                                    if (object.preventLazyLoading != preventLazyLoading) {
-                                        object.preventLazyLoading(preventLazyLoading);
-                                    }
-                                }
-                            }
+                    Collection<Object> collection = (Collection<Object>) method.invoke(this);
+                    if (collection == null) continue;
+
+                    for (Object obj : collection) {
+                        if (obj == null || !(obj instanceof DatabaseObject)) continue;
+                        DatabaseObject object = (DatabaseObject) obj;
+                        if (object.preventLazyLoading == null) {
+                            object.preventLazyLoading = false;
                         }
+                        if (object.preventLazyLoading != preventLazyLoading) {
+                            object.preventLazyLoading(preventLazyLoading);
+                        }
+
                     }
                 }
 
