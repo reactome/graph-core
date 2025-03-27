@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * This annotation is used to mark primitive fields that should be filled during initial data import.
  *
- * @author Florian Korninger <florian.korninger@ebi.ac.uk>
+ * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  */
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
