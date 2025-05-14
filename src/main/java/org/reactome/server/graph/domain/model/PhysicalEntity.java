@@ -210,14 +210,20 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.catalystActivities = catalystActivities;
     }
 
-    public List<Compartment> getCompartment() {
-       return Has.Util.expandStoichiometry(compartment);
-    }
-
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
-    public void setCompartments(SortedSet<HasCompartment> compartment) {
+    public SortedSet<HasCompartment> getHasCompartment() {
+        return this.compartment;
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setHasCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<Compartment> getCompartment() {
+        return Has.Util.expandStoichiometry(compartment);
     }
 
     @JsonView(StoichiometryView.Flatten.class)
