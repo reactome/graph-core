@@ -55,7 +55,7 @@ public class Pathway extends Event implements CompositionAggregator {
 
     @Override
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
-        return Stream.of(hasEvent, hasEncapsulatedEvent);
+        return Stream.of(hasEvent); // removed hasEncapsulatedEvent because of infinite loop of composition for instance between R-HSA-442755 -[:hasEvent]-> R-HSA-9609736 -[:hasEncapsulatedEvent]-> R-HSA-442755
     }
 
     public Pathway() {
