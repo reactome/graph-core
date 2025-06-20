@@ -43,13 +43,6 @@ public class GO_CellularComponent extends GO_Term {
         this.hasPart = hasPart;
     }
 
-    public List<GO_CellularComponent> getInstanceOf() {
-        return instanceOf;
-    }
-
-    public void setInstanceOf(List<GO_CellularComponent> instanceOf) {
-        this.instanceOf = instanceOf;
-    }
 
     public List<GO_CellularComponent> getSurroundedBy() {
         return surroundedBy;

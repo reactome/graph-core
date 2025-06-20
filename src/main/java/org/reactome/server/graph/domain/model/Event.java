@@ -31,6 +31,8 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     private String releaseStatus;
     @ReactomeProperty(addedField = true)
     private String speciesName;
+    @ReactomeProperty(originName = "_doRelease")
+    private Boolean doRelease;
 
     @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> authored;
@@ -415,5 +417,14 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
 
     public void setUpdateTrackers(List<UpdateTracker> updateTrackers) {
         this.updateTrackers = updateTrackers;
+    }
+    
+
+    public Boolean getDoRelease() {
+        return doRelease;
+    }
+
+    public void setDoRelease(Boolean doRelease) {
+        this.doRelease = doRelease;
     }
 }
