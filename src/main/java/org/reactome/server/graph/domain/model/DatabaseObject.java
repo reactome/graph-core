@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.relationship.ModifiedList;
 import org.reactome.server.graph.domain.result.DatabaseObjectLike;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -68,7 +71,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     // This is a list of InstanceEdits that have modified this DatabaseObject.
     // So that we can track all modifications, not just the most recent one.
     @Relationship(type = "modifiedList", direction = Relationship.Direction.INCOMING)
-    private List<InstanceEdit> modifiedList;
+    private SortedSet<ModifiedList> modifiedList;
     
     @Relationship(type = "stableIdentifier")
     private StableIdentifier stableIdentifier;
@@ -98,11 +101,29 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     }
 
     public List<InstanceEdit> getModifiedList() {
-        return modifiedList;
+        if (this.modifiedList == null || this.modifiedList.isEmpty()) {
+            return null;
+        }
+
+        List<InstanceEdit> rtn = new ArrayList<>();
+        for (ModifiedList modified : this.modifiedList) {
+            rtn.add(modified.getInstanceEdit());
+        }
+        return rtn;
     }
 
     public void setModifiedList(List<InstanceEdit> modifiedList) {
-        this.modifiedList = modifiedList;
+        if (modifiedList == null || modifiedList.isEmpty()) {
+            return;
+        }   
+        this.modifiedList = new TreeSet<>();
+        int order = 0;
+        for (InstanceEdit instanceEdit : modifiedList) {
+            ModifiedList aux = new ModifiedList();
+            aux.setInstanceEdit(instanceEdit);
+            aux.setOrder(order++);
+            this.modifiedList.add(aux);
+        }
     }
 
     public Long getDbId() {

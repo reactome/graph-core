@@ -21,18 +21,5 @@ public abstract class GO_Term extends ExternalOntology {
         setDbId(dbId);
     }
 
-
-    /**
-     * Keep this method for backward compatibility.
-     * @return
-     */
-    public String getAccession() {
-        return getIdentifier();
-    }
-
-    public void setAccession(String accession) {
-        setIdentifier(accession);
-    }
-
 }
 
