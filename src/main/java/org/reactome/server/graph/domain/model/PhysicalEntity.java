@@ -2,10 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
-import org.reactome.server.graph.domain.annotations.ReactomeTransient;
-import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.*;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -212,6 +209,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getCompartment")
     public SortedSet<HasCompartment> getHasCompartment() {
         return this.compartment;
     }
@@ -398,6 +396,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getConsumedByEvent")
     public List<InputForReactionLikeEvent> getInputFor() {
         return consumedByEvent;
     }
@@ -409,6 +408,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getProducedByEvent")
     public List<OutputForReactionLikeEvent> getOutputFor() {
         return producedByEvent;
     }

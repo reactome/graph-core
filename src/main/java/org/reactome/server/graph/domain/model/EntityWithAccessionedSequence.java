@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
@@ -72,6 +73,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getHasModifiedResidue")
     public SortedSet<HasModifiedResidue> getModifiedResidues() {
         return hasModifiedResidue;
     }

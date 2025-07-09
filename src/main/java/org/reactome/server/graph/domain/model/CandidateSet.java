@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
 import org.reactome.server.graph.domain.relationship.Has;
@@ -33,6 +34,7 @@ public class CandidateSet extends EntitySet implements CompositionAggregator {
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getHasCandidate")
     public SortedSet<HasCandidate> getCandidates() {
         return hasCandidate;
     }

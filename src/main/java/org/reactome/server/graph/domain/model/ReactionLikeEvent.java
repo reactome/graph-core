@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
@@ -203,6 +204,7 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getInput")
     public Set<Input> getInputs() {
         return this.input;
     }
@@ -233,6 +235,7 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getOutput")
     public Set<Output> getOutputs() {
         return this.output;
     }

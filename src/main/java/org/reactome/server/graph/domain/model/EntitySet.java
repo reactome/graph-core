@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
@@ -51,6 +52,7 @@ public abstract class EntitySet extends PhysicalEntity implements CompositionAgg
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getHasMember")
     public SortedSet<HasMember> getMembers() {
         return hasMember;
     }

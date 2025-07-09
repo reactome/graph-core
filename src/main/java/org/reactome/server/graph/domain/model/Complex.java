@@ -1,6 +1,7 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.*;
+import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
@@ -70,6 +71,7 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getHasComponent")
     public SortedSet<HasComponent> getComponents() {
         return this.hasComponent;
     }

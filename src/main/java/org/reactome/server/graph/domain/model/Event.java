@@ -2,10 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
-import org.reactome.server.graph.domain.annotations.ReactomeTransient;
-import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -209,6 +206,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getCompartment")
     public SortedSet<HasCompartment> getHasCompartment() {
         return this.compartment;
     }

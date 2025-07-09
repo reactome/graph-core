@@ -119,6 +119,7 @@ public class Pathway extends Event implements CompositionAggregator {
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getHasEvent")
     public SortedSet<HasEvent> getEvents() {
         return hasEvent;
     }
