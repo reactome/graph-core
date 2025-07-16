@@ -22,8 +22,7 @@ import java.util.Objects;
 
 /**
  * DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
- * <p>
- * <p>
+ *
  * For the JsonIdentityInfo, when assigning generator as ObjectIdGenerators.PropertyGenerator could
  * slow down the json serialisation due to a paging problem. Right now the @JsonIgnore annotations
  * have been added to avoid serialising the not necessary attributes, but in case those are removed

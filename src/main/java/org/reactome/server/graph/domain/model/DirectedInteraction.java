@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  *
  * Directed interactions has two properties holding a ReferenceEntity instance each. The interaction is
  *
- *   (source) -[interacts]-> (target)
+ *   (source) -[interacts]-&gt; (target)
  *
  */
 @SuppressWarnings("unused")
