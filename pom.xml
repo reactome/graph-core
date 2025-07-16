@@ -9,7 +9,7 @@
   <groupId>org.reactome.server.graph</groupId>
   <artifactId>graph-core</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Graph Core</name>
   <description>
         The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more
