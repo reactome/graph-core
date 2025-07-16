@@ -205,7 +205,6 @@
             <phase>process-sources</phase>
             <configuration>
               <weaveMainSourceFolder>true</weaveMainSourceFolder>
-              <showWeaveInfo>true</showWeaveInfo>
             </configuration>
             <goals>
               <goal>compile</goal>
