@@ -1,44 +1,61 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.reactome.maven</groupId>
         <artifactId>reactome-parent</artifactId>
-        <version>1.0.5</version>
+        <version>1.0.6</version>
     </parent>
 
     <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
-
+    <version>2.0.10</version>
     <packaging>jar</packaging>
-    <version>2.0.9</version>
-    <name>Graph Core Next Generation</name>
 
+    <name>Graph Core Next Generation</name>
     <description>
         The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more
         information visit the reactome github repository.
     </description>
-
     <url>https://github.com/reactome/graph-core</url>
-
     <organization>
-        <name>The European Bioinformatics Institute</name>
-        <url>https://www.ebi.ac.uk/</url>
+        <name>Reactome</name>
+        <url>https://reactome.org</url>
     </organization>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <developers>
         <developer>
             <id>gviteri</id>
             <name>Guilherme Viteri</name>
-            <email>gviteri@ebi.ac.uk</email>
-            <organization>http://www.ebi.ac.uk/</organization>
+            <roles>
+                <role>alumni</role>
+            </roles>
+            <organization>The European Bioinformatics Institute</organization>
+            <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
         </developer>
         <developer>
             <id>fkorn</id>
             <name>Florian Korninger</name>
+            <roles>
+                <role>alumni</role>
+            </roles>
+            <organization>The European Bioinformatics Institute</organization>
+            <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git://github.com/reactome/graph-core.git</connection>
+        <developerConnection>scm:git:ssh://github.com:reactome/graph-core.git</developerConnection>
+        <url>https://github.com/reactome/graph-core/tree/master</url>
+    </scm>
 
     <properties>
         <!--build-->
@@ -113,23 +130,61 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <!-- EBI repo -->
+        <repository>
+            <id>nexus-ebi-repo</id>
+            <name>The EBI internal repository</name>
+            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
+            <id>nexus-ebi-snapshot-repo</id>
+            <name>The EBI internal snapshot repository</name>
+            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- SBGN -->
+        <repository>
+            <id>biopax</id>
+            <name>BioPax Repository</name>
+            <url>http://www.biopax.org/m2repo/releases/</url>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>${project.artifactId}</finalName>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
             </resource>
-        </resources>
 
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>EPL-2.0.LICENSE</include>
+                </includes>
+            </resource>
+        </resources>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -158,7 +213,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>${maven.resources.version}</version>
-
                 <configuration>
                     <escapeString>\</escapeString>
                 </configuration>
@@ -243,46 +297,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>${maven.source.version}</version>
-            </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <!-- EBI repo -->
-        <repository>
-            <id>nexus-ebi-repo</id>
-            <name>The EBI internal repository</name>
-            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <!-- EBI SNAPSHOT repo -->
-        <repository>
-            <id>nexus-ebi-snapshot-repo</id>
-            <name>The EBI internal snapshot repository</name>
-            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-
-        <!-- SBGN -->
-        <repository>
-            <id>biopax</id>
-            <name>BioPax Repository</name>
-            <url>http://www.biopax.org/m2repo/releases/</url>
-        </repository>
-    </repositories>
 </project>

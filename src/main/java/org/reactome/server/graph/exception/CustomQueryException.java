@@ -1,7 +1,7 @@
 package org.reactome.server.graph.exception;
 
 /**
- * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
+ * @author Guilherme S Viteri (gviteri@ebi.ac.uk)
  */
 
 public class CustomQueryException extends Exception {

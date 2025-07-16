@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 import java.util.Objects;
 
 /**
- * ConsumedBy -> bi-directionality for
+ * ConsumedBy -&gt; bi-directionality for
  */
 @RelationshipProperties
 public class InputForReactionLikeEvent implements Comparable<InputForReactionLikeEvent> {
