@@ -23,7 +23,7 @@ import java.util.*;
  */
 @Aspect
 @Component
-public class LazyFetchAspect  {
+public class LazyFetchAspect {
     private Boolean enableAOP = true;
 
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -62,7 +62,7 @@ public class LazyFetchAspect  {
                 String setterMethod = method.getName().replaceFirst("get", "set");
                 Class<?> methodReturnClazz = method.getReturnType();
                 if (Collection.class.isAssignableFrom(methodReturnClazz)) {
-                    ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
+                    ParameterizedType stringListType = (ParameterizedType) method.getGenericReturnType();
                     Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
                     String clazz = type.getSimpleName();
 
@@ -73,8 +73,10 @@ public class LazyFetchAspect  {
                     Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction().name()), relationship.type());
                     if (lazyLoadedObjectAsCollection == null) {
                         //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
-                        if (List.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new ArrayList<>();
-                        if (Set.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new HashSet<>();
+                        if (List.class.isAssignableFrom(methodReturnClazz))
+                            lazyLoadedObjectAsCollection = new ArrayList<>();
+                        if (Set.class.isAssignableFrom(methodReturnClazz))
+                            lazyLoadedObjectAsCollection = new HashSet<>();
                     }
                     if (lazyLoadedObjectAsCollection != null) {
                         // invoke the setter in order to set the object in the target
@@ -147,7 +149,7 @@ public class LazyFetchAspect  {
         charArray[0] = Character.toLowerCase(charArray[0]); // lower the first char
         String attribute = new String(charArray);
 
-         // Look up for the given attribute in the class and after superclasses.
+        // Look up for the given attribute in the class and after superclasses.
         //noinspection ClassGetClass
         while (_clazz != null && !_clazz.getClass().equals(Object.class)) {
             for (Field field : _clazz.getDeclaredFields()) {

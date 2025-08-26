@@ -182,7 +182,7 @@ public interface PathwayRepository extends Neo4jRepository<Pathway, Long> {
             "RETURN DISTINCT p")
     Collection<Pathway> getLowerLevelPathwaysForIdentifierAndSpeciesTaxId(@Param("identifier") String identifier, @Param("taxId") String taxId);
 
-    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker*]->(:DatabaseObject{dbId:$dbId}) " +
+    @Query("OPTIONAL MATCH path=(p1:Pathway)-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator|hasComponent|hasMember|hasCandidate|repeatedUnit|proteinMarker|RNAMarker|referenceEntity*]->(:DatabaseObject{dbId:$dbId}) " +
             "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway))  " +
             "OPTIONAL MATCH (p2:Pathway{dbId:$dbId})  " +
             "WITH COLLECT(DISTINCT p1) + COLLECT(DISTINCT p2) AS ps " +

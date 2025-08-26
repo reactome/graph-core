@@ -200,7 +200,11 @@ public class DatabaseObjectUtils {
     }
 
     public static boolean isStId(String id) {
-        return id != null && id.startsWith("R");
+        return id != null && (id.startsWith("R") || id.contains(":"));
+    }
+
+    public static boolean isReferenceStId(String id) {
+        return id != null && id.contains(":");
     }
 
     public static boolean isDbId(String id) {
@@ -238,10 +242,10 @@ public class DatabaseObjectUtils {
      * @param object an object
      * @return true the object is null, an empty list or an empty string
      */
-    private static boolean isEmpty(Object object){
+    private static boolean isEmpty(Object object) {
         if (object == null) return true;
 
-        if (object instanceof Collection){
+        if (object instanceof Collection) {
             Collection c = (Collection) object;
             return c.isEmpty();
         }
@@ -342,7 +346,7 @@ public class DatabaseObjectUtils {
                         found = true;
                     }
                 }
-                if(!found) return null;
+                if (!found) return null;
             }
         }
         return properties;
