@@ -1,8 +1,8 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.reactome.server.graph.domain.annotations.*;
+import org.reactome.server.graph.domain.relationship.EventOf;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -49,13 +49,9 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @Relationship(type = "edited", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> edited;
 
-    /**
-     * eventOf is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasEvent", direction = Relationship.Direction.INCOMING)
-    private List<Pathway> eventOf;
+    private SortedSet<EventOf> eventOf;
 
     @Relationship(type = "evidenceType")
     private EvidenceType evidenceType;
@@ -246,12 +242,26 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         return evidenceType;
     }
 
-    public List<Pathway> getEventOf() {
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getEventOf")
+    public SortedSet<EventOf> getEventOfPathways() {
         return eventOf;
     }
 
-    public void setEventOf(List<Pathway> eventOf) {
+    @JsonView(StoichiometryView.Nested.class)
+    public void setEventOfPathways(SortedSet<EventOf> eventOf) {
         this.eventOf = eventOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<Pathway> getEventOf() {
+        return Has.Util.expandStoichiometry(eventOf);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setEventOf(List<Pathway> eventOf) {
+        this.eventOf = Has.Util.aggregateStoichiometry(eventOf, EventOf::new);
     }
 
     public void setEvidenceType(EvidenceType evidenceType) {

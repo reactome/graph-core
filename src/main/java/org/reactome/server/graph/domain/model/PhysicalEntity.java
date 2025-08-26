@@ -31,10 +31,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
     private InstanceEdit authored;
 
-    /**
-     * catalystActivities is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "physicalEntity", direction = Relationship.Direction.INCOMING)
     private List<CatalystActivity> catalystActivities;
@@ -94,15 +90,11 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     /**
      * negativelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
      */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
-    /**
-     * positivelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
+
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
@@ -229,23 +221,14 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.compartment = Has.Util.aggregateStoichiometry(compartment, HasCompartment::new);
     }
 
-    @JsonIgnore
+    @JsonView(StoichiometryView.Nested.class)
     public void setComponentOf(SortedSet<HasComponentForComplex> componentOf) {
         this.componentOf = componentOf;
     }
 
-    @JsonIgnore
+    @JsonView(StoichiometryView.Flatten.class)
     public void setComponentOf(List<Complex> componentOf) {
         this.componentOf = Has.Util.aggregateStoichiometry(componentOf, HasComponentForComplex::new);
-    }
-
-    public void setConsumedByEvent(List<InputForReactionLikeEvent> consumedByEvent) {
-        this.consumedByEvent = consumedByEvent;
-    }
-
-
-    public void setProducedByEvent(List<OutputForReactionLikeEvent> producedByEvent) {
-        this.producedByEvent = producedByEvent;
     }
 
 
@@ -379,14 +362,28 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.summation = summation;
     }
 
-    @JsonIgnore
+    @JsonView(StoichiometryView.Flatten.class)
     public List<Polymer> getRepeatedUnitOf() {
         return Has.Util.expandStoichiometry(repeatedUnitOf);
     }
 
-    @JsonIgnore
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getRepeatedUnitOf")
+    public Set<RepeatedUnitForPhysicalEntity> getRepeatedUnitOfPolymers() {
+        return repeatedUnitOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public List<Complex> getComponentOf() {
         return Has.Util.expandStoichiometry(componentOf);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getComponentOf")
+    public Set<HasComponentForComplex> getComponentOfComplexes() {
+        return componentOf;
     }
 
     @JsonView(StoichiometryView.Flatten.class)
@@ -396,9 +393,22 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
+    public void setConsumedByEvent(List<ReactionLikeEvent> consumedByEvent) {
+        this.consumedByEvent = new ArrayList<>(Has.Util.aggregateStoichiometry(consumedByEvent, InputForReactionLikeEvent::new));
+    }
+
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
     @ReactomeProjectedRelationship("getConsumedByEvent")
     public List<InputForReactionLikeEvent> getInputFor() {
         return consumedByEvent;
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public void setInputFor(List<InputForReactionLikeEvent> consumedByEvent) {
+        this.consumedByEvent = consumedByEvent;
     }
 
     @JsonView(StoichiometryView.Flatten.class)
@@ -406,11 +416,21 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         return Has.Util.expandStoichiometry(producedByEvent);
     }
 
+    public void setProducedByEvent(List<ReactionLikeEvent> producedByEvent) {
+        this.producedByEvent = new ArrayList<>(Has.Util.aggregateStoichiometry(producedByEvent, OutputForReactionLikeEvent::new));
+    }
+
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     @ReactomeProjectedRelationship("getProducedByEvent")
     public List<OutputForReactionLikeEvent> getOutputFor() {
         return producedByEvent;
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public void setOutputFor(List<OutputForReactionLikeEvent> producedByEvent) {
+        this.producedByEvent = producedByEvent;
     }
 
     public List<MarkerReference> getMarkingReferences() {

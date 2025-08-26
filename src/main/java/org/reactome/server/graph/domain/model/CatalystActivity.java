@@ -21,10 +21,6 @@ public class CatalystActivity extends DatabaseObject  {
     @Relationship(type = "activity")
     private GO_MolecularFunction activity;
 
-    /**
-     * catalyzedEvent is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "catalystActivity", direction = Relationship.Direction.INCOMING)
     private List<ReactionLikeEvent> catalyzedEvent;

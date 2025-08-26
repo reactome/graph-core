@@ -104,6 +104,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
     @ReactomeSchemaIgnore
     @Override
     public String getClassName() {
+        if (referenceType == null) return super.getClassName();
         switch (referenceType) {
             case ("ReferenceGeneProduct"):
                 return "Protein";
