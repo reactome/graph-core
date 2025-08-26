@@ -104,4 +104,9 @@ public class DiagramServiceTest extends BaseTest {
             }
         }
     }
+    //TODO create tests for new interactor logic
+    // all in occurrences should be in occurrencesInteractor
+    // some pathway should contain just interactors but no direct entities
+    // some pathway should have no occurrences but just occurencesInteractor (if the subpathway is only hit because of interactors, but no direct participant)
+
 }
