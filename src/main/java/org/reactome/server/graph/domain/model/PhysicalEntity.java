@@ -1,6 +1,5 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.*;
@@ -38,13 +37,9 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "compartment")
     private SortedSet<HasCompartment> compartment;
 
-    /**
-     * ComponentOf is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasComponent", direction = Relationship.Direction.INCOMING)
-    private SortedSet<HasComponentForComplex> componentOf;
+    private SortedSet<ComponentOf> componentOf;
 
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
@@ -68,10 +63,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
-    /**
-     * isRequired is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<Requirement> isRequired;
@@ -79,13 +70,13 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    /**
-     * MemberOf is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasMember", direction = Relationship.Direction.INCOMING)
-    private List<PhysicalEntity> memberOf;
+    private SortedSet<MemberOf> memberOf;
+
+    @ReactomeTransient
+    @Relationship(type = "hasCandidate", direction = Relationship.Direction.INCOMING)
+    private SortedSet<CandidateOf> candidateOf;
 
     /**
      * negativelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
@@ -99,7 +90,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "repeatedUnit", direction = Relationship.Direction.INCOMING)
     private Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf;
@@ -221,17 +211,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.compartment = Has.Util.aggregateStoichiometry(compartment, HasCompartment::new);
     }
 
-    @JsonView(StoichiometryView.Nested.class)
-    public void setComponentOf(SortedSet<HasComponentForComplex> componentOf) {
-        this.componentOf = componentOf;
-    }
-
-    @JsonView(StoichiometryView.Flatten.class)
-    public void setComponentOf(List<Complex> componentOf) {
-        this.componentOf = Has.Util.aggregateStoichiometry(componentOf, HasComponentForComplex::new);
-    }
-
-
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
     }
@@ -294,14 +273,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
 
     public void setIsRequired(List<Requirement> isRequired) {
         this.isRequired = isRequired;
-    }
-
-    public List<PhysicalEntity> getMemberOf() {
-        return memberOf;
-    }
-
-    public void setMemberOf(List<PhysicalEntity> memberOf) {
-        this.memberOf = memberOf;
     }
 
     @ReactomeSchemaIgnore
@@ -374,6 +345,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         return repeatedUnitOf;
     }
 
+    // ComponentOf
     @JsonView(StoichiometryView.Flatten.class)
     public List<Complex> getComponentOf() {
         return Has.Util.expandStoichiometry(componentOf);
@@ -382,9 +354,67 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     @ReactomeProjectedRelationship("getComponentOf")
-    public Set<HasComponentForComplex> getComponentOfComplexes() {
+    public SortedSet<ComponentOf> getComponentOfComplexes() {
         return componentOf;
     }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setComponentOfComplexes(SortedSet<ComponentOf> componentOf) {
+        this.componentOf = componentOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setComponentOf(List<Complex> componentOf) {
+        this.componentOf = Has.Util.aggregateStoichiometry(componentOf, ComponentOf::new);
+    }
+
+    // MemberOf
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<EntitySet> getMemberOf() {
+        return Has.Util.expandStoichiometry(memberOf);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getMemberOf")
+    public SortedSet<MemberOf> getMemberOfSet() {
+        return memberOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setMemberOf(List<EntitySet> memberOf) {
+        this.memberOf = Has.Util.aggregateStoichiometry(memberOf, MemberOf::new);
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setMemberOfSet(SortedSet<MemberOf> memberOf) {
+        this.memberOf = memberOf;
+    }
+
+    // CandidateOf
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<CandidateSet> getCandidateOf() {
+        return Has.Util.expandStoichiometry(candidateOf);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getCandidateOf")
+    public SortedSet<CandidateOf> getCandidateOfSet() {
+        return candidateOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setCandidateOf(List<CandidateSet> candidateOf) {
+        this.candidateOf = Has.Util.aggregateStoichiometry(candidateOf, CandidateOf::new);
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setCandidateOfSet(SortedSet<CandidateOf> candidateOf) {
+        this.candidateOf = candidateOf;
+    }
+
+    // Inputs / Outputs
 
     @JsonView(StoichiometryView.Flatten.class)
     public List<ReactionLikeEvent> getConsumedByEvent() {

@@ -5,13 +5,13 @@ import org.reactome.server.graph.domain.model.Complex;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 
 /**
- * HasComponentForComplex is the incoming relationship for HasComponent (SDN6) is the relationship entity of Complexes.
+ * ComponentOf is the incoming relationship for HasComponent (SDN6) is the relationship entity of Complexes.
  * It is needed to specify the stoichiometry and order of
  * components.
  */
 @SuppressWarnings("unused")
 @RelationshipProperties
-public class HasComponentForComplex extends Has<Complex> {
+public class ComponentOf extends Has<Complex> {
 
     @Override
     public String getType() {
