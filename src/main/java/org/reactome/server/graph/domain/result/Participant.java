@@ -62,6 +62,7 @@ public class Participant {
 
     private static class ParticipantRefEntities {
         private Long dbId;
+        private String stId;
         private String identifier;
         private String schemaClass;
         private String displayName;
@@ -71,6 +72,7 @@ public class Participant {
         public static ParticipantRefEntities build(Value value) {
             ParticipantRefEntities participantRefEntities = new ParticipantRefEntities();
             participantRefEntities.setDbId(value.get("dbId").asLong());
+            participantRefEntities.setStId(value.get("stid").asString());
             participantRefEntities.setIdentifier(value.get("identifier").asString());
             participantRefEntities.setSchemaClass(value.get("schemaClass").asString());
             participantRefEntities.setDisplayName(value.get("displayName").asString());
@@ -85,6 +87,14 @@ public class Participant {
 
         public void setDbId(Long dbId) {
             this.dbId = dbId;
+        }
+
+        public String getStId() {
+            return stId;
+        }
+
+        public void setStId(String stId) {
+            this.stId = stId;
         }
 
         public String getIdentifier() {
