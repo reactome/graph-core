@@ -27,21 +27,29 @@ public class AdvancedDatabaseObjectService {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
+        return this.findEnhancedObjectById(identifier, false);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier, boolean summariseReferenceEntity) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(id);
+            return advancedDatabaseObjectRepository.findEnhancedObjectById(id, summariseReferenceEntity);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id));
+            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id), summariseReferenceEntity);
         }
         return null;
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Object identifier) {
+        return this.findEnhancedObjectByIdOutgoing(identifier, false);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Object identifier, boolean summariseReferenceEntity) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(id);
+            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(id, summariseReferenceEntity);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(Long.parseLong(id));
+            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(Long.parseLong(id), summariseReferenceEntity);
         }
         return null;
     }
@@ -131,7 +139,7 @@ public class AdvancedDatabaseObjectService {
     public void customQuery(String query) {
         customQuery(query, Collections.emptyMap());
     }
-    
+
     public void customQuery(String query, Map<String, Object> parameters) {
         advancedDatabaseObjectRepository.customQuery(query, parameters);
     }

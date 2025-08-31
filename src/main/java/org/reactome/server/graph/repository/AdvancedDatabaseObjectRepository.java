@@ -98,13 +98,17 @@ public class AdvancedDatabaseObjectRepository {
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
-    public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId) {
+    public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId, boolean summariseReferenceEntity) {
         //language=cypher
         String query = "" +
                 "MATCH (root:DatabaseObject{dbId:$dbId}) " +
-                "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                "WITH collect(pe) + root as ns, root " +
-                "UNWIND ns as n " +
+                (summariseReferenceEntity ? "" +
+                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
+                        "WITH collect(pe) + root AS ns, root " +
+                        "UNWIND ns AS n "
+                        :
+                        "WITH root, root AS n "
+                ) +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "WHERE NOT m:UpdateTracker " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
@@ -120,13 +124,17 @@ public class AdvancedDatabaseObjectRepository {
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findEnhancedObjectById(String stId) {
+    public <T extends DatabaseObject> T findEnhancedObjectById(String stId, boolean summariseReferenceEntity) {
         //language=cypher
         String query = "" +
                 "MATCH (root:DatabaseObject{stId:$stId}) " +
-                "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                "WITH collect(pe) + root as ns, root " +
-                "UNWIND ns as n " +
+                (summariseReferenceEntity ? "" +
+                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
+                        "WITH collect(pe) + root AS ns, root " +
+                        "UNWIND ns AS n "
+                        :
+                        "WITH root, root AS n "
+                ) +
                 "OPTIONAL MATCH (n)-[r1]-(m) " +
                 "WHERE NOT m:UpdateTracker " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
@@ -142,13 +150,17 @@ public class AdvancedDatabaseObjectRepository {
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Long dbId) {
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Long dbId, boolean summariseReferenceEntity) {
         //language=cypher
         String query = "" +
                 "MATCH (root:DatabaseObject{dbId:$dbId}) " +
-                "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                "WITH collect(pe) + root as ns, root " +
-                "UNWIND ns as n " +
+                (summariseReferenceEntity ? "" +
+                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
+                        "WITH collect(pe) + root AS ns, root " +
+                        "UNWIND ns AS n "
+                        :
+                        "WITH root, root AS n "
+                ) +
                 "OPTIONAL MATCH (n)-[r1]->(m) " +
                 "WHERE NOT m:UpdateTracker " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
@@ -161,20 +173,24 @@ public class AdvancedDatabaseObjectRepository {
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(String stId) {
+    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(String stId, boolean summariseReferenceEntity) {
         //language=cypher
         String query = "" +
                 "MATCH (root:DatabaseObject{stId:$stId}) " +
-                "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                "WITH collect(pe) + root as ns, root " +
-                "UNWIND ns as n " +
+                (summariseReferenceEntity ? "" +
+                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
+                        "WITH collect(pe) + root AS ns, root " +
+                        "UNWIND ns AS n "
+                        :
+                        "WITH root, root AS n "
+                ) +
                 "OPTIONAL MATCH (n)-[r1]->(m) " +
                 "OPTIONAL MATCH (m)-[r2:species]->(s) " +
                 "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification|goBiologicalProcess]-(o) " +
                 "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
                 "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
                 "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  root,[collect(n), collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6)] ";
+                "RETURN  root, [collect(n), collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6)] ";
 
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
