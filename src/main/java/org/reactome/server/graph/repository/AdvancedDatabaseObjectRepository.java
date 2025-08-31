@@ -97,101 +97,91 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
+    //language=cypher
+    static final String ENHANCED_MATCH_DB_ID = "MATCH (root:DatabaseObject{dbId:$dbId}) ";
+    //language=cypher
+    static final String ENHANCED_MATCH_ST_ID = "MATCH (root:DatabaseObject{stId:$stId}) ";
+
+    //language=cypher
+    static final String ENHANCED_EXPAND_SUMMARY = "" +
+            "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
+            "WITH collect(pe) + root AS ns, root " +
+            "UNWIND ns AS n ";
+    //language=cypher
+    static final String ENHANCED_NO_EXPAND_SUMMARY = "WITH root, root AS n ";
+
+    //language=cypher
+    static final String ENHANCED_UNDIRECTED = "OPTIONAL MATCH (n)-[r1]-(m:DatabaseObject) ";
+    //language=cypher
+    static final String ENHANCED_OUTGOING = "OPTIONAL MATCH (n)-[r1]->(m:DatabaseObject) ";
+    //language=cypher
+    static final String ENHANCED_RETURN = "" +
+            "WHERE NOT m:UpdateTracker " +
+            "OPTIONAL MATCH (m)-[r2:species]->(s)" + // Group relationships from m in one OPTIONAL MATCH block
+            "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity)" +
+            "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person)" +
+            "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person)" +
+            "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment)" +
+            "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|" + // Wide relationship expansion from m
+            "                   referenceTranscript|literatureReference|marker|regulation|" +
+            "                   catalystActivity|activeUnit|activity|psiMod|modification|" +
+            "                   goBiologicalProcess]-(o)" +
+            "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person)" + // Expand authors & species from o if relevant
+            "OPTIONAL MATCH (o)-[r8:species]->(s1:Species)" +
+            "WITH root," +
+            "     collect(DISTINCT n) AS ns," +
+            "     collect(DISTINCT m) AS ms," +
+            "     collect(DISTINCT s) AS ss," +
+            "     collect(DISTINCT o) AS os," +
+            "     collect(DISTINCT p) AS ps," +
+            "     collect(DISTINCT p2) AS ps2," +
+            "     collect(DISTINCT p3) AS ps3," +
+            "     collect(DISTINCT c) AS cs," +
+            "     collect(DISTINCT s1) AS s1s," +
+            "     collect(DISTINCT rf) AS rfs," +
+            "     collect(DISTINCT r1) AS r1s," +
+            "     collect(DISTINCT r2) AS r2s," +
+            "     collect(DISTINCT r3) AS r3s," +
+            "     collect(DISTINCT r4) AS r4s," +
+            "     collect(DISTINCT r5) AS r5s," +
+            "     collect(DISTINCT r6) AS r6s," +
+            "     collect(DISTINCT r7) AS r7s," +
+            "     collect(DISTINCT r8) AS r8s," +
+            "     collect(DISTINCT r9) AS r9s " +
+            "RETURN root," +
+            "       [ns, ms, ss, os, ps, ps2, ps3, cs, s1s, rfs]," +
+            "       [r1s, r2s, r3s, r4s, r5s, r6s, r7s, r8s, r9s]";
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId, boolean summariseReferenceEntity) {
-        //language=cypher
-        String query = "" +
-                "MATCH (root:DatabaseObject{dbId:$dbId}) " +
-                (summariseReferenceEntity ? "" +
-                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                        "WITH collect(pe) + root AS ns, root " +
-                        "UNWIND ns AS n "
-                        :
-                        "WITH root, root AS n "
-                ) +
-                "OPTIONAL MATCH (n)-[r1]-(m) " +
-                "WHERE NOT m:UpdateTracker " +
-                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification|goBiologicalProcess]-(o) " +
-                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
-                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
-                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) " +
-                "OPTIONAL MATCH (o)-[r8:species]->(s1:Species) " +
-                "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity) " +
-                "RETURN root, [collect(n), collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3),collect(DISTINCT c), collect(DISTINCT s1), collect(DISTINCT rf)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6),collect(DISTINCT r7), collect(DISTINCT r8), collect(DISTINCT r9)] ";
+        String query = ENHANCED_MATCH_DB_ID +
+                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
+                + ENHANCED_UNDIRECTED
+                + ENHANCED_RETURN;
 
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectById(String stId, boolean summariseReferenceEntity) {
-        //language=cypher
-        String query = "" +
-                "MATCH (root:DatabaseObject{stId:$stId}) " +
-                (summariseReferenceEntity ? "" +
-                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                        "WITH collect(pe) + root AS ns, root " +
-                        "UNWIND ns AS n "
-                        :
-                        "WITH root, root AS n "
-                ) +
-                "OPTIONAL MATCH (n)-[r1]-(m) " +
-                "WHERE NOT m:UpdateTracker " +
-                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification|goBiologicalProcess]-(o) " +
-                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
-                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
-                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) " +
-                "OPTIONAL MATCH (o)-[r8:species]->(s1:Species) " +
-                "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity) " +
-                "RETURN root,[collect(n), collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3),collect(DISTINCT c), collect(DISTINCT s1), collect(DISTINCT rf)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6),collect(DISTINCT r7), collect(DISTINCT r8), collect(DISTINCT r9)] ";
-
+        String query = ENHANCED_MATCH_ST_ID +
+                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
+                + ENHANCED_UNDIRECTED
+                + ENHANCED_RETURN;
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Long dbId, boolean summariseReferenceEntity) {
-        //language=cypher
-        String query = "" +
-                "MATCH (root:DatabaseObject{dbId:$dbId}) " +
-                (summariseReferenceEntity ? "" +
-                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                        "WITH collect(pe) + root AS ns, root " +
-                        "UNWIND ns AS n "
-                        :
-                        "WITH root, root AS n "
-                ) +
-                "OPTIONAL MATCH (n)-[r1]->(m) " +
-                "WHERE NOT m:UpdateTracker " +
-                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification|goBiologicalProcess]-(o) " +
-                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
-                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
-                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  root,[collect(n), collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6)] ";
-
+        String query = ENHANCED_MATCH_DB_ID +
+                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
+                + ENHANCED_OUTGOING
+                + ENHANCED_RETURN;
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(String stId, boolean summariseReferenceEntity) {
-        //language=cypher
-        String query = "" +
-                "MATCH (root:DatabaseObject{stId:$stId}) " +
-                (summariseReferenceEntity ? "" +
-                        "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-                        "WITH collect(pe) + root AS ns, root " +
-                        "UNWIND ns AS n "
-                        :
-                        "WITH root, root AS n "
-                ) +
-                "OPTIONAL MATCH (n)-[r1]->(m) " +
-                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|referenceTranscript|literatureReference|marker|regulation|catalystActivity|activeUnit|activity|psiMod|modification|goBiologicalProcess]-(o) " +
-                "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " +
-                "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
-                "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-                "RETURN  root, [collect(n), collect(m), collect(s), collect(o), collect(DISTINCT p), collect(DISTINCT p2),collect(DISTINCT p3)], [collect(DISTINCT r1), collect(DISTINCT r2), collect(DISTINCT r3), collect(DISTINCT r4), collect(r5),collect(DISTINCT r6)] ";
-
+        String query = ENHANCED_MATCH_ST_ID +
+                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
+                + ENHANCED_OUTGOING
+                + ENHANCED_RETURN;
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 
