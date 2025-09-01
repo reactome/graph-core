@@ -8,6 +8,7 @@ import org.reactome.server.graph.domain.result.CustomQuery;
 import org.reactome.server.graph.domain.result.QueryResultWrapper;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.util.RepositoryUtils;
+import org.reactome.server.graph.service.helper.EnhancedQueryOptions;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -97,6 +98,7 @@ public class AdvancedDatabaseObjectRepository {
     }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
+
     //language=cypher
     static final String ENHANCED_MATCH_DB_ID = "MATCH (root:DatabaseObject{dbId:$dbId}) ";
     //language=cypher
@@ -107,6 +109,13 @@ public class AdvancedDatabaseObjectRepository {
             "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
             "WITH collect(pe) + root AS ns, root " +
             "UNWIND ns AS n ";
+
+    //language=cypher
+    static final String ENHANCED_EXPAND_SUMMARY_NO_DISEASE = "" +
+            "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity {isInDisease: false}) " +
+            "WITH collect(pe) + root AS ns, root " +
+            "UNWIND ns AS n ";
+
     //language=cypher
     static final String ENHANCED_NO_EXPAND_SUMMARY = "WITH root, root AS n ";
 
@@ -115,19 +124,22 @@ public class AdvancedDatabaseObjectRepository {
     //language=cypher
     static final String ENHANCED_OUTGOING = "OPTIONAL MATCH (n)-[r1]->(m:DatabaseObject) ";
     //language=cypher
+    static final String ENHANCED_FILTER_NO_DISEASE = "WHERE (m.isInDisease IS NULL OR m.isInDisease = false) AND not m:UpdateTracker ";
+    //language=cypher
+    static final String ENHANCED_FILTER = "WHERE not m:UpdateTracker ";
+    //language=cypher
     static final String ENHANCED_RETURN = "" +
-            "WHERE NOT m:UpdateTracker " +
-            "OPTIONAL MATCH (m)-[r2:species]->(s)" + // Group relationships from m in one OPTIONAL MATCH block
-            "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity)" +
-            "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person)" +
-            "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person)" +
-            "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment)" +
+            "OPTIONAL MATCH (m)-[r2:species]->(s) " + // Group relationships from m in one OPTIONAL MATCH block
+            "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity) " +
+            "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
+            "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
+            "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) " +
             "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|" + // Wide relationship expansion from m
             "                   referenceTranscript|literatureReference|marker|regulation|" +
             "                   catalystActivity|activeUnit|activity|psiMod|modification|" +
-            "                   goBiologicalProcess]-(o)" +
-            "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person)" + // Expand authors & species from o if relevant
-            "OPTIONAL MATCH (o)-[r8:species]->(s1:Species)" +
+            "                   goBiologicalProcess]-(o) " +
+            "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " + // Expand authors & species from o if relevant
+            "OPTIONAL MATCH (o)-[r8:species]->(s1:Species) " +
             "WITH root," +
             "     collect(DISTINCT n) AS ns," +
             "     collect(DISTINCT m) AS ms," +
@@ -152,35 +164,26 @@ public class AdvancedDatabaseObjectRepository {
             "       [ns, ms, ss, os, ps, ps2, ps3, cs, s1s, rfs]," +
             "       [r1s, r2s, r3s, r4s, r5s, r6s, r7s, r8s, r9s]";
 
-    public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId, boolean summariseReferenceEntity) {
+    public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId, EnhancedQueryOptions options) {
         String query = ENHANCED_MATCH_DB_ID +
-                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
-                + ENHANCED_UNDIRECTED
-                + ENHANCED_RETURN;
-
-        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
-    }
-
-    public <T extends DatabaseObject> T findEnhancedObjectById(String stId, boolean summariseReferenceEntity) {
-        String query = ENHANCED_MATCH_ST_ID +
-                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
-                + ENHANCED_UNDIRECTED
-                + ENHANCED_RETURN;
-        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
-    }
-
-    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Long dbId, boolean summariseReferenceEntity) {
-        String query = ENHANCED_MATCH_DB_ID +
-                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
-                + ENHANCED_OUTGOING
+                (options.summariseReferenceEntity
+                        ? (options.includeDisease ? ENHANCED_EXPAND_SUMMARY : ENHANCED_EXPAND_SUMMARY_NO_DISEASE)
+                        : ENHANCED_NO_EXPAND_SUMMARY
+                )
+                + (options.outgoingOnly ? ENHANCED_OUTGOING : ENHANCED_UNDIRECTED)
+                + (options.includeDisease ? ENHANCED_FILTER: ENHANCED_FILTER_NO_DISEASE)
                 + ENHANCED_RETURN;
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
 
-    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(String stId, boolean summariseReferenceEntity) {
+    public <T extends DatabaseObject> T findEnhancedObjectById(String stId, EnhancedQueryOptions options) {
         String query = ENHANCED_MATCH_ST_ID +
-                (summariseReferenceEntity ? ENHANCED_EXPAND_SUMMARY : ENHANCED_NO_EXPAND_SUMMARY)
-                + ENHANCED_OUTGOING
+                (options.summariseReferenceEntity
+                        ? (options.includeDisease ? ENHANCED_EXPAND_SUMMARY : ENHANCED_EXPAND_SUMMARY_NO_DISEASE)
+                        : ENHANCED_NO_EXPAND_SUMMARY
+                )
+                + (options.outgoingOnly ? ENHANCED_OUTGOING : ENHANCED_UNDIRECTED)
+                + (options.includeDisease ? ENHANCED_FILTER : ENHANCED_FILTER_NO_DISEASE)
                 + ENHANCED_RETURN;
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }

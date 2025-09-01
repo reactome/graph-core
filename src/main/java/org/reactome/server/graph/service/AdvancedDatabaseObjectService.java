@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
+import org.reactome.server.graph.service.helper.EnhancedQueryOptions;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,29 +28,17 @@ public class AdvancedDatabaseObjectService {
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
-        return this.findEnhancedObjectById(identifier, false);
+        EnhancedQueryOptions options = new EnhancedQueryOptions();
+        options.setIncludeDisease(true);
+        return this.findEnhancedObjectById(identifier, options);
     }
 
-    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier, boolean summariseReferenceEntity) {
+    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier, EnhancedQueryOptions options) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(id, summariseReferenceEntity);
+            return advancedDatabaseObjectRepository.findEnhancedObjectById(id, options);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id), summariseReferenceEntity);
-        }
-        return null;
-    }
-
-    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Object identifier) {
-        return this.findEnhancedObjectByIdOutgoing(identifier, false);
-    }
-
-    public <T extends DatabaseObject> T findEnhancedObjectByIdOutgoing(Object identifier, boolean summariseReferenceEntity) {
-        String id = DatabaseObjectUtils.getIdentifier(identifier);
-        if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(id, summariseReferenceEntity);
-        } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectByIdOutgoing(Long.parseLong(id), summariseReferenceEntity);
+            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id), options);
         }
         return null;
     }
