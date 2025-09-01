@@ -124,9 +124,9 @@ public class AdvancedDatabaseObjectRepository {
     //language=cypher
     static final String ENHANCED_OUTGOING = "OPTIONAL MATCH (n)-[r1]->(m:DatabaseObject) ";
     //language=cypher
-    static final String ENHANCED_FILTER_NO_DISEASE = "WHERE (m.isInDisease IS NULL OR m.isInDisease = false) AND not m:UpdateTracker ";
+    static final String ENHANCED_FILTER = "WHERE NOT m:UpdateTracker ";
     //language=cypher
-    static final String ENHANCED_FILTER = "WHERE not m:UpdateTracker ";
+    static final String ENHANCED_FILTER_NO_DISEASE = "WHERE (m.isInDisease IS NULL OR m.isInDisease = false) AND NOT m:UpdateTracker ";
     //language=cypher
     static final String ENHANCED_RETURN = "" +
             "OPTIONAL MATCH (m)-[r2:species]->(s) " + // Group relationships from m in one OPTIONAL MATCH block
@@ -171,7 +171,7 @@ public class AdvancedDatabaseObjectRepository {
                         : ENHANCED_NO_EXPAND_SUMMARY
                 )
                 + (options.outgoingOnly ? ENHANCED_OUTGOING : ENHANCED_UNDIRECTED)
-                + (options.includeDisease ? ENHANCED_FILTER: ENHANCED_FILTER_NO_DISEASE)
+                + (options.includeDisease ? ENHANCED_FILTER : ENHANCED_FILTER_NO_DISEASE)
                 + ENHANCED_RETURN;
         return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
     }
@@ -185,6 +185,30 @@ public class AdvancedDatabaseObjectRepository {
                 + (options.outgoingOnly ? ENHANCED_OUTGOING : ENHANCED_UNDIRECTED)
                 + (options.includeDisease ? ENHANCED_FILTER : ENHANCED_FILTER_NO_DISEASE)
                 + ENHANCED_RETURN;
+        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findOldEnhancedObjectById(Long dbId, boolean outgoingOnly) {
+        //language=cypher
+        String query = "" +
+                "MATCH (n:DatabaseObject{dbId:$dbId}) " +
+                "OPTIONAL MATCH (n)-[r1]-" + (outgoingOnly ? ">" : "") + "(m) " +
+                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
+                "RETURN n, [collect(m), collect(s), collect(o)] AS nodes, [collect(r1), collect(r2), collect(r3)] AS relationships ";
+
+        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+    }
+
+    public <T extends DatabaseObject> T findOldEnhancedObjectById(String stId, boolean outgoingOnly) {
+        //language=cypher
+        String query = "" +
+                "MATCH (n:DatabaseObject{stId:$stId}) " +
+                "OPTIONAL MATCH (n)-[r1]-" + (outgoingOnly ? ">" : "") + "(m) " +
+                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
+                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
+                "RETURN n, [collect(m), collect(s), collect(o)] AS nodes, [collect(r1), collect(r2), collect(r3)] AS relationships ";
+
         return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
     }
 

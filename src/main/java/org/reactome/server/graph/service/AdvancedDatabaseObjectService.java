@@ -26,6 +26,16 @@ public class AdvancedDatabaseObjectService {
     private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
+    public <T extends DatabaseObject> T findOldEnhancedObjectById(Object identifier, boolean outgoingOnly) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return advancedDatabaseObjectRepository.findOldEnhancedObjectById(id, outgoingOnly);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return advancedDatabaseObjectRepository.findOldEnhancedObjectById(Long.parseLong(id), outgoingOnly);
+        }
+        return null;
+    }
+
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
         EnhancedQueryOptions options = new EnhancedQueryOptions();
