@@ -13,13 +13,23 @@ import java.util.SortedSet;
 
 @SuppressWarnings("unused")
 @Node
+
 public abstract class PhysicalEntity extends DatabaseObject implements Trackable, Deletable {
 
     @ReactomeProperty
     private String definition;
-    //A simple flag to indicate if this PhysicalEntity object is a disease
+    /**
+     * A simple flag to indicate if this PhysicalEntity object is a disease
+     */
     @ReactomeProperty(addedField = true)
     private Boolean isInDisease;
+    /**
+     * The maximum depth of the PhysicalEntity in the graph.
+     *
+     * @see org.reactome.server.graph.config.MaxDepthConfig
+     */
+    @ReactomeProperty(addedField = true)
+    private Integer maxDepth;
     @ReactomeProperty
     private List<String> name;
     @ReactomeProperty(addedField = true)
@@ -126,10 +136,19 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
     private List<UpdateTracker> updateTrackers;
 
-    public PhysicalEntity() {}
+    public PhysicalEntity() {
+    }
 
     public PhysicalEntity(Long dbId) {
         super(dbId);
+    }
+
+    public Integer getMaxDepth() {
+        return maxDepth;
+    }
+
+    public void setMaxDepth(Integer maxDepth) {
+        this.maxDepth = maxDepth;
     }
 
     public String getDefinition() {
@@ -280,6 +299,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     public void setRepeatedUnitOf(Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
     }
+
     @JsonView(StoichiometryView.Flatten.class)
     public void setRepeatedUnitOf(List<Polymer> repeatedUnitOf) {
         this.repeatedUnitOf = Has.Util.aggregateStoichiometry(repeatedUnitOf, RepeatedUnitForPhysicalEntity::new);

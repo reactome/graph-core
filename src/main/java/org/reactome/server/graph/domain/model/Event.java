@@ -25,6 +25,13 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     //A simple flag to indicate if this Event is inferred from another
     @ReactomeProperty(addedField = true)
     private Boolean isInferred;
+    /**
+     * The maximum depth of the event in the graph.
+     * @see org.reactome.server.graph.config.MaxDepthConfig
+     */
+    @ReactomeProperty(addedField = true)
+    private Integer maxDepth;
+
     @ReactomeProperty
     private List<String> name;
     @ReactomeProperty
@@ -420,5 +427,13 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
 
     public void setUpdateTrackers(List<UpdateTracker> updateTrackers) {
         this.updateTrackers = updateTrackers;
+    }
+
+    public Integer getMaxDepth() {
+        return maxDepth;
+    }
+
+    public void setMaxDepth(Integer maxDepth) {
+        this.maxDepth = maxDepth;
     }
 }
