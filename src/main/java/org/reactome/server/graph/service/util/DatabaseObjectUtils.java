@@ -254,6 +254,7 @@ public class DatabaseObjectUtils {
     }
 
     private static String trimId(String id) {
+        if (id.contains(":")) return id.trim(); // Reference entity id
         return id.trim().split("\\.")[0];
     }
 
