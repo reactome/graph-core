@@ -6,10 +6,7 @@ import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationshi
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
-import org.reactome.server.graph.domain.relationship.CompositionAggregator;
-import org.reactome.server.graph.domain.relationship.Has;
-import org.reactome.server.graph.domain.relationship.Input;
-import org.reactome.server.graph.domain.relationship.Output;
+import org.reactome.server.graph.domain.relationship.*;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
@@ -54,6 +51,9 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @Relationship(type = "normalReaction")
     private ReactionLikeEvent normalReaction;
+
+    @Relationship(type = "normalReaction", direction = Relationship.Direction.INCOMING)
+    private Set<DiseaseReaction> diseaseReactions;
 
     @Relationship(type = "regulatedBy")
     private List<Regulation> regulatedBy;
@@ -243,6 +243,28 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
     @JsonView(StoichiometryView.Nested.class)
     public void setOutputs(Set<Output> outputs) {
         this.output = outputs;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<ReactionLikeEvent> getDiseaseReaction() {
+        return Has.Util.expandStoichiometry(diseaseReactions);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setDiseaseReaction(List<ReactionLikeEvent> diseaseReaction) {
+        this.diseaseReactions = Has.Util.aggregateStoichiometry(diseaseReaction, DiseaseReaction::new);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getDiseaseReaction")
+    public Set<DiseaseReaction> getDiseaseReactions() {
+        return this.diseaseReactions;
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setDiseaseReactions(Set<DiseaseReaction> diseaseReactions) {
+        this.diseaseReactions = diseaseReactions;
     }
 
     @ReactomeSchemaIgnore
