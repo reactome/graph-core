@@ -26,12 +26,23 @@ public class Deleted extends MetaDatabaseObject{
     @Deprecated
     @ReactomeProperty(originName = "deletedInstanceDB_ID")
     private List<Integer> deletedInstanceDbId;
+    
+    @ReactomeProperty(originName = "replacementInstanceDB_IDs")
+    private List<Integer> replacementInstanceDbIds;
 
     public Deleted() {
     }
 
     public String getCuratorComment() {
         return curatorComment;
+    }
+
+    public List<Integer> getReplacementInstanceDbIds() {
+        return replacementInstanceDbIds;
+    }
+
+    public void setReplacementInstanceDbIds(List<Integer> replacementInstanceDbIds) {
+        this.replacementInstanceDbIds = replacementInstanceDbIds;
     }
 
     public void setCuratorComment(String curatorComment) {
