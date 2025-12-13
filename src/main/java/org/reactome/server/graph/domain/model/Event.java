@@ -1,14 +1,21 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
+import org.reactome.server.graph.domain.relationship.StructureModified;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @SuppressWarnings({"unused"})
 
@@ -116,8 +123,10 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @Relationship(type = "internalReviewed", direction = Relationship.Direction.INCOMING)
     private List<InstanceEdit> internalReviewed;
 
+    // For some reason, we have to define a relationship to keep the order
+    // for newly added InstanceEdit in this attribute. Not sure why.
     @Relationship(type = "structureModified", direction = Relationship.Direction.INCOMING)
-    private List<InstanceEdit> structureModified;
+    private SortedSet<StructureModified> structureModified;
 
     @ReactomeTransient
     @Relationship(type = "replacementInstances", direction = Relationship.Direction.INCOMING)
@@ -394,11 +403,26 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     }
 
     public List<InstanceEdit> getStructureModified() {
-        return structureModified;
+        if (structureModified == null || structureModified.isEmpty())
+            return null;
+        return this.structureModified.stream().map(s -> s.getInstanceEdit()).collect(Collectors.toList());
     }
 
     public void setStructureModified(List<InstanceEdit> structureModified) {
-        this.structureModified = structureModified;
+        if (structureModified != null && structureModified.size() > 0) {
+            int order = 0;
+            this.structureModified = new TreeSet<>();
+            for (InstanceEdit ie : structureModified) {
+                StructureModified sm = new StructureModified();
+                sm.setId(ie.getDbId());
+                sm.setInstanceEdit(ie);
+                sm.setOrder(order);
+                order ++;
+                this.structureModified.add(sm);
+            }
+        }
+        else
+            this.structureModified = null;
     }
 
     @Override
