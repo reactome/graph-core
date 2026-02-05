@@ -37,7 +37,7 @@ public class Pathway extends Event {
     private Integer diagramHeight;
 
     @ReactomeProperty
-    private String isCanonical;
+    private Boolean isCanonical;
 
     @ReactomeProperty
     private String lastUpdatedDate;
@@ -102,11 +102,11 @@ public class Pathway extends Event {
         this.diagramHeight = diagramHeight;
     }
 
-    public String getIsCanonical() {
+    public Boolean getIsCanonical() {
         return isCanonical;
     }
 
-    public void setIsCanonical(String isCanonical) {
+    public void setIsCanonical(Boolean isCanonical) {
         this.isCanonical = isCanonical;
     }
 
