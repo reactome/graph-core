@@ -6,6 +6,8 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 //NB by GW: I am not sure why the original code needs to use regulatedBy, intead of regulation. To make
 // it compatible with the original code and also be matched with the data model, I will keep both sets
 // of getter and setter. 
+//NB by GW again: I have to comment out the regulatedBy getter and setter, otherwise, it will cause 
+//an error during committing due to an extra regulatedBy property that is not relationship. 
 @Node
 public class RegulationReference extends ControlReference {
 
@@ -15,13 +17,13 @@ public class RegulationReference extends ControlReference {
     public RegulationReference() {
     }
 
-    public Regulation getRegulatedBy() {
-        return regulation;
-    }
-
-    public void setRegulatedBy(Regulation regulation) {
-        this.regulation = regulation;
-    }
+//    public Regulation getRegulatedBy() {
+//        return regulation;
+//    }
+//
+//    public void setRegulatedBy(Regulation regulation) {
+//        this.regulation = regulation;
+//    }
 
     public Regulation getRegulation() {
         return regulation;
