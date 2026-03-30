@@ -38,11 +38,22 @@ public class Complex extends PhysicalEntity {
 
     @Relationship(type = "relatedSpecies")
     private List<Species> relatedSpecies;
+    
+    @Relationship(type = "componentCellType")
+    private List<PhysicalEntityCellType> componentCellType;
 
     public Complex() {}
 
     public Complex(Long dbId) {
         super(dbId);
+    }
+
+    public List<PhysicalEntityCellType> getComponentCellType() {
+        return componentCellType;
+    }
+
+    public void setComponentCellType(List<PhysicalEntityCellType> componentCellType) {
+        this.componentCellType = componentCellType;
     }
 
     public Boolean getIsChimeric() {

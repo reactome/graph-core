@@ -63,6 +63,9 @@ public abstract class ReactionLikeEvent extends Event {
 
     @Relationship(type = "reactionType")
     private List<ReactionType> reactionType;
+    
+    @Relationship(type = "participantCellType")
+    private List<PhysicalEntityCellType> participantCellType;
 
     public ReactionLikeEvent() {
     }
@@ -73,6 +76,14 @@ public abstract class ReactionLikeEvent extends Event {
 
     public Boolean getIsChimeric() {
         return isChimeric;
+    }
+
+    public List<PhysicalEntityCellType> getParticipantCellType() {
+        return participantCellType;
+    }
+
+    public void setParticipantCellType(List<PhysicalEntityCellType> participantCellType) {
+        this.participantCellType = participantCellType;
     }
 
     public void setIsChimeric(Boolean isChimeric) {

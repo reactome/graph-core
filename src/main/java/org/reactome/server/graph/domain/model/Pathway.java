@@ -51,11 +51,22 @@ public class Pathway extends Event {
 
     @Relationship(type = "normalPathway")
     private Pathway normalPathway;
+    
+    @Relationship(type = "cell")
+    private Cell cell;
 
     public Pathway() {}
 
     public Pathway(Long dbId) {
         super(dbId);
+    }
+    
+    public Cell getCell() {
+        return cell;
+    }
+    
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public String getDoi() {
