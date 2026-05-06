@@ -94,6 +94,7 @@
         <dependency>
             <groupId>org.reactome.base</groupId>
             <artifactId>reactome-base</artifactId>
+            <version>2.2.4-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -278,11 +279,5 @@
             </snapshots>
         </repository>
 
-        <!-- SBGN -->
-        <repository>
-            <id>biopax</id>
-            <name>BioPax Repository</name>
-            <url>http://www.biopax.org/m2repo/releases/</url>
-        </repository>
     </repositories>
 </project>
