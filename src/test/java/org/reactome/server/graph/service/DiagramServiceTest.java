@@ -99,9 +99,14 @@ public class DiagramServiceTest extends BaseTest {
             }
             if(o.getDiagramStId().equals("R-HSA-168928")){
                 assertTrue(o.isInDiagram(), "'R-HSA-879382' should be directly contained in 'R-HSA-168928'");
-                assertTrue(o.getOccurrences().isEmpty());
+                assertTrue(o.getOccurrences().isEmpty()); //TODO check why false
                 // TODO
             }
         }
     }
+    //TODO create tests for new interactor logic
+    // all in occurrences should be in occurrencesInteractor
+    // some pathway should contain just interactors but no direct entities
+    // some pathway should have no occurrences but just occurencesInteractor (if the subpathway is only hit because of interactors, but no direct participant)
+
 }

@@ -3,12 +3,14 @@ package org.reactome.server.graph.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
+import org.reactome.server.graph.domain.relationship.HasEvent;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +26,7 @@ public class LazyLoadingTest extends BaseTest {
     private DatabaseObjectService dbs;
 
     @BeforeTestClass
-    public  void setUpClass() {
+    public void setUpClass() {
         logger.info(" --- !!! Running " + LazyLoadingTest.class.getName() + "!!! --- \n");
     }
 
@@ -66,7 +68,7 @@ public class LazyLoadingTest extends BaseTest {
         List<PositiveRegulation> positiveRegulations = new ArrayList<>();
         List<NegativeRegulation> negativeRegulations = new ArrayList<>();
         for (Regulation regulation : rle.getRegulatedBy()) {
-            if(regulation instanceof  PositiveRegulation){
+            if (regulation instanceof PositiveRegulation) {
                 positiveRegulations.add((PositiveRegulation) regulation);
             } else {
                 negativeRegulations.add((NegativeRegulation) regulation);
@@ -106,12 +108,12 @@ public class LazyLoadingTest extends BaseTest {
     }
 
     @Test
-    public void lazyLoadingHasModifiedResidueTest(){
+    public void lazyLoadingHasModifiedResidueTest() {
         logger.info("Testing Lazy Loading for EWAS HasModifiedResidue");
 
         long start, time;
         start = System.currentTimeMillis();
-        EntityWithAccessionedSequence ewas = dbs.findByIdNoRelations ("R-HSA-507936");
+        EntityWithAccessionedSequence ewas = dbs.findByIdNoRelations("R-HSA-507936");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -123,7 +125,7 @@ public class LazyLoadingTest extends BaseTest {
     }
 
     @Test
-    public void lazyLoadingEventOf(){
+    public void lazyLoadingEventOf() {
         logger.info("Started testing databaseObjectService.lazyLoadingEventOf");
         long start = System.currentTimeMillis();
         ReactionLikeEvent rle = dbs.findById("R-HSA-5205661");
@@ -133,7 +135,7 @@ public class LazyLoadingTest extends BaseTest {
         logger.info("Finished");
     }
 
-    public void preloadReactionLikeEvent(){
+    public void preloadReactionLikeEvent() {
         rle = dbs.findByIdNoRelations("R-HSA-3234081");
     }
 
@@ -217,12 +219,30 @@ public class LazyLoadingTest extends BaseTest {
     }
 
     @Test
-    public void testCandidateSet(){
+    public void testCandidateSet() {
         CandidateSet candidateSet = dbs.findByIdNoRelations("R-ALL-9687688");
         assertTrue(candidateSet.getHasCandidate().size() >= 15);
         assertTrue(candidateSet.getHasMember().size() >= 2);
         assertNotEquals(candidateSet.getConsumedByEvent().size(), 0);
         assertThat(candidateSet.getCompartment()).contains(new Compartment(70101L));
+    }
+
+    @Test
+    public void testLazyLoadingOnRelationshipCollection() {
+        Pathway pathway = dbs.findByIdNoRelations("R-HSA-1640170");
+        lazyFetchAspect.setEnableAOP(true);
+        Collection<HasEvent> wrappedRelationships = pathway.getEvents();
+        assertThat(wrappedRelationships)
+                .withFailMessage("Wrapped relationships should be lazy loaded too")
+                .isNotEmpty();
+
+        lazyFetchAspect.setEnableAOP(false);
+        Collection<Event> flatRelationships = pathway.getHasEvent();
+        assertThat(flatRelationships)
+                .withFailMessage("Wrapped relationship lazy loading should load the flatten view too")
+                .isNotEmpty();
+        lazyFetchAspect.setEnableAOP(true);
+
     }
 
 }

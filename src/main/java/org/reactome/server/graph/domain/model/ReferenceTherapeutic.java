@@ -20,6 +20,8 @@ public class ReferenceTherapeutic extends ReferenceEntity{
     private String type;
 
     public ReferenceTherapeutic() {
+        super();
+        this.setMoleculeType("ChemicalDrug");
     }
 
     public String getAbbreviation() {

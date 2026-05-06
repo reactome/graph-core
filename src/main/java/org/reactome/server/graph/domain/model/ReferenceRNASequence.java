@@ -12,7 +12,9 @@ public class ReferenceRNASequence extends ReferenceSequence {
     @Relationship(type = "referenceGene")
     private List<ReferenceDNASequence> referenceGene;
     
-    public ReferenceRNASequence() {}
+    public ReferenceRNASequence() {
+        super();
+    }
 
     public List<ReferenceDNASequence> getReferenceGene() {
         return referenceGene;

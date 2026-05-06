@@ -1,6 +1,7 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.AuthorPublication;
@@ -35,6 +36,18 @@ public class Person extends DatabaseObject {
     @ReactomeTransient
     @Relationship(type = "author")
     private List<AuthorPublication> publicationAuthorList;
+
+    @JsonIgnore
+    @Override
+    public InstanceEdit getCreated() {
+        return super.getCreated();
+    }
+
+    @JsonIgnore
+    @Override
+    public InstanceEdit getModified() {
+        return super.getModified();
+    }
 
     public Person() {}
 

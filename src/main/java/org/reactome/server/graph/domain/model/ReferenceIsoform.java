@@ -16,7 +16,9 @@ public class ReferenceIsoform extends ReferenceGeneProduct {
     @Relationship(type = "isoformParent")
     private List<ReferenceGeneProduct> isoformParent;
 
-    public ReferenceIsoform() {}
+    public ReferenceIsoform() {
+        super();
+    }
 
     public String getVariantIdentifier() {
         return this.variantIdentifier;

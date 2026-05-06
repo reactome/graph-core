@@ -5,6 +5,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.service.AdvancedDatabaseObjectService;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
@@ -22,7 +23,7 @@ import java.util.*;
  */
 @Aspect
 @Component
-public class LazyFetchAspect  {
+public class LazyFetchAspect {
     private Boolean enableAOP = true;
 
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
@@ -61,7 +62,7 @@ public class LazyFetchAspect  {
                 String setterMethod = method.getName().replaceFirst("get", "set");
                 Class<?> methodReturnClazz = method.getReturnType();
                 if (Collection.class.isAssignableFrom(methodReturnClazz)) {
-                    ParameterizedType stringListType = (ParameterizedType)  method.getGenericReturnType();
+                    ParameterizedType stringListType = (ParameterizedType) method.getGenericReturnType();
                     Class<?> type = (Class<?>) stringListType.getActualTypeArguments()[0];
                     String clazz = type.getSimpleName();
 
@@ -72,8 +73,10 @@ public class LazyFetchAspect  {
                     Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction().name()), relationship.type());
                     if (lazyLoadedObjectAsCollection == null) {
                         //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
-                        if (List.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new ArrayList<>();
-                        if (Set.class.isAssignableFrom(methodReturnClazz)) lazyLoadedObjectAsCollection = new HashSet<>();
+                        if (List.class.isAssignableFrom(methodReturnClazz))
+                            lazyLoadedObjectAsCollection = new ArrayList<>();
+                        if (Set.class.isAssignableFrom(methodReturnClazz))
+                            lazyLoadedObjectAsCollection = new HashSet<>();
                     }
                     if (lazyLoadedObjectAsCollection != null) {
                         // invoke the setter in order to set the object in the target
@@ -108,6 +111,31 @@ public class LazyFetchAspect  {
     public void modelGetter() {
     }
 
+    @Around("@annotation(org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship)")
+    public Object aroundReactomeProjectedRelationship(ProceedingJoinPoint pjp) throws Throwable {
+        Object result = pjp.proceed(); // Get normal results
+        // If they are already valid, then return them
+        if (result != null && Collection.class.isAssignableFrom(result.getClass())) {
+            if (!((Collection<?>) result).isEmpty()) return result;
+        }
+
+        // Otherwise, populate it by calling the projected getter
+
+        // Target is the whole object that originated this pointcut.
+        DatabaseObject databaseObject = (DatabaseObject) pjp.getTarget();
+
+        // Gathering information of the method we are invoking and it's being intercepted by AOP
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        Method method = signature.getMethod();
+
+        ReactomeProjectedRelationship projectedRelationship = method.getAnnotation(ReactomeProjectedRelationship.class);
+        if (projectedRelationship != null) {
+            databaseObject.getClass().getMethod(projectedRelationship.value()).invoke(databaseObject);
+        }
+
+        return pjp.proceed();
+    }
+
     /**
      * Method used to get the Relationship annotation on top of the
      * given attribute. This method looks for the annotation in the current class
@@ -121,7 +149,7 @@ public class LazyFetchAspect  {
         charArray[0] = Character.toLowerCase(charArray[0]); // lower the first char
         String attribute = new String(charArray);
 
-         // Look up for the given attribute in the class and after superclasses.
+        // Look up for the given attribute in the class and after superclasses.
         //noinspection ClassGetClass
         while (_clazz != null && !_clazz.getClass().equals(Object.class)) {
             for (Field field : _clazz.getDeclaredFields()) {

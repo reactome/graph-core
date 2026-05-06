@@ -3,11 +3,9 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
+import org.reactome.server.graph.domain.result.CustomInteraction;
 import org.reactome.server.graph.domain.result.InteractorsCount;
-import org.reactome.server.graph.repository.DiagramRepository;
-import org.reactome.server.graph.repository.InteractionsRepository;
-import org.reactome.server.graph.repository.InteractorCountRepository;
-import org.reactome.server.graph.repository.PathwayRepository;
+import org.reactome.server.graph.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +16,15 @@ public class InteractionsService {
 
     private final InteractionsRepository interactionsRepository;
     private final InteractorCountRepository interactorCountRepository;
+    private final CustomInteractionsRepository customInteractionsRepository;
     private final PathwayRepository pathwayRepository;
     private final DiagramRepository diagramRepository;
 
     @Autowired
-    public InteractionsService(InteractionsRepository interactionsRepository, InteractorCountRepository interactorCountRepository, PathwayRepository pathwayRepository, DiagramRepository diagramRepository) {
+    public InteractionsService(InteractionsRepository interactionsRepository, InteractorCountRepository interactorCountRepository, CustomInteractionsRepository customInteractionsRepository,PathwayRepository pathwayRepository, DiagramRepository diagramRepository) {
         this.interactionsRepository = interactionsRepository;
         this.interactorCountRepository = interactorCountRepository;
+        this.customInteractionsRepository = customInteractionsRepository;
         this.pathwayRepository = pathwayRepository;
         this.diagramRepository = diagramRepository;
     }
@@ -35,6 +35,16 @@ public class InteractionsService {
      */
     public List<Interaction> getInteractions(String acc) {
         return getInteractions(Collections.singletonList(acc), -1, -1).get(acc);
+    }
+
+
+    /**
+     * Get all custom interactions of a given accession and resource
+     *
+     * @return a list of interactors with reactome entities number and species info
+     */
+    public Collection<CustomInteraction> getCustomInteractions(String acc) {
+        return customInteractionsRepository.getCustomInteractionsByAcc(acc);
     }
 
     /**

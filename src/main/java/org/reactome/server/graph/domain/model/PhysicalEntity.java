@@ -1,24 +1,35 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
-import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.*;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 @SuppressWarnings("unused")
 @Node
+
 public abstract class PhysicalEntity extends DatabaseObject implements Trackable, Deletable {
 
     @ReactomeProperty
     private String definition;
-    //A simple flag to indicate if this PhysicalEntity object is a disease
+    /**
+     * A simple flag to indicate if this PhysicalEntity object is a disease
+     */
     @ReactomeProperty(addedField = true)
     private Boolean isInDisease;
+    /**
+     * The maximum depth of the PhysicalEntity in the graph.
+     *
+     * @see org.reactome.server.graph.config.MaxDepthConfig
+     */
+    @ReactomeProperty(addedField = true)
+    private Integer maxDepth;
     @ReactomeProperty
     private List<String> name;
     @ReactomeProperty(addedField = true)
@@ -29,10 +40,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "authored", direction = Relationship.Direction.INCOMING)
     private InstanceEdit authored;
 
-    /**
-     * catalystActivities is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "physicalEntity", direction = Relationship.Direction.INCOMING)
     private List<CatalystActivity> catalystActivities;
@@ -40,13 +47,9 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "compartment")
     private SortedSet<HasCompartment> compartment;
 
-    /**
-     * ComponentOf is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasComponent", direction = Relationship.Direction.INCOMING)
-    private SortedSet<HasComponentForComplex> componentOf;
+    private SortedSet<ComponentOf> componentOf;
 
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
@@ -70,10 +73,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
     private List<PhysicalEntity> inferredFrom;
 
-    /**
-     * isRequired is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<Requirement> isRequired;
@@ -81,31 +80,26 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
-    /**
-     * MemberOf is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "hasMember", direction = Relationship.Direction.INCOMING)
-    private List<PhysicalEntity> memberOf;
+    private SortedSet<MemberOf> memberOf;
+
+    @ReactomeTransient
+    @Relationship(type = "hasCandidate", direction = Relationship.Direction.INCOMING)
+    private SortedSet<CandidateOf> candidateOf;
 
     /**
      * negativelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
      */
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
-    /**
-     * positivelyRegulates is not a field of the previous RestfulApi and will be ignored until needed
-     */
-    @JsonIgnore
+
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
 
-    @JsonIgnore
     @ReactomeTransient
     @Relationship(type = "repeatedUnit", direction = Relationship.Direction.INCOMING)
     private Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf;
@@ -142,10 +136,19 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
     private List<UpdateTracker> updateTrackers;
 
-    public PhysicalEntity() {}
+    public PhysicalEntity() {
+    }
 
     public PhysicalEntity(Long dbId) {
         super(dbId);
+    }
+
+    public Integer getMaxDepth() {
+        return maxDepth;
+    }
+
+    public void setMaxDepth(Integer maxDepth) {
+        this.maxDepth = maxDepth;
     }
 
     public String getDefinition() {
@@ -205,75 +208,27 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.catalystActivities = catalystActivities;
     }
 
-    public List<Compartment> getCompartment() {
-        if (compartment == null) return null;
-        List<Compartment> rtn = new ArrayList<>();
-        for (HasCompartment c : compartment) {
-            rtn.add(c.getCompartment());
-        }
-        return rtn;
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getCompartment")
+    public SortedSet<HasCompartment> getHasCompartment() {
+        return this.compartment;
     }
 
-    public void setCompartment(SortedSet<HasCompartment> compartment) {
+    @JsonView(StoichiometryView.Nested.class)
+    public void setHasCompartment(SortedSet<HasCompartment> compartment) {
         this.compartment = compartment;
     }
 
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<Compartment> getCompartment() {
+        return Has.Util.expandStoichiometry(compartment);
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public void setCompartment(List<Compartment> compartment) {
-        this.compartment = new TreeSet<>();
-        int order = 0;
-        for (Compartment c : compartment) {
-            HasCompartment hc = new HasCompartment();
-            hc.setCompartment(c);
-            hc.setOrder(order++);
-            this.compartment.add(hc);
-        }
+        this.compartment = Has.Util.aggregateStoichiometry(compartment, HasCompartment::new);
     }
-
-    public void setComponentOf(SortedSet<HasComponentForComplex> componentOf) {
-        this.componentOf = componentOf;
-    }
-
-    public void setComponentOf(List<PhysicalEntity> componentOf) {
-        this.componentOf = new TreeSet<>();
-        int order = 0;
-        for (PhysicalEntity pe : componentOf) {
-            HasComponentForComplex hc = new HasComponentForComplex();
-//            hc.setPhysicalEntity(this);
-            hc.setComplex((Complex) pe);
-            hc.setOrder(order++);
-            this.componentOf.add(hc);
-        }
-    }
-
-    public void setConsumedByEvent(List<InputForReactionLikeEvent> consumedByEvent) {
-        this.consumedByEvent = consumedByEvent;
-    }
-
-//    public void setConsumedByEvent(List<ReactionLikeEvent> events) {
-//        this.consumedByEvent = new TreeSet<>();
-//        for (ReactionLikeEvent rle : events) {
-//            Input input = new Input();
-//            input.setReactionLikeEvent(rle);
-//            input.setPhysicalEntity(this);
-//            input.setStoichiometry(1);
-//            this.consumedByEvent.add(input);
-//        }
-//    }
-
-    public void setProducedByEvent(List<OutputForReactionLikeEvent> producedByEvent) {
-        this.producedByEvent = producedByEvent;
-    }
-
-//    public void setProducedByEvent(List<ReactionLikeEvent> events) {
-//        this.producedByEvent = new TreeSet<>();
-//        for (ReactionLikeEvent rle : events) {
-//            Output output = new Output();
-//            output.setReactionLikeEvent(rle);
-//            output.setPhysicalEntity(this);
-//            output.setStoichiometry(1);
-//            this.producedByEvent.add(output);
-//        }
-//    }
 
     public List<DatabaseIdentifier> getCrossReference() {
         return crossReference;
@@ -339,28 +294,15 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.isRequired = isRequired;
     }
 
-    public List<PhysicalEntity> getMemberOf() {
-        return memberOf;
-    }
-
-    public void setMemberOf(List<PhysicalEntity> memberOf) {
-        this.memberOf = memberOf;
-    }
-
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
     public void setRepeatedUnitOf(Set<RepeatedUnitForPhysicalEntity> repeatedUnitOf) {
         this.repeatedUnitOf = repeatedUnitOf;
     }
 
-    public void setRepeatedUnitOf(List<PhysicalEntity> repeatedUnitOf) {
-        this.repeatedUnitOf = new TreeSet<>();
-        int order = 0;
-        for (PhysicalEntity pe : repeatedUnitOf) {
-            RepeatedUnitForPhysicalEntity ru = new RepeatedUnitForPhysicalEntity();
-//            ru.setPhysicalEntity(this);
-            ru.setPolymer((Polymer) pe);
-            ru.setOrder(order++);
-            this.repeatedUnitOf.add(ru);
-        }
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setRepeatedUnitOf(List<Polymer> repeatedUnitOf) {
+        this.repeatedUnitOf = Has.Util.aggregateStoichiometry(repeatedUnitOf, RepeatedUnitForPhysicalEntity::new);
     }
 
     public List<Publication> getLiteratureReference() {
@@ -411,63 +353,134 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
         this.summation = summation;
     }
 
-    //    public Set<RepeatedUnit> getRepeatedUnitOf(){
-//        return repeatedUnitOf;
-//    }
+    @JsonView(StoichiometryView.Flatten.class)
     public List<Polymer> getRepeatedUnitOf() {
-        List<Polymer> rtn = new ArrayList<>();
-        if (repeatedUnitOf != null) {
-            for (RepeatedUnitForPhysicalEntity aux : repeatedUnitOf) {
-                for (int i = 0; i < aux.getStoichiometry(); i++) {
-//                    rtn.add(aux.getPhysicalEntity())
-                    rtn.add(aux.getPolymer());
-                }
-            }
-            return rtn;
-        }
-        return null;
+        return Has.Util.expandStoichiometry(repeatedUnitOf);
     }
 
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getRepeatedUnitOf")
+    public Set<RepeatedUnitForPhysicalEntity> getRepeatedUnitOfPolymers() {
+        return repeatedUnitOf;
+    }
+
+    // ComponentOf
+    @JsonView(StoichiometryView.Flatten.class)
     public List<Complex> getComponentOf() {
-        List<Complex> rtn = new ArrayList<>();
-        if (componentOf != null) {
-            for (HasComponentForComplex aux : componentOf) {
-                rtn.add(aux.getComplex());
-//                rtn.add(aux.getComplex());
-            }
-            return rtn;
-        }
-        return null;
+        return Has.Util.expandStoichiometry(componentOf);
     }
 
-//    public List<InputForReactionLikeEvent> getConsumedByEvent() {
-//        return consumedByEvent;
-//    }
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getComponentOf")
+    public SortedSet<ComponentOf> getComponentOfComplexes() {
+        return componentOf;
+    }
 
+    @JsonView(StoichiometryView.Nested.class)
+    public void setComponentOfComplexes(SortedSet<ComponentOf> componentOf) {
+        this.componentOf = componentOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setComponentOf(List<Complex> componentOf) {
+        this.componentOf = Has.Util.aggregateStoichiometry(componentOf, ComponentOf::new);
+    }
+
+    // MemberOf
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<EntitySet> getMemberOf() {
+        return Has.Util.expandStoichiometry(memberOf);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getMemberOf")
+    public SortedSet<MemberOf> getMemberOfSet() {
+        return memberOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setMemberOf(List<EntitySet> memberOf) {
+        this.memberOf = Has.Util.aggregateStoichiometry(memberOf, MemberOf::new);
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setMemberOfSet(SortedSet<MemberOf> memberOf) {
+        this.memberOf = memberOf;
+    }
+
+    // CandidateOf
+    @JsonView(StoichiometryView.Flatten.class)
+    public List<CandidateSet> getCandidateOf() {
+        return Has.Util.expandStoichiometry(candidateOf);
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getCandidateOf")
+    public SortedSet<CandidateOf> getCandidateOfSet() {
+        return candidateOf;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
+    public void setCandidateOf(List<CandidateSet> candidateOf) {
+        this.candidateOf = Has.Util.aggregateStoichiometry(candidateOf, CandidateOf::new);
+    }
+
+    @JsonView(StoichiometryView.Nested.class)
+    public void setCandidateOfSet(SortedSet<CandidateOf> candidateOf) {
+        this.candidateOf = candidateOf;
+    }
+
+    // Inputs / Outputs
+
+    @JsonView(StoichiometryView.Flatten.class)
     public List<ReactionLikeEvent> getConsumedByEvent() {
-        List<ReactionLikeEvent> rtn = new ArrayList<>();
-        if (consumedByEvent != null) {
-            for (InputForReactionLikeEvent aux : consumedByEvent) {
-                rtn.add(aux.getReactionLikeEvent());
-            }
-            return rtn;
-        }
-        return null;
+        return Has.Util.expandStoichiometry(consumedByEvent);
     }
 
-//    public List<OutputForReactionLikeEvent> getProducedByEvent() {
-//        return producedByEvent;
-//    }
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public void setConsumedByEvent(List<ReactionLikeEvent> consumedByEvent) {
+        this.consumedByEvent = new ArrayList<>(Has.Util.aggregateStoichiometry(consumedByEvent, InputForReactionLikeEvent::new));
+    }
 
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getConsumedByEvent")
+    public List<InputForReactionLikeEvent> getInputFor() {
+        return consumedByEvent;
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public void setInputFor(List<InputForReactionLikeEvent> consumedByEvent) {
+        this.consumedByEvent = consumedByEvent;
+    }
+
+    @JsonView(StoichiometryView.Flatten.class)
     public List<ReactionLikeEvent> getProducedByEvent() {
-        List<ReactionLikeEvent> rtn = new ArrayList<>();
-        if (producedByEvent != null) {
-            for (OutputForReactionLikeEvent aux : producedByEvent) {
-                rtn.add(aux.getReactionLikeEvent());
-            }
-            return rtn;
-        }
-        return null;
+        return Has.Util.expandStoichiometry(producedByEvent);
+    }
+
+    public void setProducedByEvent(List<ReactionLikeEvent> producedByEvent) {
+        this.producedByEvent = new ArrayList<>(Has.Util.aggregateStoichiometry(producedByEvent, OutputForReactionLikeEvent::new));
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    @ReactomeProjectedRelationship("getProducedByEvent")
+    public List<OutputForReactionLikeEvent> getOutputFor() {
+        return producedByEvent;
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonView(StoichiometryView.Nested.class)
+    public void setOutputFor(List<OutputForReactionLikeEvent> producedByEvent) {
+        this.producedByEvent = producedByEvent;
     }
 
     public List<MarkerReference> getMarkingReferences() {

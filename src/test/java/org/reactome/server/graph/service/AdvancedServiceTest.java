@@ -186,7 +186,7 @@ public class AdvancedServiceTest extends BaseTest {
             time = System.currentTimeMillis() - start;
             logger.info("GraphDb execution time: " + time + "ms");
 
-            assertEquals(8, databaseObjectObserved.getHasEvent().size());
+            assertEquals(16, databaseObjectObserved.getHasEvent().size());
             logger.info("Finished");
         }catch (ClassCastException aa) {
             aa.printStackTrace();
@@ -202,7 +202,7 @@ public class AdvancedServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals(8, databaseObjectObserved.getHasEvent().size());
+        assertEquals(16, databaseObjectObserved.getHasEvent().size());
         logger.info("Finished");
     }
 

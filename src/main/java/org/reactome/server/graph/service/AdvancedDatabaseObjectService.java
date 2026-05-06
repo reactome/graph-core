@@ -3,6 +3,7 @@ package org.reactome.server.graph.service;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
+import org.reactome.server.graph.service.helper.EnhancedQueryOptions;
 import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,29 @@ public class AdvancedDatabaseObjectService {
     private AdvancedDatabaseObjectRepository advancedDatabaseObjectRepository;
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
-
-    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
+    public <T extends DatabaseObject> T findOldEnhancedObjectById(Object identifier, boolean outgoingOnly) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(id);
+            return advancedDatabaseObjectRepository.findOldEnhancedObjectById(id, outgoingOnly);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id));
+            return advancedDatabaseObjectRepository.findOldEnhancedObjectById(Long.parseLong(id), outgoingOnly);
+        }
+        return null;
+    }
+
+
+    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
+        EnhancedQueryOptions options = new EnhancedQueryOptions();
+        options.setIncludeDisease(true);
+        return this.findEnhancedObjectById(identifier, options);
+    }
+
+    public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier, EnhancedQueryOptions options) {
+        String id = DatabaseObjectUtils.getIdentifier(identifier);
+        if (DatabaseObjectUtils.isStId(id)) {
+            return advancedDatabaseObjectRepository.findEnhancedObjectById(id, options);
+        } else if (DatabaseObjectUtils.isDbId(id)) {
+            return advancedDatabaseObjectRepository.findEnhancedObjectById(Long.parseLong(id), options);
         }
         return null;
     }
@@ -121,7 +138,7 @@ public class AdvancedDatabaseObjectService {
     public void customQuery(String query) {
         customQuery(query, Collections.emptyMap());
     }
-    
+
     public void customQuery(String query, Map<String, Object> parameters) {
         advancedDatabaseObjectRepository.customQuery(query, parameters);
     }

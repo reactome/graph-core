@@ -24,6 +24,9 @@ public abstract class ReferenceEntity extends DatabaseObject {
     @ReactomeProperty(addedField = true)
     private String url;
 
+    @ReactomeProperty(addedField = true)
+    private String moleculeType;
+
     @Relationship(type = "crossReference")
     private List<DatabaseIdentifier> crossReference;
 
@@ -104,5 +107,13 @@ public abstract class ReferenceEntity extends DatabaseObject {
 
     public void setPhysicalEntity(List<PhysicalEntity> physicalEntity) {
         this.physicalEntity = physicalEntity;
+    }
+
+    public String getMoleculeType() {
+        return moleculeType;
+    }
+
+    public void setMoleculeType(String moleculeType) {
+        this.moleculeType = moleculeType;
     }
 }

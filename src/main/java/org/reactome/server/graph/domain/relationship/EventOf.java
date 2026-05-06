@@ -1,23 +1,23 @@
 package org.reactome.server.graph.domain.relationship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.model.Pathway;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 
 @RelationshipProperties
-public class HasEncapsulatedEvent extends Has<Event> {
+public class EventOf extends Has<Pathway> {
+
     @Override
     public String getType() {
-        return "encapsulatedEvent";
+        return "event";
     }
 
     @JsonIgnore
-    public Event getEvent() {
+    public Pathway getPathway() {
         return element;
     }
 
-    public void setEvent(Event event) {
-        this.element = event;
+    public void setPathway(Pathway eventOf) {
+        this.element = eventOf;
     }
-
 }

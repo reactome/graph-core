@@ -23,6 +23,7 @@ public class ParticipantRepository {
     }
 
     public Collection<Participant> getParticipants(Long dbId) {
+        //language=Cypher
         String query = " " +
                 "MATCH (n:DatabaseObject{dbId:$dbId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|RNAMarker|proteinMarker|regulator*]->(m:PhysicalEntity) " +
                 "OPTIONAL MATCH (m)-[:referenceEntity]->(re1:ReferenceEntity) " +
@@ -36,6 +37,7 @@ public class ParticipantRepository {
                 "       m.schemaClass AS schemaClass, " +
                 "       COLLECT(DISTINCT({ " +
                 "              dbId: re.dbId, " +
+                "              stId: re.stId, " +
                 "              displayName: re.displayName, " +
                 "              identifier: CASE WHEN re.variantIdentifier IS NOT NULL THEN re.variantIdentifier ELSE re.identifier END, " +
                 "              url: re.url, " +
@@ -48,6 +50,7 @@ public class ParticipantRepository {
 
 
     public Collection<Participant> getParticipants(String stId) {
+        //language=Cypher
         String query = " " +
                 "MATCH (n:DatabaseObject{stId:$stId})-[:hasEvent|input|output|catalystActivity|physicalEntity|entityFunctionalStatus|diseaseEntity|regulatedBy|regulator*]->(m:PhysicalEntity) " +
                 "OPTIONAL MATCH (m)-[:referenceEntity]->(re1:ReferenceEntity) " +
@@ -61,6 +64,7 @@ public class ParticipantRepository {
                 "       m.schemaClass AS schemaClass, " +
                 "       COLLECT(DISTINCT({ " +
                 "              dbId: re.dbId, " +
+                "              stId: re.stId, " +
                 "              displayName: re.displayName, " +
                 "              identifier: CASE WHEN re.variantIdentifier IS NOT NULL THEN re.variantIdentifier ELSE re.identifier END, " +
                 "              url: re.url, " +

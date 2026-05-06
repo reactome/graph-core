@@ -17,6 +17,11 @@ public class ReferenceDatabase extends DatabaseObject {
     private String url;
     @ReactomeProperty
     private String resourceIdentifier;
+    /**
+     * Prefix from identifiers.org registry used to link to the database in a standardized way. Should be populated as much as possible.
+     */
+    @ReactomeProperty
+    private String identifiersPrefix;
 
     public ReferenceDatabase() {}
 
@@ -52,4 +57,17 @@ public class ReferenceDatabase extends DatabaseObject {
         this.resourceIdentifier = resourceIdentifier;
     }
 
+    /**
+     * Prefix from identifiers.org registry used to link to the database in a standardized way. Should be populated as much as possible.
+     */
+    public String getIdentifiersPrefix() {
+        return identifiersPrefix;
+    }
+
+    /**
+     * Prefix from identifiers.org registry used to link to the database in a standardized way. Should be populated as much as possible.
+     */
+    public void setIdentifiersPrefix(String identifiersPrefix) {
+        this.identifiersPrefix = identifiersPrefix;
+    }
 }
