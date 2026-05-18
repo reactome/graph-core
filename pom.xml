@@ -11,7 +11,8 @@
     <artifactId>graph-core</artifactId>
 
     <packaging>jar</packaging>
-    <version>2.0.15.CT</version>
+    <!-- Try to match with the dev (master) branch -->
+    <version>3.0.0.CT</version>
     <name>Graph Core Next Generation</name>
 
     <description>
