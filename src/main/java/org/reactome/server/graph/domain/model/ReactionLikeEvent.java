@@ -62,7 +62,7 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
     private List<RegulationReference> regulationReference;
 
     @Relationship(type = "requiredInputComponent")
-    private Set<PhysicalEntity> requiredInputComponent;
+    private List<PhysicalEntity> requiredInputComponent;
 
     @Relationship(type = "hasInteraction")
     private List<InteractionEvent> hasInteraction;
@@ -174,11 +174,11 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
         this.regulationReference = regulationReference;
     }
 
-    public Set<PhysicalEntity> getRequiredInputComponent() {
+    public List<PhysicalEntity> getRequiredInputComponent() {
         return requiredInputComponent;
     }
 
-    public void setRequiredInputComponent(Set<PhysicalEntity> requiredInputComponent) {
+    public void setRequiredInputComponent(List<PhysicalEntity> requiredInputComponent) {
         this.requiredInputComponent = requiredInputComponent;
     }
 

@@ -6,7 +6,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the exact active component of a complex or set.
@@ -16,7 +15,7 @@ import java.util.Set;
 public class CatalystActivity extends DatabaseObject  {
 
     @Relationship(type = "activeUnit")
-    private Set<PhysicalEntity> activeUnit;
+    private List<PhysicalEntity> activeUnit;
 
     @Relationship(type = "activity")
     private GO_MolecularFunction activity;
@@ -37,11 +36,11 @@ public class CatalystActivity extends DatabaseObject  {
         super(dbId);
     }
 
-    public Set<PhysicalEntity> getActiveUnit() {
+    public List<PhysicalEntity> getActiveUnit() {
         return activeUnit;
     }
 
-    public void setActiveUnit(Set<PhysicalEntity> activeUnit) {
+    public void setActiveUnit(List<PhysicalEntity> activeUnit) {
         this.activeUnit = activeUnit;
     }
 

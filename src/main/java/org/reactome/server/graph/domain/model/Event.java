@@ -6,7 +6,6 @@ import org.reactome.server.graph.domain.relationship.EventOf;
 import org.reactome.server.graph.domain.relationship.Has;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -20,7 +19,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -91,13 +89,13 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     private GO_BiologicalProcess goBiologicalProcess;
 
     @Relationship(type = "inferredTo", direction = Relationship.Direction.INCOMING)
-    private Set<Event> inferredFrom;
+    private List<Event> inferredFrom;
 
     @Relationship(type = "literatureReference")
     private List<Publication> literatureReference;
 
     @Relationship(type = "inferredTo")
-    private Set<Event> orthologousEvent;
+    private List<Event> orthologousEvent;
 
     @Relationship(type = "relatedSpecies")
     private List<Species> relatedSpecies;
@@ -318,11 +316,11 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         this.goBiologicalProcess = goBiologicalProcess;
     }
 
-    public Set<Event> getInferredFrom() {
+    public List<Event> getInferredFrom() {
         return inferredFrom;
     }
 
-    public void setInferredFrom(Set<Event> inferredFrom) {
+    public void setInferredFrom(List<Event> inferredFrom) {
         this.inferredFrom = inferredFrom;
     }
 
@@ -334,11 +332,11 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
         this.literatureReference = literatureReference;
     }
 
-    public Set<Event> getOrthologousEvent() {
+    public List<Event> getOrthologousEvent() {
         return orthologousEvent;
     }
 
-    public void setOrthologousEvent(Set<Event> orthologousEvent) {
+    public void setOrthologousEvent(List<Event> orthologousEvent) {
         this.orthologousEvent = orthologousEvent;
     }
 
