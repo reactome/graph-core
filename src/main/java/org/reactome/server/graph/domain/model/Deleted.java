@@ -21,7 +21,7 @@ public class Deleted extends MetaDatabaseObject{
     private DeletedControlledVocabulary reason;
 
     @Relationship(type="replacementInstances")
-    private List<Deletable> replacementInstances;
+    private List<DatabaseObject> replacementInstances;
 
     @Deprecated
     @ReactomeProperty(originName = "deletedInstanceDB_ID")
@@ -65,11 +65,11 @@ public class Deleted extends MetaDatabaseObject{
         this.reason = reason;
     }
 
-    public List<Deletable> getReplacementInstances() {
+    public List<DatabaseObject> getReplacementInstances() {
         return replacementInstances;
     }
 
-    public void setReplacementInstances(List<Deletable> replacementInstances) {
+    public void setReplacementInstances(List<DatabaseObject> replacementInstances) {
         this.replacementInstances = replacementInstances;
     }
 
