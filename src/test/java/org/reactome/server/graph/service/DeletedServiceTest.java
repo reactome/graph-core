@@ -22,7 +22,7 @@ public class DeletedServiceTest extends BaseTest {
         List<DeletedInstance> deletedInstances = deleted.get().getDeletedInstance();
         Assertions.assertTrue(!deletedInstances.isEmpty());
 
-        List<Deletable> deletables = deleted.get().getReplacementInstances();
+        List<DatabaseObject> deletables = deleted.get().getReplacementInstances();
         Assertions.assertTrue(!deletables.isEmpty());
 
         DeletedControlledVocabulary dcv = deleted.get().getReason();
