@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.voodoodyne.jackson.jsog.JSOGGenerator;
+//import com.voodoodyne.jackson.jsog.JSOGGenerator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 
 public class SerializationTest extends BaseTest {
-    @JsonIdentityInfo(generator = JSOGGenerator.class)
+//    @JsonIdentityInfo(generator = JSOGGenerator.class)
     public abstract static class DatabaseObjectJSOGMixin {
     }
 

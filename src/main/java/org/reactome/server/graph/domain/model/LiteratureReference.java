@@ -2,6 +2,7 @@ package org.reactome.server.graph.domain.model;
 
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
 @Node
@@ -19,8 +20,19 @@ public class LiteratureReference extends Publication {
     private Integer volume;
     @ReactomeProperty
     private Integer year;
+    
+    @Relationship(type = "retractionStatus")
+    private RetractionStatus retractionStatus;
 
     public LiteratureReference() {}
+
+    public RetractionStatus getRetractionStatus() {
+        return retractionStatus;
+    }
+
+    public void setRetractionStatus(RetractionStatus retractionStatus) {
+        this.retractionStatus = retractionStatus;
+    }
 
     public LiteratureReference(Long dbId) {
         super(dbId);

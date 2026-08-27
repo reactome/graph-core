@@ -35,7 +35,7 @@ public class Pathway extends Event implements CompositionAggregator {
     private Integer diagramHeight;
 
     @ReactomeProperty
-    private String isCanonical;
+    private Boolean isCanonical;
 
     @ReactomeProperty
     private String lastUpdatedDate;
@@ -49,6 +49,9 @@ public class Pathway extends Event implements CompositionAggregator {
 
     @Relationship(type = "normalPathway")
     private Pathway normalPathway;
+    
+    @Relationship(type = "cell")
+    private Cell cell;
 
     @Relationship(type = "normalPathway", direction = Relationship.Direction.INCOMING)
     private List<Pathway> diseasePathways;
@@ -63,6 +66,14 @@ public class Pathway extends Event implements CompositionAggregator {
 
     public Pathway(Long dbId) {
         super(dbId);
+    }
+    
+    public Cell getCell() {
+        return cell;
+    }
+    
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public String getDoi() {
@@ -109,11 +120,11 @@ public class Pathway extends Event implements CompositionAggregator {
         this.diagramHeight = diagramHeight;
     }
 
-    public String getIsCanonical() {
+    public Boolean getIsCanonical() {
         return isCanonical;
     }
 
-    public void setIsCanonical(String isCanonical) {
+    public void setIsCanonical(Boolean isCanonical) {
         this.isCanonical = isCanonical;
     }
 
