@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.repository.SpeciesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,19 +15,22 @@ public class SpeciesService {
     @Autowired
     SpeciesRepository speciesRepository;
 
+    @Value("${reactome.species.primary:9606}")
+    private String primarySpeciesTaxId;
+
     public List<Species> getSpecies() {
         List<Species> species = speciesRepository.getSpecies();
-        int humanPos = -1;
+        int primaryPos = -1;
         for (int i = 0; i < species.size(); i++) {
             Species s = species.get(i);
-            if (s.getTaxId().equals("9606")) {
-                humanPos = i;
+            if (s.getTaxId().equals(primarySpeciesTaxId)) {
+                primaryPos = i;
                 break;
             }
         }
-        if (humanPos != -1) {
-            Species human = species.remove(humanPos);
-            species.add(0, human);
+        if (primaryPos != -1) {
+            Species primary = species.remove(primaryPos);
+            species.add(0, primary);
         }
         return species;
     }
