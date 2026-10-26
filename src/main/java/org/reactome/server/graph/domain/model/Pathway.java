@@ -7,6 +7,8 @@ import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasEncapsulatedEvent;
 import org.reactome.server.graph.domain.relationship.HasEvent;
+import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
@@ -23,8 +25,15 @@ public class Pathway extends Event implements CompositionAggregator {
     @ReactomeProperty
     private String doi;
 
+    // Not mapped to the stored property: derived from incoming PathwayDiagram-[:representedPathway]->Pathway (see getHasDiagram)
+    @Transient
     @ReactomeProperty(addedField = true)
     private Boolean hasDiagram;
+
+    // Read-only so saving a Pathway never creates or deletes the diagram's representedPathway relationship
+    @ReadOnlyProperty
+    @Relationship(type = "representedPathway", direction = Relationship.Direction.INCOMING)
+    private List<PathwayDiagram> pathwayDiagrams;
 
     @ReactomeProperty
     private Boolean hasEHLD = false;
@@ -35,7 +44,7 @@ public class Pathway extends Event implements CompositionAggregator {
     private Integer diagramHeight;
 
     @ReactomeProperty
-    private String isCanonical;
+    private Boolean isCanonical;
 
     @ReactomeProperty
     private String lastUpdatedDate;
@@ -49,6 +58,9 @@ public class Pathway extends Event implements CompositionAggregator {
 
     @Relationship(type = "normalPathway")
     private Pathway normalPathway;
+    
+    @Relationship(type = "cell")
+    private Cell cell;
 
     @Relationship(type = "normalPathway", direction = Relationship.Direction.INCOMING)
     private List<Pathway> diseasePathways;
@@ -64,6 +76,14 @@ public class Pathway extends Event implements CompositionAggregator {
     public Pathway(Long dbId) {
         super(dbId);
     }
+    
+    public Cell getCell() {
+        return cell;
+    }
+    
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
 
     public String getDoi() {
         return doi;
@@ -74,11 +94,21 @@ public class Pathway extends Event implements CompositionAggregator {
     }
 
     public Boolean getHasDiagram() {
-        return hasDiagram;
+        return pathwayDiagrams != null && !pathwayDiagrams.isEmpty();
     }
 
     public void setHasDiagram(Boolean hasDiagram) {
         this.hasDiagram = hasDiagram;
+    }
+
+    @ReactomeSchemaIgnore
+    @JsonIgnore
+    public List<PathwayDiagram> getPathwayDiagrams() {
+        return pathwayDiagrams;
+    }
+
+    public void setPathwayDiagrams(List<PathwayDiagram> pathwayDiagrams) {
+        this.pathwayDiagrams = pathwayDiagrams;
     }
 
     public Boolean getHasEHLD() {
@@ -109,11 +139,11 @@ public class Pathway extends Event implements CompositionAggregator {
         this.diagramHeight = diagramHeight;
     }
 
-    public String getIsCanonical() {
+    public Boolean getIsCanonical() {
         return isCanonical;
     }
 
-    public void setIsCanonical(String isCanonical) {
+    public void setIsCanonical(Boolean isCanonical) {
         this.isCanonical = isCanonical;
     }
 

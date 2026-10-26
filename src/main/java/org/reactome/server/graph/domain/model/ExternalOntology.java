@@ -32,6 +32,13 @@ public abstract class ExternalOntology extends DatabaseObject {
     public ExternalOntology() {}
 
     public String getDatabaseName() {
+        // Not all instances having databaseName setting. Therefore,
+        // the code also tries to get the database name from referenceDatabase.
+        // Not sure why databaseName is set in the first place. Most likely
+        // for performance reason.
+        if (databaseName == null && referenceDatabase != null) {
+            return referenceDatabase.getDisplayName();
+        }
         return databaseName;
     }
 

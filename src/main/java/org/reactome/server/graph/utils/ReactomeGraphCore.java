@@ -56,4 +56,8 @@ public class ReactomeGraphCore {
         if (context == null) throw new RuntimeException("ReactomeGraphCore has to be initialised!");
         context.getBean(LazyFetchAspect.class).setEnableAOP(enabled);
     }
+    
+    public static void setContext(ApplicationContext ctx) {
+        context = ctx;
+    }
 }

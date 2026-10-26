@@ -43,6 +43,9 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
 
     @Relationship(type = "relatedSpecies")
     private List<Species> relatedSpecies;
+    
+    @Relationship(type = "componentCellType")
+    private List<PhysicalEntityCellType> componentCellType;
 
     @Override
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
@@ -54,6 +57,14 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
 
     public Complex(Long dbId) {
         super(dbId);
+    }
+
+    public List<PhysicalEntityCellType> getComponentCellType() {
+        return componentCellType;
+    }
+
+    public void setComponentCellType(List<PhysicalEntityCellType> componentCellType) {
+        this.componentCellType = componentCellType;
     }
 
     public Boolean getIsChimeric() {

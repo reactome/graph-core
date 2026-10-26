@@ -69,6 +69,9 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @Relationship(type = "reactionType")
     private List<ReactionType> reactionType;
+    
+    @Relationship(type = "participantCellType")
+    private List<PhysicalEntityCellType> participantCellType;
 
     @Override
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
@@ -84,6 +87,14 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     public Boolean getIsChimeric() {
         return isChimeric;
+    }
+
+    public List<PhysicalEntityCellType> getParticipantCellType() {
+        return participantCellType;
+    }
+
+    public void setParticipantCellType(List<PhysicalEntityCellType> participantCellType) {
+        this.participantCellType = participantCellType;
     }
 
     public void setIsChimeric(Boolean isChimeric) {

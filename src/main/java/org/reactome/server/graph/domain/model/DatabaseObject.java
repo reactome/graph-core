@@ -1,23 +1,28 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
+import org.reactome.server.graph.domain.relationship.ModifiedList;
 import org.reactome.server.graph.domain.result.DatabaseObjectLike;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.lang.NonNull;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
@@ -61,13 +66,21 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
+    
+    // This is a list of InstanceEdits that have modified this DatabaseObject.
+    // So that we can track all modifications, not just the most recent one.
+    @Relationship(type = "modifiedList", direction = Relationship.Direction.INCOMING)
+    private SortedSet<ModifiedList> modifiedList;
+    
+    @Relationship(type = "stableIdentifier")
+    private StableIdentifier stableIdentifier;
 
     public DatabaseObject() {
     }
 
     public DatabaseObject(Long dbId) {
         this.dbId = dbId;
-    }
+    } 
 
 //    @ReactomeSchemaIgnore
 //    public Long getId() {
@@ -77,6 +90,40 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 //    public void setId(Long id) {
 //        this.id = id;
 //    }
+
+    public StableIdentifier getStableIdentifier() {
+        return stableIdentifier;
+    }
+
+    public void setStableIdentifier(StableIdentifier stableIdentifier) {
+        this.stableIdentifier = stableIdentifier;
+    }
+
+    public List<InstanceEdit> getModifiedList() {
+        if (this.modifiedList == null || this.modifiedList.isEmpty()) {
+            return null;
+        }
+
+        List<InstanceEdit> rtn = new ArrayList<>();
+        for (ModifiedList modified : this.modifiedList) {
+            rtn.add(modified.getInstanceEdit());
+        }
+        return rtn;
+    }
+
+    public void setModifiedList(List<InstanceEdit> modifiedList) {
+        if (modifiedList == null || modifiedList.isEmpty()) {
+            return;
+        }   
+        this.modifiedList = new TreeSet<>();
+        int order = 0;
+        for (InstanceEdit instanceEdit : modifiedList) {
+            ModifiedList aux = new ModifiedList();
+            aux.setInstanceEdit(instanceEdit);
+            aux.setOrder(order++);
+            this.modifiedList.add(aux);
+        }
+    }
 
     public Long getDbId() {
         return dbId;
