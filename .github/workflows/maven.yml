@@ -1,0 +1,61 @@
+name: graph-core
+
+# Built, packaged and its shipped dependencies' licences checked (the parent's allowlist) on each
+# pull request and push. Its tests need a Neo4j graph of Reactome's data and are not run here
+# yet: that is the next step, against a fixture graph. On a version tag (v*), signed and
+# uploaded to Maven Central through Sonatype's Central Portal, where the upload waits until a
+# person publishes it (autoPublish off); the publish job runs in the `maven-central`
+# environment, so GitHub asks a person to approve it, and the Sonatype token and the signing
+# key are that environment's secrets.
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+        tags: ['v*']
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-java@v6
+              with:
+                  distribution: temurin
+                  java-version: '17'
+                  cache: maven
+            # Temporary, while reactome-parent 1.0.7 (its licence check) is reviewed and not yet
+            # on Maven Central: built from its pull request's branch first. Remove once published.
+            - name: reactome-parent 1.0.7, from its pilot branch
+              run: |
+                  git clone -q --depth 1 --branch central/pilot https://github.com/reactome/reactome-parent.git "$RUNNER_TEMP/reactome-parent"
+                  mvn -B -ntp -Dgpg.skip -f "$RUNNER_TEMP/reactome-parent/boms/pom.xml" install
+                  mvn -B -ntp -Dgpg.skip -f "$RUNNER_TEMP/reactome-parent/parents/reactome-parent/pom.xml" install
+            - name: Built, packaged, licences checked
+              run: mvn -B -ntp -Dgpg.skip -Dmaven.test.skip=true verify
+
+    publish:
+        if: startsWith(github.ref, 'refs/tags/v')
+        needs: build
+        runs-on: ubuntu-latest
+        environment: maven-central
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-java@v6
+              with:
+                  distribution: temurin
+                  java-version: '17'
+                  server-id: central
+                  server-username: MAVEN_CENTRAL_USERNAME
+                  server-password: MAVEN_CENTRAL_PASSWORD
+                  gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+                  gpg-passphrase: MAVEN_GPG_PASSPHRASE
+            - name: Signed, and uploaded to the Central Portal
+              env:
+                  MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+                  MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+                  MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+              run: mvn -B -ntp -Dsonatype-deploy=true -Dmaven.test.skip=true deploy
