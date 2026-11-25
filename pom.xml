@@ -251,7 +251,6 @@
           <complianceLevel>${java.version}</complianceLevel>
           <encoding>${project.build.sourceEncoding}</encoding>
           <forceAjcCompile>true</forceAjcCompile>
-          <showWeaveInfo>true</showWeaveInfo>
         </configuration>
         <executions>
           <execution>
