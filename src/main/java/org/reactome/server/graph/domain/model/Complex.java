@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public class Complex extends PhysicalEntity implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Boolean isChimeric;

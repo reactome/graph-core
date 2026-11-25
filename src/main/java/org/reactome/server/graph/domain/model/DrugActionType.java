@@ -7,6 +7,7 @@ import java.util.List;
 
 @Node
 public class DrugActionType extends ReactionType {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "instanceOf")
     private List<DrugActionType> instanceOf;

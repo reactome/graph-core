@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class GO_MolecularFunction extends GO_Term {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String ecNumber;

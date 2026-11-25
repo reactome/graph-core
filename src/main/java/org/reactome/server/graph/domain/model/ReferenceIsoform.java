@@ -9,6 +9,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class ReferenceIsoform extends ReferenceGeneProduct {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String variantIdentifier;

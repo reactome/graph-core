@@ -9,6 +9,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public abstract class ReferenceSequence extends ReferenceEntity {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String checksum;

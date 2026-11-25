@@ -32,6 +32,7 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "dbId")
 @Node
 public abstract class DatabaseObject implements Serializable, Comparable<DatabaseObject>, DatabaseObjectLike {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeTransient
     public transient Boolean isLoaded = false;

@@ -9,6 +9,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @Node
 public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "equivalentTo")
     private List<InterChainCrosslinkedResidue> equivalentTo;

@@ -7,6 +7,7 @@ import java.util.List;
 
 @Node
 public abstract class ControlledVocabulary extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String definition;

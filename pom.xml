@@ -203,9 +203,15 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.version}</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <release>${java.version}</release>
           <useIncrementalCompilation>false</useIncrementalCompilation>
+          <showWarnings>true</showWarnings>
+          <compilerArgs>
+            <!-- every lint but path: that one is about jars' manifests, not this code -->
+            <arg>-Xlint:all,-path</arg>
+            <arg>-Xmaxwarns</arg>
+            <arg>100000</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>
@@ -228,48 +234,49 @@
         </executions>
       </plugin>
       <!--
-                Maven plugin is necessary to test AspectJ when running in command line.
-                Running on IntelliJ will fire the ajc and this will work automatically.
-            -->
+        javac compiles everything, with every lint on (the parent's compiler settings); AspectJ
+        then weaves the compiled classes, main and test, rather than compiling the sources itself,
+        which would leave javac nothing to check.
+      -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>dev.aspectj</groupId>
         <artifactId>aspectj-maven-plugin</artifactId>
-        <version>${maven.aspectj.version}</version>
+        <version>1.14.1</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <complianceLevel>${java.version}</complianceLevel>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <forceAjcCompile>true</forceAjcCompile>
+          <showWeaveInfo>true</showWeaveInfo>
         </configuration>
         <executions>
           <execution>
-            <id>test-compile</id>
-            <configuration>
-              <weaveMainSourceFolder>true</weaveMainSourceFolder>
-            </configuration>
+            <id>weave-classes</id>
+            <phase>process-classes</phase>
             <goals>
               <goal>compile</goal>
-              <!-- use this goal to weave all your main classes -->
-              <goal>test-compile</goal>
-              <!-- use this goal to weave all your test classes -->
             </goals>
+            <configuration>
+              <sources />
+              <weaveDirectories>
+                <weaveDirectory>${project.build.outputDirectory}</weaveDirectory>
+              </weaveDirectories>
+            </configuration>
           </execution>
           <execution>
-            <!-- IMPORTANT -->
-            <phase>process-sources</phase>
-            <configuration>
-              <weaveMainSourceFolder>true</weaveMainSourceFolder>
-            </configuration>
+            <id>weave-test-classes</id>
+            <phase>process-test-classes</phase>
             <goals>
-              <goal>compile</goal>
               <goal>test-compile</goal>
             </goals>
+            <configuration>
+              <testSources />
+              <weaveDirectories>
+                <weaveDirectory>${project.build.testOutputDirectory}</weaveDirectory>
+              </weaveDirectories>
+            </configuration>
           </execution>
         </executions>
         <dependencies>
-          <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-          </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>

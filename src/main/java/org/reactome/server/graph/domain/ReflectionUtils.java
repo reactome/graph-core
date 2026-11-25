@@ -5,6 +5,7 @@ import org.neo4j.driver.Value;
 import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.function.Function;
@@ -48,6 +49,8 @@ public class ReflectionUtils {
     private static List<Field> getAllFields(Class<?> type) {
         List<Field> allFields = new ArrayList<>();
         for (Field field : type.getDeclaredFields()) {
+            // A class's own constants (serialVersionUID) are not the object's values.
+            if (Modifier.isStatic(field.getModifiers())) continue;
             field.setAccessible(true);
             allFields.add(field);
         }

@@ -8,6 +8,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class GO_CellularComponent extends GO_Term {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "componentOf")
     private List<GO_CellularComponent> componentOf;

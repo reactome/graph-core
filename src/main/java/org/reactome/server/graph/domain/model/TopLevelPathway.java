@@ -8,6 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class TopLevelPathway extends Pathway {
+    private static final long serialVersionUID = 1L;
 
     public TopLevelPathway() {}
 

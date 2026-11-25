@@ -7,6 +7,7 @@ import java.util.List;
 
 @Node
 public class InteractionEvent extends Event {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "partners")
     private List<PhysicalEntity> partners;

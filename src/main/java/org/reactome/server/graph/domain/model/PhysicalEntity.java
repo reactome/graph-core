@@ -15,6 +15,7 @@ import java.util.SortedSet;
 @Node
 
 public abstract class PhysicalEntity extends DatabaseObject implements Trackable, Deletable {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String definition;

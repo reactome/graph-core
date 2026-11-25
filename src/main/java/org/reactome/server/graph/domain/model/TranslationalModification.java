@@ -8,6 +8,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public abstract class TranslationalModification extends AbstractModifiedResidue {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer coordinate;

@@ -8,6 +8,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class EntityFunctionalStatus extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "functionalStatus")
     private List<FunctionalStatus> functionalStatus;

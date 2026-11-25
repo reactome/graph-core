@@ -13,6 +13,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class SimpleEntity extends PhysicalEntity {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty(addedField = true)
     private String referenceType;

@@ -9,6 +9,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class Summation extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String text;

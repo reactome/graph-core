@@ -8,6 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class Depolymerisation extends ReactionLikeEvent {
+    private static final long serialVersionUID = 1L;
 
     public Depolymerisation() {}
 

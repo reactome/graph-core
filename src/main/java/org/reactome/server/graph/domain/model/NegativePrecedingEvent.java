@@ -8,6 +8,7 @@ import java.util.List;
 
 @Node
 public class NegativePrecedingEvent extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String comment;

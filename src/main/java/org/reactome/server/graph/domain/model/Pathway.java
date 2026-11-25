@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public class Pathway extends Event implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String doi;

@@ -14,6 +14,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class DirectedInteraction extends Interaction {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "source")
     private ReferenceEntity source;

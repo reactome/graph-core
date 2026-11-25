@@ -11,6 +11,7 @@ import java.util.List;
 
 @Node
 public class UpdateTracker extends MetaDatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private List<String> action;

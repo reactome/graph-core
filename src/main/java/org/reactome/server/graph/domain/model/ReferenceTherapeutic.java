@@ -7,6 +7,7 @@ import java.util.List;
 
 @Node
 public class ReferenceTherapeutic extends ReferenceEntity{
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String abbreviation;

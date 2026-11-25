@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public abstract class FragmentModification extends GeneticallyModifiedResidue {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer endPositionInReferenceSequence;

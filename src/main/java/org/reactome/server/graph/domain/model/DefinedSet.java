@@ -10,6 +10,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class DefinedSet extends EntitySet {
+    private static final long serialVersionUID = 1L;
 
     public DefinedSet() {}
 

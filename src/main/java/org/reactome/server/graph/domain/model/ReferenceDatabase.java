@@ -8,6 +8,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Node
 public class ReferenceDatabase extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String accessUrl;

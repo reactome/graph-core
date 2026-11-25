@@ -10,6 +10,7 @@ import java.util.List;
 
 @Node
 public class Deleted extends MetaDatabaseObject{
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String curatorComment;

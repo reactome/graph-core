@@ -4,6 +4,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @Node
 public class DBInfo extends Release {
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private Long checksum;

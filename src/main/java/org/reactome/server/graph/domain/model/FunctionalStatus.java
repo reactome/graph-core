@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class FunctionalStatus extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "functionalStatusType")
     private FunctionalStatusType functionalStatusType;

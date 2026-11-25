@@ -9,6 +9,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class ReferenceGeneProduct extends ReferenceSequence {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private List<String> chain;

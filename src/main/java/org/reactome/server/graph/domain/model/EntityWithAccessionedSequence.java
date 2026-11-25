@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public class EntityWithAccessionedSequence extends GenomeEncodedEntity implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer endCoordinate;

@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Node
 public class ModifiedNucleotide extends TranscriptionalModification {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer coordinate;

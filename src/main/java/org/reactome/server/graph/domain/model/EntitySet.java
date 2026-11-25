@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public abstract class EntitySet extends PhysicalEntity implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Boolean isOrdered;

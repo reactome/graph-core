@@ -12,6 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public abstract class ReferenceEntity extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     // will be filled together with url
     private String databaseName;

@@ -10,6 +10,7 @@ import java.util.List;
 
 @Node
 public class DeletedInstance extends MetaDatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty(originName = "class")
     private String clazz;

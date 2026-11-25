@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.Property;
 @SuppressWarnings("unused")
 @Node
 public class Figure extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     @Property

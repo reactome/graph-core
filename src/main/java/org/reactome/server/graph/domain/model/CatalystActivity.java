@@ -14,6 +14,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @Node
 public class CatalystActivity extends DatabaseObject  {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "activeUnit")
     private Set<PhysicalEntity> activeUnit;

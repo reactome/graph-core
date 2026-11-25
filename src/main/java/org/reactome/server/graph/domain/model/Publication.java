@@ -14,6 +14,7 @@ import java.util.SortedSet;
 @SuppressWarnings("unused")
 @Node
 public abstract class Publication extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String title;

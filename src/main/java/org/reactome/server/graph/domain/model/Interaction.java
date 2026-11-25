@@ -9,6 +9,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Node
 public abstract class Interaction extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;

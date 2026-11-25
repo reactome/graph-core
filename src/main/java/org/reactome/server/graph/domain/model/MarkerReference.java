@@ -7,6 +7,7 @@ import java.util.List;
 
 @Node
 public class MarkerReference extends ControlReference {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "marker")
     private EntityWithAccessionedSequence marker;

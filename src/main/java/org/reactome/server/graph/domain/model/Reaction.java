@@ -11,6 +11,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class Reaction extends ReactionLikeEvent {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "reverseReaction")
     private Reaction reverseReaction;

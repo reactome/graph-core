@@ -9,6 +9,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class ReplacedResidue extends GeneticallyModifiedResidue {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer coordinate;

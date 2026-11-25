@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Node
 public abstract class Drug extends PhysicalEntity {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "referenceEntity")
     private ReferenceTherapeutic referenceEntity;

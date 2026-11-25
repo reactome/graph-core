@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public class Polymer extends PhysicalEntity implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer maxUnitCount;

@@ -13,6 +13,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public abstract class GO_Term extends DatabaseObject{
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String accession;

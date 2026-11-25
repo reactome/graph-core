@@ -8,6 +8,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class ReferenceRNASequence extends ReferenceSequence {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "referenceGene")
     private List<ReferenceDNASequence> referenceGene;

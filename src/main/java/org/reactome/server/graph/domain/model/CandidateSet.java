@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public class CandidateSet extends EntitySet implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "hasCandidate")
     private SortedSet<HasCandidate> hasCandidate;

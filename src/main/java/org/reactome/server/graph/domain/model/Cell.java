@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 
 @Node
 public class Cell extends PhysicalEntity implements CompositionAggregator {
+
+    private static final long serialVersionUID = 1L;
     @Relationship(type = "RNAMarker")
     private List<EntityWithAccessionedSequence> RNAMarker;
 

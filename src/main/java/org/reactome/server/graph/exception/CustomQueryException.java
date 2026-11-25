@@ -5,6 +5,7 @@ package org.reactome.server.graph.exception;
  */
 
 public class CustomQueryException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     public CustomQueryException(String message) {
         super(message);
