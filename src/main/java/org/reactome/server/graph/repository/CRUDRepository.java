@@ -37,10 +37,12 @@ public class CRUDRepository {
                 .all();
     }
 
-    // Unchecked cast kept as it was: it casts the fetch specification itself, not a fetched T
-    @SuppressWarnings("unchecked")
+    /**
+     * The one object the query returns, mapped to the given class, or null when it returns none.
+     * It used to cast the client's fetch specification itself to T, which threw on every call.
+     */
     public <T extends DatabaseObject> T query(String query, Map<String, Object> map, Class<T> _clazz) {
-        return (T) neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(_clazz);
+        return neo4jTemplate.findOne(query, map, _clazz).orElse(null);
     }
 
     // ------------------------------------------- Save and Delete -----------------------------------------------------
