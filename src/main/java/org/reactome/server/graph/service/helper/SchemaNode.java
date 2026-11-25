@@ -18,12 +18,12 @@ import java.util.TreeSet;
 @JsonPropertyOrder({"className", "count", "children"})
 public class SchemaNode implements Comparable<SchemaNode>{
 
-    private final Class clazz;
+    private final Class<?> clazz;
 
     private Set<SchemaNode> children;
     private Integer count;
 
-    public SchemaNode(Class clazz, Integer count) {
+    public SchemaNode(Class<?> clazz, Integer count) {
         this.clazz = clazz;
         this.count = count;
         children = Collections.emptySet();
@@ -31,7 +31,7 @@ public class SchemaNode implements Comparable<SchemaNode>{
 
     @SuppressWarnings("unused") // clazz is used in the content service
     @JsonIgnore
-    public Class getClazz() {
+    public Class<?> getClazz() {
         return clazz;
     }
 
@@ -71,9 +71,9 @@ public class SchemaNode implements Comparable<SchemaNode>{
         if (node.clazz.getSimpleName().equals(className))
             return node;
         SchemaNode result = null;
-        Iterator iterator = node.getChildren().iterator();
+        Iterator<SchemaNode> iterator = node.getChildren().iterator();
         while(result == null && iterator.hasNext()) {
-            result = iterateTree((SchemaNode) iterator.next(), className);
+            result = iterateTree(iterator.next(), className);
         }
         return result;
     }

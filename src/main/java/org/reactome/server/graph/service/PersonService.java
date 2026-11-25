@@ -76,9 +76,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getAuthoredPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
+            return eventRepository.getAuthoredPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredPathwaysByOrcidId(id);
+            return eventRepository.getAuthoredPathwaysByOrcidId(id);
         } else {
             return null;
         }
@@ -87,9 +87,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getAuthoredReactions(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
+            return eventRepository.getAuthoredReactionsByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getAuthoredReactionsByOrcidId(id);
+            return eventRepository.getAuthoredReactionsByOrcidId(id);
         } else {
             return null;
         }
@@ -98,9 +98,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getReviewedPathways(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
+            return eventRepository.getReviewedPathwaysByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedPathwaysByOrcidId(id);
+            return eventRepository.getReviewedPathwaysByOrcidId(id);
         } else {
             return null;
         }
@@ -109,9 +109,9 @@ public class PersonService {
     public Collection<SimpleEventProjection> getReviewedReactions(Object identifier) {
         String id = identifier.toString();
         if (DatabaseObjectUtils.isDbId(id)) {
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedReactionsByDbId(Long.valueOf(id));
+            return eventRepository.getReviewedReactionsByDbId(Long.valueOf(id));
         } else if (DatabaseObjectUtils.isOrcidId(id)){
-            return (Collection<SimpleEventProjection>) eventRepository.getReviewedReactionsByOrcidId(id);
+            return eventRepository.getReviewedReactionsByOrcidId(id);
         } else {
             return null;
         }

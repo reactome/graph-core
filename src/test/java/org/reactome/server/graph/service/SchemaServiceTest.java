@@ -39,7 +39,7 @@ public class SchemaServiceTest extends BaseTest {
         long start, time;
         start = System.currentTimeMillis();
         Collection<Species> species = schemaService.getByClass(Species.class);
-        Set observedSpecies = new TreeSet<>(species);
+        Set<Species> observedSpecies = new TreeSet<>(species);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -166,14 +168,16 @@ public class DatabaseObjectFactory {
 
     private static void fill(DatabaseObject databaseObject, GKInstance instance) {
         try {
-            Class clazz = databaseObject.getClass();
+            Class<?> clazz = databaseObject.getClass();
             List<String> propNames = getJavaBeanProperties(clazz);
             if (propNames.size() == 0) return;
             String attributeName;
             for (String propName : propNames) {
                 attributeName = DatabaseObjectUtils.lowerFirst(propName);
                 if (instance.getSchemClass().isValidAttribute(attributeName)) {
-                    List attValues = instance.getAttributeValuesList(attributeName);
+                    // The GK API returns a raw List of attribute values
+                    @SuppressWarnings("unchecked")
+                    List<Object> attValues = instance.getAttributeValuesList(attributeName);
                     if (attValues == null || attValues.size() == 0) continue;
 
                     if (attributeName.equals("modified")) {
@@ -190,7 +194,6 @@ public class DatabaseObjectFactory {
                                     }
                                 }
                                 attValues.clear();
-                                //noinspection unchecked
                                 attValues.add(latestModified);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -200,7 +203,7 @@ public class DatabaseObjectFactory {
 
                     Method setMethod = getNamedMethod(databaseObject, "set" + propName);
                     if (setMethod == null) continue;
-                    Class argType = setMethod.getParameterTypes()[0];
+                    Class<?> argType = setMethod.getParameterTypes()[0];
                     if (Collection.class.isAssignableFrom(argType)) {
                         Collection<Object> caValues;
                         if (Set.class.isAssignableFrom(argType)) {
@@ -239,7 +242,7 @@ public class DatabaseObjectFactory {
         String clazzName = PACKAGE_NAME + instance.getSchemClass().getName();
         try {
             Class<DatabaseObject> clazz = (Class<DatabaseObject>) Class.forName(clazzName);
-            DatabaseObject databaseObject = clazz.newInstance();
+            DatabaseObject databaseObject = clazz.getDeclaredConstructor().newInstance();
             databaseObject.setDbId(instance.getDBID());
             databaseObject.setDisplayName(instance.getDisplayName());
             if (instance.getSchemClass().isValidAttribute(ReactomeJavaConstants.stableIdentifier)) {
@@ -254,13 +257,19 @@ public class DatabaseObjectFactory {
                 }
             }
             return databaseObject;
-        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException e) {
+        } catch (ClassNotFoundException|InstantiationException|IllegalAccessException|NoSuchMethodException e) {
             logger.error("Error occurred when trying to get Class for Name " + clazzName);
+        } catch (InvocationTargetException e) {
+            // Class.newInstance() let the constructor's own exception through; so does this
+            Throwable cause = e.getCause();
+            if (cause instanceof RuntimeException) throw (RuntimeException) cause;
+            if (cause instanceof Error) throw (Error) cause;
+            throw new UndeclaredThrowableException(cause);
         }
         return null ;
     }
 
-    private static List<String> getJavaBeanProperties(Class clazz) {
+    private static List<String> getJavaBeanProperties(Class<?> clazz) {
         Method[] methods = clazz.getMethods();
         String methodName;
         String propertyName;

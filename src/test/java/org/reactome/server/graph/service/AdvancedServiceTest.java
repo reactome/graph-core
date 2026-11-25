@@ -103,6 +103,7 @@ public class AdvancedServiceTest extends BaseTest {
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
     @Test
+    @SuppressWarnings("deprecation") // tests the deprecated method itself
     public void findByPropertyTest() throws InvocationTargetException, IllegalAccessException {
 
         logger.info("Started testing advancedDatabaseObjectService.findByProperty");
@@ -123,6 +124,7 @@ public class AdvancedServiceTest extends BaseTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation") // tests the deprecated method itself
     public void findAllByPropertyTest() {
 
         logger.info("Started testing advancedDatabaseObjectService.findAllByProperty");

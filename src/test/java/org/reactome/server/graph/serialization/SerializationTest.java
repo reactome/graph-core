@@ -2,6 +2,7 @@ package org.reactome.server.graph.serialization;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -39,6 +40,7 @@ public class SerializationTest extends BaseTest {
 
     private static ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
     private static ObjectReader reader = mapper.reader();
+    private static final TypeReference<Map<String, Object>> STRING_OBJECT_MAP = new TypeReference<>() {};
 
 
     @BeforeAll
@@ -52,7 +54,7 @@ public class SerializationTest extends BaseTest {
         String json = writer
                 .writeValueAsString(toSerialize);
 
-        Map<String, Object> jsonMap = reader.readValue(json, Map.class);
+        Map<String, Object> jsonMap = reader.forType(STRING_OBJECT_MAP).readValue(json);
 
         Assertions.assertThat(jsonMap.get("components")).isNotNull();
         Assertions.assertThat(jsonMap.get("hasComponent")).isNotNull();
@@ -64,7 +66,7 @@ public class SerializationTest extends BaseTest {
                 .withView(StoichiometryView.Nested.class)
                 .writeValueAsString(toSerialize);
 
-        Map<String, Object> jsonMap = reader.readValue(json, Map.class);
+        Map<String, Object> jsonMap = reader.forType(STRING_OBJECT_MAP).readValue(json);
 
         Object components = jsonMap.get("components");
         Assertions.assertThat(components).isNotNull().isInstanceOf(Collection.class);
@@ -85,7 +87,7 @@ public class SerializationTest extends BaseTest {
 //                .withView(CompositionAggregator.class)
                 .writeValueAsString(set);
 
-        Map<String, Object> jsonMap = reader.readValue(json, Map.class);
+        Map<String, Object> jsonMap = reader.forType(STRING_OBJECT_MAP).readValue(json);
 
         Object components = jsonMap.get("composedOf");
         Assertions.assertThat(components).isNotNull().isInstanceOf(Collection.class);
@@ -100,7 +102,7 @@ public class SerializationTest extends BaseTest {
                 .withView(StoichiometryView.Flatten.class)
                 .writeValueAsString(toSerialize);
 
-        Map<String, Object> jsonMap = reader.readValue(json, Map.class);
+        Map<String, Object> jsonMap = reader.forType(STRING_OBJECT_MAP).readValue(json);
 
         Object components = jsonMap.get("hasComponent");
         Assertions.assertThat(components).isNotNull().isInstanceOf(Collection.class);

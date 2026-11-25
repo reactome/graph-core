@@ -82,6 +82,7 @@ public class PersonServiceTest extends BaseTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation") // tests the deprecated method itself
     public void getPublicationsOfPersonByOrcidIdTest() {
         logger.info("Started testing personService.getPublicationsOfPersonByOrcidId");
         long start, time;
@@ -95,6 +96,7 @@ public class PersonServiceTest extends BaseTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation") // tests the deprecated method itself
     public void getPublicationsOfPersonByDbIdTest() {
         logger.info("Started testing personService.getPublicationsOfPersonByDbId");
         long start, time;

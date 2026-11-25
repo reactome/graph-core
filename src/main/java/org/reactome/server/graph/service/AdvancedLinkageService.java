@@ -2,7 +2,6 @@ package org.reactome.server.graph.service;
 
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.Referrals;
-import org.reactome.server.graph.repository.AdvancedLinkageRepository;
 import org.reactome.server.graph.repository.ComponentOfLinkageRepository;
 import org.reactome.server.graph.repository.ReferralsLinkageRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
@@ -13,8 +12,6 @@ import java.util.Collection;
 
 @Service
 public class AdvancedLinkageService {
-
-    private AdvancedLinkageRepository advancedLinkageRepository;
 
     private final ComponentOfLinkageRepository componentOfLinkageRepository;
     private final ReferralsLinkageRepository referralsLinkageRepository;

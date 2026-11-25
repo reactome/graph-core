@@ -186,20 +186,22 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return getClass().getSimpleName();
     }
 
+    // The caller picks T for the named getter; the value is not checked against it
+    @SuppressWarnings("unchecked")
     public <T> T fetchSingleValue(String methodName) {
         try {
             Method method = getClass().getMethod(methodName);
-            //noinspection unchecked
             return (T) method.invoke(this);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             return null;
         }
     }
 
+    // The caller picks T for the named getter; the value is not checked against it
+    @SuppressWarnings("unchecked")
     public <T> Collection<T> fetchMultiValue(String methodName) {
         try {
             Method method = this.getClass().getMethod(methodName);
-            //noinspection unchecked
             return (Collection<T>) method.invoke(this);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             return new ArrayList<>();

@@ -76,7 +76,7 @@ public class SchemaRepository {
         return neo4jTemplate.findAll(query, map, clazz);
     }
 
-    public Integer countByClassAndSpeciesTaxId(Class clazz, String taxId) {
+    public Integer countByClassAndSpeciesTaxId(Class<?> clazz, String taxId) {
         String query = "MATCH (s:Species{taxId:$taxId})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
         Map<String,Object> map = new HashMap<>();
         map.put("taxId", taxId);
@@ -93,7 +93,7 @@ public class SchemaRepository {
         return neo4jTemplate.findAll(query, map, clazz);
     }
 
-    public Integer countByClassAndSpeciesName(Class clazz, String speciesName) {
+    public Integer countByClassAndSpeciesName(Class<?> clazz, String speciesName) {
         String query = "MATCH (s:Species{displayName:$speciesName})<-[:species]-(n:" + clazz.getSimpleName() + ") RETURN COUNT(n) AS num";
         Map<String,Object> map = new HashMap<>();
         map.put("speciesName", speciesName);
@@ -103,7 +103,7 @@ public class SchemaRepository {
 
     // ---------------------------------------- Query by Class for SimpleObject ------------------------------------------------
 
-    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClass(Class clazz) {
+    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClass(Class<?> clazz) {
         String query = "" +
                 "MATCH (n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
@@ -111,7 +111,7 @@ public class SchemaRepository {
         return neo4jClient.query(query).in(databaseName).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
-    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class clazz, String taxId) {
+    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class<?> clazz, String taxId) {
         String query = "" +
                 "MATCH (s:Species{taxId:$taxId})<-[:species]-(n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
@@ -121,7 +121,7 @@ public class SchemaRepository {
         return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy((ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
-    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class clazz, String speciesName) {
+    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class<?> clazz, String speciesName) {
         String query = "" +
                 "MATCH (s:Species{displayName:$speciesName})<-[:species]-(n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
@@ -133,7 +133,7 @@ public class SchemaRepository {
 
     // ---------------------------------------- Query by Class for SimpleObject (paging) ------------------------------------------------
 
-    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClass(Class clazz, Integer page, Integer offset) {
+    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClass(Class<?> clazz, Integer page, Integer offset) {
         String query = "" +
                 "MATCH (n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
@@ -145,7 +145,7 @@ public class SchemaRepository {
         return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
-    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class clazz, String taxId, Integer page, Integer offset) {
+    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesTaxId(Class<?> clazz, String taxId, Integer page, Integer offset) {
         String query = "" +
                 "MATCH (s:Species{taxId:$taxId})<-[:species]-(n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
@@ -158,7 +158,7 @@ public class SchemaRepository {
         return neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(SimpleDatabaseObject.class).mappedBy( (ts, rec) -> SimpleDatabaseObject.build(rec)).all();
     }
 
-    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class clazz, String speciesName, Integer page, Integer offset) {
+    public Collection<SimpleDatabaseObject> getSimpleDatabaseObjectByClassAndSpeciesName(Class<?> clazz, String speciesName, Integer page, Integer offset) {
         String query = "" +
                 "MATCH (s:Species{displayName:$speciesName})<-[:species]-(n:" + clazz.getSimpleName() + ") " +
                 "RETURN DISTINCT(n.dbId) as dbId, n.stId as stId, n.displayName as displayName, labels(n) as labels " +
@@ -173,7 +173,7 @@ public class SchemaRepository {
 
     // ---------------------------------------- Query by Class for SimpleReferenceObject ------------------------------------------------
 
-    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz) {
+    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class<?> clazz) {
         String query = "" +
                 "MATCH (n:" + clazz.getSimpleName() + ") " +
                 "RETURN n.dbId AS dbId, n.databaseName AS databaseName, n.identifier AS identifier " +
@@ -181,7 +181,7 @@ public class SchemaRepository {
         return neo4jClient.query(query).in(databaseName).fetchAs(SimpleReferenceObject.class).mappedBy( (ts, rec) -> SimpleReferenceObject.build(rec)).all();
     }
 
-    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class clazz, Integer page, Integer offset) {
+    public Collection<SimpleReferenceObject> getSimpleReferencesObjectsByClass(Class<?> clazz, Integer page, Integer offset) {
         String query = "" +
                 "MATCH (n:" + clazz.getSimpleName() + ") " +
                 "RETURN n.dbId AS dbId, n.databaseName AS databaseName, n.identifier AS identifier " +
@@ -195,12 +195,12 @@ public class SchemaRepository {
 
     // ---------------------------------------- Query by Class for ids ------------------------------------------------
 
-    public Collection<String> getStIdsByClass (Class clazz) {
+    public Collection<String> getStIdsByClass (Class<?> clazz) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n.stId";
         return neo4jClient.query(query).in(databaseName).fetchAs(String.class).all();
     }
 
-    public Collection<Long> getDbIdsByClass (Class clazz) {
+    public Collection<Long> getDbIdsByClass (Class<?> clazz) {
         String query = "MATCH (n:" + clazz.getSimpleName() + ") RETURN n.dbId";
         return neo4jClient.query(query).in(databaseName).fetchAs(Long.class).all();
     }

@@ -41,7 +41,7 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
         return attributeClasses;
     }
 
-    public void addAttributeClass(Class valueType) {
+    public void addAttributeClass(Class<?> valueType) {
         this.attributeClasses.add(new AttributeClass(valueType));
     }
 
