@@ -83,6 +83,14 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
     </dependency>
+    <!-- Read by the compiler only: a dependency's classes carry @Contract, and without its
+         class javac warns on every compile. Not shipped. -->
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>26.1.0</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -202,15 +210,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.version}</version>
+        <!-- the parent's strict settings, and: no annotation processing (none is used; log4j's
+             plugin processor would otherwise run, and warn, on every compile) -->
         <configuration>
-          <release>${java.version}</release>
           <useIncrementalCompilation>false</useIncrementalCompilation>
-          <showWarnings>true</showWarnings>
-          <compilerArgs>
-            <!-- every lint but path: that one is about jars' manifests, not this code -->
-            <arg>-Xlint:all,-path</arg>
-            <arg>-Xmaxwarns</arg>
-            <arg>100000</arg>
+          <compilerArgs combine.children="append">
+            <arg>-proc:none</arg>
           </compilerArgs>
         </configuration>
       </plugin>
@@ -283,11 +288,6 @@
             <version>${aspectj.version}</version>
           </dependency>
         </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
