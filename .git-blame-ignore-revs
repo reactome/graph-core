@@ -1,0 +1,3 @@
+# Formatting-only commits, for `git blame --ignore-revs-file` (GitHub reads it itself).
+# palantir-java-format applied by Spotless:
+7b6e55fb4a943b5c6ed06719306158ad918fa9f8
