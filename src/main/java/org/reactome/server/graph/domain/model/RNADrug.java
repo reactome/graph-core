@@ -7,6 +7,5 @@ import org.springframework.data.neo4j.core.schema.Node;
 public class RNADrug extends Drug {
     private static final long serialVersionUID = 1L;
 
-    public RNADrug() {
-    }
+    public RNADrug() {}
 }

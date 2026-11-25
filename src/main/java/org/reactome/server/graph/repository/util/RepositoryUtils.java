@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class RepositoryUtils {
 
-    public static String getRelationshipAsString (String... relationships) {
+    public static String getRelationshipAsString(String... relationships) {
         String result = "";
         if (relationships != null && relationships.length > 0) {
             result = ":" + StringUtils.join(relationships, "|");

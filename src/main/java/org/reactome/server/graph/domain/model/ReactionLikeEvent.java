@@ -2,6 +2,8 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
@@ -10,9 +12,6 @@ import org.reactome.server.graph.domain.relationship.*;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Has four subclasses: Reaction, BlackBoxEvent, Polymerisation and Depolymerisation. All involve the conversion of one or more input molecular entities to an output entity, possibly facilitated by a catalyst.
@@ -27,8 +26,10 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @ReactomeProperty
     private Boolean isChimeric;
+
     @ReactomeProperty
     private String systematicName;
+
     @ReactomeProperty
     private String category;
 
@@ -73,11 +74,14 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
 
     @Override
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
-        return Stream.of(input, output, Has.Util.wrapUniqueElements(catalystActivity, "catalyst"), Has.Util.wrapUniqueElements(regulatedBy, "regulation"));
+        return Stream.of(
+                input,
+                output,
+                Has.Util.wrapUniqueElements(catalystActivity, "catalyst"),
+                Has.Util.wrapUniqueElements(regulatedBy, "regulation"));
     }
 
-    public ReactionLikeEvent() {
-    }
+    public ReactionLikeEvent() {}
 
     public ReactionLikeEvent(Long dbId) {
         super(dbId);
@@ -110,7 +114,6 @@ public abstract class ReactionLikeEvent extends Event implements CompositionAggr
     public List<CatalystActivity> getCatalystActivity() {
         return catalystActivity;
     }
-
 
     public void setCatalystActivity(List<CatalystActivity> catalystActivity) {
         this.catalystActivity = catalystActivity;

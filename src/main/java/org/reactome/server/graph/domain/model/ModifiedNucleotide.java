@@ -14,8 +14,7 @@ public class ModifiedNucleotide extends TranscriptionalModification {
     @Relationship(type = "modification")
     private DatabaseObject modification;
 
-    public ModifiedNucleotide() {
-    }
+    public ModifiedNucleotide() {}
 
     public Integer getCoordinate() {
         return coordinate;
@@ -32,5 +31,4 @@ public class ModifiedNucleotide extends TranscriptionalModification {
     public void setModification(DatabaseObject modification) {
         this.modification = modification;
     }
-
 }

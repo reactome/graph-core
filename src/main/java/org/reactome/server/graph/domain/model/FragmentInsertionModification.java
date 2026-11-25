@@ -10,7 +10,7 @@ public class FragmentInsertionModification extends FragmentModification {
 
     @ReactomeProperty
     private Integer coordinate;
-    
+
     public FragmentInsertionModification() {}
 
     public Integer getCoordinate() {
@@ -20,5 +20,4 @@ public class FragmentInsertionModification extends FragmentModification {
     public void setCoordinate(Integer coordinate) {
         this.coordinate = coordinate;
     }
-    
 }

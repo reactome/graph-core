@@ -1,10 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
@@ -13,18 +12,25 @@ public abstract class ReferenceSequence extends ReferenceEntity {
 
     @ReactomeProperty
     private String checksum;
+
     @ReactomeProperty
     private List<String> comment;
+
     @ReactomeProperty
     private List<String> description;
+
     @ReactomeProperty
     private List<String> geneName;
+
     @ReactomeProperty
     private Boolean isSequenceChanged;
+
     @ReactomeProperty
     private List<String> keyword;
+
     @ReactomeProperty
     private List<String> secondaryIdentifier;
+
     @ReactomeProperty
     private Integer sequenceLength;
 
@@ -107,5 +113,4 @@ public abstract class ReferenceSequence extends ReferenceEntity {
     public void setSpecies(Species species) {
         this.species = species;
     }
-
 }

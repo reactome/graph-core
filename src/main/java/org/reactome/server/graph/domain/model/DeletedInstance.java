@@ -1,12 +1,11 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @Node
 public class DeletedInstance extends MetaDatabaseObject {
@@ -27,8 +26,7 @@ public class DeletedInstance extends MetaDatabaseObject {
     @Relationship(type = "species")
     private List<Taxon> species;
 
-    public DeletedInstance() {
-    }
+    public DeletedInstance() {}
 
     public String getClazz() {
         return clazz;
@@ -74,7 +72,7 @@ public class DeletedInstance extends MetaDatabaseObject {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        //todo
+        // todo
         return "DeletedInstance";
     }
 }

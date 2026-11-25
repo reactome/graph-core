@@ -1,5 +1,12 @@
 package org.reactome.server.graph.service.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
@@ -13,14 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -40,7 +39,8 @@ public class DatabaseObjectUtils {
     }
 
     @SuppressWarnings("unused")
-    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts) throws ClassNotFoundException {
+    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts)
+            throws ClassNotFoundException {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         for (SchemaClassCount schemaClassCount : schemaClassCounts) {
@@ -76,23 +76,44 @@ public class DatabaseObjectUtils {
                     // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {
                         case "getInput":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchInput")
+                                            .invoke(databaseObject));
                             break;
                         case "getOutput":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchOutput").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchOutput")
+                                            .invoke(databaseObject));
                             break;
                         case "getHasComponent":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchHasComponent").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchHasComponent")
+                                            .invoke(databaseObject));
                             break;
                         case "getRepeatedUnit":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchRepeatedUnit").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchRepeatedUnit")
+                                            .invoke(databaseObject));
                             break;
                         default:
                             map.put(lowerFirst(method.getName().substring(3)), object);
                             break;
                     }
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method " + method.getName());
+                    logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method "
+                            + method.getName());
                 }
             }
         }
@@ -150,8 +171,8 @@ public class DatabaseObjectUtils {
                         && methodName.startsWith("get")
                         && !methodName.equals("getClass")
                         && !methodName.startsWith("getSuperclass")
-//                        && !methodName.equals("getClassName")
-//                        && !methodName.equals("getId")
+                        //                        && !methodName.equals("getClassName")
+                        //                        && !methodName.equals("getId")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getReferralProperties(method, targets);
@@ -180,7 +201,8 @@ public class DatabaseObjectUtils {
             return "" + ((DatabaseObject) id).getDbId();
         } else if (id instanceof String) {
             String aux = trimId((String) id);
-            if (aux.startsWith("REACT_")) { //In case the provided identifier is an OLD style one, we translate to the new one
+            if (aux.startsWith(
+                    "REACT_")) { // In case the provided identifier is an OLD style one, we translate to the new one
                 String stId = databaseObjectRepository.findNewStId(aux);
                 if (stId != null) aux = stId;
             }
@@ -195,7 +217,6 @@ public class DatabaseObjectUtils {
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
         return p.matcher(email).matches();
     }
-
 
     public static boolean isOrcidId(String id) {
         Pattern p = Pattern.compile("(\\d{4})-(\\d{4})-(\\d{4})-(\\d{3}[0-9X])");

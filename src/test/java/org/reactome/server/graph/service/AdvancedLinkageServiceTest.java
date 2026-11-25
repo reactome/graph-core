@@ -1,15 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.Referrals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 public class AdvancedLinkageServiceTest extends BaseTest {
 
@@ -35,7 +33,7 @@ public class AdvancedLinkageServiceTest extends BaseTest {
     }
 
     @Test
-    public void getReferralsToTest(){
+    public void getReferralsToTest() {
         logger.info("Started testing genericService.getReferralsToTest");
         long start, time;
         start = System.currentTimeMillis();

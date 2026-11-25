@@ -1,5 +1,9 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.exception.CustomQueryException;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
@@ -8,11 +12,6 @@ import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -35,7 +34,6 @@ public class AdvancedDatabaseObjectService {
         }
         return null;
     }
-
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Object identifier) {
         EnhancedQueryOptions options = new EnhancedQueryOptions();
@@ -73,7 +71,8 @@ public class AdvancedDatabaseObjectService {
     }
 
     @Deprecated
-    public <T extends DatabaseObject> Collection<DatabaseObject> findAllByProperty(Class<T> clazz, String property, Object value) {
+    public <T extends DatabaseObject> Collection<DatabaseObject> findAllByProperty(
+            Class<T> clazz, String property, Object value) {
         return advancedDatabaseObjectRepository.findAllByProperty(clazz, property, value);
     }
 
@@ -89,7 +88,8 @@ public class AdvancedDatabaseObjectService {
         return null;
     }
 
-    public <T extends DatabaseObject> T findById(Object identifier, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findById(
+            Object identifier, RelationshipDirection direction, String... relationships) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return advancedDatabaseObjectRepository.findById(id, direction, relationships);
@@ -99,11 +99,13 @@ public class AdvancedDatabaseObjectService {
         return null;
     }
 
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByDbIds(
+            Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByDbIds(dbIds, direction, relationships);
     }
 
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByStIds(
+            Collection<String> stIds, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByStIds(stIds, direction, relationships);
     }
 
@@ -116,7 +118,8 @@ public class AdvancedDatabaseObjectService {
         return rtn;
     }
 
-    public Collection<DatabaseObject> findByIds(Collection<Object> ids, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByIds(
+            Collection<Object> ids, RelationshipDirection direction, String... relationships) {
         Collection<DatabaseObject> rtn = new HashSet<>();
         for (Object id : ids) {
             DatabaseObject aux = findById(id, direction, relationships);
@@ -125,11 +128,18 @@ public class AdvancedDatabaseObjectService {
         return rtn;
     }
 
-    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClazz, RelationshipDirection direction, String... relationships) {
-        return advancedDatabaseObjectRepository.findCollectionByRelationship(dbId, clazz, collectionClazz, direction, relationships);
+    public Collection<DatabaseObject> findCollectionByRelationship(
+            Long dbId,
+            String clazz,
+            Class<?> collectionClazz,
+            RelationshipDirection direction,
+            String... relationships) {
+        return advancedDatabaseObjectRepository.findCollectionByRelationship(
+                dbId, clazz, collectionClazz, direction, relationships);
     }
 
-    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findByRelationship(
+            Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         return advancedDatabaseObjectRepository.findByRelationship(dbId, clazz, direction, relationships);
     }
 
@@ -147,7 +157,8 @@ public class AdvancedDatabaseObjectService {
         return getCustomQueryResult(clazz, query, Collections.emptyMap());
     }
 
-    public <T> T getCustomQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+    public <T> T getCustomQueryResult(Class<T> clazz, String query, Map<String, Object> parameters)
+            throws CustomQueryException {
         return advancedDatabaseObjectRepository.customQueryResult(clazz, query, parameters);
     }
 
@@ -155,7 +166,8 @@ public class AdvancedDatabaseObjectService {
         return getCustomQueryResults(clazz, query, Collections.emptyMap());
     }
 
-    public <T> Collection<T> getCustomQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+    public <T> Collection<T> getCustomQueryResults(Class<T> clazz, String query, Map<String, Object> parameters)
+            throws CustomQueryException {
         return advancedDatabaseObjectRepository.customQueryResults(clazz, query, parameters);
     }
 }

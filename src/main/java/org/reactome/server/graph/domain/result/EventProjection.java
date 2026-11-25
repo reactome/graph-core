@@ -1,8 +1,7 @@
 package org.reactome.server.graph.domain.result;
 
-import org.neo4j.driver.Value;
-
 import java.util.List;
+import org.neo4j.driver.Value;
 
 /**
  * This class is used by EventAncestors and HierarchyBranch when building Locations in the Pathway Browser Tree
@@ -32,9 +31,7 @@ public class EventProjection {
     private String isCanonical;
     private String definition;
 
-    public EventProjection() {
-
-    }
+    public EventProjection() {}
 
     public EventProjection(Value item) {
         this.dbId = item.get(0).asLong();
@@ -219,4 +216,3 @@ public class EventProjection {
         this.definition = definition;
     }
 }
-

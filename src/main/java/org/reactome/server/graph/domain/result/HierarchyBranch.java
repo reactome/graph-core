@@ -6,12 +6,11 @@ public class HierarchyBranch {
 
     private List<HierarchyTreeItem> branch;
 
-    public List<HierarchyTreeItem> getPathways(){
+    public List<HierarchyTreeItem> getPathways() {
         return branch;
     }
 
     public HierarchyBranch(List<HierarchyTreeItem> branch) {
         this.branch = branch;
     }
-
 }

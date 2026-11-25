@@ -12,12 +12,16 @@ public class LiteratureReference extends Publication {
 
     @ReactomeProperty
     private String journal;
+
     @ReactomeProperty
     private String pages;
+
     @ReactomeProperty
     private Integer pubMedIdentifier;
+
     @ReactomeProperty
     private Integer volume;
+
     @ReactomeProperty
     private Integer year;
 

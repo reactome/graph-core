@@ -8,5 +8,4 @@ public class Disease extends ExternalOntology {
     private static final long serialVersionUID = 1L;
 
     public Disease() {}
-    
 }

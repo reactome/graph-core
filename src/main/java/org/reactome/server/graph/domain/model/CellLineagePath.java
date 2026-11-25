@@ -12,8 +12,7 @@ public class CellLineagePath extends Pathway {
     @Relationship(type = "tissue")
     private Anatomy tissue;
 
-    public CellLineagePath() {
-    }
+    public CellLineagePath() {}
 
     public Anatomy getTissue() {
         return tissue;

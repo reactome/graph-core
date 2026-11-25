@@ -10,8 +10,7 @@ public class RegulationReference extends ControlReference {
     @Relationship(type = "regulation")
     private Regulation regulation;
 
-    public RegulationReference() {
-    }
+    public RegulationReference() {}
 
     public Regulation getRegulatedBy() {
         return regulation;

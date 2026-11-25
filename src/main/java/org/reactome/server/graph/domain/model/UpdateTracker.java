@@ -1,13 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @Node
 public class UpdateTracker extends MetaDatabaseObject {
@@ -23,8 +22,7 @@ public class UpdateTracker extends MetaDatabaseObject {
     @Relationship(type = "updatedInstance")
     private List<Trackable> updatedInstance;
 
-    public UpdateTracker() {
-    }
+    public UpdateTracker() {}
 
     public Release getRelease() {
         return release;
@@ -54,7 +52,7 @@ public class UpdateTracker extends MetaDatabaseObject {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        //todo
+        // todo
         return "updateTracker";
     }
 }

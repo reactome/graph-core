@@ -1,5 +1,8 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
@@ -7,10 +10,6 @@ import org.reactome.server.graph.domain.result.PersonAuthorReviewer;
 import org.reactome.server.graph.domain.result.SimpleEventProjection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by:
@@ -24,7 +23,7 @@ public class PersonServiceTest extends BaseTest {
     private PersonService personService;
 
     @BeforeTestClass
-    public  void setUpClass() {
+    public void setUpClass() {
         logger.info(" --- !!! Running " + PersonServiceTest.class.getName() + " !!! --- \n");
     }
 
@@ -214,7 +213,7 @@ public class PersonServiceTest extends BaseTest {
     }
 
     @Test
-    public void getAuthorsReviewersTest(){
+    public void getAuthorsReviewersTest() {
         logger.info("Started testing personService.getAuthorsReviewers");
         long start, time;
         start = System.currentTimeMillis();
@@ -225,5 +224,4 @@ public class PersonServiceTest extends BaseTest {
         assertTrue(objs.size() >= 600);
         logger.info("Finished");
     }
-
 }

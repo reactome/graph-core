@@ -11,10 +11,13 @@ public class Book extends Publication {
 
     @ReactomeProperty
     private String ISBN;
+
     @ReactomeProperty
     private String chapterTitle;
+
     @ReactomeProperty
     private String pages;
+
     @ReactomeProperty
     private Integer year;
 

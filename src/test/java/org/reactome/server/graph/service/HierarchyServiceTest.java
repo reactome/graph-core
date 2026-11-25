@@ -1,18 +1,17 @@
 package org.reactome.server.graph.service;
 
-import org.junit.jupiter.api.Test;
-import org.reactome.server.graph.service.helper.PathwayBrowserNode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.event.annotation.AfterTestClass;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.service.helper.PathwayBrowserNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.AfterTestClass;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 public class HierarchyServiceTest extends BaseTest {
 
@@ -71,7 +70,6 @@ public class HierarchyServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-
     // --------------------------------------------- Sub Hierarchy -----------------------------------------------------
 
     @Test
@@ -86,7 +84,8 @@ public class HierarchyServiceTest extends BaseTest {
         assertEquals(4, subHierarchy.getChildren().size());
         assertTrue(subHierarchy.getHighlighted());
         assertTrue(subHierarchy.isClickable());
-        assertEquals(6, subHierarchy.getChildren().iterator().next().getChildren().size());
+        assertEquals(
+                6, subHierarchy.getChildren().iterator().next().getChildren().size());
 
         logger.info("Finished");
     }
@@ -130,7 +129,8 @@ public class HierarchyServiceTest extends BaseTest {
 
         assertTrue(eventHierarchy.size() > 20);
         Set<String> possibleTypes = Set.of("TopLevelPathway", "Pathway");
-        assertTrue(eventHierarchy.stream().allMatch(pathwayBrowserNode -> possibleTypes.contains(pathwayBrowserNode.getType())));
+        assertTrue(eventHierarchy.stream()
+                .allMatch(pathwayBrowserNode -> possibleTypes.contains(pathwayBrowserNode.getType())));
         logger.info("Finished");
     }
 }

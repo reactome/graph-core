@@ -2,14 +2,13 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.reactome.server.graph.domain.relationship.AuthorPublication;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
@@ -18,12 +17,16 @@ public class Person extends DatabaseObject {
 
     @ReactomeProperty
     private String firstname;
+
     @ReactomeProperty
     private String initial;
+
     @ReactomeProperty(addedField = true)
     private String orcidId;
+
     @ReactomeProperty
     private String project;
+
     @ReactomeProperty
     private String surname;
 

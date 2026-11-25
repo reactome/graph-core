@@ -10,9 +10,7 @@ public class CellDevelopmentStep extends ReactionLikeEvent {
     @Relationship(type = "tissue")
     private Anatomy tissue;
 
-    public CellDevelopmentStep() {
-
-    }
+    public CellDevelopmentStep() {}
 
     public Anatomy getTissue() {
         return tissue;
@@ -21,5 +19,4 @@ public class CellDevelopmentStep extends ReactionLikeEvent {
     public void setTissue(Anatomy tissue) {
         this.tissue = tissue;
     }
-
 }

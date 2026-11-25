@@ -20,5 +20,4 @@ public abstract class Drug extends PhysicalEntity {
     public void setReferenceEntity(ReferenceTherapeutic referenceEntity) {
         this.referenceEntity = referenceEntity;
     }
-
 }

@@ -1,5 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
@@ -7,15 +15,6 @@ import org.reactome.server.graph.domain.relationship.HasEvent;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class LazyLoadingTest extends BaseTest {
 
@@ -38,7 +37,7 @@ public class LazyLoadingTest extends BaseTest {
             checkedOnce = true;
         }
 
-        //*******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
+        // *******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
         lazyFetchAspect.setEnableAOP(true);
 
         assertTrue(isFit);
@@ -52,9 +51,9 @@ public class LazyLoadingTest extends BaseTest {
         DatabaseObject databaseObjectObserved = dbs.findByIdNoRelations(stId);
         DatabaseObject databaseObjectExpected = DatabaseObjectFactory.createObject(stId);
 
-        //getters will be automatically called by the Assertion test
+        // getters will be automatically called by the Assertion test
         assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
-//        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
+        //        JunitHelper.assertDatabaseObjectsEqual(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
     }
 
@@ -143,62 +142,52 @@ public class LazyLoadingTest extends BaseTest {
     public void testRLEOutputs() {
         if (rle == null) preloadReactionLikeEvent();
         List<PhysicalEntity> outputs = rle.getOutput();
-        assertThat(outputs).containsExactlyInAnyOrder(
-                new Complex(8865819L),
-                new EntityWithAccessionedSequence(912481L),
-                new EntityWithAccessionedSequence(912481L)
-        );
+        assertThat(outputs)
+                .containsExactlyInAnyOrder(
+                        new Complex(8865819L),
+                        new EntityWithAccessionedSequence(912481L),
+                        new EntityWithAccessionedSequence(912481L));
     }
 
     @Test
     public void testRLEInputs() {
         if (rle == null) preloadReactionLikeEvent();
         List<PhysicalEntity> inputs = rle.getInput();
-        assertThat(inputs).containsExactlyInAnyOrder(
-                new Complex(2993783L),
-                new Complex(2993783L),
-                new Complex(8865818L)
-        );
+        assertThat(inputs)
+                .containsExactlyInAnyOrder(new Complex(2993783L), new Complex(2993783L), new Complex(8865818L));
     }
 
     @Test
     public void testRLECatalystActivity() {
         if (rle == null) preloadReactionLikeEvent();
         List<CatalystActivity> catact = rle.getCatalystActivity();
-        assertThat(catact).containsExactlyInAnyOrder(
-                new CatalystActivity(2997650L)
-        );
+        assertThat(catact).containsExactlyInAnyOrder(new CatalystActivity(2997650L));
     }
 
     @Test
     public void testRLEAuthored() {
         if (rle == null) preloadReactionLikeEvent();
         List<InstanceEdit> authors = rle.getAuthored();
-        assertThat(authors).containsExactlyInAnyOrder(
-                new InstanceEdit(3232167L)
-        );
+        assertThat(authors).containsExactlyInAnyOrder(new InstanceEdit(3232167L));
     }
 
     @Test
     public void testRLEEventOf() {
         if (rle == null) preloadReactionLikeEvent();
         List<Pathway> events = rle.getEventOf();
-        assertThat(events).containsExactlyInAnyOrder(
-                new Pathway(3232118L),
-                new Pathway(8866904L)
-        );
+        assertThat(events).containsExactlyInAnyOrder(new Pathway(3232118L), new Pathway(8866904L));
     }
 
     @Test
     public void testRLELiteratureReference() {
         if (rle == null) preloadReactionLikeEvent();
         List<Publication> pubs = rle.getLiteratureReference();
-        assertThat(pubs).containsExactlyInAnyOrder(
-                new LiteratureReference(3234063L),
-                new LiteratureReference(8874763L),
-                new LiteratureReference(3234089L),
-                new LiteratureReference(5626900L)
-        );
+        assertThat(pubs)
+                .containsExactlyInAnyOrder(
+                        new LiteratureReference(3234063L),
+                        new LiteratureReference(8874763L),
+                        new LiteratureReference(3234089L),
+                        new LiteratureReference(5626900L));
         for (Publication pub : pubs) {
             pub.getAuthor();
         }
@@ -242,7 +231,5 @@ public class LazyLoadingTest extends BaseTest {
                 .withFailMessage("Wrapped relationship lazy loading should load the flatten view too")
                 .isNotEmpty();
         lazyFetchAspect.setEnableAOP(true);
-
     }
-
 }

@@ -23,4 +23,3 @@ public class EventProjectionWrapper {
         this.events = events;
     }
 }
-

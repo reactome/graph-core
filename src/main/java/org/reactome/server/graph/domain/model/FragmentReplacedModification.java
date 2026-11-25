@@ -10,7 +10,7 @@ public class FragmentReplacedModification extends FragmentModification {
 
     @ReactomeProperty
     private String alteredAminoAcidFragment;
-    
+
     public FragmentReplacedModification() {}
 
     public String getAlteredAminoAcidFragment() {
@@ -20,7 +20,4 @@ public class FragmentReplacedModification extends FragmentModification {
     public void setAlteredAminoAcidFragment(String alteredAminoAcidFragment) {
         this.alteredAminoAcidFragment = alteredAminoAcidFragment;
     }
-    
-    
-    
 }

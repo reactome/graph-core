@@ -1,13 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
@@ -16,12 +15,16 @@ public abstract class ReferenceEntity extends DatabaseObject {
 
     // will be filled together with url
     private String databaseName;
+
     @ReactomeProperty
     private String identifier;
+
     @ReactomeProperty
     private List<String> name;
+
     @ReactomeProperty
     private List<String> otherIdentifier;
+
     @ReactomeProperty(addedField = true)
     private String url;
 

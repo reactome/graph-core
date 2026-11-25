@@ -1,13 +1,12 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.domain.result.DiagramResult;
 import org.reactome.server.graph.repository.DiagramRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 /**
  *

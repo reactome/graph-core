@@ -19,5 +19,4 @@ public class HasEncapsulatedEvent extends Has<Event> {
     public void setEvent(Event event) {
         this.element = event;
     }
-
 }

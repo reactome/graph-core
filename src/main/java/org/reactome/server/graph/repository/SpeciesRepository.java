@@ -1,12 +1,11 @@
 package org.reactome.server.graph.repository;
 
+import java.util.List;
 import org.reactome.server.graph.domain.model.Species;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface SpeciesRepository extends Neo4jRepository<Species, Long> {

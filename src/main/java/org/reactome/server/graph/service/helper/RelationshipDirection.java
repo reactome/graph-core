@@ -7,5 +7,7 @@ package org.reactome.server.graph.service.helper;
  * @since 14.04.16.
  */
 public enum RelationshipDirection {
-    INCOMING, OUTGOING, UNDIRECTED
+    INCOMING,
+    OUTGOING,
+    UNDIRECTED
 }

@@ -2,12 +2,11 @@ package org.reactome.server.graph.service.helper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.springframework.lang.NonNull;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+import org.springframework.lang.NonNull;
 
 /**
  * Created by:
@@ -16,7 +15,7 @@ import java.util.TreeSet;
  * @since 09.02.16.
  */
 @JsonPropertyOrder({"className", "count", "children"})
-public class SchemaNode implements Comparable<SchemaNode>{
+public class SchemaNode implements Comparable<SchemaNode> {
 
     private final Class<?> clazz;
 
@@ -60,7 +59,7 @@ public class SchemaNode implements Comparable<SchemaNode>{
 
     @SuppressWarnings("unused")
     public Integer findMaxPage(String className, Integer offset) {
-        SchemaNode node = iterateTree(this,className);
+        SchemaNode node = iterateTree(this, className);
         if (node != null) {
             return (int) Math.ceil(node.getCount() / (double) offset);
         }
@@ -68,11 +67,10 @@ public class SchemaNode implements Comparable<SchemaNode>{
     }
 
     private SchemaNode iterateTree(SchemaNode node, String className) {
-        if (node.clazz.getSimpleName().equals(className))
-            return node;
+        if (node.clazz.getSimpleName().equals(className)) return node;
         SchemaNode result = null;
         Iterator<SchemaNode> iterator = node.getChildren().iterator();
-        while(result == null && iterator.hasNext()) {
+        while (result == null && iterator.hasNext()) {
             result = iterateTree(iterator.next(), className);
         }
         return result;
@@ -86,7 +84,6 @@ public class SchemaNode implements Comparable<SchemaNode>{
         SchemaNode node = (SchemaNode) o;
 
         return !(clazz != null ? !clazz.equals(node.clazz) : node.clazz != null);
-
     }
 
     @Override
@@ -98,5 +95,4 @@ public class SchemaNode implements Comparable<SchemaNode>{
     public int compareTo(@NonNull SchemaNode node) {
         return this.clazz.getSimpleName().compareTo(node.clazz.getSimpleName());
     }
-
 }

@@ -1,15 +1,14 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.result.Participant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ParticipantServiceTest extends BaseTest {
 
@@ -78,5 +77,3 @@ public class ParticipantServiceTest extends BaseTest {
         logger.info("Finished");
     }
 }
-
-

@@ -3,6 +3,12 @@ package org.reactome.server.graph.domain.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
@@ -11,13 +17,6 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.lang.NonNull;
-
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
 
 /**
  * DatabaseObject contains the minimum fields used to define an instance of an Reactome entry
@@ -39,9 +38,9 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @ReactomeTransient
     public transient Boolean preventLazyLoading = false;
 
-//    @JsonIgnore
-//    @Id @GeneratedValue
-//    private Long id;
+    //    @JsonIgnore
+    //    @Id @GeneratedValue
+    //    private Long id;
 
     @Id
     protected Long dbId;
@@ -62,21 +61,20 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
     @Relationship(type = "modified", direction = Relationship.Direction.INCOMING)
     private InstanceEdit modified;
 
-    public DatabaseObject() {
-    }
+    public DatabaseObject() {}
 
     public DatabaseObject(Long dbId) {
         this.dbId = dbId;
     }
 
-//    @ReactomeSchemaIgnore
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    //    @ReactomeSchemaIgnore
+    //    public Long getId() {
+    //        return id;
+    //    }
+    //
+    //    public void setId(Long id) {
+    //        this.id = id;
+    //    }
 
     public Long getDbId() {
         return dbId;
@@ -138,10 +136,10 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " {" +
-                (stId == null ? "dbId=" + dbId : "dbId=" + dbId + ", stId='" + stId + '\'') +
-                ", displayName='" + displayName + '\'' +
-                "}";
+        return getClass().getSimpleName() + " {"
+                + (stId == null ? "dbId=" + dbId : "dbId=" + dbId + ", stId='" + stId + '\'')
+                + ", displayName='"
+                + displayName + '\'' + "}";
     }
 
     @Override
@@ -150,7 +148,12 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         if (o == null || getClass() != o.getClass()) return false;
 
         DatabaseObject that = (DatabaseObject) o;
-        return dbId != null ? dbId.equals(that.dbId) : that.dbId == null && (stId != null ? stId.equals(that.stId) : that.stId == null && Objects.equals(displayName, that.displayName));
+        return dbId != null
+                ? dbId.equals(that.dbId)
+                : that.dbId == null
+                        && (stId != null
+                                ? stId.equals(that.stId)
+                                : that.stId == null && Objects.equals(displayName, that.displayName));
     }
 
     @Override
@@ -180,7 +183,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
         return "Not available";
     }
 
-    @ReactomeSchemaIgnore //In some classes it is overridden to provide an easier-to-understand name
+    @ReactomeSchemaIgnore // In some classes it is overridden to provide an easier-to-understand name
     public String getClassName() {
         return getClass().getSimpleName();
     }
@@ -222,7 +225,7 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
 
         this.preventLazyLoading = preventLazyLoading;
 
-        //Here we go through all the getters and prevent LazyLoading for all the objects
+        // Here we go through all the getters and prevent LazyLoading for all the objects
         Method[] methods = getClass().getMethods();
         for (Method method : methods) {
             if (!method.getName().startsWith("get")) continue;
@@ -254,7 +257,6 @@ public abstract class DatabaseObject implements Serializable, Comparable<Databas
                         if (object.preventLazyLoading != preventLazyLoading) {
                             object.preventLazyLoading(preventLazyLoading);
                         }
-
                     }
                 }
 

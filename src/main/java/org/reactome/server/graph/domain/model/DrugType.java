@@ -1,9 +1,8 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
-
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
@@ -16,8 +15,7 @@ public class DrugType extends DatabaseObject {
     @ReactomeProperty
     private List<String> name;
 
-    public DrugType() {
-    }
+    public DrugType() {}
 
     public List<String> getName() {
         return name;
@@ -34,5 +32,4 @@ public class DrugType extends DatabaseObject {
     public void setDefinition(String definition) {
         this.definition = definition;
     }
-
 }

@@ -16,7 +16,7 @@ public class SchemaDataCatalog {
     }
 
     @JsonGetter(value = "@type")
-    public String getType(){
+    public String getType() {
         return "DataCatalog";
     }
 }

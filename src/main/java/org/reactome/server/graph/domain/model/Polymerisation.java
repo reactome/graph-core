@@ -18,7 +18,7 @@ public class Polymerisation extends ReactionLikeEvent {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "Reactions that follow the pattern: Polymer + Unit -> Polymer (there may be a catalyst involved). " +
-                "Used to describe the mechanistic detail of a polymerisation";
+        return "Reactions that follow the pattern: Polymer + Unit -> Polymer (there may be a catalyst involved). "
+                + "Used to describe the mechanistic detail of a polymerisation";
     }
 }

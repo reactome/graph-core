@@ -1,5 +1,10 @@
 package org.reactome.server.graph.repository;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import org.neo4j.driver.types.MapAccessor;
 import org.neo4j.driver.types.TypeSystem;
 import org.reactome.server.graph.domain.ReflectionUtils;
@@ -17,12 +22,6 @@ import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.data.neo4j.core.mapping.Neo4jMappingContext;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
@@ -38,15 +37,14 @@ public class AdvancedDatabaseObjectRepository {
     @Value("${spring.data.neo4j.database:graph.db}")
     private String databaseName;
 
-    private static final String CYPHER_RETURN = "" +
-            "WITH n, r, m " +
-            "ORDER BY TYPE(r) ASC, r.order ASC " +
-            "RETURN n, COLLECT(r), COLLECT(m)";
+    private static final String CYPHER_RETURN =
+            "" + "WITH n, r, m " + "ORDER BY TYPE(r) ASC, r.order ASC " + "RETURN n, COLLECT(r), COLLECT(m)";
 
     private static final String CYPHER_RETURN_LIMIT = CYPHER_RETURN + " " + "LIMIT $limit";
 
     @Autowired
-    public AdvancedDatabaseObjectRepository(Neo4jClient neo4jClient, Neo4jTemplate neo4jTemplate, Neo4jMappingContext neo4jMappingContext) {
+    public AdvancedDatabaseObjectRepository(
+            Neo4jClient neo4jClient, Neo4jTemplate neo4jTemplate, Neo4jMappingContext neo4jMappingContext) {
         this.neo4jClient = neo4jClient;
         this.neo4jTemplate = neo4jTemplate;
         this.neo4jMappingContext = neo4jMappingContext;
@@ -56,23 +54,24 @@ public class AdvancedDatabaseObjectRepository {
 
     @Deprecated
     public <T extends DatabaseObject> DatabaseObject findByProperty(Class<T> clazz, String property, Object value) {
-        String query = "" +
-                "MATCH (n:" + clazz.getSimpleName() + ") " +
-                "WHERE n." + property + " = $param " +
-                "OPTIONAL MATCH (n)-[r]-(m) " +
-                "RETURN n, COLLECT(r), COLLECT(m)";
+        String query = "" + "MATCH (n:"
+                + clazz.getSimpleName() + ") " + "WHERE n."
+                + property + " = $param " + "OPTIONAL MATCH (n)-[r]-(m) "
+                + "RETURN n, COLLECT(r), COLLECT(m)";
 
-        return neo4jTemplate.findOne(query, Map.of("param", value), DatabaseObject.class).orElse(null);
+        return neo4jTemplate
+                .findOne(query, Map.of("param", value), DatabaseObject.class)
+                .orElse(null);
     }
 
     @Deprecated
-    public <T extends DatabaseObject> Collection<DatabaseObject> findAllByProperty(Class<T> clazz, String property, Object value) {
+    public <T extends DatabaseObject> Collection<DatabaseObject> findAllByProperty(
+            Class<T> clazz, String property, Object value) {
         // It turned out that depth 2 takes ages to run
-        String query = "" +
-                "MATCH (n:" + clazz.getSimpleName() + ") " +
-                "WHERE n." + property + " = $param " +
-                "OPTIONAL MATCH (n)-[r]-(m) " +
-                "RETURN n, COLLECT(r), COLLECT(m)";
+        String query = "" + "MATCH (n:"
+                + clazz.getSimpleName() + ") " + "WHERE n."
+                + property + " = $param " + "OPTIONAL MATCH (n)-[r]-(m) "
+                + "RETURN n, COLLECT(r), COLLECT(m)";
 
         return neo4jTemplate.findAll(query, Map.of("param", value), DatabaseObject.class);
     }
@@ -80,142 +79,150 @@ public class AdvancedDatabaseObjectRepository {
     // --------------------------------------- Limited Finder Methods --------------------------------------------------
 
     public <T extends DatabaseObject> T findById(Long dbId, Integer limit) {
-        String query = "" +
-                "MATCH (n:DatabaseObject{dbId:$dbId}) " +
-                "OPTIONAL MATCH (n)-[r]-(m) " +
-                CYPHER_RETURN_LIMIT;
+        String query =
+                "" + "MATCH (n:DatabaseObject{dbId:$dbId}) " + "OPTIONAL MATCH (n)-[r]-(m) " + CYPHER_RETURN_LIMIT;
 
-        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId, "limit", limit), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("dbId", dbId, "limit", limit), DatabaseObject.class)
+                .orElse(null);
     }
 
     public <T extends DatabaseObject> T findById(String stId, Integer limit) {
-        String query = "" +
-                "MATCH (n:DatabaseObject{stId:$stId}) " +
-                "OPTIONAL MATCH (n)-[r]-(m) " +
-                CYPHER_RETURN_LIMIT;
+        String query =
+                "" + "MATCH (n:DatabaseObject{stId:$stId}) " + "OPTIONAL MATCH (n)-[r]-(m) " + CYPHER_RETURN_LIMIT;
 
-        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId, "limit", limit), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("stId", stId, "limit", limit), DatabaseObject.class)
+                .orElse(null);
     }
 
     // --------------------------------------- Enhanced Finder Methods -------------------------------------------------
 
-    //language=cypher
+    // language=cypher
     static final String ENHANCED_MATCH_DB_ID = "MATCH (root:DatabaseObject{dbId:$dbId}) ";
-    //language=cypher
+    // language=cypher
     static final String ENHANCED_MATCH_ST_ID = "MATCH (root:DatabaseObject{stId:$stId}) ";
 
-    //language=cypher
-    static final String ENHANCED_EXPAND_SUMMARY = "" +
-            "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) " +
-            "WITH collect(pe) + root AS ns, root " +
-            "UNWIND ns AS n ";
+    // language=cypher
+    static final String ENHANCED_EXPAND_SUMMARY =
+            "" + "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity) "
+                    + "WITH collect(pe) + root AS ns, root "
+                    + "UNWIND ns AS n ";
 
-    //language=cypher
-    static final String ENHANCED_EXPAND_SUMMARY_NO_DISEASE = "" +
-            "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity {isInDisease: false}) " +
-            "WITH collect(pe) + root AS ns, root " +
-            "UNWIND ns AS n ";
+    // language=cypher
+    static final String ENHANCED_EXPAND_SUMMARY_NO_DISEASE =
+            "" + "OPTIONAL MATCH (root:ReferenceEntity)<-[:referenceEntity]-(pe:PhysicalEntity {isInDisease: false}) "
+                    + "WITH collect(pe) + root AS ns, root "
+                    + "UNWIND ns AS n ";
 
-    //language=cypher
+    // language=cypher
     static final String ENHANCED_NO_EXPAND_SUMMARY = "WITH root, root AS n ";
 
-    //language=cypher
+    // language=cypher
     static final String ENHANCED_UNDIRECTED = "OPTIONAL MATCH (n)-[r1]-(m:DatabaseObject) ";
-    //language=cypher
+    // language=cypher
     static final String ENHANCED_OUTGOING = "OPTIONAL MATCH (n)-[r1]->(m:DatabaseObject) ";
-    //language=cypher
+    // language=cypher
     static final String ENHANCED_FILTER = "WHERE NOT m:UpdateTracker ";
-    //language=cypher
-    static final String ENHANCED_FILTER_NO_DISEASE = "WHERE (m.isInDisease IS NULL OR m.isInDisease = false) AND NOT m:UpdateTracker ";
-    //language=cypher
-    static final String ENHANCED_RETURN = "" +
-            "OPTIONAL MATCH (m)-[r2:species]->(s) " + // Group relationships from m in one OPTIONAL MATCH block
-            "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity) " +
-            "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) " +
-            "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) " +
-            "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) " +
-            "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|" + // Wide relationship expansion from m
-            "                   referenceTranscript|literatureReference|marker|regulation|" +
-            "                   catalystActivity|activeUnit|activity|psiMod|modification|" +
-            "                   goBiologicalProcess]-(o) " +
-            "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) " + // Expand authors & species from o if relevant
-            "OPTIONAL MATCH (o)-[r8:species]->(s1:Species) " +
-            "WITH root," +
-            "     collect(DISTINCT n) AS ns," +
-            "     collect(DISTINCT m) AS ms," +
-            "     collect(DISTINCT s) AS ss," +
-            "     collect(DISTINCT o) AS os," +
-            "     collect(DISTINCT p) AS ps," +
-            "     collect(DISTINCT p2) AS ps2," +
-            "     collect(DISTINCT p3) AS ps3," +
-            "     collect(DISTINCT c) AS cs," +
-            "     collect(DISTINCT s1) AS s1s," +
-            "     collect(DISTINCT rf) AS rfs," +
-            "     collect(DISTINCT r1) AS r1s," +
-            "     collect(DISTINCT r2) AS r2s," +
-            "     collect(DISTINCT r3) AS r3s," +
-            "     collect(DISTINCT r4) AS r4s," +
-            "     collect(DISTINCT r5) AS r5s," +
-            "     collect(DISTINCT r6) AS r6s," +
-            "     collect(DISTINCT r7) AS r7s," +
-            "     collect(DISTINCT r8) AS r8s," +
-            "     collect(DISTINCT r9) AS r9s " +
-            "RETURN root," +
-            "       [ns, ms, ss, os, ps, ps2, ps3, cs, s1s, rfs]," +
-            "       [r1s, r2s, r3s, r4s, r5s, r6s, r7s, r8s, r9s]";
+    // language=cypher
+    static final String ENHANCED_FILTER_NO_DISEASE =
+            "WHERE (m.isInDisease IS NULL OR m.isInDisease = false) AND NOT m:UpdateTracker ";
+    // language=cypher
+    static final String ENHANCED_RETURN = "" + "OPTIONAL MATCH (m)-[r2:species]->(s) "
+            + // Group relationships from m in one OPTIONAL MATCH block
+            "OPTIONAL MATCH (m)-[r9:referenceEntity]->(rf:ReferenceEntity) "
+            + "OPTIONAL MATCH (m:Publication)<-[r5:author]-(p2:Person) "
+            + "OPTIONAL MATCH (m:InstanceEdit)<-[r6:author]-(p3:Person) "
+            + "OPTIONAL MATCH (m:Event)-[r7:compartment]->(c:Compartment) "
+            + "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|"
+            + // Wide relationship expansion from m
+            "                   referenceTranscript|literatureReference|marker|regulation|"
+            + "                   catalystActivity|activeUnit|activity|psiMod|modification|"
+            + "                   goBiologicalProcess]-(o) "
+            + "OPTIONAL MATCH (o:Publication)<-[r4:author]-(p:Person) "
+            + // Expand authors & species from o if relevant
+            "OPTIONAL MATCH (o)-[r8:species]->(s1:Species) "
+            + "WITH root,"
+            + "     collect(DISTINCT n) AS ns,"
+            + "     collect(DISTINCT m) AS ms,"
+            + "     collect(DISTINCT s) AS ss,"
+            + "     collect(DISTINCT o) AS os,"
+            + "     collect(DISTINCT p) AS ps,"
+            + "     collect(DISTINCT p2) AS ps2,"
+            + "     collect(DISTINCT p3) AS ps3,"
+            + "     collect(DISTINCT c) AS cs,"
+            + "     collect(DISTINCT s1) AS s1s,"
+            + "     collect(DISTINCT rf) AS rfs,"
+            + "     collect(DISTINCT r1) AS r1s,"
+            + "     collect(DISTINCT r2) AS r2s,"
+            + "     collect(DISTINCT r3) AS r3s,"
+            + "     collect(DISTINCT r4) AS r4s,"
+            + "     collect(DISTINCT r5) AS r5s,"
+            + "     collect(DISTINCT r6) AS r6s,"
+            + "     collect(DISTINCT r7) AS r7s,"
+            + "     collect(DISTINCT r8) AS r8s,"
+            + "     collect(DISTINCT r9) AS r9s "
+            + "RETURN root,"
+            + "       [ns, ms, ss, os, ps, ps2, ps3, cs, s1s, rfs],"
+            + "       [r1s, r2s, r3s, r4s, r5s, r6s, r7s, r8s, r9s]";
 
     public <T extends DatabaseObject> T findEnhancedObjectById(Long dbId, EnhancedQueryOptions options) {
-        String query = ENHANCED_MATCH_DB_ID +
-                (options.summariseReferenceEntity
+        String query = ENHANCED_MATCH_DB_ID
+                + (options.summariseReferenceEntity
                         ? (options.includeDisease ? ENHANCED_EXPAND_SUMMARY : ENHANCED_EXPAND_SUMMARY_NO_DISEASE)
-                        : ENHANCED_NO_EXPAND_SUMMARY
-                )
+                        : ENHANCED_NO_EXPAND_SUMMARY)
                 + (options.outgoingOnly ? ENHANCED_OUTGOING : ENHANCED_UNDIRECTED)
                 + (options.includeDisease ? ENHANCED_FILTER : ENHANCED_FILTER_NO_DISEASE)
                 + ENHANCED_RETURN;
-        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("dbId", dbId), DatabaseObject.class)
+                .orElse(null);
     }
 
     public <T extends DatabaseObject> T findEnhancedObjectById(String stId, EnhancedQueryOptions options) {
-        String query = ENHANCED_MATCH_ST_ID +
-                (options.summariseReferenceEntity
+        String query = ENHANCED_MATCH_ST_ID
+                + (options.summariseReferenceEntity
                         ? (options.includeDisease ? ENHANCED_EXPAND_SUMMARY : ENHANCED_EXPAND_SUMMARY_NO_DISEASE)
-                        : ENHANCED_NO_EXPAND_SUMMARY
-                )
+                        : ENHANCED_NO_EXPAND_SUMMARY)
                 + (options.outgoingOnly ? ENHANCED_OUTGOING : ENHANCED_UNDIRECTED)
                 + (options.includeDisease ? ENHANCED_FILTER : ENHANCED_FILTER_NO_DISEASE)
                 + ENHANCED_RETURN;
-        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("stId", stId), DatabaseObject.class)
+                .orElse(null);
     }
 
     public <T extends DatabaseObject> T findOldEnhancedObjectById(Long dbId, boolean outgoingOnly) {
-        //language=cypher
-        String query = "" +
-                "MATCH (n:DatabaseObject{dbId:$dbId}) " +
-                "OPTIONAL MATCH (n)-[r1]-" + (outgoingOnly ? ">" : "") + "(m) " +
-                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
-                "RETURN n, [collect(m), collect(s), collect(o)] AS nodes, [collect(r1), collect(r2), collect(r3)] AS relationships ";
+        // language=cypher
+        String query = "" + "MATCH (n:DatabaseObject{dbId:$dbId}) "
+                + "OPTIONAL MATCH (n)-[r1]-"
+                + (outgoingOnly ? ">" : "") + "(m) " + "OPTIONAL MATCH (m)-[r2:species]->(s) "
+                + "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) "
+                + "RETURN n, [collect(m), collect(s), collect(o)] AS nodes, [collect(r1), collect(r2), collect(r3)] AS relationships ";
 
-        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("dbId", dbId), DatabaseObject.class)
+                .orElse(null);
     }
 
     public <T extends DatabaseObject> T findOldEnhancedObjectById(String stId, boolean outgoingOnly) {
-        //language=cypher
-        String query = "" +
-                "MATCH (n:DatabaseObject{stId:$stId}) " +
-                "OPTIONAL MATCH (n)-[r1]-" + (outgoingOnly ? ">" : "") + "(m) " +
-                "OPTIONAL MATCH (m)-[r2:species]->(s) " +
-                "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) " +
-                "RETURN n, [collect(m), collect(s), collect(o)] AS nodes, [collect(r1), collect(r2), collect(r3)] AS relationships ";
+        // language=cypher
+        String query = "" + "MATCH (n:DatabaseObject{stId:$stId}) "
+                + "OPTIONAL MATCH (n)-[r1]-"
+                + (outgoingOnly ? ">" : "") + "(m) " + "OPTIONAL MATCH (m)-[r2:species]->(s) "
+                + "OPTIONAL MATCH (m)-[r3:regulator|regulatedBy|physicalEntity|crossReference|referenceGene|literatureReference|marker]-(o) "
+                + "RETURN n, [collect(m), collect(s), collect(o)] AS nodes, [collect(r1), collect(r2), collect(r3)] AS relationships ";
 
-        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("stId", stId), DatabaseObject.class)
+                .orElse(null);
     }
 
     // ---------------------- Methods with RelationshipDirection and Relationships -------------------------------------
 
     public <T extends DatabaseObject> T findById(Long dbId, RelationshipDirection direction) {
-        // The previous implementation was querying everything and then returning only the first. LIMIT 1 will be forced in this query.
+        // The previous implementation was querying everything and then returning only the first. LIMIT 1 will be forced
+        // in this query.
         String query;
         switch (direction) {
             case OUTGOING:
@@ -228,7 +235,9 @@ public class AdvancedDatabaseObjectRepository {
                 query = "MATCH (n:DatabaseObject{dbId:$dbId}) OPTIONAL MATCH (n)-[r]-(m) " + CYPHER_RETURN;
         }
 
-        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("dbId", dbId), DatabaseObject.class)
+                .orElse(null);
     }
 
     public <T extends DatabaseObject> T findById(String stId, RelationshipDirection direction) {
@@ -244,77 +253,92 @@ public class AdvancedDatabaseObjectRepository {
                 query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)-[r]-(m) " + CYPHER_RETURN;
         }
 
-        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("stId", stId), DatabaseObject.class)
+                .orElse(null);
     }
 
     public <T extends DatabaseObject> T findById(Long dbId, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject{dbId:$dbId})<-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
-            default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
+            default: // UNDIRECTED
+                query = "MATCH (n:DatabaseObject{dbId:$dbId})-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
         }
 
-        return (T) neo4jTemplate.findOne(query, Map.of("dbId", dbId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("dbId", dbId), DatabaseObject.class)
+                .orElse(null);
     }
 
-    public <T extends DatabaseObject> T findById(String stId, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findById(
+            String stId, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject{stId:$stId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject{stId:$stId})-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject{stId:$stId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject{stId:$stId})<-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
-            default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject{stId:$stId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
+            default: // UNDIRECTED
+                query = "MATCH (n:DatabaseObject{stId:$stId})-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " + CYPHER_RETURN;
                 break;
         }
 
-        return (T) neo4jTemplate.findOne(query, Map.of("stId", stId), DatabaseObject.class).orElse(null);
+        return (T) neo4jTemplate
+                .findOne(query, Map.of("stId", stId), DatabaseObject.class)
+                .orElse(null);
     }
 
-    public Collection<DatabaseObject> findByDbIds(Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByDbIds(
+            Collection<Long> dbIds, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " +
-                        "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships)
+                        + "]->(m) " + "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships)
+                        + "]-(m) " + "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
                 break;
-            default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
+            default: // UNDIRECTED
+                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships)
+                        + "]-(m) " + "WHERE n.dbId IN $dbIds " + CYPHER_RETURN;
                 break;
         }
 
         return neo4jTemplate.findAll(query, Map.of("dbIds", dbIds), DatabaseObject.class);
     }
 
-    public Collection<DatabaseObject> findByStIds(Collection<String> stIds, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findByStIds(
+            Collection<String> stIds, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m) " +
-                        "WHERE n.stId IN $stIds " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships)
+                        + "]->(m) " + "WHERE n.stId IN $stIds " + CYPHER_RETURN;
                 break;
             case INCOMING:
-                query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.stId IN $stIds " + CYPHER_RETURN;
+                query = "MATCH (n:DatabaseObject)<-[r" + RepositoryUtils.getRelationshipAsString(relationships)
+                        + "]-(m) " + "WHERE n.stId IN $stIds " + CYPHER_RETURN;
                 break;
-            default: //UNDIRECTED
-                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m) " +
-                        "WHERE n.stId IN $stIds " + CYPHER_RETURN;
+            default: // UNDIRECTED
+                query = "MATCH (n:DatabaseObject)-[r" + RepositoryUtils.getRelationshipAsString(relationships)
+                        + "]-(m) " + "WHERE n.stId IN $stIds " + CYPHER_RETURN;
                 break;
         }
         Map<String, Object> map = new HashMap<>();
@@ -322,15 +346,21 @@ public class AdvancedDatabaseObjectRepository {
         return neo4jTemplate.findAll(query, map, DatabaseObject.class);
     }
 
-    public Collection<DatabaseObject> findCollectionByRelationship(Long dbId, String clazz, Class<?> collectionClass, RelationshipDirection direction, String... relationships) {
+    public Collection<DatabaseObject> findCollectionByRelationship(
+            Long dbId,
+            String clazz,
+            Class<?> collectionClass,
+            RelationshipDirection direction,
+            String... relationships) {
         Collection<QueryResultWrapper> list = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
         Collection<DatabaseObject> databaseObjects;
         if (collectionClass.getName().equals(Set.class.getName())) {
-            databaseObjects = list.stream().map(QueryResultWrapper::getDatabaseObject).collect(Collectors.toSet());
+            databaseObjects =
+                    list.stream().map(QueryResultWrapper::getDatabaseObject).collect(Collectors.toSet());
         } else {
             databaseObjects = new ArrayList<>(list.size());
             for (QueryResultWrapper wrapper : list) {
-                //Here stoichiometry has to be taken into account
+                // Here stoichiometry has to be taken into account
                 for (int i = 0; i < wrapper.getStoichiometry(); ++i) {
                     databaseObjects.add(wrapper.getDatabaseObject());
                 }
@@ -339,7 +369,8 @@ public class AdvancedDatabaseObjectRepository {
         return databaseObjects.isEmpty() ? null : databaseObjects;
     }
 
-    public <T extends DatabaseObject> T findByRelationship(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public <T extends DatabaseObject> T findByRelationship(
+            Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         Collection<QueryResultWrapper> wrappers = queryRelationshipTypesByDbId(dbId, clazz, direction, relationships);
         if (wrappers != null && wrappers.size() == 1) {
             return (T) wrappers.iterator().next().getDatabaseObject();
@@ -353,28 +384,39 @@ public class AdvancedDatabaseObjectRepository {
      * This method queries the Graph and returns it as a Result object that will be parsed in the findByRelationship
      * and findCollectionByRelationship accordingly.
      */
-    public Collection<QueryResultWrapper> queryRelationshipTypesByDbId(Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
+    public Collection<QueryResultWrapper> queryRelationshipTypesByDbId(
+            Long dbId, String clazz, RelationshipDirection direction, String... relationships) {
         String query;
         switch (direction) {
             case OUTGOING:
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz + ") RETURN m, r.stoichiometry as n ORDER BY r.order";
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]->(m:" + clazz
+                        + ") RETURN m, r.stoichiometry as n ORDER BY r.order";
                 break;
             case INCOMING:
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})<-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m, r.stoichiometry as n ORDER BY r.order";
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})<-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz
+                        + ") RETURN m, r.stoichiometry as n ORDER BY r.order";
                 break;
-            default: //UNDIRECTED
-                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r" + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz + ") RETURN m, r.stoichiometry as n ORDER BY r.order";
+            default: // UNDIRECTED
+                query = "MATCH (a:DatabaseObject{dbId:$dbId})-[r"
+                        + RepositoryUtils.getRelationshipAsString(relationships) + "]-(m:" + clazz
+                        + ") RETURN m, r.stoichiometry as n ORDER BY r.order";
                 break;
         }
 
-        BiFunction<TypeSystem, MapAccessor, DatabaseObject> mappingFunction = neo4jMappingContext.getRequiredMappingFunctionFor(DatabaseObject.class);
-        return neo4jClient.query(query)
+        BiFunction<TypeSystem, MapAccessor, DatabaseObject> mappingFunction =
+                neo4jMappingContext.getRequiredMappingFunctionFor(DatabaseObject.class);
+        return neo4jClient
+                .query(query)
                 .bindAll(Map.of("dbId", dbId))
                 .fetchAs(QueryResultWrapper.class)
                 .mappedBy((typeSystem, record) -> {
                     DatabaseObject databaseObject = mappingFunction.apply(typeSystem, record.get("m"));
-                    return new QueryResultWrapper(databaseObject, record.get("n").asInt(1));
-                }).all();
+                    return new QueryResultWrapper(
+                            databaseObject, record.get("n").asInt(1));
+                })
+                .all();
     }
 
     // ----------------------------------------- Custom Query Methods --------------------------------------------------
@@ -383,23 +425,47 @@ public class AdvancedDatabaseObjectRepository {
         neo4jClient.query(query).bindAll(parameters).run();
     }
 
-    public <T> T customQueryResult(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+    public <T> T customQueryResult(Class<T> clazz, String query, Map<String, Object> parameters)
+            throws CustomQueryException {
         try {
             if (parameters == null) parameters = Collections.EMPTY_MAP;
 
             if (DatabaseObject.class.isAssignableFrom(clazz)) {
-                return (T) neo4jTemplate.findOne(query, parameters, DatabaseObject.class).orElse(null);
+                return (T) neo4jTemplate
+                        .findOne(query, parameters, DatabaseObject.class)
+                        .orElse(null);
             } else if (CustomQuery.class.isAssignableFrom(clazz)) {
-                CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
-                return (T) neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).one().orElse(null);
-            } else if (Number.class.isAssignableFrom(clazz) || String.class.isAssignableFrom(clazz) || Boolean.class.isAssignableFrom(clazz)) {
-                return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).one().orElse(null);
+                CustomQuery customQuery = (CustomQuery)
+                        Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
+                return (T) neo4jClient
+                        .query(query)
+                        .in(databaseName)
+                        .bindAll(parameters)
+                        .fetchAs(CustomQuery.class)
+                        .mappedBy((t, r) -> customQuery.build(r))
+                        .one()
+                        .orElse(null);
+            } else if (Number.class.isAssignableFrom(clazz)
+                    || String.class.isAssignableFrom(clazz)
+                    || Boolean.class.isAssignableFrom(clazz)) {
+                return neo4jClient
+                        .query(query)
+                        .in(databaseName)
+                        .bindAll(parameters)
+                        .fetchAs(clazz)
+                        .one()
+                        .orElse(null);
             }
 
-            Constructor<T> constructor = (Constructor<T>) Arrays.stream(clazz.getConstructors()).findFirst().get();
+            Constructor<T> constructor = (Constructor<T>)
+                    Arrays.stream(clazz.getConstructors()).findFirst().get();
             constructor.setAccessible(true);
 
-            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz)
+            return neo4jClient
+                    .query(query)
+                    .in(databaseName)
+                    .bindAll(parameters)
+                    .fetchAs(clazz)
                     .mappedBy((t, r) -> {
                         try {
                             T tt = constructor.newInstance();
@@ -407,30 +473,52 @@ public class AdvancedDatabaseObjectRepository {
                         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
                             return null;
                         }
-                    }).one().orElse(null);
+                    })
+                    .one()
+                    .orElse(null);
 
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new CustomQueryException(e);
         }
     }
 
-    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parameters) throws CustomQueryException {
+    public <T> Collection<T> customQueryResults(Class<T> clazz, String query, Map<String, Object> parameters)
+            throws CustomQueryException {
         try {
             if (parameters == null) parameters = Collections.EMPTY_MAP;
 
             if (DatabaseObject.class.isAssignableFrom(clazz)) {
                 return (Collection<T>) neo4jTemplate.findAll(query, parameters, DatabaseObject.class);
             } else if (CustomQuery.class.isAssignableFrom(clazz)) {
-                CustomQuery customQuery = (CustomQuery) Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
-                return (Collection<T>) neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(CustomQuery.class).mappedBy((t, r) -> customQuery.build(r)).all();
-            } else if (Number.class.isAssignableFrom(clazz) || String.class.isAssignableFrom(clazz) || Boolean.class.isAssignableFrom(clazz)) {
-                return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz).all();
+                CustomQuery customQuery = (CustomQuery)
+                        Arrays.stream(clazz.getConstructors()).findFirst().get().newInstance();
+                return (Collection<T>) neo4jClient
+                        .query(query)
+                        .in(databaseName)
+                        .bindAll(parameters)
+                        .fetchAs(CustomQuery.class)
+                        .mappedBy((t, r) -> customQuery.build(r))
+                        .all();
+            } else if (Number.class.isAssignableFrom(clazz)
+                    || String.class.isAssignableFrom(clazz)
+                    || Boolean.class.isAssignableFrom(clazz)) {
+                return neo4jClient
+                        .query(query)
+                        .in(databaseName)
+                        .bindAll(parameters)
+                        .fetchAs(clazz)
+                        .all();
             }
 
-            Constructor<T> constructor = (Constructor<T>) Arrays.stream(clazz.getConstructors()).findFirst().get();
+            Constructor<T> constructor = (Constructor<T>)
+                    Arrays.stream(clazz.getConstructors()).findFirst().get();
             constructor.setAccessible(true);
 
-            return neo4jClient.query(query).in(databaseName).bindAll(parameters).fetchAs(clazz)
+            return neo4jClient
+                    .query(query)
+                    .in(databaseName)
+                    .bindAll(parameters)
+                    .fetchAs(clazz)
                     .mappedBy((t, r) -> {
                         try {
                             T tt = constructor.newInstance();
@@ -438,7 +526,8 @@ public class AdvancedDatabaseObjectRepository {
                         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
                             return null;
                         }
-                    }).all();
+                    })
+                    .all();
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new CustomQueryException(e);
         }

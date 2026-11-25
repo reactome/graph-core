@@ -23,5 +23,4 @@ public class Ontology extends DatabaseObject {
     public void setOntology(byte[] ontology) {
         this.ontology = ontology;
     }
-
 }

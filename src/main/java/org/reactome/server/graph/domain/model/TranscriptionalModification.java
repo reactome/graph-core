@@ -7,5 +7,5 @@ import org.springframework.data.neo4j.core.schema.Node;
 public abstract class TranscriptionalModification extends AbstractModifiedResidue {
     private static final long serialVersionUID = 1L;
 
-    public TranscriptionalModification() { }
+    public TranscriptionalModification() {}
 }

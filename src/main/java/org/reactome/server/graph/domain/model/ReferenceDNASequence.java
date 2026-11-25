@@ -10,5 +10,4 @@ public class ReferenceDNASequence extends ReferenceSequence {
     public ReferenceDNASequence() {
         super();
     }
-
 }

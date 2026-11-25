@@ -2,6 +2,8 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
@@ -11,9 +13,6 @@ import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasModifiedResidue;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * A protein, RNA, or DNA molecule or fragment thereof in a specified cellular compartment and specific post-translational state. Must be linked to an external database reference, given as the value of referenceSequence. An EWAS typically corresponds to the entire protein or polynucleotide described in the external database. Fragments are defined by setting the first and last residue using the numbering scheme of the external database, entered as startCoordinate and endCoordinate values. Values of 1 and -1 respectively indicate that the true start and end are unconfirmed. EWAS instances are specific to a subcellular compartment; if the same molecule is found in two cellular components it will have two EWASes. EWAS instances by default define an unmodified protein sequence, any post-translational modification (PTM), such as phosphorylation, requires a new EWAS instance. The location and type of any PTM are defined in the hasModifiedResidue slot
@@ -25,8 +24,10 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
 
     @ReactomeProperty
     private Integer endCoordinate;
+
     @ReactomeProperty(addedField = true)
     private String referenceType;
+
     @ReactomeProperty
     private Integer startCoordinate;
 
@@ -41,8 +42,7 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
         return Stream.of(hasModifiedResidue);
     }
 
-    public EntityWithAccessionedSequence() {
-    }
+    public EntityWithAccessionedSequence() {}
 
     public EntityWithAccessionedSequence(Long dbId) {
         super(dbId);
@@ -122,11 +122,11 @@ public class EntityWithAccessionedSequence extends GenomeEncodedEntity implement
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "A protein, RNA, or DNA molecule or fragment thereof in a specified cellular compartment and specific post-translational state. " +
-                "Must be linked to an external database reference, given as the value of referenceSequence. An EWAS typically corresponds to the entire protein or polynucleotide described in the external database. " +
-                "Fragments are defined by setting the first and last residue using the numbering scheme of the external database, entered as startCoordinate and endCoordinate values. Values of 1 and -1 respectively indicate that the true start and end are unconfirmed. " +
-                "EWAS instances are specific to a subcellular compartment; if the same molecule is found in two cellular components it will have two EWASes. " +
-                "EWAS instances by default define an unmodified protein sequence, any post-translational modification (PTM), such as phosphorylation, requires a new EWAS instance. " +
-                "The location and type of any PTM are defined in the hasModifiedResidue slot";
+        return "A protein, RNA, or DNA molecule or fragment thereof in a specified cellular compartment and specific post-translational state. "
+                + "Must be linked to an external database reference, given as the value of referenceSequence. An EWAS typically corresponds to the entire protein or polynucleotide described in the external database. "
+                + "Fragments are defined by setting the first and last residue using the numbering scheme of the external database, entered as startCoordinate and endCoordinate values. Values of 1 and -1 respectively indicate that the true start and end are unconfirmed. "
+                + "EWAS instances are specific to a subcellular compartment; if the same molecule is found in two cellular components it will have two EWASes. "
+                + "EWAS instances by default define an unmodified protein sequence, any post-translational modification (PTM), such as phosphorylation, requires a new EWAS instance. "
+                + "The location and type of any PTM are defined in the hasModifiedResidue slot";
     }
 }

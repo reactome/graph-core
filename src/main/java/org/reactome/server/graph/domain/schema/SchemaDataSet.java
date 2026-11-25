@@ -1,13 +1,12 @@
 package org.reactome.server.graph.domain.schema;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import org.reactome.server.graph.domain.model.*;
+import static org.springframework.util.CollectionUtils.isEmpty;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.springframework.util.CollectionUtils.isEmpty;
+import org.reactome.server.graph.domain.model.*;
 
 @SuppressWarnings("unused")
 public class SchemaDataSet {
@@ -27,7 +26,8 @@ public class SchemaDataSet {
     public SchemaDataSet(Event event, Integer version) {
         this.name = event.getDisplayName();
 
-        this.description = !isEmpty(event.getSummation()) ? event.getSummation().get(0).getText() : "";
+        this.description =
+                !isEmpty(event.getSummation()) ? event.getSummation().get(0).getText() : "";
         this.url = "https://reactome.org/PathwayBrowser/#/" + event.getStId();
         this.version = String.valueOf(version);
         this.keywords = Collections.singletonList(event.getSchemaClass());

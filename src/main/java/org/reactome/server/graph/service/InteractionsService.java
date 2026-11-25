@@ -1,15 +1,14 @@
 package org.reactome.server.graph.service;
 
+import java.util.*;
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
-import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.domain.result.CustomInteraction;
+import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.reactome.server.graph.domain.result.InteractorsCount;
 import org.reactome.server.graph.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class InteractionsService {
@@ -21,7 +20,12 @@ public class InteractionsService {
     private final DiagramRepository diagramRepository;
 
     @Autowired
-    public InteractionsService(InteractionsRepository interactionsRepository, InteractorCountRepository interactorCountRepository, CustomInteractionsRepository customInteractionsRepository,PathwayRepository pathwayRepository, DiagramRepository diagramRepository) {
+    public InteractionsService(
+            InteractionsRepository interactionsRepository,
+            InteractorCountRepository interactorCountRepository,
+            CustomInteractionsRepository customInteractionsRepository,
+            PathwayRepository pathwayRepository,
+            DiagramRepository diagramRepository) {
         this.interactionsRepository = interactionsRepository;
         this.interactorCountRepository = interactorCountRepository;
         this.customInteractionsRepository = customInteractionsRepository;
@@ -36,7 +40,6 @@ public class InteractionsService {
     public List<Interaction> getInteractions(String acc) {
         return getInteractions(Collections.singletonList(acc), -1, -1).get(acc);
     }
-
 
     /**
      * Get all custom interactions of a given accession and resource
@@ -71,7 +74,7 @@ public class InteractionsService {
         Map<String, List<Interaction>> interactionMaps = new HashMap<>();
         for (String acc : accs) {
             Collection<Interaction> interactions;
-            if(page != -1 && pageSize != -1) {
+            if (page != -1 && pageSize != -1) {
                 interactions = interactionsRepository.getByAcc(acc, page, pageSize);
             } else {
                 interactions = interactionsRepository.getByAcc(acc);
@@ -111,15 +114,15 @@ public class InteractionsService {
         return rtn;
     }
 
-    public Collection<Pathway> getLowerLevelPathways(String acc, String speciesName){
+    public Collection<Pathway> getLowerLevelPathways(String acc, String speciesName) {
         return pathwayRepository.getLowerLevelPathways(acc, speciesName);
     }
 
-    public Collection<Pathway> getDiagrammedLowerLevelPathways(String acc, String speciesName){
+    public Collection<Pathway> getDiagrammedLowerLevelPathways(String acc, String speciesName) {
         return pathwayRepository.getDiagrammedLowerLevelPathways(acc, speciesName);
     }
 
-    public Collection<DiagramOccurrences> getDiagramOccurrences(String identifier){
+    public Collection<DiagramOccurrences> getDiagramOccurrences(String identifier) {
         return diagramRepository.getDiagramOccurrencesWithInteractions(identifier);
     }
 }

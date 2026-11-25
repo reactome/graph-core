@@ -1,5 +1,8 @@
 package org.reactome.server.graph.service;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Species;
@@ -11,12 +14,8 @@ import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-
 /**
-
+ *
  */
 @Service
 @SuppressWarnings("WeakerAccess")
@@ -27,9 +26,12 @@ public class PathwaysService {
     private final SpeciesService speciesService;
     private final SimpleDatabaseObjectRepository simpleDatabaseObjectRepository;
 
-
     @Autowired
-    public PathwaysService(EventRepository eventRepository, PathwayRepository pathwayRepository, SpeciesService speciesService, SimpleDatabaseObjectRepository simpleDatabaseObjectRepository) {
+    public PathwaysService(
+            EventRepository eventRepository,
+            PathwayRepository pathwayRepository,
+            SpeciesService speciesService,
+            SimpleDatabaseObjectRepository simpleDatabaseObjectRepository) {
         this.eventRepository = eventRepository;
         this.pathwayRepository = pathwayRepository;
         this.speciesService = speciesService;
@@ -78,7 +80,8 @@ public class PathwaysService {
             }
         } else if (DatabaseObjectUtils.isDbId(id)) {
             if (s != null) {
-                return pathwayRepository.getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+                return pathwayRepository.getPathwaysForAllFormsOfByDbIdAndSpeciesTaxId(
+                        Long.parseLong(id), s.getTaxId());
             } else {
                 return pathwayRepository.getPathwaysForAllFormsOfByDbId(Long.parseLong(id));
             }
@@ -98,7 +101,8 @@ public class PathwaysService {
             }
         } else if (DatabaseObjectUtils.isDbId(id)) {
             if (s != null) {
-                return pathwayRepository.getPathwaysWithDiagramForByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+                return pathwayRepository.getPathwaysWithDiagramForByDbIdAndSpeciesTaxId(
+                        Long.parseLong(id), s.getTaxId());
             } else {
                 return pathwayRepository.getPathwaysWithDiagramForByDbId(Long.parseLong(id));
             }
@@ -119,7 +123,8 @@ public class PathwaysService {
             }
         } else if (DatabaseObjectUtils.isDbId(id)) {
             if (s != null) {
-                return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId(Long.parseLong(id), s.getTaxId());
+                return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByDbIdAndSpeciesTaxId(
+                        Long.parseLong(id), s.getTaxId());
             } else {
                 return pathwayRepository.getPathwaysWithDiagramForAllFormsOfByDbId(Long.parseLong(id));
             }
@@ -152,7 +157,7 @@ public class PathwaysService {
     }
 
     public Collection<SimpleDatabaseObject> getPathwaysForIdentifier(String identifier, Collection<String> pathways) {
-        //The user might submit a list where dbIds and stIds are mixed -> we create two lists
+        // The user might submit a list where dbIds and stIds are mixed -> we create two lists
         Collection<String> stIds = new HashSet<>();
         Collection<Long> dbIds = new HashSet<>();
         for (String pathway : pathways) {
@@ -165,7 +170,7 @@ public class PathwaysService {
         }
 
         Collection<SimpleDatabaseObject> rtn = new HashSet<>();
-        //Aggregating the results in a set (if any). Order isn't taken into account for the time being
+        // Aggregating the results in a set (if any). Order isn't taken into account for the time being
         Collection<SimpleDatabaseObject> aux;
         if (!stIds.isEmpty()) {
             aux = simpleDatabaseObjectRepository.getPathwaysForIdentifierByStId(identifier, stIds);
@@ -185,7 +190,8 @@ public class PathwaysService {
         if (DatabaseObjectUtils.isStId(id)) {
             return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByStId(pathway, identifier);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByDbId(Long.parseLong(pathway), identifier);
+            return simpleDatabaseObjectRepository.getDiagramEntitiesForIdentifierByDbId(
+                    Long.parseLong(pathway), identifier);
         }
         return null;
     }

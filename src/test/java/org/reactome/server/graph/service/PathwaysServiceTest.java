@@ -1,5 +1,9 @@
 package org.reactome.server.graph.service;
 
+import static org.springframework.test.util.AssertionErrors.assertFalse;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Event;
 import org.reactome.server.graph.domain.model.Pathway;
@@ -8,11 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-
-import static org.springframework.test.util.AssertionErrors.assertFalse;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SpringBootTest
 public class PathwaysServiceTest extends BaseTest {
@@ -31,7 +30,7 @@ public class PathwaysServiceTest extends BaseTest {
     }
 
     @Test
-    public void getContainedEventsByStIdTest(){
+    public void getContainedEventsByStIdTest() {
         logger.info("Started testing pathwaysService.getContainedEventsByStIdTest");
         long start = System.currentTimeMillis();
         Collection<Event> events = pathwaysService.getContainedEvents("R-HSA-5673001");
@@ -42,7 +41,7 @@ public class PathwaysServiceTest extends BaseTest {
     }
 
     @Test
-    public void getContainedEventsByDbIdTest(){
+    public void getContainedEventsByDbIdTest() {
         logger.info("Started testing pathwaysService.getContainedEventsByDbIdTest");
         long start = System.currentTimeMillis();
         Collection<Event> events = pathwaysService.getContainedEvents(5673001L);
@@ -53,7 +52,7 @@ public class PathwaysServiceTest extends BaseTest {
     }
 
     @Test
-    public void getPathwaysForTest(){
+    public void getPathwaysForTest() {
         logger.info("Started testing fireworksService.getPathwaysForTest");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = pathwaysService.getPathwaysFor("R-ALL-113592", "9606");
@@ -64,40 +63,45 @@ public class PathwaysServiceTest extends BaseTest {
     }
 
     @Test
-    public void getPathwaysForAllFormsOfTest(){
+    public void getPathwaysForAllFormsOfTest() {
         logger.info("Started testing fireworksService.getPathwaysForAllFormsOfTest");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = pathwaysService.getPathwaysForAllFormsOf("R-ALL-113592", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 591 or more pathways for all forms of ATP (R-ALL-113592) in human", pathways.size() >= 591);
+        assertTrue(
+                "There should be 591 or more pathways for all forms of ATP (R-ALL-113592) in human",
+                pathways.size() >= 591);
     }
 
     @Test
-    public void getPathwaysWithDiagramForTest(){
+    public void getPathwaysWithDiagramForTest() {
         logger.info("Started testing fireworksService.getPathwaysWithDiagramForTest");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = pathwaysService.getPathwaysWithDiagramFor("R-HSA-199420", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 5 or more pathways with diagram PTEN (R-HSA-199420) in human", pathways.size() >= 5);
+        assertTrue(
+                "There should be 5 or more pathways with diagram PTEN (R-HSA-199420) in human", pathways.size() >= 5);
     }
 
     @Test
-    public void getPathwaysWithDiagramForAllFormsOfTest(){
+    public void getPathwaysWithDiagramForAllFormsOfTest() {
         logger.info("Started testing fireworksService.getPathwaysWithDiagramForAllFormsOfTest");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = pathwaysService.getPathwaysWithDiagramForAllFormsOf("R-HSA-199420", "9606");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertTrue("There should be 5 or more pathways with diagram for all forms of PTEN (R-HSA-199420) in human", pathways.size() >= 6);
+        assertTrue(
+                "There should be 5 or more pathways with diagram for all forms of PTEN (R-HSA-199420) in human",
+                pathways.size() >= 6);
     }
 
     @Test
-    public void getLowerLevelPathwaysForIdentifierTest(){
+    public void getLowerLevelPathwaysForIdentifierTest() {
         logger.info("Started testing pathwaysService.getLowerLevelPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = pathwaysService.getLowerLevelPathwaysForIdentifier("PTEN", "9606");
@@ -107,12 +111,12 @@ public class PathwaysServiceTest extends BaseTest {
         assertTrue("There should be 9 or more pathways containing PTEN in human", pathways.size() >= 9);
     }
 
-
     @Test
-    public void getPathwaysForIdentifierTest(){
+    public void getPathwaysForIdentifierTest() {
         logger.info("Started testing pathwaysService.getPathwaysForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = pathwaysService.getPathwaysForIdentifier("POM121C", "189200","R-HSA-68875");
+        Collection<SimpleDatabaseObject> pathways =
+                pathwaysService.getPathwaysForIdentifier("POM121C", "189200", "R-HSA-68875");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -120,10 +124,11 @@ public class PathwaysServiceTest extends BaseTest {
     }
 
     @Test
-    public void getDiagramEntitiesForIdentifierTest(){
+    public void getDiagramEntitiesForIdentifierTest() {
         logger.info("Started testing pathwaysService.getDiagramEntitiesForIdentifierTest");
         long start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> entities = pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "SLC2A12");
+        Collection<SimpleDatabaseObject> entities =
+                pathwaysService.getDiagramEntitiesForIdentifier("R-HSA-189200", "SLC2A12");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 

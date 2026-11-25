@@ -1,10 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
@@ -34,6 +33,4 @@ public class Summation extends DatabaseObject {
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
-
-
 }

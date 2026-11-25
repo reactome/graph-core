@@ -23,7 +23,8 @@ public class Main {
      * This is needed to get hold of the instance of the aspect which is created outside of the spring container,
      * and make it available for autowiring.
      */
-    @Bean LazyFetchAspect lazyFetchAspect() {
+    @Bean
+    LazyFetchAspect lazyFetchAspect() {
         return Aspects.aspectOf(LazyFetchAspect.class);
     }
 }

@@ -13,7 +13,7 @@ public class FunctionalStatus extends DatabaseObject {
 
     @Relationship(type = "structuralVariant")
     private SequenceOntology structuralVariant;
-    
+
     public FunctionalStatus() {}
 
     public FunctionalStatusType getFunctionalStatusType() {

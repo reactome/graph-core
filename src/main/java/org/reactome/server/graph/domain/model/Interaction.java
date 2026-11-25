@@ -1,10 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Node
@@ -13,21 +12,26 @@ public abstract class Interaction extends DatabaseObject {
 
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
+
     @ReactomeProperty
     private String databaseName;
+
     @ReactomeProperty
     private Double score;
+
     @ReactomeProperty
     private List<String> accession;
+
     @ReactomeProperty
     private List<String> pubmed;
+
     @ReactomeProperty
     private String url;
 
-//    private List<String> type;
-//    private String expansionType; //spokeExpansion
+    //    private List<String> type;
+    //    private String expansionType; //spokeExpansion
 
-    public Interaction() { }
+    public Interaction() {}
 
     public ReferenceDatabase getReferenceDatabase() {
         return referenceDatabase;

@@ -1,5 +1,10 @@
 package org.reactome.server.graph.service.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.CellLineagePath;
 import org.reactome.server.graph.domain.model.Pathway;
@@ -7,12 +12,6 @@ import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.service.helper.PathwayBrowserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * Please bear in mind here that we are building the Locations in the Pathway Browser tree from the LEAVES.
@@ -29,7 +28,6 @@ public abstract class PathwayBrowserLocationsUtils {
     private static final String PATHWAY_BROWSER_URL = "/PathwayBrowser/#/";
     private static final String SEL = "&amp;SEL=";
     private static final String PATH = "&amp;PATH=";
-
 
     public static Set<PathwayBrowserNode> buildTreesFromLeaves(Set<PathwayBrowserNode> leaves) {
         Set<PathwayBrowserNode> topLvlTrees = new TreeSet<>();
@@ -61,7 +59,8 @@ public abstract class PathwayBrowserLocationsUtils {
     @SuppressWarnings("unused")
     public static List<String> getAvailableSpecies(Set<PathwayBrowserNode> graph) {
         if (graph == null) return null;
-        Set<String> availableSpecies = graph.stream().map(PathwayBrowserNode::getSpecies).collect(Collectors.toCollection(TreeSet::new));
+        Set<String> availableSpecies =
+                graph.stream().map(PathwayBrowserNode::getSpecies).collect(Collectors.toCollection(TreeSet::new));
 
         final String DEFAULT_SPECIES = "Homo sapiens";
         List<String> newAvailableSpecies = new ArrayList<>();
@@ -88,7 +87,8 @@ public abstract class PathwayBrowserLocationsUtils {
      * @param lastNodeWithDiagram saves STID of the Last Pathway in the Diagram
      * @return generated Tree
      */
-    private static PathwayBrowserNode getTreeFromGraphLeaf(PathwayBrowserNode leaf, String sel, String path, String shortPath, String lastNodeWithDiagram) {
+    private static PathwayBrowserNode getTreeFromGraphLeaf(
+            PathwayBrowserNode leaf, String sel, String path, String shortPath, String lastNodeWithDiagram) {
         /* */
         PathwayBrowserNode tree = new PathwayBrowserNode();
         tree.setStId(leaf.getStId());
@@ -98,7 +98,9 @@ public abstract class PathwayBrowserLocationsUtils {
         tree.setClickable(leaf.isClickable());
         tree.setHighlighted(leaf.getHighlighted());
 
-        boolean isPathway = leaf.getType().equals(Pathway.class.getSimpleName()) || leaf.getType().equals(CellLineagePath.class.getSimpleName()) || leaf.getType().equals(TopLevelPathway.class.getSimpleName());
+        boolean isPathway = leaf.getType().equals(Pathway.class.getSimpleName())
+                || leaf.getType().equals(CellLineagePath.class.getSimpleName())
+                || leaf.getType().equals(TopLevelPathway.class.getSimpleName());
         boolean hasDiagram = leaf.hasDiagram();
         leaf.setUnique(false);
 

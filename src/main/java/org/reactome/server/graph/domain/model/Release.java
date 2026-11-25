@@ -15,8 +15,7 @@ public class Release extends MetaDatabaseObject {
     @ReactomeProperty
     private Integer releaseNumber;
 
-    public Release() {
-    }
+    public Release() {}
 
     public String getReleaseDate() {
         return releaseDate;

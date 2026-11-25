@@ -24,5 +24,4 @@ public abstract class AbstractModifiedResidue extends DatabaseObject {
     public void setReferenceSequence(ReferenceSequence referenceSequence) {
         this.referenceSequence = referenceSequence;
     }
-
 }

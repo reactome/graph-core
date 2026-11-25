@@ -1,9 +1,8 @@
 package org.reactome.server.graph.domain.result;
 
+import java.util.List;
 import org.neo4j.driver.Value;
 import org.springframework.data.neo4j.core.schema.Id;
-
-import java.util.List;
 
 /**
  * HierarchyTreeItem is a minimalist object that is used to build the Pathway Browser Tree
@@ -11,7 +10,9 @@ import java.util.List;
  * The HierarchyBranch is comprised of a Collection of PathwayResult
  */
 public class HierarchyTreeItem {
-    @Id private Long id;
+    @Id
+    private Long id;
+
     private String stId;
     private String displayName;
     private boolean hasDiagram;
@@ -20,7 +21,7 @@ public class HierarchyTreeItem {
     private List<String> labels;
     private Integer order;
 
-    public HierarchyTreeItem() { }
+    public HierarchyTreeItem() {}
 
     public static HierarchyTreeItem build(Value valueNode) {
         HierarchyTreeItem hierarchyTreeItem = new HierarchyTreeItem();
@@ -100,13 +101,11 @@ public class HierarchyTreeItem {
 
     @Override
     public String toString() {
-        return "PathwayResult{" +
-                "stId='" + stId + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", hasDiagram=" + hasDiagram +
-                ", speciesName='" + speciesName + '\'' +
-                ", schemaClass='" + schemaClass + '\'' +
-                '}';
+        return "PathwayResult{" + "stId='"
+                + stId + '\'' + ", displayName='"
+                + displayName + '\'' + ", hasDiagram="
+                + hasDiagram + ", speciesName='"
+                + speciesName + '\'' + ", schemaClass='"
+                + schemaClass + '\'' + '}';
     }
 }
-

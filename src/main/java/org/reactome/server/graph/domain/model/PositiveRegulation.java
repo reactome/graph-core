@@ -18,6 +18,6 @@ public class PositiveRegulation extends Regulation {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return  "This describes an Event/CatalystActivity that is positively regulated by the Regulator (e.g., allosteric activation)";
+        return "This describes an Event/CatalystActivity that is positively regulated by the Regulator (e.g., allosteric activation)";
     }
 }

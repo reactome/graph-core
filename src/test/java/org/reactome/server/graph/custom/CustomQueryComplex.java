@@ -1,11 +1,10 @@
 package org.reactome.server.graph.custom;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
 import org.reactome.server.graph.domain.result.CustomQuery;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * POJO for testing the Custom Cypher Queries
@@ -65,7 +64,10 @@ public class CustomQueryComplex implements CustomQuery {
         this.setStId(r.get("stId").asString());
         this.setDisplayName(r.get("displayName").asString());
         for (Value value : r.get("customReferences").values()) {
-            this.getCustomReferences().add(new CustomReference(value.get("database").asString(), value.get("identifier").asString()));
+            this.getCustomReferences()
+                    .add(new CustomReference(
+                            value.get("database").asString(),
+                            value.get("identifier").asString()));
         }
         this.setDatabaseNames(r.get("databaseNames").asList(Value::toString));
         this.setDbIds(r.get("dbIds").asList(Value::asLong));

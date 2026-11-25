@@ -1,5 +1,7 @@
 package org.reactome.server.graph.aop;
 
+import java.lang.reflect.Method;
+import java.util.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,9 +11,6 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
@@ -65,14 +64,16 @@ public class SortingAspect {
                 // Set collection in object, then we do not sort every execution.
                 setter.invoke(target, returnedValueAsList);
             } catch (NoSuchMethodException e) {
-                logger.warn("Could not find method " + setterMethod + " in the class " + target.getClass().getName());
+                logger.warn("Could not find method " + setterMethod + " in the class "
+                        + target.getClass().getName());
             }
 
             // return the sorted list
             return returnedValueAsList;
 
         } else if (returnedValue instanceof Set) {
-            // The set by default (DatabaseObject.compareTo) is sorting by dbId, in this case we want to sort by displayName.
+            // The set by default (DatabaseObject.compareTo) is sorting by dbId, in this case we want to sort by
+            // displayName.
             // Then take the Set, convert to a List, sort it and convert back to a LinkedHashSet.
             Set<? extends DatabaseObject> returnedValueSet = (Set<? extends DatabaseObject>) returnedValue;
             returnedValueAsList = new ArrayList<>(returnedValueSet);
@@ -95,7 +96,8 @@ public class SortingAspect {
                 // Set collection in object, then we do not sort every execution.
                 setter.invoke(target, returnedValueAsSet);
             } catch (NoSuchMethodException e) {
-                logger.warn("Could not find method " + setterMethod + " in the class " + target.getClass().getName());
+                logger.warn("Could not find method " + setterMethod + " in the class "
+                        + target.getClass().getName());
             }
 
             // return the sorted list
@@ -110,9 +112,9 @@ public class SortingAspect {
      * Take into account calling Pathway.getDbId won't invoke the AspectJ and this is the
      * expected behaviour.
      */
-    @Pointcut("execution(public java.util.Collection<org.reactome.server.graph.domain.model.DatabaseObject+>+ org.reactome.server.graph.domain.model.*.get*(..))")
-    public void modelGetter() {
-    }
+    @Pointcut(
+            "execution(public java.util.Collection<org.reactome.server.graph.domain.model.DatabaseObject+>+ org.reactome.server.graph.domain.model.*.get*(..))")
+    public void modelGetter() {}
 
     public Boolean getEnableSorting() {
         return SortingAspect.enableSorting;

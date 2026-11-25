@@ -43,7 +43,9 @@ public class CustomQueryPhysicalEntity implements CustomQuery {
     public CustomQuery build(Record r) {
         this.setStId(r.get("stId").asString());
         this.setDisplayName(r.get("displayName").asString());
-        this.setCustomReference(new CustomReference(r.get("customReference").get("database").asString(), r.get("customReference").get("identifier").asString()));
+        this.setCustomReference(new CustomReference(
+                r.get("customReference").get("database").asString(),
+                r.get("customReference").get("identifier").asString()));
         return this;
     }
 }

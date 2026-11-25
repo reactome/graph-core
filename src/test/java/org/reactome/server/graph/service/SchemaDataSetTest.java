@@ -1,14 +1,9 @@
 package org.reactome.server.graph.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.reactome.server.graph.domain.model.Event;
-import org.reactome.server.graph.domain.schema.SchemaDataSet;
-import org.reactome.server.graph.util.DatabaseObjectFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,9 +17,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.reactome.server.graph.domain.model.Event;
+import org.reactome.server.graph.domain.schema.SchemaDataSet;
+import org.reactome.server.graph.util.DatabaseObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 /**
  * The documentation for schema validation is at https://developers.google.com/search/docs/guides/prototype
@@ -52,7 +51,7 @@ public class SchemaDataSetTest extends BaseTest {
             checkedOnce = true;
         }
 
-        //*******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
+        // *******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
         lazyFetchAspect.setEnableAOP(true);
 
         assumeTrue(isFit);
@@ -65,7 +64,8 @@ public class SchemaDataSetTest extends BaseTest {
         logger.info("Testing schema.org DataSet.");
 
         Event eventObserved = dbs.findByIdNoRelations(stId);
-        SchemaDataSet schemaDataSet = new SchemaDataSet(eventObserved, generalService.getDBInfo().getReleaseNumber());
+        SchemaDataSet schemaDataSet =
+                new SchemaDataSet(eventObserved, generalService.getDBInfo().getReleaseNumber());
 
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -97,7 +97,8 @@ public class SchemaDataSetTest extends BaseTest {
             }
 
             String response = new BufferedReader(new InputStreamReader(http.getInputStream()))
-                    .lines().collect(Collectors.joining("\n"));
+                    .lines()
+                    .collect(Collectors.joining("\n"));
             boolean valid = response.contains("\"totalNumErrors\":0,\"totalNumWarnings\":0");
             assertTrue("The generated schema should not have errors neither warnings", valid);
         } catch (IOException e) {
@@ -106,5 +107,4 @@ public class SchemaDataSetTest extends BaseTest {
 
         logger.info("Finished");
     }
-
 }

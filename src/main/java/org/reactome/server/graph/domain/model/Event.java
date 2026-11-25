@@ -1,6 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.EventOf;
 import org.reactome.server.graph.domain.relationship.Has;
@@ -8,22 +11,17 @@ import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-
 @SuppressWarnings({"unused"})
-
 @Node
 public abstract class Event extends DatabaseObject implements Trackable, Deletable {
     private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String definition;
-    //A simple flag to indicate if this Event object is a disease
+    // A simple flag to indicate if this Event object is a disease
     @ReactomeProperty(addedField = true)
     private Boolean isInDisease;
-    //A simple flag to indicate if this Event is inferred from another
+    // A simple flag to indicate if this Event is inferred from another
     @ReactomeProperty(addedField = true)
     private Boolean isInferred;
     /**
@@ -35,10 +33,13 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
 
     @ReactomeProperty
     private List<String> name;
+
     @ReactomeProperty
     private String releaseDate;
+
     @ReactomeProperty
     private String releaseStatus;
+
     @ReactomeProperty(addedField = true)
     private String speciesName;
 
@@ -127,9 +128,7 @@ public abstract class Event extends DatabaseObject implements Trackable, Deletab
     @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
     private List<UpdateTracker> updateTrackers;
 
-
-    public Event() {
-    }
+    public Event() {}
 
     public Event(Long dbId) {
         super(dbId);

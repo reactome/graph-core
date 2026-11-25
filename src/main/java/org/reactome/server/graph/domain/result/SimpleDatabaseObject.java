@@ -1,11 +1,10 @@
 package org.reactome.server.graph.domain.result;
 
+import java.util.Collection;
+import java.util.Objects;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
-
-import java.util.Collection;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class SimpleDatabaseObject implements DatabaseObjectLike {
@@ -63,7 +62,7 @@ public class SimpleDatabaseObject implements DatabaseObjectLike {
         simpleDatabaseObject.setDbId(value.get("dbId").asLong());
         simpleDatabaseObject.setStId(value.get("stId").asString(null));
         simpleDatabaseObject.setDisplayName(value.get("displayName").asString());
-        if(!value.get("labels").isNull()) {
+        if (!value.get("labels").isNull()) {
             simpleDatabaseObject.setLabels(value.get("labels").asList(Value::asString));
         } else {
             simpleDatabaseObject.setSchemaClass(value.get("schemaClass").asString());

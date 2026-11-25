@@ -1,11 +1,10 @@
 package org.reactome.server.graph.domain.schema;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import org.reactome.server.graph.domain.model.Affiliation;
-import org.reactome.server.graph.domain.model.Person;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.reactome.server.graph.domain.model.Affiliation;
+import org.reactome.server.graph.domain.model.Person;
 
 @SuppressWarnings("unused")
 public class SchemaPerson extends SchemaCreator {
@@ -13,12 +12,12 @@ public class SchemaPerson extends SchemaCreator {
     private final String givenName;
     private final String familyName;
     private final List<SchemaOrganization> affiliation = new ArrayList<>();
-    private final String url; //For the orcidId
+    private final String url; // For the orcidId
 
     SchemaPerson(Person person) {
         this.givenName = person.getFirstname();
         this.familyName = person.getSurname();
-        if(person.getAffiliation()!=null) {
+        if (person.getAffiliation() != null) {
             for (Affiliation a : person.getAffiliation()) {
                 this.affiliation.add(new SchemaOrganization(a));
             }
@@ -43,7 +42,7 @@ public class SchemaPerson extends SchemaCreator {
     }
 
     @JsonGetter(value = "@type")
-    public String getType(){
+    public String getType() {
         return "Person";
     }
 }

@@ -1,10 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 @SuppressWarnings("unused")
 @Node
@@ -13,6 +12,7 @@ public class Taxon extends DatabaseObject {
 
     @ReactomeProperty
     private List<String> name;
+
     @ReactomeProperty(addedField = true)
     private String taxId;
 
@@ -22,7 +22,7 @@ public class Taxon extends DatabaseObject {
 
     @Relationship(type = "superTaxon")
     private Taxon superTaxon;
-    
+
     public Taxon() {}
 
     public List<String> getName() {

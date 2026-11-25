@@ -23,5 +23,4 @@ public class RepeatedUnit extends Has<PhysicalEntity> {
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.element = physicalEntity;
     }
-
 }

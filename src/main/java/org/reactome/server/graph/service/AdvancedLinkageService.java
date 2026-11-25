@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
 import org.reactome.server.graph.domain.result.ComponentOf;
 import org.reactome.server.graph.domain.result.Referrals;
 import org.reactome.server.graph.repository.ComponentOfLinkageRepository;
@@ -8,8 +9,6 @@ import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-
 @Service
 public class AdvancedLinkageService {
 
@@ -17,7 +16,9 @@ public class AdvancedLinkageService {
     private final ReferralsLinkageRepository referralsLinkageRepository;
 
     @Autowired
-    public AdvancedLinkageService(ComponentOfLinkageRepository componentOfLinkageRepository, ReferralsLinkageRepository referralsLinkageRepository) {
+    public AdvancedLinkageService(
+            ComponentOfLinkageRepository componentOfLinkageRepository,
+            ReferralsLinkageRepository referralsLinkageRepository) {
         this.componentOfLinkageRepository = componentOfLinkageRepository;
         this.referralsLinkageRepository = referralsLinkageRepository;
     }
@@ -32,7 +33,7 @@ public class AdvancedLinkageService {
         return null;
     }
 
-    public Collection<Referrals> getReferralsTo(Object identifier){
+    public Collection<Referrals> getReferralsTo(Object identifier) {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return referralsLinkageRepository.getReferralsTo(id);

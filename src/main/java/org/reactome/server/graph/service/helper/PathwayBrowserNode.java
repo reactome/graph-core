@@ -1,10 +1,9 @@
 package org.reactome.server.graph.service.helper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.lang.NonNull;
-
 import java.util.Set;
 import java.util.TreeSet;
+import org.springframework.lang.NonNull;
 
 @SuppressWarnings("unused")
 public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
@@ -15,20 +14,23 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
     private String url;
     private String type;
     private Boolean diagram;
+
     @JsonIgnore
     private Boolean unique;
+
     @JsonIgnore
     private Integer order;
 
     @JsonIgnore
     private boolean highlighted;
+
     @JsonIgnore
     private boolean clickable;
 
     private Set<PathwayBrowserNode> children;
+
     @JsonIgnore
     private Set<PathwayBrowserNode> parent;
-
 
     public void addParent(PathwayBrowserNode node) {
         if (parent == null) {
@@ -63,7 +65,6 @@ public class PathwayBrowserNode implements Comparable<PathwayBrowserNode> {
         } else {
             return diagram;
         }
-
     }
 
     public Boolean isUnique() {

@@ -19,8 +19,7 @@ public class DBInfo extends Release {
         return this.getReleaseNumber();
     }
 
-    public DBInfo() {
-    }
+    public DBInfo() {}
 
     public String getName() {
         return name;
@@ -29,7 +28,6 @@ public class DBInfo extends Release {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public Long getChecksum() {
         return checksum;

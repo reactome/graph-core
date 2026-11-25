@@ -1,5 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.custom.CustomQueryComplex;
 import org.reactome.server.graph.custom.CustomQueryPhysicalEntity;
@@ -11,15 +19,6 @@ import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Florian Korninger <florian.korninger@ebi.ac.uk>
@@ -51,7 +50,14 @@ public class AdvancedServiceTest extends BaseTest {
         PhysicalEntity peObserved = advancedDatabaseObjectService.findEnhancedObjectById("R-HSA-60140");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
-        assertEquals("R-HSA-113454", peObserved.getPositivelyRegulates().get(0).getRegulatedEntity().get(0).getStId());
+        assertEquals(
+                "R-HSA-113454",
+                peObserved
+                        .getPositivelyRegulates()
+                        .get(0)
+                        .getRegulatedEntity()
+                        .get(0)
+                        .getStId());
         logger.info("Finished");
     }
 
@@ -95,10 +101,10 @@ public class AdvancedServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertThat(databaseObjectObserved.getClass().getName()).isEqualTo( "org.reactome.server.graph.domain.model.FragmentDeletionModification");
+        assertThat(databaseObjectObserved.getClass().getName())
+                .isEqualTo("org.reactome.server.graph.domain.model.FragmentDeletionModification");
         logger.info("Finished");
     }
-
 
     // --------------------------------------- Generic Finder Methods --------------------------------------------------
 
@@ -109,7 +115,8 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByProperty");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findByProperty(DatabaseObject.class, "stId", stId);
+        DatabaseObject databaseObjectObserved =
+                advancedDatabaseObjectService.findByProperty(DatabaseObject.class, "stId", stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -130,7 +137,8 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findAllByProperty");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findAllByProperty(DatabaseObject.class, "stId", stId);
+        Collection<DatabaseObject> databaseObjectObserved =
+                advancedDatabaseObjectService.findAllByProperty(DatabaseObject.class, "stId", stId);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -145,7 +153,8 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByDbIdWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findById(dbId, RelationshipDirection.UNDIRECTED);
+        DatabaseObject databaseObjectObserved =
+                advancedDatabaseObjectService.findById(dbId, RelationshipDirection.UNDIRECTED);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -164,7 +173,8 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByStIdWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = advancedDatabaseObjectService.findById(stId, RelationshipDirection.UNDIRECTED);
+        DatabaseObject databaseObjectObserved =
+                advancedDatabaseObjectService.findById(stId, RelationshipDirection.UNDIRECTED);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -180,27 +190,31 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByDbIdWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing advancedDatabaseObjectService.findByDbIdWithRelationshipDirectionAndRelationshipsTest");
+        logger.info(
+                "Started testing advancedDatabaseObjectService.findByDbIdWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         try {
             start = System.currentTimeMillis();
-            Pathway databaseObjectObserved = advancedDatabaseObjectService.findById(dbId, RelationshipDirection.OUTGOING, "hasEvent");
+            Pathway databaseObjectObserved =
+                    advancedDatabaseObjectService.findById(dbId, RelationshipDirection.OUTGOING, "hasEvent");
             time = System.currentTimeMillis() - start;
             logger.info("GraphDb execution time: " + time + "ms");
 
             assertEquals(16, databaseObjectObserved.getHasEvent().size());
             logger.info("Finished");
-        }catch (ClassCastException aa) {
+        } catch (ClassCastException aa) {
             aa.printStackTrace();
         }
     }
 
     @Test
     public void findByStIdWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing advancedDatabaseObjectService.findByStIdWithRelationshipDirectionAndRelationshipsTest");
+        logger.info(
+                "Started testing advancedDatabaseObjectService.findByStIdWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
-        Pathway databaseObjectObserved = advancedDatabaseObjectService.findById(stId, RelationshipDirection.OUTGOING, "hasEvent");
+        Pathway databaseObjectObserved =
+                advancedDatabaseObjectService.findById(stId, RelationshipDirection.OUTGOING, "hasEvent");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -213,7 +227,8 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByDbIdsWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByDbIds(Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING);
+        Collection<DatabaseObject> databaseObjectObserved =
+                advancedDatabaseObjectService.findByDbIds(Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -226,7 +241,8 @@ public class AdvancedServiceTest extends BaseTest {
         logger.info("Started testing advancedDatabaseObjectService.findByStIdsWithRelationshipDirectionTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByStIds(Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING);
+        Collection<DatabaseObject> databaseObjectObserved =
+                advancedDatabaseObjectService.findByStIds(Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -236,10 +252,12 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByDbIdsWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing advancedDatabaseObjectService.findByDbIdsWithRelationshipDirectionAndRelationshipsTest");
+        logger.info(
+                "Started testing advancedDatabaseObjectService.findByDbIdsWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByDbIds(Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
+        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByDbIds(
+                Arrays.asList(dbId, dbId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -249,10 +267,12 @@ public class AdvancedServiceTest extends BaseTest {
 
     @Test
     public void findByStIdsWithRelationshipDirectionAndRelationshipsTest() {
-        logger.info("Started testing advancedDatabaseObjectService.findByStIdsWithRelationshipDirectionAndRelationshipsTest");
+        logger.info(
+                "Started testing advancedDatabaseObjectService.findByStIdsWithRelationshipDirectionAndRelationshipsTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByStIds(Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
+        Collection<DatabaseObject> databaseObjectObserved = advancedDatabaseObjectService.findByStIds(
+                Arrays.asList(stId, stId2), RelationshipDirection.OUTGOING, "hasEvent", "referenceEntity");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -262,26 +282,26 @@ public class AdvancedServiceTest extends BaseTest {
 
     // ------------------------------- Methods with Custom Query -------------------------------------
 
-    //@Test
+    // @Test
     public void custom() {
         // WARNING: THIS QUERY ALTERS DATA IN THE GRAPH. UNCOMMENT WHEN NEEDED.
-        String query = "" +
-                "MATCH (rle:ReactionLikeEvent{dbId:$dbId}}) " +
-                "SET rle.category=$category ";
+        String query = "" + "MATCH (rle:ReactionLikeEvent{dbId:$dbId}}) " + "SET rle.category=$category ";
         Map<String, Object> params = new HashMap<>();
         params.put("dbId", 6803411L);
         params.put("category", "ommited");
         advancedDatabaseObjectService.customQuery(query, params);
-
     }
+
     @Test
     public void customQueryWithCustomObjectTest() throws CustomQueryException {
         logger.info("Started testing advancedDatabaseObjectService.customQueryForObject");
 
-        String query = "MATCH (p:Pathway{dbId:$dbId})-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ";
+        String query =
+                "MATCH (p:Pathway{dbId:$dbId})-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ";
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("dbId", 1640170);
-        CustomQueryResult customQueryResult = advancedDatabaseObjectService.getCustomQueryResult(CustomQueryResult.class, query, parametersMap);
+        CustomQueryResult customQueryResult =
+                advancedDatabaseObjectService.getCustomQueryResult(CustomQueryResult.class, query, parametersMap);
         assertEquals(4, customQueryResult.getEvents().size());
         assertEquals(4, customQueryResult.getEventsArray().length);
         assertEquals(4, customQueryResult.getEventsPrimitiveArray().length);
@@ -290,16 +310,16 @@ public class AdvancedServiceTest extends BaseTest {
     @Test
     public void customQueryWithEWASTest() throws CustomQueryException {
         // language=cypher
-        String query = "" +
-                "MATCH path=(p:Pathway{stId:$stId})-[:hasEvent*]->(rle:ReactionLikeEvent) " +
-                "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) " +
-                "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:EntityWithAccessionedSequence) " +
-                "WITH DISTINCT pe " +
-                "MATCH (pe)-[hm:hasModifiedResidue]->(tm:TranslationalModification) " +
-                "RETURN DISTINCT pe, collect(hm), collect(tm) ";
+        String query = "" + "MATCH path=(p:Pathway{stId:$stId})-[:hasEvent*]->(rle:ReactionLikeEvent) "
+                + "WHERE SINGLE(x IN NODES(path) WHERE (x:Pathway) AND x.hasDiagram) "
+                + "MATCH (rle)-[:input|output|catalystActivity|physicalEntity|regulatedBy|regulator*]->(pe:EntityWithAccessionedSequence) "
+                + "WITH DISTINCT pe "
+                + "MATCH (pe)-[hm:hasModifiedResidue]->(tm:TranslationalModification) "
+                + "RETURN DISTINCT pe, collect(hm), collect(tm) ";
         Map<String, Object> params = new HashMap<>();
         params.put("stId", "R-HSA-68877");
-        Collection<EntityWithAccessionedSequence> ewass = advancedDatabaseObjectService.getCustomQueryResults(EntityWithAccessionedSequence.class, query, params);
+        Collection<EntityWithAccessionedSequence> ewass =
+                advancedDatabaseObjectService.getCustomQueryResults(EntityWithAccessionedSequence.class, query, params);
         assertThat(ewass).allMatch(ewas -> ewas instanceof EntityWithAccessionedSequence);
     }
 
@@ -307,9 +327,11 @@ public class AdvancedServiceTest extends BaseTest {
     public void customQueryListOfCustomObjectTest() throws CustomQueryException {
         logger.info("Started testing advancedDatabaseObjectService.customQueryForObjects");
 
-        String query = "MATCH (p:Pathway)-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ORDER BY p.dbId LIMIT 20";
+        String query =
+                "MATCH (p:Pathway)-[:hasEvent]->(m) RETURN p.dbId as dbId, p.displayName as name, Collect(m.dbId) AS events, Collect(m.dbId) AS eventsPrimitiveArray, Collect(m.displayName) AS eventsArray ORDER BY p.dbId LIMIT 20";
 
-        Collection<CustomQueryResult> customQueryResultList = advancedDatabaseObjectService.getCustomQueryResults(CustomQueryResult.class, query, null);
+        Collection<CustomQueryResult> customQueryResultList =
+                advancedDatabaseObjectService.getCustomQueryResults(CustomQueryResult.class, query, null);
 
         assertNotNull(customQueryResultList);
         assertEquals(20, customQueryResultList.size());
@@ -338,8 +360,7 @@ public class AdvancedServiceTest extends BaseTest {
         lazyFetchAspect.setEnableAOP(false);
     }
 
-
-//    @Test
+    //    @Test
     public void customQueryTest() throws CustomQueryException {
         String query = "MATCH (n:ReferenceEntity) RETURN DISTINCT n.identifier AS identifier";
         Collection<String> accessions = advancedDatabaseObjectService.getCustomQueryResults(String.class, query, null);
@@ -372,16 +393,18 @@ public class AdvancedServiceTest extends BaseTest {
         // are Lists of Number, Strings or List of Custom Objects.
         logger.info("Started testing advancedDatabaseObjectService.customQueryListOfCustomObjects");
 
-        String query = "MATCH (pe:Complex{speciesName:$species,stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity|proteinMarker|RNAMarker*]->(re) " +
-                       "RETURN pe.stId AS stId, pe.displayName AS displayName, COLLECT(re.dbId) as dbIds, COLLECT(re.databaseName) as databaseNames, " +
-                       "COLLECT({database:re.databaseName, identifier:re.identifier}) AS customReferences";
+        String query =
+                "MATCH (pe:Complex{speciesName:$species,stId:$stId})-[:hasComponent|hasMember|hasCandidate|repeatedUnit|referenceEntity|proteinMarker|RNAMarker*]->(re) "
+                        + "RETURN pe.stId AS stId, pe.displayName AS displayName, COLLECT(re.dbId) as dbIds, COLLECT(re.databaseName) as databaseNames, "
+                        + "COLLECT({database:re.databaseName, identifier:re.identifier}) AS customReferences";
 
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("species", "Homo sapiens");
         parametersMap.put("stId", "R-HSA-1852614");
 
         // In this test case, the relationships are mapped in the object CustomQueryComplex inside the Collection
-        Collection<CustomQueryComplex> customComplexes = advancedDatabaseObjectService.getCustomQueryResults(CustomQueryComplex.class, query, parametersMap);
+        Collection<CustomQueryComplex> customComplexes =
+                advancedDatabaseObjectService.getCustomQueryResults(CustomQueryComplex.class, query, parametersMap);
 
         assertNotNull(customComplexes);
         assertTrue(customComplexes.iterator().next().getDbIds().size() >= 9);
@@ -394,15 +417,16 @@ public class AdvancedServiceTest extends BaseTest {
         // Testing a custom query that retrieves a CustomObject and one (or more) of the attributes are Custom Objects.
         logger.info("Started testing advancedDatabaseObjectService.customQueryCustomObjects");
 
-        String query = "MATCH (pe:PhysicalEntity{speciesName:$species, stId:$stId})-[:referenceEntity]->(re) " +
-                       "RETURN pe.stId AS stId, pe.displayName AS displayName, {database:re.databaseName, identifier:re.identifier} AS customReference";
+        String query = "MATCH (pe:PhysicalEntity{speciesName:$species, stId:$stId})-[:referenceEntity]->(re) "
+                + "RETURN pe.stId AS stId, pe.displayName AS displayName, {database:re.databaseName, identifier:re.identifier} AS customReference";
 
         Map<String, Object> parametersMap = new HashMap<>();
         parametersMap.put("species", "Homo sapiens");
         parametersMap.put("stId", "R-HSA-141433");
 
         // In this test case, the relationships are mapped in the object Pathway inside the Collection
-        CustomQueryPhysicalEntity customPE = advancedDatabaseObjectService.getCustomQueryResult(CustomQueryPhysicalEntity.class, query, parametersMap);
+        CustomQueryPhysicalEntity customPE = advancedDatabaseObjectService.getCustomQueryResult(
+                CustomQueryPhysicalEntity.class, query, parametersMap);
 
         assertNotNull(customPE);
         assertEquals("R-HSA-141433", customPE.getStId());

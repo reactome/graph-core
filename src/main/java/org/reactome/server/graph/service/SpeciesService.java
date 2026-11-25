@@ -1,12 +1,11 @@
 package org.reactome.server.graph.service;
 
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.Species;
 import org.reactome.server.graph.repository.SpeciesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SpeciesService {
@@ -57,7 +56,8 @@ public class SpeciesService {
                     if (StringUtils.isNumeric(aux)) {
                         num = aux;
                     } else {
-                        return getSpeciesByName(StringUtils.capitalize(aux.toLowerCase().replaceAll("[_ ]+", " ")));
+                        return getSpeciesByName(
+                                StringUtils.capitalize(aux.toLowerCase().replaceAll("[_ ]+", " ")));
                     }
                 }
             } else if (obj instanceof Number && !(obj instanceof Double)) {

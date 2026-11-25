@@ -1,9 +1,8 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
-
-import java.util.List;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Node
@@ -12,10 +11,13 @@ public class ReferenceDatabase extends DatabaseObject {
 
     @ReactomeProperty
     private String accessUrl;
+
     @ReactomeProperty
     private List<String> name;
+
     @ReactomeProperty
     private String url;
+
     @ReactomeProperty
     private String resourceIdentifier;
     /**

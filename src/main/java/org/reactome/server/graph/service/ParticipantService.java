@@ -1,5 +1,6 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.reactome.server.graph.domain.result.Participant;
@@ -10,8 +11,6 @@ import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-
 @Service
 @SuppressWarnings("WeakerAccess")
 public class ParticipantService {
@@ -21,7 +20,10 @@ public class ParticipantService {
     private final PhysicalEntityRepository physicalEntityRepository;
 
     @Autowired
-    public ParticipantService(ParticipantRepository participantRepository, ReferenceEntityRepository referenceEntityRepository, PhysicalEntityRepository physicalEntityRepository) {
+    public ParticipantService(
+            ParticipantRepository participantRepository,
+            ReferenceEntityRepository referenceEntityRepository,
+            PhysicalEntityRepository physicalEntityRepository) {
         this.participantRepository = participantRepository;
         this.referenceEntityRepository = referenceEntityRepository;
         this.physicalEntityRepository = physicalEntityRepository;
@@ -31,7 +33,7 @@ public class ParticipantService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return referenceEntityRepository.getParticipatingReferenceEntities(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return referenceEntityRepository.getParticipatingReferenceEntities(Long.parseLong(id));
         }
         return null;
@@ -41,7 +43,7 @@ public class ParticipantService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return physicalEntityRepository.getParticipatingPhysicalEntities(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return physicalEntityRepository.getParticipatingPhysicalEntities(Long.parseLong(id));
         }
         return null;
@@ -51,10 +53,9 @@ public class ParticipantService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return participantRepository.getParticipants(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return participantRepository.getParticipants(Long.parseLong(id));
         }
         return null;
     }
-
 }

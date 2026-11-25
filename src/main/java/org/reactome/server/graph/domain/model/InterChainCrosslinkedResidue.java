@@ -1,10 +1,9 @@
 package org.reactome.server.graph.domain.model;
 
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
-
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.neo4j.core.schema.Node;
+import org.springframework.data.neo4j.core.schema.Relationship;
 
 @SuppressWarnings("unused")
 @Node
@@ -16,7 +15,7 @@ public class InterChainCrosslinkedResidue extends CrosslinkedResidue {
 
     @Relationship(type = "secondReferenceSequence")
     private Set<ReferenceSequence> secondReferenceSequence;
-    
+
     public InterChainCrosslinkedResidue() {}
 
     public List<InterChainCrosslinkedResidue> getEquivalentTo() {

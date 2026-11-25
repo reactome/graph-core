@@ -22,5 +22,4 @@ public class Figure extends DatabaseObject {
     public void setUrl(String url) {
         this.url = url;
     }
-
 }

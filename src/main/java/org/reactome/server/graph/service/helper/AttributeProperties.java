@@ -1,11 +1,10 @@
 package org.reactome.server.graph.service.helper;
 
-import org.reactome.server.graph.domain.model.DatabaseObject;
-import org.springframework.lang.NonNull;
-
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import org.reactome.server.graph.domain.model.DatabaseObject;
+import org.springframework.lang.NonNull;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -17,8 +16,7 @@ public class AttributeProperties implements Comparable<AttributeProperties> {
     private String cardinality;
     private final List<AttributeClass> attributeClasses = new LinkedList<>();
     private Class<? extends DatabaseObject> origin;
-    private static final Comparator<AttributeProperties> comparator = Comparator
-            .comparing(AttributeProperties::getName)
+    private static final Comparator<AttributeProperties> comparator = Comparator.comparing(AttributeProperties::getName)
             .thenComparing(attr -> attr.getOrigin().getName());
 
     public String getName() {

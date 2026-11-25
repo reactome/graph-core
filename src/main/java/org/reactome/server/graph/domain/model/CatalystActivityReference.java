@@ -10,8 +10,7 @@ public class CatalystActivityReference extends ControlReference {
     @Relationship(type = "catalystActivity")
     private CatalystActivity catalystActivity;
 
-    public CatalystActivityReference() {
-    }
+    public CatalystActivityReference() {}
 
     public CatalystActivity getCatalystActivity() {
         return catalystActivity;
@@ -20,5 +19,4 @@ public class CatalystActivityReference extends ControlReference {
     public void setCatalystActivity(CatalystActivity catalystActivity) {
         this.catalystActivity = catalystActivity;
     }
-
 }

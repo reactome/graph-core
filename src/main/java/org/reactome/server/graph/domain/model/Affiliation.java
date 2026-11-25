@@ -1,17 +1,17 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 
-import java.util.List;
-
 @SuppressWarnings("unused")
 @Node
-public class Affiliation extends  DatabaseObject{
+public class Affiliation extends DatabaseObject {
     private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String address;
+
     @ReactomeProperty
     private List<String> name;
 

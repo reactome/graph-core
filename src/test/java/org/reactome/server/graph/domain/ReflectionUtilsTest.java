@@ -1,15 +1,14 @@
 package org.reactome.server.graph.domain;
 
-import org.junit.jupiter.api.Test;
-import org.neo4j.driver.Values;
-import org.reactome.server.graph.domain.model.Person;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.neo4j.driver.Values;
+import org.reactome.server.graph.domain.model.Person;
 
 /**
  * ReflectionUtils fills an object's fields from a query's answer. A class's constants, such as
@@ -25,7 +24,8 @@ class ReflectionUtilsTest {
         System.setErr(new PrintStream(printed, true, StandardCharsets.UTF_8));
         Person person;
         try {
-            person = ReflectionUtils.build(new Person(), Values.value(Map.of("dbId", 1L, "surname", "Placeholder", "firstname", "A")));
+            person = ReflectionUtils.build(
+                    new Person(), Values.value(Map.of("dbId", 1L, "surname", "Placeholder", "firstname", "A")));
         } finally {
             System.setErr(err);
         }

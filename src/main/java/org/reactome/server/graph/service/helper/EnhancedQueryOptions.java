@@ -1,13 +1,11 @@
 package org.reactome.server.graph.service.helper;
 
-
 public class EnhancedQueryOptions {
     public boolean summariseReferenceEntity = false;
     public boolean includeDisease = false;
     public boolean outgoingOnly = false;
 
-    public EnhancedQueryOptions() {
-    }
+    public EnhancedQueryOptions() {}
 
     public EnhancedQueryOptions(boolean summariseReferenceEntity, boolean includeDisease, boolean outgoingOnly) {
         this.summariseReferenceEntity = summariseReferenceEntity;

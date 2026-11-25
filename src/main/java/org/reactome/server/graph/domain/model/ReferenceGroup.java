@@ -20,5 +20,4 @@ public class ReferenceGroup extends ReferenceEntity {
     public void setFormula(String formula) {
         this.formula = formula;
     }
-
 }

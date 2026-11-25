@@ -20,5 +20,4 @@ public class URL extends Publication {
     public void setUniformResourceLocator(String uniformResourceLocator) {
         this.uniformResourceLocator = uniformResourceLocator;
     }
-
 }

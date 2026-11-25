@@ -2,6 +2,8 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
@@ -12,9 +14,6 @@ import org.reactome.server.graph.domain.relationship.RepeatedUnit;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. The repeated unit(s) is(are) identified in the repeatedUnit slot.
@@ -29,6 +28,7 @@ public class Polymer extends PhysicalEntity implements CompositionAggregator {
 
     @ReactomeProperty
     private Integer maxUnitCount;
+
     @ReactomeProperty
     private Integer minUnitCount;
 
@@ -43,8 +43,7 @@ public class Polymer extends PhysicalEntity implements CompositionAggregator {
         return Stream.of(repeatedUnit);
     }
 
-    public Polymer() {
-    }
+    public Polymer() {}
 
     public Polymer(Long dbId) {
         super(dbId);
@@ -105,7 +104,7 @@ public class Polymer extends PhysicalEntity implements CompositionAggregator {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. " +
-                "The repeated unit(s) is(are) identified in the repeatedUnit slot";
+        return "Molecules that consist of an indeterminate number of repeated units. Includes complexes whose stoichiometry is variable or unknown. "
+                + "The repeated unit(s) is(are) identified in the repeatedUnit slot";
     }
 }

@@ -10,9 +10,10 @@ public abstract class FragmentModification extends GeneticallyModifiedResidue {
 
     @ReactomeProperty
     private Integer endPositionInReferenceSequence;
+
     @ReactomeProperty
     private Integer startPositionInReferenceSequence;
-    
+
     public FragmentModification() {}
 
     public Integer getEndPositionInReferenceSequence() {
@@ -30,7 +31,4 @@ public abstract class FragmentModification extends GeneticallyModifiedResidue {
     public void setStartPositionInReferenceSequence(Integer startPositionInReferenceSequence) {
         this.startPositionInReferenceSequence = startPositionInReferenceSequence;
     }
-    
-    
-    
 }

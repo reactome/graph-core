@@ -1,9 +1,8 @@
 package org.reactome.server.graph.domain.result;
 
+import java.util.Collection;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
-
-import java.util.Collection;
 
 /**
  * Object for retrieving Ewas and their ReferenceEntities for a given Pathway Id
@@ -16,8 +15,7 @@ public class Participant {
     private String schemaClass;
     private Collection<ParticipantRefEntities> refEntities;
 
-    public Participant() {
-    }
+    public Participant() {}
 
     public static Participant build(Record record) {
         Participant participant = new Participant();

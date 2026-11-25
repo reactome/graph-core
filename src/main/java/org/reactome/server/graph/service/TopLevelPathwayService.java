@@ -1,12 +1,11 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.model.TopLevelPathway;
 import org.reactome.server.graph.repository.TopLevelPathwayRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 /**
  * Created by:

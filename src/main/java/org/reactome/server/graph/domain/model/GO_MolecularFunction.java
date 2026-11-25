@@ -13,7 +13,6 @@ public class GO_MolecularFunction extends GO_Term {
 
     public GO_MolecularFunction() {}
 
-
     public String getEcNumber() {
         return ecNumber;
     }
@@ -21,5 +20,4 @@ public class GO_MolecularFunction extends GO_Term {
     public void setEcNumber(String ecNumber) {
         this.ecNumber = ecNumber;
     }
-
 }

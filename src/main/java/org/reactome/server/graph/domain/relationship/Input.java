@@ -23,5 +23,4 @@ public class Input extends Has<PhysicalEntity> {
     public void setPhysicalEntity(PhysicalEntity physicalEntity) {
         this.element = physicalEntity;
     }
-
 }

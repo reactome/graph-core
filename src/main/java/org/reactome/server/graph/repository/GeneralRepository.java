@@ -15,9 +15,14 @@ public class GeneralRepository {
     public GeneralRepository(Neo4jClient neo4jClient) {
         this.neo4jClient = neo4jClient;
     }
-    
+
     public Boolean fitForService() {
         String query = "MATCH (n) RETURN COUNT(n) > 0 AS fitForService";
-        return neo4jClient.query(query).in(databaseName).fetchAs(Boolean.class).first().orElse(false);
+        return neo4jClient
+                .query(query)
+                .in(databaseName)
+                .fetchAs(Boolean.class)
+                .first()
+                .orElse(false);
     }
 }

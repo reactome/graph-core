@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Compartment;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
@@ -8,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
-public class CompartmentTest extends BaseTest{
+public class CompartmentTest extends BaseTest {
 
     @Autowired
     private DatabaseObjectService databaseObjectService;
@@ -43,5 +43,4 @@ public class CompartmentTest extends BaseTest{
 
         logger.info("Finished");
     }
-
 }

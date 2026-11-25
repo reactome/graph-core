@@ -1,5 +1,9 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,11 +12,6 @@ import org.reactome.server.graph.domain.model.Trackable;
 import org.reactome.server.graph.domain.model.UpdateTracker;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UpdateTrackerServiceTest extends BaseTest {
 
@@ -24,7 +23,7 @@ public class UpdateTrackerServiceTest extends BaseTest {
             checkedOnce = true;
         }
 
-        //*******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
+        // *******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
         lazyFetchAspect.setEnableAOP(true);
 
         assertTrue(isFit);
@@ -47,7 +46,6 @@ public class UpdateTrackerServiceTest extends BaseTest {
         Assertions.assertTrue(!updatedInstances.isEmpty());
         Assertions.assertTrue(updatedInstances.stream().anyMatch(trackable -> trackable instanceof Pathway));
     }
-
 
     @Test
     void testFindByUpdatedInstanceDbId() {

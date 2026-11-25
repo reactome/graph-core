@@ -1,20 +1,19 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.*;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCompartment;
 import org.reactome.server.graph.domain.relationship.HasComponent;
-import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * An entity formed by the association of two or more component entities (these components can themselves be complexes). Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components. At least one component must be specified.
@@ -50,8 +49,7 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
         return Stream.of(hasComponent);
     }
 
-    public Complex() {
-    }
+    public Complex() {}
 
     public Complex(Long dbId) {
         super(dbId);
@@ -140,7 +138,7 @@ public class Complex extends PhysicalEntity implements CompositionAggregator {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "An entity formed by the association of two or more component entities (these components can themselves be complexes). " +
-                "At least one component must be specified. Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components";
+        return "An entity formed by the association of two or more component entities (these components can themselves be complexes). "
+                + "At least one component must be specified. Complexes represent all experimentally verified components and their stoichiometry where this is known but may not include as yet unidentified components";
     }
 }

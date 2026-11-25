@@ -1,14 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.result.TocPathwayDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class TocServiceTest extends BaseTest {
@@ -17,7 +16,7 @@ public class TocServiceTest extends BaseTest {
     public TocService tocService;
 
     @Test
-    public void testAllTocPathway(){
+    public void testAllTocPathway() {
         logger.info("Started testing TocServiceTest.testAllTocPathway");
         long start, time;
         start = System.currentTimeMillis();

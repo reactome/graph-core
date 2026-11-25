@@ -22,7 +22,7 @@ public class DirectedInteraction extends Interaction {
     @Relationship(type = "target")
     private ReferenceEntity target;
 
-    public DirectedInteraction() { }
+    public DirectedInteraction() {}
 
     public ReferenceEntity getSource() {
         return source;
