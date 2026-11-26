@@ -208,6 +208,22 @@
             <arg>-proc:none</arg>
           </compilerArgs>
         </configuration>
+        <!-- javac writes beside target/classes, and AspectJ weaves from there into it (below): a
+             build without clean then weaves javac's classes again, never classes already woven -->
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/unwoven-classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/unwoven-test-classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -231,7 +247,8 @@
       <!--
         javac compiles everything, with every lint on (the parent's compiler settings); AspectJ
         then weaves the compiled classes, main and test, rather than compiling the sources itself,
-        which would leave javac nothing to check.
+        which would leave javac nothing to check. It reads javac's output folders and writes
+        target/classes and target/test-classes, so it never weaves its own output a second time.
       -->
       <plugin>
         <groupId>dev.aspectj</groupId>
@@ -252,7 +269,7 @@
             <configuration>
               <sources />
               <weaveDirectories>
-                <weaveDirectory>${project.build.outputDirectory}</weaveDirectory>
+                <weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
               </weaveDirectories>
             </configuration>
           </execution>
@@ -265,7 +282,7 @@
             <configuration>
               <testSources />
               <weaveDirectories>
-                <weaveDirectory>${project.build.testOutputDirectory}</weaveDirectory>
+                <weaveDirectory>${project.build.directory}/unwoven-test-classes</weaveDirectory>
               </weaveDirectories>
             </configuration>
           </execution>
