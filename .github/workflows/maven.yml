@@ -34,6 +34,10 @@ jobs:
                   git clone -q --depth 1 --branch central/pilot https://github.com/reactome/reactome-parent.git "$RUNNER_TEMP/reactome-parent"
                   mvn -B -ntp -Dgpg.skip -f "$RUNNER_TEMP/reactome-parent/boms/pom.xml" install
                   mvn -B -ntp -Dgpg.skip -f "$RUNNER_TEMP/reactome-parent/parents/reactome-parent/pom.xml" install
+            # graph-core's POM on Central is there for good, and its repositories with it. EBI's
+            # Nexus is going away, so it names none: everything comes from Central.
+            - name: The POM names no repository of its own
+              run: "! grep -nE '<(repositories|pluginRepositories|distributionManagement)>|ebi\\.ac\\.uk/Tools/maven' pom.xml"
             - name: Built, tested where no graph is needed, packaged, licences checked
               # Every test is compiled, linted and woven; only those that need no Reactome graph run.
               run: mvn -B -ntp -Dgpg.skip -Dtest=ReflectionUtilsTest -Dsurefire.failIfNoSpecifiedTests=false verify
