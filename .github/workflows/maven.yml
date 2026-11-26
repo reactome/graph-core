@@ -38,15 +38,18 @@ jobs:
               # Every test is compiled, linted and woven; only those that need no Reactome graph run.
               run: mvn -B -ntp -Dgpg.skip -Dtest=ReflectionUtilsTest -Dsurefire.failIfNoSpecifiedTests=false verify
             - name: A build without clean weaves nothing twice
-              # AspectJ once wove target/classes in place, so a second build wove its own output:
-              # every advised method gained a second closure and its advice ran twice.
+              # AspectJ once wove target/classes and target/test-classes in place, so a second
+              # build wove its own output: advised methods gained a second closure, and their
+              # advice ran twice.
               run: |
-                  before=$(find target/classes -name '*AjcClosure*.class' | wc -l)
+                  main() { find target/classes -name '*AjcClosure*.class' | wc -l; }
+                  tests() { find target/test-classes -name '*AjcClosure*.class' | wc -l; }
+                  before="$(main) $(tests)"
                   mvn -B -ntp -o -Dgpg.skip -DskipTests package
-                  after=$(find target/classes -name '*AjcClosure*.class' | wc -l)
-                  echo "AjcClosure classes: $before after the first build, $after after the second"
-                  test "$before" -gt 0
-                  test "$before" -eq "$after"
+                  after="$(main) $(tests)"
+                  echo "AjcClosure classes (main, test): $before after the first build, $after after the second"
+                  test "$(main)" -gt 0
+                  test "$before" = "$after"
 
     publish:
         if: startsWith(github.ref, 'refs/tags/v')

@@ -239,6 +239,8 @@
               <excludes>
                 <exclude>org/reactome/server/graph/Main.class</exclude>
                 <exclude>**/logback.xml</exclude>
+                <!-- the weaver's arguments, with the build machine's paths -->
+                <exclude>builddef.lst</exclude>
               </excludes>
             </configuration>
           </execution>
