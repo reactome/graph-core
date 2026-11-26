@@ -48,8 +48,8 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/reactome/graph-core.git</connection>
-    <developerConnection>scm:git:ssh://github.com:reactome/graph-core.git</developerConnection>
+    <connection>scm:git:https://github.com/reactome/graph-core.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/reactome/graph-core.git</developerConnection>
     <url>https://github.com/reactome/graph-core</url>
   </scm>
 
