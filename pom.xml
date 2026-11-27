@@ -45,6 +45,24 @@
       <organization>Ontario Institute for Cancer Research</organization>
       <organizationUrl>https://oicr.on.ca/</organizationUrl>
     </developer>
+    <developer>
+      <id>gviteri</id>
+      <name>Guilherme Viteri</name>
+      <organization>The European Bioinformatics Institute</organization>
+      <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+      <roles>
+        <role>alumni</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>fkorn</id>
+      <name>Florian Korninger</name>
+      <organization>The European Bioinformatics Institute</organization>
+      <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+      <roles>
+        <role>alumni</role>
+      </roles>
+    </developer>
   </developers>
 
   <scm>
