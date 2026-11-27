@@ -27,13 +27,10 @@ jobs:
                   distribution: temurin
                   java-version: '17'
                   cache: maven
-            # Temporary, while reactome-parent 1.0.7 (its licence check) is reviewed and not yet
-            # on Maven Central: built from its pull request's branch first. Remove once published.
-            - name: reactome-parent 1.0.7, from its pilot branch
-              run: |
-                  git clone -q --depth 1 --branch central/pilot https://github.com/reactome/reactome-parent.git "$RUNNER_TEMP/reactome-parent"
-                  mvn -B -ntp -Dgpg.skip -f "$RUNNER_TEMP/reactome-parent/boms/pom.xml" install
-                  mvn -B -ntp -Dgpg.skip -f "$RUNNER_TEMP/reactome-parent/parents/reactome-parent/pom.xml" install
+            # Reactome's own POMs come from Maven Central, never from the cache: an earlier run
+            # built reactome-parent from its branch into ~/.m2, and the cache would keep serving it.
+            - name: Reactome's POMs fetched from Central, not the cache
+              run: rm -rf ~/.m2/repository/org/reactome/maven
             # graph-core's POM on Central is there for good, and its repositories with it. EBI's
             # Nexus is going away, so it names none: everything comes from Central.
             - name: The POM names no repository of its own
