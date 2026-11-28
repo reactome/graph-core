@@ -85,7 +85,7 @@ jobs:
                   server-password-env-var: MAVEN_CENTRAL_PASSWORD
                   gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
                   gpg-passphrase-env-var: MAVEN_GPG_PASSPHRASE
-            - name: Signed, and uploaded to the Central Portal
+            - name: Signed, uploaded to the Central Portal, and published once validated
               env:
                   MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
                   MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
