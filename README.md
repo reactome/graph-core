@@ -24,44 +24,24 @@ The project can be used as a "Core" library providing a data access layer on top
 
 * [Create new Java Standalone Project using Maven Archetype](https://github.com/reactome/graph-core#create-new-java-standalone-project-using-maven-archetype)
 * [Add in an existing Java Standalone Project](https://github.com/reactome/graph-core#adding-the-graph-core-in-an-existing-project)
-* [Add in a Spring based project](https://github.com/reactome/reactome/graph-core#add-in-a-spring-based-project)
+* [Add in a Spring based project](https://github.com/reactome/graph-core#add-in-a-spring-based-project)
 
 ### Create new Java Standalone Project using Maven Archetype 
 
-We provide a Maven archetype as an easy handy way to create and set up a project that access the Reactome Graph Database using the graph-core. Please, go to [Graph Archetype](https://github.com/reactome/graph-archetype) page.
-
-```console
-mvn archetype:generate \ 
-       -DarchetypeGroupId=org.reactome.maven.archetypes \ 
-       -DarchetypeArtifactId=graph-archetype \
-       -DarchetypeVersion=1.0.0 \
-       -DgroupId=<your_group_id> \ 
-       -DartifactId=<your \
-       -Dversion=1.0.0-SNAPSHOT
-       -DarchetypeRepository=http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/
-```
+We provide a Maven archetype as an easy handy way to create and set up a project that access the Reactome Graph Database using the graph-core. Please, go to [Graph Archetype](https://github.com/reactome/graph-archetype) page. The archetype is not published to Maven Central, so build and install it from its repository first.
 
 ### Adding the graph-core in an existing project
 
 **Dependency** 
 
-```html
-<!-- http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release/org/reactome/server/graph/graph-core/ for updates -->
+graph-core is published to [Maven Central](https://central.sonatype.com/artifact/org.reactome.server.graph/graph-core) from version 3.0.0, so no repository entry is needed.
+
+```xml
 <dependency>
     <groupId>org.reactome.server.graph</groupId>
     <artifactId>graph-core</artifactId>
-    <version>1.1.18</dependency>
-```
-
-**Repository**
-
-```html
-<!-- EBI repo -->
-<repository>
-    <id>pst-release</id>
-    <name>EBI Nexus Repository</name>
-    <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-</repository>
+    <version>3.0.0</version>
+</dependency>
 ```
 
 **Properties**
@@ -131,10 +111,6 @@ Afterwards initialise the Reactome Graph Connection and get access the API
 ## Add in a Spring based project
 
 **Dependency** 
-
-See above
-
-**Repository**
 
 See above
 
