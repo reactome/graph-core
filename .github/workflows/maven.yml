@@ -3,10 +3,10 @@ name: graph-core
 # Built, packaged and its shipped dependencies' licences checked (the parent's allowlist) on each
 # pull request and push. Its tests need a Neo4j graph of Reactome's data and are not run here
 # yet: that is the next step, against a fixture graph. On a version tag (v*), signed and
-# uploaded to Maven Central through Sonatype's Central Portal, where the upload waits until a
-# person publishes it (autoPublish off); the publish job runs in the `maven-central`
-# environment, so GitHub asks a person to approve it, and the Sonatype token and the signing
-# key are that environment's secrets.
+# uploaded to Maven Central through Sonatype's Central Portal, and published as soon as Central
+# validates it (autoPublish, from reactome-parent); the publish job runs in the `maven-central`
+# environment, so GitHub asks a person to approve it before anything is uploaded, and the
+# Sonatype token and the signing key are that environment's secrets.
 
 on:
     pull_request:
@@ -35,6 +35,13 @@ jobs:
             # Nexus is going away, so it names none: everything comes from Central.
             - name: The POM names no repository of its own
               run: "! grep -nE '<(repositories|pluginRepositories|distributionManagement)>|ebi\\.ac\\.uk/Tools/maven' pom.xml"
+            # A release publishes itself once Central validates it, and the deploy waits until it is
+            # live, so one that fails to publish fails (reactome-parent 1.0.8 and later).
+            - name: A release publishes itself, and waits until it is live
+              run: |
+                  mvn -B -ntp -q -Dsonatype-deploy=true help:effective-pom -Doutput="$RUNNER_TEMP/deploy.xml"
+                  grep -q '<autoPublish>true</autoPublish>' "$RUNNER_TEMP/deploy.xml"
+                  grep -q '<waitUntil>published</waitUntil>' "$RUNNER_TEMP/deploy.xml"
             - name: Built, tested where no graph is needed, packaged, licences checked
               # Every test is compiled, linted and woven; only those that need no Reactome graph run.
               run: mvn -B -ntp -Dgpg.skip -Dtest=ReflectionUtilsTest -Dsurefire.failIfNoSpecifiedTests=false verify
