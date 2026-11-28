@@ -2,6 +2,9 @@ package org.reactome.server.graph.domain.relationship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.service.helper.StoichiometryObject;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
@@ -9,15 +12,12 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 import org.springframework.lang.NonNull;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>> {
     /*-------- Essential fields ---------*/
     @Id
     @GeneratedValue
     protected Long id;
+
     protected int stoichiometry = 1;
     protected int order = 0;
 
@@ -52,12 +52,11 @@ public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>
 
     @Override
     public String toString() {
-        return "Has{" +
-                "type=" + getType() +
-                ", stoichiometry=" + stoichiometry +
-                ", order=" + order +
-                ", element=" + element +
-                '}';
+        return "Has{" + "type="
+                + getType() + ", stoichiometry="
+                + stoichiometry + ", order="
+                + order + ", element="
+                + element + '}';
     }
 
     public static class Util {
@@ -71,7 +70,8 @@ public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>
          * @return A sorted list of simple StoichiometryObject, ordered by name instead of curator defined order. Never null
          */
         @NonNull
-        public static <T extends DatabaseObject, H extends Has<T>> List<StoichiometryObject> simplifiedSort(Collection<H> collection) {
+        public static <T extends DatabaseObject, H extends Has<T>> List<StoichiometryObject> simplifiedSort(
+                Collection<H> collection) {
             if (collection == null) return new ArrayList<>();
             return collection.stream().map(Has::toStoichiometryObject).sorted().collect(Collectors.toList());
         }
@@ -85,7 +85,8 @@ public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>
          * @param <H>                  The relationship type (extends Has)
          * @return An ordered set of relationships aggregated by their target node, with stoichiometry
          */
-        public static <T extends DatabaseObject, H extends Has<T>> SortedSet<H> aggregateStoichiometry(List<T> itemsWithDuplication, Supplier<H> noArgsConstructor) {
+        public static <T extends DatabaseObject, H extends Has<T>> SortedSet<H> aggregateStoichiometry(
+                List<T> itemsWithDuplication, Supplier<H> noArgsConstructor) {
             if (itemsWithDuplication == null) return new TreeSet<>();
             // Using LinkedHashMap in order to keep the Collection Sorted previously by AOP
             Map<Long, H> map = new LinkedHashMap<>();
@@ -112,7 +113,8 @@ public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>
          * @param <H>             The relationship type (extends Has)
          * @return A list of target node types in a correct order, with elements duplicated according to the relationship stoichiometry
          */
-        public static <T extends DatabaseObject, H extends Has<T>> List<T> expandStoichiometry(Collection<H> aggregatedItems) {
+        public static <T extends DatabaseObject, H extends Has<T>> List<T> expandStoichiometry(
+                Collection<H> aggregatedItems) {
             if (aggregatedItems == null) return null;
             List<T> items = new ArrayList<>();
             for (H h : aggregatedItems) {
@@ -130,9 +132,12 @@ public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>
          * @return A list of wrapped relationships supporting {@link CompositionAggregator}
          */
         @NonNull
-        public static List<Has<DatabaseObject>> wrapUniqueElements(Collection<? extends DatabaseObject> collection, String type) {
+        public static List<Has<DatabaseObject>> wrapUniqueElements(
+                Collection<? extends DatabaseObject> collection, String type) {
             if (collection == null) return new ArrayList<>();
-            return collection.stream().map(element -> new Has.Default(type, element)).collect(Collectors.toList());
+            return collection.stream()
+                    .map(element -> new Has.Default(type, element))
+                    .collect(Collectors.toList());
         }
     }
 
@@ -185,4 +190,3 @@ public abstract class Has<E extends DatabaseObject> implements Comparable<Has<E>
         this.element = element;
     }
 }
-

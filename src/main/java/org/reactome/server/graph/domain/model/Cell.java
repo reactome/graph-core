@@ -1,18 +1,19 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
 @Node
 public class Cell extends PhysicalEntity implements CompositionAggregator {
+
+    private static final long serialVersionUID = 1L;
+
     @Relationship(type = "RNAMarker")
     private List<EntityWithAccessionedSequence> RNAMarker;
 
@@ -38,13 +39,10 @@ public class Cell extends PhysicalEntity implements CompositionAggregator {
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
         return Stream.of(
                 Has.Util.wrapUniqueElements(RNAMarker, "rnaMarker"),
-                Has.Util.wrapUniqueElements(proteinMarker, "proteinMarker")
-        );
+                Has.Util.wrapUniqueElements(proteinMarker, "proteinMarker"));
     }
 
-    public Cell() {
-
-    }
+    public Cell() {}
 
     @JsonGetter("rnaMarker")
     public List<EntityWithAccessionedSequence> getRNAMarker() {

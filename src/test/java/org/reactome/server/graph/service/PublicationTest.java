@@ -1,16 +1,15 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Person;
 import org.reactome.server.graph.domain.model.Publication;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 public class PublicationTest extends BaseTest {
 
@@ -31,7 +30,11 @@ public class PublicationTest extends BaseTest {
         Publication publicationGDB = databaseObjectService.findById("6799811");
         Publication publicationRDB = DatabaseObjectFactory.createObject("6799811");
 
-        assertTrue("Different sizes", Objects.equals(publicationGDB.getAuthor().size(), publicationRDB.getAuthor().size()));
+        assertTrue(
+                "Different sizes",
+                Objects.equals(
+                        publicationGDB.getAuthor().size(),
+                        publicationRDB.getAuthor().size()));
 
         for (int i = 0; i < publicationRDB.getAuthor().size(); i++) {
             Person pRDB = publicationRDB.getAuthor().get(i);

@@ -8,6 +8,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public abstract class CrosslinkedResidue extends TranslationalModification {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer secondCoordinate;
@@ -32,10 +33,11 @@ public abstract class CrosslinkedResidue extends TranslationalModification {
     }
 
     public void setModification(DatabaseObject modification) {
-        if(modification == null) return;
+        if (modification == null) return;
 
-
-        if (modification instanceof Polymer || modification instanceof ReferenceGroup || modification instanceof EntitySet) {
+        if (modification instanceof Polymer
+                || modification instanceof ReferenceGroup
+                || modification instanceof EntitySet) {
             this.modification = modification;
         } else {
             throw new RuntimeException(modification + " is not a Polymer, ReferenceGroup or EntitySet");

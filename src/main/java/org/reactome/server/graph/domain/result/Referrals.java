@@ -1,8 +1,7 @@
 package org.reactome.server.graph.domain.result;
 
-import org.neo4j.driver.Record;
-
 import java.util.List;
+import org.neo4j.driver.Record;
 
 @SuppressWarnings("unused")
 public class Referrals {
@@ -10,8 +9,7 @@ public class Referrals {
     private String referral;
     private List<SimpleDatabaseObject> objects;
 
-    public Referrals() {
-    }
+    public Referrals() {}
 
     public Referrals(String referral, List<SimpleDatabaseObject> objects) {
         this.referral = referral;
@@ -19,7 +17,8 @@ public class Referrals {
     }
 
     public static Referrals build(Record record) {
-        return new Referrals(record.get("referral").asString(), record.get("objects").asList(SimpleDatabaseObject::build));
+        return new Referrals(
+                record.get("referral").asString(), record.get("objects").asList(SimpleDatabaseObject::build));
     }
 
     public String getReferral() {

@@ -27,7 +27,7 @@ public class SchemaDataDownload {
     }
 
     @JsonGetter(value = "@type")
-    public String getType(){
+    public String getType() {
         return "DataDownload";
     }
 }

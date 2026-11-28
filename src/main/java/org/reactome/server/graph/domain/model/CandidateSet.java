@@ -2,17 +2,16 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasCandidate;
-import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. At least one hasCandidate value is required; hasMember values are optional.
@@ -20,6 +19,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public class CandidateSet extends EntitySet implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "hasCandidate")
     private SortedSet<HasCandidate> hasCandidate;
@@ -29,8 +29,7 @@ public class CandidateSet extends EntitySet implements CompositionAggregator {
         return Stream.concat(super.defineCompositionRelations(), Stream.of(hasCandidate));
     }
 
-    public CandidateSet() {
-    }
+    public CandidateSet() {}
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
@@ -58,9 +57,8 @@ public class CandidateSet extends EntitySet implements CompositionAggregator {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. " +
-                "Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. " +
-                "At least one hasCandidate value is required; hasMember values are optional";
-
+        return "A set of entities that are interchangeable in function, with two subclasses, members that are hypothetical and members that have been demonstrated. "
+                + "Hypothetical members are identified as values of the hasCandidate slot. Members that have been demonstrated are identified in the hasMember slot. "
+                + "At least one hasCandidate value is required; hasMember values are optional";
     }
 }

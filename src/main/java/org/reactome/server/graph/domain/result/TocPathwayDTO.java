@@ -1,16 +1,17 @@
 package org.reactome.server.graph.domain.result;
 
+import java.util.Collection;
+import java.util.Collections;
 import org.neo4j.driver.Record;
 import org.reactome.server.graph.domain.ReflectionUtils;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.Person;
 import org.springframework.data.neo4j.core.schema.Id;
 
-import java.util.Collection;
-import java.util.Collections;
-
 public class TocPathwayDTO {
-    @Id private String stId;
+    @Id
+    private String stId;
+
     private String displayName;
     private String doi;
     private String species;
@@ -30,10 +31,18 @@ public class TocPathwayDTO {
         reviseDate = record.get("reviseDate").asString(null);
         releaseStatus = record.get("releaseStatus").asString(null);
         releaseDate = record.get("releaseDate").asString(null);
-        authors = !record.get("authors").isNull() ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p)) : Collections.emptyList();
-        reviewers = !record.get("reviewers").isNull() ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
-        editors = !record.get("editors").isNull() ? record.get("editors").asList(p -> ReflectionUtils.build(new Person(), p)) :  Collections.emptyList();
-        subpathways  = !record.get("subPathways").isNull() ? record.get("subPathways").asList(p -> ReflectionUtils.build(new Pathway(), p)) :  Collections.emptyList();
+        authors = !record.get("authors").isNull()
+                ? record.get("authors").asList(p -> ReflectionUtils.build(new Person(), p))
+                : Collections.emptyList();
+        reviewers = !record.get("reviewers").isNull()
+                ? record.get("reviewers").asList(p -> ReflectionUtils.build(new Person(), p))
+                : Collections.emptyList();
+        editors = !record.get("editors").isNull()
+                ? record.get("editors").asList(p -> ReflectionUtils.build(new Person(), p))
+                : Collections.emptyList();
+        subpathways = !record.get("subPathways").isNull()
+                ? record.get("subPathways").asList(p -> ReflectionUtils.build(new Pathway(), p))
+                : Collections.emptyList();
     }
 
     public String getDisplayName() {
@@ -124,4 +133,3 @@ public class TocPathwayDTO {
         this.subpathways = subpathways;
     }
 }
-

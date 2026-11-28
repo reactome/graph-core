@@ -1,5 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Interaction;
 import org.reactome.server.graph.domain.model.Pathway;
@@ -9,15 +17,6 @@ import org.reactome.server.graph.domain.result.CustomInteraction;
 import org.reactome.server.graph.domain.result.DiagramOccurrences;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InteractionTest extends BaseTest {
 
@@ -67,7 +66,8 @@ public class InteractionTest extends BaseTest {
     public void getInteractionsForTP53PhysicalEntities() {
         logger.info("Started testing interactionsService.getInteractions");
         long start = System.currentTimeMillis();
-        UndirectedInteraction interaction  = (UndirectedInteraction) interactionsService.getSingleInteractionDetails("P04637", "P04637");
+        UndirectedInteraction interaction =
+                (UndirectedInteraction) interactionsService.getSingleInteractionDetails("P04637", "P04637");
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -97,7 +97,7 @@ public class InteractionTest extends BaseTest {
     }
 
     @Test
-    public void getLowerLevelPathwaysTest(){
+    public void getLowerLevelPathwaysTest() {
         logger.info("Started testing interactionsService.getLowerLevelPathways");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = interactionsService.getLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
@@ -107,7 +107,7 @@ public class InteractionTest extends BaseTest {
     }
 
     @Test
-    public void getDiagrammedLowerLevelPathwaysTest(){
+    public void getDiagrammedLowerLevelPathwaysTest() {
         logger.info("Started testing interactionsService.getDiagrammedLowerLevelPathways");
         long start = System.currentTimeMillis();
         Collection<Pathway> pathways = interactionsService.getDiagrammedLowerLevelPathways("Q9BXM7-1", "Homo sapiens");
@@ -117,8 +117,8 @@ public class InteractionTest extends BaseTest {
     }
 
     @Test
-    public void getDiagramOccurrencesTest(){
-        //TODO
+    public void getDiagramOccurrencesTest() {
+        // TODO
         logger.info("Started testing interactionsService.getDiagramOccurrences");
         long start = System.currentTimeMillis();
         Collection<DiagramOccurrences> occurrences = interactionsService.getDiagramOccurrences("Q9BXM7-1");
@@ -127,16 +127,18 @@ public class InteractionTest extends BaseTest {
         assertTrue(occurrences.size() > 3, "There should more than 3 diagram occurrences for Q9BXM7-1");
         boolean found = false;
         for (DiagramOccurrences item : occurrences) {
-            if(item.getDiagramStId().equals("R-HSA-1428517")){
+            if (item.getDiagramStId().equals("R-HSA-1428517")) {
                 found = true;
-                assertFalse(item.getOccurrences().isEmpty(), "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
+                assertFalse(
+                        item.getOccurrences().isEmpty(),
+                        "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
             }
         }
         assertTrue(found, "There is at least one occurrence of 'Q9BXM7-1' for 'R-HSA-1428517'");
     }
 
     @Test
-    public void testCountInteractionsByAccession(){
+    public void testCountInteractionsByAccession() {
         logger.info("Started testing interactionsService.testCountInteractionsByAccession");
         long start = System.currentTimeMillis();
         Integer count = interactionsService.countInteractionsByAccession("Q9BXM7-1");
@@ -146,10 +148,11 @@ public class InteractionTest extends BaseTest {
     }
 
     @Test
-    public void testCountInteractionsByAccessions(){
+    public void testCountInteractionsByAccessions() {
         logger.info("Started testing interactionsService.testCountInteractionsByAccessions");
         long start = System.currentTimeMillis();
-        Map<String, Integer> map = interactionsService.countInteractionsByAccessions(Arrays.asList("Q9BXM7-1", "P60484", "Q9BXM7"));
+        Map<String, Integer> map =
+                interactionsService.countInteractionsByAccessions(Arrays.asList("Q9BXM7-1", "P60484", "Q9BXM7"));
         long time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
         assertThat(map).containsKeys("Q9BXM7", "P60484");
@@ -157,7 +160,7 @@ public class InteractionTest extends BaseTest {
     }
 
     @Test
-    public void testCustomInteractions(){
+    public void testCustomInteractions() {
         logger.info("Started testing interactionsService.testCustomInteractions");
         long start = System.currentTimeMillis();
         Collection<CustomInteraction> interactions = interactionsService.getCustomInteractions("P11142");

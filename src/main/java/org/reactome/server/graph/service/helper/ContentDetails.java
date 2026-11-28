@@ -1,11 +1,10 @@
 package org.reactome.server.graph.service.helper;
 
+import java.util.Collection;
+import java.util.Set;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.domain.result.ComponentOf;
-
-import java.util.Collection;
-import java.util.Set;
 
 /**
  * Created by:
@@ -28,7 +27,7 @@ public class ContentDetails {
 
     public void setComponentOf(Collection<ComponentOf> componentOfs) {
         // TODO sorting is not working as the list is unmodifiable
-//        componentOfs.forEach(ComponentOf::sortByName);
+        //        componentOfs.forEach(ComponentOf::sortByName);
         this.componentOf = componentOfs;
     }
 

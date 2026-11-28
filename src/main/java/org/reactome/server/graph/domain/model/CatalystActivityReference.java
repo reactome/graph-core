@@ -5,12 +5,12 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Node
 public class CatalystActivityReference extends ControlReference {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "catalystActivity")
     private CatalystActivity catalystActivity;
 
-    public CatalystActivityReference() {
-    }
+    public CatalystActivityReference() {}
 
     public CatalystActivity getCatalystActivity() {
         return catalystActivity;
@@ -19,5 +19,4 @@ public class CatalystActivityReference extends ControlReference {
     public void setCatalystActivity(CatalystActivity catalystActivity) {
         this.catalystActivity = catalystActivity;
     }
-
 }

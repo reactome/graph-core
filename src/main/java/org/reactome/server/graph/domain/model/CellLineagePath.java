@@ -7,12 +7,12 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Node
 public class CellLineagePath extends Pathway {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "tissue")
     private Anatomy tissue;
 
-    public CellLineagePath() {
-    }
+    public CellLineagePath() {}
 
     public Anatomy getTissue() {
         return tissue;

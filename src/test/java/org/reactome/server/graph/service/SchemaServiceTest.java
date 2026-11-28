@@ -1,5 +1,12 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Disease;
 import org.reactome.server.graph.domain.model.Pathway;
@@ -10,14 +17,6 @@ import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class SchemaServiceTest extends BaseTest {
@@ -39,7 +38,7 @@ public class SchemaServiceTest extends BaseTest {
         long start, time;
         start = System.currentTimeMillis();
         Collection<Species> species = schemaService.getByClass(Species.class);
-        Set observedSpecies = new TreeSet<>(species);
+        Set<Species> observedSpecies = new TreeSet<>(species);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -48,7 +47,8 @@ public class SchemaServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GkInstance execution time: " + time + "ms");
 
-        //Note: Meriones unguiculatus is in the relational-database but no instance uses it and it doesn't create an entry in the graph
+        // Note: Meriones unguiculatus is in the relational-database but no instance uses it and it doesn't create an
+        // entry in the graph
         assertTrue((expectedSpecies.size() - observedSpecies.size()) <= 1);
         logger.info("Finished");
     }
@@ -153,7 +153,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    // ---------------------------------------- Query by Class for SimpleObject ------------------------------------------------
+    // ---------------------------------------- Query by Class for SimpleObject
+    // ------------------------------------------------
 
     @Test
     public void getSimpleDatabaseObjectByClassTest() {
@@ -203,7 +204,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClassNameAndSpeciesTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClassName("Pathway", "Homo sapiens");
+        Collection<SimpleDatabaseObject> pathways =
+                schemaService.getSimpleDatabaseObjectByClassName("Pathway", "Homo sapiens");
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -211,7 +213,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    // ---------------------------------------- Query by Class for SimpleObject (paging) ------------------------------------------------
+    // ---------------------------------------- Query by Class for SimpleObject (paging)
+    // ------------------------------------------------
 
     @Test
     public void getSimpleDatabaseObjectByClassWithPagingTest() {
@@ -219,7 +222,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClassWithPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClass(Pathway.class, 1, 20000);
+        Collection<SimpleDatabaseObject> pathways =
+                schemaService.getSimpleDatabaseObjectByClass(Pathway.class, 1, 20000);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -233,7 +237,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClassAndSpeciesWithPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClass(Pathway.class, 9606, 1, 2000);
+        Collection<SimpleDatabaseObject> pathways =
+                schemaService.getSimpleDatabaseObjectByClass(Pathway.class, 9606, 1, 2000);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -247,7 +252,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClassNameWithPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClassName("Pathway", 1, 20000);
+        Collection<SimpleDatabaseObject> pathways =
+                schemaService.getSimpleDatabaseObjectByClassName("Pathway", 1, 20000);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -261,7 +267,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleDatabaseObjectByClassNameAndSpeciesWithPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleDatabaseObject> pathways = schemaService.getSimpleDatabaseObjectByClassName("Pathway", "Homo sapiens", 1, 20000);
+        Collection<SimpleDatabaseObject> pathways =
+                schemaService.getSimpleDatabaseObjectByClassName("Pathway", "Homo sapiens", 1, 20000);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -269,7 +276,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    // ---------------------------------------- Query by Class for SimpleReferenceObject ------------------------------------------------
+    // ---------------------------------------- Query by Class for SimpleReferenceObject
+    // ------------------------------------------------
 
     @Test
     public void getSimpleReferencesObjectsByClassTest() {
@@ -291,7 +299,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassPagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClass(Disease.class, 1, 200);
+        Collection<SimpleReferenceObject> diseases =
+                schemaService.getSimpleReferencesObjectsByClass(Disease.class, 1, 200);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -319,7 +328,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Started testing schemaService.getSimpleReferencesObjectsByClassNamePagingTest");
         long start, time;
         start = System.currentTimeMillis();
-        Collection<SimpleReferenceObject> diseases = schemaService.getSimpleReferencesObjectsByClassName("Disease", 1, 200);
+        Collection<SimpleReferenceObject> diseases =
+                schemaService.getSimpleReferencesObjectsByClassName("Disease", 1, 200);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -327,7 +337,8 @@ public class SchemaServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-    // ---------------------------------------- Query by Class for single value ------------------------------------------------
+    // ---------------------------------------- Query by Class for single value
+    // ------------------------------------------------
 
     @Test
     public void getStIdsByClassTest() {
@@ -438,5 +449,4 @@ public class SchemaServiceTest extends BaseTest {
         assertTrue(count >= 1700L);
         logger.info("Finished");
     }
-
 }

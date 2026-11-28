@@ -1,17 +1,17 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.ReferenceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class ReferenceEntityServiceTest extends BaseTest {
 
-    @Autowired ReferenceEntityService referenceEntityService;
+    @Autowired
+    ReferenceEntityService referenceEntityService;
 
     @BeforeTestClass
     public void setUpClass() {
@@ -32,5 +32,3 @@ public class ReferenceEntityServiceTest extends BaseTest {
         logger.info("Finished");
     }
 }
-
-

@@ -1,11 +1,10 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 /**
  * A regulator that is required for an Event/CatalystActivity to happen.
@@ -13,6 +12,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public abstract class Regulation extends DatabaseObject implements Deletable {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String releaseDate;

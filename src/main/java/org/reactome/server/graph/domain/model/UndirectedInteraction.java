@@ -1,9 +1,8 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
 
 /**
  * The name of the has been taken from Cytoscape.
@@ -14,11 +13,12 @@ import java.util.List;
 @SuppressWarnings("unused")
 @Node
 public class UndirectedInteraction extends Interaction {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "interactor")
     private List<ReferenceEntity> interactor;
 
-    public UndirectedInteraction() { }
+    public UndirectedInteraction() {}
 
     public List<ReferenceEntity> getInteractor() {
         return interactor;

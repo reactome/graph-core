@@ -1,6 +1,6 @@
 package org.reactome.server.graph.utils;
 
-//import org.reactome.server.graph.Main;
+// import org.reactome.server.graph.Main;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.config.GraphCoreNeo4jConfig;
 import org.springframework.context.ApplicationContext;
@@ -24,13 +24,14 @@ import org.springframework.stereotype.Service;
 public class ReactomeGraphCore {
 
     private static ApplicationContext context;
-    private final static String DEFAULT_NEO4J_DB = "graph.db";
+    private static final String DEFAULT_NEO4J_DB = "graph.db";
 
     public static void initialise(String uri, String user, String password) {
         initialise(uri, user, password, DEFAULT_NEO4J_DB, GraphCoreNeo4jConfig.class);
     }
 
-    public static void initialise(String uri, String user, String password, Class<? extends GraphCoreNeo4jConfig> _configClazz) {
+    public static void initialise(
+            String uri, String user, String password, Class<? extends GraphCoreNeo4jConfig> _configClazz) {
         initialise(uri, user, password, DEFAULT_NEO4J_DB, _configClazz);
     }
 
@@ -38,7 +39,12 @@ public class ReactomeGraphCore {
         initialise(uri, user, password, databaseName, GraphCoreNeo4jConfig.class);
     }
 
-    public static void initialise(String uri, String user, String password, String databaseName, Class<? extends GraphCoreNeo4jConfig> _configClazz) {
+    public static void initialise(
+            String uri,
+            String user,
+            String password,
+            String databaseName,
+            Class<? extends GraphCoreNeo4jConfig> _configClazz) {
         System.setProperty("spring.neo4j.uri", uri);
         System.setProperty("spring.neo4j.authentication.username", user);
         System.setProperty("spring.neo4j.authentication.password", password);
@@ -48,11 +54,11 @@ public class ReactomeGraphCore {
 
     public static <T> T getService(Class<T> clazz) {
         if (context == null) throw new RuntimeException("ReactomeGraphCore has to be initialised!");
-        if(clazz.getAnnotation(Service.class) != null) return context.getBean(clazz);
+        if (clazz.getAnnotation(Service.class) != null) return context.getBean(clazz);
         throw new RuntimeException(clazz.getSimpleName() + " is not a Service");
     }
 
-    public static void setLazyLoading(Boolean enabled){
+    public static void setLazyLoading(Boolean enabled) {
         if (context == null) throw new RuntimeException("ReactomeGraphCore has to be initialised!");
         context.getBean(LazyFetchAspect.class).setEnableAOP(enabled);
     }

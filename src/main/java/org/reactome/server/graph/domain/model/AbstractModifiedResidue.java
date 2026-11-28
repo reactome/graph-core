@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public abstract class AbstractModifiedResidue extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "referenceSequence")
     private ReferenceSequence referenceSequence;
@@ -23,5 +24,4 @@ public abstract class AbstractModifiedResidue extends DatabaseObject {
     public void setReferenceSequence(ReferenceSequence referenceSequence) {
         this.referenceSequence = referenceSequence;
     }
-
 }

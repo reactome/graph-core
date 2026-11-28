@@ -1,12 +1,11 @@
 package org.reactome.server.graph.service;
 
+import java.util.List;
+import java.util.Optional;
 import org.reactome.server.graph.domain.model.UpdateTracker;
 import org.reactome.server.graph.repository.UpdateTrackerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UpdateTrackerService {
@@ -17,7 +16,6 @@ public class UpdateTrackerService {
     public UpdateTrackerService(UpdateTrackerRepository repository) {
         this.repository = repository;
     }
-
 
     public Optional<UpdateTracker> findUpdateTrackerByDbId(Long dbId) {
         return this.repository.findUpdateTrackerByDbId(dbId);
@@ -30,5 +28,4 @@ public class UpdateTrackerService {
     public List<UpdateTracker> findByUpdatedInstanceStId(String stId) {
         return this.repository.findByUpdatedInstanceStId(stId);
     }
-
 }

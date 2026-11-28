@@ -1,25 +1,30 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-
 @SuppressWarnings("unused")
 @Node
 public abstract class ExternalOntology extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     // will be filled together with url
     private String databaseName;
+
     @ReactomeProperty
     private String definition;
+
     @ReactomeProperty
     private String identifier;
+
     @ReactomeProperty
     private List<String> name;
+
     @ReactomeProperty
     private List<String> synonym;
+
     @ReactomeProperty(addedField = true)
     private String url;
 

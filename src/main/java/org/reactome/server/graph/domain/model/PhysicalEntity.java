@@ -1,20 +1,19 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.*;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-
 @SuppressWarnings("unused")
 @Node
-
 public abstract class PhysicalEntity extends DatabaseObject implements Trackable, Deletable {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String definition;
@@ -30,10 +29,13 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
      */
     @ReactomeProperty(addedField = true)
     private Integer maxDepth;
+
     @ReactomeProperty
     private List<String> name;
+
     @ReactomeProperty(addedField = true)
     private String speciesName;
+
     @ReactomeProperty
     private String systematicName;
 
@@ -95,7 +97,6 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<NegativeRegulation> negativelyRegulates;
 
-
     @ReactomeTransient
     @Relationship(type = "regulator", direction = Relationship.Direction.INCOMING)
     private List<PositiveRegulation> positivelyRegulates;
@@ -136,8 +137,7 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @Relationship(type = "updatedInstance", direction = Relationship.Direction.INCOMING)
     private List<UpdateTracker> updateTrackers;
 
-    public PhysicalEntity() {
-    }
+    public PhysicalEntity() {}
 
     public PhysicalEntity(Long dbId) {
         super(dbId);
@@ -444,9 +444,9 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
     public void setConsumedByEvent(List<ReactionLikeEvent> consumedByEvent) {
-        this.consumedByEvent = new ArrayList<>(Has.Util.aggregateStoichiometry(consumedByEvent, InputForReactionLikeEvent::new));
+        this.consumedByEvent =
+                new ArrayList<>(Has.Util.aggregateStoichiometry(consumedByEvent, InputForReactionLikeEvent::new));
     }
-
 
     @ReactomeSchemaIgnore
     @JsonView(StoichiometryView.Nested.class)
@@ -467,7 +467,8 @@ public abstract class PhysicalEntity extends DatabaseObject implements Trackable
     }
 
     public void setProducedByEvent(List<ReactionLikeEvent> producedByEvent) {
-        this.producedByEvent = new ArrayList<>(Has.Util.aggregateStoichiometry(producedByEvent, OutputForReactionLikeEvent::new));
+        this.producedByEvent =
+                new ArrayList<>(Has.Util.aggregateStoichiometry(producedByEvent, OutputForReactionLikeEvent::new));
     }
 
     @ReactomeSchemaIgnore

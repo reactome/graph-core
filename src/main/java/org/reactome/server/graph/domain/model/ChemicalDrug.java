@@ -5,8 +5,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings({"unused", "WeakerAccess"})
 @Node
 public class ChemicalDrug extends Drug {
+    private static final long serialVersionUID = 1L;
 
-    public ChemicalDrug() {
-    }
-
+    public ChemicalDrug() {}
 }

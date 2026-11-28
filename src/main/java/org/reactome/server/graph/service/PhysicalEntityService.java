@@ -1,14 +1,13 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
+import java.util.List;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.PhysicalEntity;
 import org.reactome.server.graph.repository.PhysicalEntityRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -55,7 +54,7 @@ public class PhysicalEntityService {
     }
 
     public PhysicalEntity getPhysicalEntityInDepth(Object identifier, int maxDepth) {
-      return this.getPhysicalEntityInDepth(identifier, maxDepth, List.of("compartment", "species"));
+        return this.getPhysicalEntityInDepth(identifier, maxDepth, List.of("compartment", "species"));
     }
 
     public PhysicalEntity getPhysicalEntityInDepth(Object identifier, int maxDepth, List<String> attributes) {
@@ -68,7 +67,8 @@ public class PhysicalEntityService {
         if (DatabaseObjectUtils.isStId(id)) {
             return physicalEntityRepository.getPhysicalEntityInDepth("stId", id, maxDepth, attributeString);
         } else if (DatabaseObjectUtils.isDbId(id)) {
-            return physicalEntityRepository.getPhysicalEntityInDepth("dbId", Long.parseLong(id), maxDepth, attributeString);
+            return physicalEntityRepository.getPhysicalEntityInDepth(
+                    "dbId", Long.parseLong(id), maxDepth, attributeString);
         }
         return null;
     }

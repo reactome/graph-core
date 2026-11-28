@@ -1,11 +1,9 @@
 package org.reactome.server.graph.domain.result;
 
-
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Value;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
 
 /**
  * Created by:
@@ -14,7 +12,6 @@ import java.util.List;
  * @since 18.04.16.
  */
 @SuppressWarnings("unused")
-
 public class ComponentOf {
 
     private String type;
@@ -23,8 +20,7 @@ public class ComponentOf {
     private List<String> schemaClasses;
     private List<String> species;
 
-    public ComponentOf() {
-    }
+    public ComponentOf() {}
 
     public static ComponentOf build(Record record) {
         ComponentOf cof = new ComponentOf();
@@ -80,9 +76,12 @@ public class ComponentOf {
         List<String> sortedList = new ArrayList<>(names.size());
         for (int i = 0; i < names.size(); i++) {
             String sortingLine = names.get(i)
-                    .concat("###").concat(stIds.get(i))
-                    .concat("###").concat(species.get(i))
-                    .concat("###").concat(schemaClasses.get(i));
+                    .concat("###")
+                    .concat(stIds.get(i))
+                    .concat("###")
+                    .concat(species.get(i))
+                    .concat("###")
+                    .concat(schemaClasses.get(i));
             sortedList.add(sortingLine);
         }
 

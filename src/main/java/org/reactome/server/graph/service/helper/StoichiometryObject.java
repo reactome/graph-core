@@ -23,8 +23,9 @@ public class StoichiometryObject implements Comparable<StoichiometryObject> {
         this.stoichiometry = stoichiometry;
     }
 
+    // The caller picks T; the object is not checked against it
+    @SuppressWarnings("unchecked")
     public <T extends DatabaseObject> T getObject() {
-        //noinspection unchecked
         return (T) object;
     }
 

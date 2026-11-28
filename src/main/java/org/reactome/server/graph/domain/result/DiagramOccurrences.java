@@ -11,9 +11,15 @@ public class DiagramOccurrences {
     private List<String> occurrencesInteractor;
     private List<String> interactsWith;
 
-    public DiagramOccurrences() { }
+    public DiagramOccurrences() {}
 
-    public DiagramOccurrences(String diagramStId, Boolean inDiagram, Boolean inDiagramFromInteractor, List<String> occurrences, List<String> occurrencesInteractor, List<String> interactsWith) {
+    public DiagramOccurrences(
+            String diagramStId,
+            Boolean inDiagram,
+            Boolean inDiagramFromInteractor,
+            List<String> occurrences,
+            List<String> occurrencesInteractor,
+            List<String> interactsWith) {
         this.diagramStId = diagramStId;
         this.inDiagram = inDiagram;
         this.inDiagramFromInteractor = inDiagramFromInteractor;

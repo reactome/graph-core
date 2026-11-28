@@ -1,5 +1,9 @@
 package org.reactome.server.graph.aop;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,11 +16,6 @@ import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.core.schema.Relationship;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.*;
 
 /**
  * @author Guilherme Viteri (gviteri@ebi.ac.uk)
@@ -32,7 +31,7 @@ public class LazyFetchAspect {
 
     @Around("modelGetter()")
     public Object autoFetch(ProceedingJoinPoint pjp) throws Throwable {
-//        System.out.println("LazyFetchAspects => " + this.hashCode());
+        //        System.out.println("LazyFetchAspects => " + this.hashCode());
 
         if (!enableAOP) return pjp.proceed();
 
@@ -68,11 +67,21 @@ public class LazyFetchAspect {
 
                     // DatabaseObject.isLoaded only works for OUTGOING relationships
                     //noinspection EqualsBetweenInconvertibleTypes
-                    boolean isLoaded = (databaseObject.isLoaded != null && databaseObject.isLoaded) && relationship.equals(Relationship.Direction.OUTGOING);
+                    boolean isLoaded = (databaseObject.isLoaded != null && databaseObject.isLoaded)
+                            && relationship.equals(Relationship.Direction.OUTGOING);
                     // querying the graph and fill the collection if it hasn't been fully loaded before
-                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded ? null : advancedDatabaseObjectService.findCollectionByRelationship(dbId, clazz, methodReturnClazz, RelationshipDirection.valueOf(relationship.direction().name()), relationship.type());
+                    Collection<DatabaseObject> lazyLoadedObjectAsCollection = isLoaded
+                            ? null
+                            : advancedDatabaseObjectService.findCollectionByRelationship(
+                                    dbId,
+                                    clazz,
+                                    methodReturnClazz,
+                                    RelationshipDirection.valueOf(
+                                            relationship.direction().name()),
+                                    relationship.type());
                     if (lazyLoadedObjectAsCollection == null) {
-                        //If a set or list has been requested and is null, then we set empty collection to avoid requesting again
+                        // If a set or list has been requested and is null, then we set empty collection to avoid
+                        // requesting again
                         if (List.class.isAssignableFrom(methodReturnClazz))
                             lazyLoadedObjectAsCollection = new ArrayList<>();
                         if (Set.class.isAssignableFrom(methodReturnClazz))
@@ -80,7 +89,10 @@ public class LazyFetchAspect {
                     }
                     if (lazyLoadedObjectAsCollection != null) {
                         // invoke the setter in order to set the object in the target
-                        databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObjectAsCollection);
+                        databaseObject
+                                .getClass()
+                                .getMethod(setterMethod, methodReturnClazz)
+                                .invoke(databaseObject, lazyLoadedObjectAsCollection);
                         return lazyLoadedObjectAsCollection;
                     }
                 }
@@ -88,10 +100,18 @@ public class LazyFetchAspect {
                 if (DatabaseObject.class.isAssignableFrom(methodReturnClazz)) {
                     String clazz = methodReturnClazz.getSimpleName();
                     // querying the graph and fill the single object
-                    DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(dbId, clazz, RelationshipDirection.valueOf(relationship.direction().name()), relationship.type());
+                    DatabaseObject lazyLoadedObject = advancedDatabaseObjectService.findByRelationship(
+                            dbId,
+                            clazz,
+                            RelationshipDirection.valueOf(
+                                    relationship.direction().name()),
+                            relationship.type());
                     if (lazyLoadedObject != null) {
                         // invoke the setter in order to set the object in the target
-                        databaseObject.getClass().getMethod(setterMethod, methodReturnClazz).invoke(databaseObject, lazyLoadedObject);
+                        databaseObject
+                                .getClass()
+                                .getMethod(setterMethod, methodReturnClazz)
+                                .invoke(databaseObject, lazyLoadedObject);
                         return lazyLoadedObject;
                     }
                 }
@@ -106,10 +126,10 @@ public class LazyFetchAspect {
      * or instance of DatabaseObject.
      */
     @SuppressWarnings("SingleElementAnnotation")
-    @Pointcut("execution(public java.util.Collection<org.reactome.server.graph.domain.model.DatabaseObject+>+ org.reactome.server.graph.domain.model.*.get*(..))" +
-            "|| execution(public org.reactome.server.graph.domain.model.DatabaseObject+ org.reactome.server.graph.domain.model.*.get*(..))")
-    public void modelGetter() {
-    }
+    @Pointcut(
+            "execution(public java.util.Collection<org.reactome.server.graph.domain.model.DatabaseObject+>+ org.reactome.server.graph.domain.model.*.get*(..))"
+                    + "|| execution(public org.reactome.server.graph.domain.model.DatabaseObject+ org.reactome.server.graph.domain.model.*.get*(..))")
+    public void modelGetter() {}
 
     @Around("@annotation(org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship)")
     public Object aroundReactomeProjectedRelationship(ProceedingJoinPoint pjp) throws Throwable {
@@ -175,5 +195,4 @@ public class LazyFetchAspect {
     public void setEnableAOP(boolean enableAOP) {
         this.enableAOP = enableAOP;
     }
-
 }

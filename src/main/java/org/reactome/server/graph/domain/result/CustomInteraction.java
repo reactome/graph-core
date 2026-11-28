@@ -1,10 +1,9 @@
 package org.reactome.server.graph.domain.result;
 
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Value;
-
 import java.util.Collections;
 import java.util.List;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Value;
 
 /**
  *  Using this result for rendering the interactor table in Angular PWB
@@ -20,12 +19,10 @@ public class CustomInteraction {
     List<String> geneName;
     String databaseName;
     Long entitiesCount;
-    //Species species;
+    // Species species;
     String speciesName;
     String displayName;
-    String variantIdentifier; //variantIdentifier: "Q99IB8-PRO_0000045599"
-
-
+    String variantIdentifier; // variantIdentifier: "Q99IB8-PRO_0000045599"
 
     public CustomInteraction(Record record) {
         dbId = record.get("dbId").asLong();
@@ -34,10 +31,13 @@ public class CustomInteraction {
         evidenceCount = record.get("evidenceCount").asLong();
         url = record.get("url").asString();
         evidenceURL = record.get("evidenceURL").asString();
-        geneName = !record.get("geneName").isNull()? record.get("geneName").asList(Value::asString) : Collections.emptyList();
+        geneName = !record.get("geneName").isNull()
+                ? record.get("geneName").asList(Value::asString)
+                : Collections.emptyList();
         databaseName = record.get("databaseName").asString();
         entitiesCount = record.get("entitiesCount").asLong();
-       // species = !record.get("species").isNull() ? ReflectionUtils.build(new Species(), record.get("species")) : null;
+        // species = !record.get("species").isNull() ? ReflectionUtils.build(new Species(), record.get("species")) :
+        // null;
         speciesName = record.get("speciesName").asString(null);
         displayName = record.get("displayName").asString();
         variantIdentifier = record.get("variantIdentifier").asString(null);

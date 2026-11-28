@@ -1,0 +1,20 @@
+# Dependency updates, weekly. Minor and patch updates come grouped in one pull request;
+# a major one comes on its own, since it may need code changes. CI (the strict build,
+# the licence check) is what says an update is safe.
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

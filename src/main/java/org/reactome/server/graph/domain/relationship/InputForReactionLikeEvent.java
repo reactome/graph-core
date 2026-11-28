@@ -23,5 +23,4 @@ public class InputForReactionLikeEvent extends Has<ReactionLikeEvent> {
     public void setReactionLikeEvent(ReactionLikeEvent event) {
         this.element = event;
     }
-
 }

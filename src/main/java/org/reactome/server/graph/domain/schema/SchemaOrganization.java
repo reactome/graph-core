@@ -15,7 +15,7 @@ public class SchemaOrganization extends SchemaCreator {
     }
 
     @JsonGetter(value = "@type")
-    public String getType(){
+    public String getType() {
         return "Organization";
     }
 }

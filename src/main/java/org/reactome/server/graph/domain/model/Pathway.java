@@ -2,6 +2,8 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.*;
 import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.domain.relationship.Has;
@@ -10,15 +12,13 @@ import org.reactome.server.graph.domain.relationship.HasEvent;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.*;
-import java.util.stream.Stream;
-
 /**
  * A collection of related Events. These events can be ReactionLikeEvents or Pathways
  */
 @SuppressWarnings("unused")
 @Node
 public class Pathway extends Event implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String doi;
@@ -31,6 +31,7 @@ public class Pathway extends Event implements CompositionAggregator {
 
     @ReactomeTransient
     private Integer diagramWidth;
+
     @ReactomeTransient
     private Integer diagramHeight;
 
@@ -55,11 +56,12 @@ public class Pathway extends Event implements CompositionAggregator {
 
     @Override
     public Stream<? extends Collection<? extends Has<? extends DatabaseObject>>> defineCompositionRelations() {
-        return Stream.of(hasEvent); // removed hasEncapsulatedEvent because of infinite loop of composition for instance between R-HSA-442755 -[:hasEvent]-> R-HSA-9609736 -[:hasEncapsulatedEvent]-> R-HSA-442755
+        return Stream.of(
+                hasEvent); // removed hasEncapsulatedEvent because of infinite loop of composition for instance between
+        // R-HSA-442755 -[:hasEvent]-> R-HSA-9609736 -[:hasEncapsulatedEvent]-> R-HSA-442755
     }
 
-    public Pathway() {
-    }
+    public Pathway() {}
 
     public Pathway(Long dbId) {
         super(dbId);

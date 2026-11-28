@@ -6,10 +6,11 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class FragmentInsertionModification extends FragmentModification {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer coordinate;
-    
+
     public FragmentInsertionModification() {}
 
     public Integer getCoordinate() {
@@ -19,5 +20,4 @@ public class FragmentInsertionModification extends FragmentModification {
     public void setCoordinate(Integer coordinate) {
         this.coordinate = coordinate;
     }
-    
 }

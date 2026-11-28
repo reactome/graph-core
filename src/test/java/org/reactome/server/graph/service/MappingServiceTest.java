@@ -1,14 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Pathway;
 import org.reactome.server.graph.domain.model.ReactionLikeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MappingServiceTest extends BaseTest {
 
@@ -24,7 +23,7 @@ public class MappingServiceTest extends BaseTest {
     public void testGetReactionsLikeEventProteinAndGeneName() {
         logger.info("Started testing mappingService.testGetReactionsLikeEvent");
         long start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> rles1 = mappingService.getReactionsLikeEvent( "UniProt", "P60484");
+        Collection<ReactionLikeEvent> rles1 = mappingService.getReactionsLikeEvent("UniProt", "P60484");
         long time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent execution time: " + time + "ms");
         start = System.currentTimeMillis();
@@ -40,12 +39,11 @@ public class MappingServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-
     @Test
     public void testGetReactionsLikeEventChemical() {
         logger.info("Started testing mappingService.testGetReactionsLikeEvent");
         long start = System.currentTimeMillis();
-        Collection<ReactionLikeEvent> rles1 = mappingService.getReactionsLikeEvent("ChEBI",  "15377", "Homo sapiens");
+        Collection<ReactionLikeEvent> rles1 = mappingService.getReactionsLikeEvent("ChEBI", "15377", "Homo sapiens");
         long time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent with species execution time: " + time + "ms");
         start = System.currentTimeMillis();
@@ -53,7 +51,7 @@ public class MappingServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("getReactionsLikeEvent by name with species execution time: " + time + "ms");
 
-        assertNotNull(rles1,"15377 is present in the database");
+        assertNotNull(rles1, "15377 is present in the database");
         assertNotNull(rles2, "water is present in the database");
         assertFalse(rles1.isEmpty(), "15377 is present in the database");
         assertFalse(rles2.isEmpty(), "water is present in the database");
@@ -81,12 +79,11 @@ public class MappingServiceTest extends BaseTest {
         logger.info("Finished");
     }
 
-
     @Test
     public void testGetPathwaysChemical() {
         logger.info("Started testing mappingService.testGetReactionsLikeEvent");
         long start = System.currentTimeMillis();
-        Collection<Pathway> ps1 = mappingService.getPathways("ChEBI","15377",  "Homo sapiens");
+        Collection<Pathway> ps1 = mappingService.getPathways("ChEBI", "15377", "Homo sapiens");
         long time = System.currentTimeMillis() - start;
         logger.info("getPathways with species execution time: " + time + "ms");
         start = System.currentTimeMillis();
@@ -102,5 +99,3 @@ public class MappingServiceTest extends BaseTest {
         logger.info("Finished");
     }
 }
-
-

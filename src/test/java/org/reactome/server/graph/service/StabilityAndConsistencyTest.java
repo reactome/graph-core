@@ -1,5 +1,11 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.*;
@@ -7,20 +13,18 @@ import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
-
 public class StabilityAndConsistencyTest extends BaseTest {
 
     private static final String stId = "R-HSA-110243";
 
-    @Autowired private DatabaseObjectService dbs;
-    @Autowired private SpeciesService speciesService;
-    @Autowired private SchemaService schemaService;
+    @Autowired
+    private DatabaseObjectService dbs;
+
+    @Autowired
+    private SpeciesService speciesService;
+
+    @Autowired
+    private SchemaService schemaService;
 
     @BeforeTestClass
     public void setUpClass() {
@@ -35,7 +39,7 @@ public class StabilityAndConsistencyTest extends BaseTest {
             checkedOnce = true;
         }
 
-        //*******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
+        // *******   ENABLING LAZY LOADING FOR A PROPER TESTING  *********
         lazyFetchAspect.setEnableAOP(true);
 
         assumeTrue(isFit);
@@ -61,17 +65,17 @@ public class StabilityAndConsistencyTest extends BaseTest {
         logger.info("Finished");
     }
 
-    private PhysicalEntity getCatalystActivityActiveUnit(ReactionLikeEvent reactionLikeEvent){
+    private PhysicalEntity getCatalystActivityActiveUnit(ReactionLikeEvent reactionLikeEvent) {
         assertTrue("wrong size", reactionLikeEvent.getCatalystActivity().size() == 1);
-        CatalystActivity catalystActivity = reactionLikeEvent.getCatalystActivity().get(0);
+        CatalystActivity catalystActivity =
+                reactionLikeEvent.getCatalystActivity().get(0);
         assertTrue("wrong size", catalystActivity.getActiveUnit().size() == 1);
         return catalystActivity.getActiveUnit().iterator().next();
     }
 
     @Test
-    public void lazyLoadingStoichiometryTest(){
+    public void lazyLoadingStoichiometryTest() {
         logger.info("Testing lazyLoadingStoichiometryTest");
-
 
         Species species = speciesService.getSpeciesByName("Homo sapiens");
 

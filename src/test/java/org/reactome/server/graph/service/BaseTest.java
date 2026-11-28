@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.reactome.server.graph.aop.LazyFetchAspect;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
@@ -9,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.test.context.event.annotation.AfterTestClass;
-
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * @author Guilherme S Viteri <gviteri@ebi.ac.uk>
@@ -57,5 +57,4 @@ public abstract class BaseTest {
         }
         return false;
     }
-
 }

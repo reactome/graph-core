@@ -13,6 +13,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class SimpleEntity extends PhysicalEntity {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty(addedField = true)
     private String referenceType;
@@ -53,8 +54,8 @@ public class SimpleEntity extends PhysicalEntity {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "A chemical species not encoded directly or indirectly in the genome, typically small molecules such as ATP or ethanol. " +
-                "The detailed structure of a simpleEntity is specified by linking it to details of the molecule in the ChEBI or KEGG databases via the referenceEntity slot. Use of KEGG is deprecated";
+        return "A chemical species not encoded directly or indirectly in the genome, typically small molecules such as ATP or ethanol. "
+                + "The detailed structure of a simpleEntity is specified by linking it to details of the molecule in the ChEBI or KEGG databases via the referenceEntity slot. Use of KEGG is deprecated";
     }
 
     @ReactomeSchemaIgnore

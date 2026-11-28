@@ -1,5 +1,10 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.aop.LazyFetchAspect;
@@ -7,12 +12,6 @@ import org.reactome.server.graph.domain.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.AfterTestClass;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -92,7 +91,6 @@ public class PhysicalEntityServiceTest extends BaseTest {
 
         assertTrue(complexes.size() >= 5);
         logger.info("Finished");
-
     }
 
     @Test
@@ -107,9 +105,7 @@ public class PhysicalEntityServiceTest extends BaseTest {
 
         assertTrue(complexSubunits.size() >= 5);
         logger.info("Finished");
-
     }
-
 
     @Autowired
     protected LazyFetchAspect lazyFetchAspect;
@@ -119,24 +115,36 @@ public class PhysicalEntityServiceTest extends BaseTest {
         logger.info("Started testing physicalEntityService.testGetComplexSubunitsBounded");
         lazyFetchAspect.setEnableAOP(false);
         String identifier = "R-MMU-6814275";
-        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(6814275, 1)), "dbId should work");
-        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 1)), "depth should match requested parameter");
-        assertEquals(1, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 0)), "depth of 0 correspond to first level");
-        assertEquals(5, recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 5)), "intermediate depth should work");
+        assertEquals(
+                1,
+                recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(6814275, 1)),
+                "dbId should work");
+        assertEquals(
+                1,
+                recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 1)),
+                "depth should match requested parameter");
+        assertEquals(
+                1,
+                recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 0)),
+                "depth of 0 correspond to first level");
+        assertEquals(
+                5,
+                recursiveCheckMaxDepth(0, physicalEntityService.getPhysicalEntityInDepth(identifier, 5)),
+                "intermediate depth should work");
         Complex totalComplex = (Complex) physicalEntityService.getPhysicalEntityInDepth(identifier, -1);
-        assertEquals(16, recursiveCheckMaxDepth(0, totalComplex), "using a depth of -1 should return the full composition");
+        assertEquals(
+                16, recursiveCheckMaxDepth(0, totalComplex), "using a depth of -1 should return the full composition");
         totalComplex.getHasComponent().stream()
                 .filter(component -> component instanceof Complex)
                 .map(component -> (Complex) component)
                 .forEach(component -> Assertions.assertThat(component.getSpecies())
                         .withFailMessage("All nodes which have a species should have this info populated")
-                        .isNotNull().isNotEmpty()
-                );
+                        .isNotNull()
+                        .isNotEmpty());
 
         lazyFetchAspect.setEnableAOP(true);
         logger.info("Finished");
     }
-
 
     public int recursiveCheckMaxDepth(int depth, PhysicalEntity pe) {
         Assertions.assertThat(pe.getCompartment()).isNotNull();
@@ -148,20 +156,14 @@ public class PhysicalEntityServiceTest extends BaseTest {
             children = ((Polymer) pe).getRepeatedUnit().stream();
         } else if (pe instanceof CandidateSet) {
             children = Stream.concat(
-                    ((CandidateSet) pe).getHasMember().stream(),
-                    ((CandidateSet) pe).getHasCandidate().stream()
-            );
+                    ((CandidateSet) pe).getHasMember().stream(), ((CandidateSet) pe).getHasCandidate().stream());
         } else if (pe instanceof EntitySet) {
             children = ((EntitySet) pe).getHasMember().stream();
         } else if (pe instanceof Cell) {
-            children = Stream.concat(
-                    ((Cell) pe).getProteinMarker().stream(),
-                    ((Cell) pe).getRNAMarker().stream()
-            );
+            children = Stream.concat(((Cell) pe).getProteinMarker().stream(), ((Cell) pe).getRNAMarker().stream());
         }
         return children.mapToInt(child -> recursiveCheckMaxDepth(depth + 1, child))
                 .max()
                 .orElse(depth);
-
     }
 }

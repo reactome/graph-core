@@ -1,10 +1,9 @@
 package org.reactome.server.graph.custom;
 
+import java.util.List;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
 import org.reactome.server.graph.domain.result.CustomQuery;
-
-import java.util.List;
 
 /**
  * Custom object used to test the custom queries methods
@@ -65,7 +64,9 @@ public class CustomQueryResult implements CustomQuery {
         this.setName(r.get("name").asString());
         this.setEvents(r.get("events").asList(Value::asLong));
         this.setEventsArray(r.get("eventsArray").asList(Value::asString).toArray(new String[0]));
-        this.setEventsPrimitiveArray(r.get("eventsPrimitiveArray").asList(Value::asInt).stream().mapToInt(Integer::intValue).toArray());
+        this.setEventsPrimitiveArray(r.get("eventsPrimitiveArray").asList(Value::asInt).stream()
+                .mapToInt(Integer::intValue)
+                .toArray());
         return this;
     }
 }

@@ -1,7 +1,6 @@
 package org.reactome.server.graph.domain.relationship;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.EntitySet;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 

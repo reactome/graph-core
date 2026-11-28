@@ -1,13 +1,13 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-
 @Node
 public class NegativePrecedingEvent extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String comment;
@@ -18,8 +18,7 @@ public class NegativePrecedingEvent extends DatabaseObject {
     @Relationship(type = "reason")
     private NegativePrecedingEventReason reason;
 
-    public NegativePrecedingEvent() {
-    }
+    public NegativePrecedingEvent() {}
 
     public String getComment() {
         return comment;
@@ -44,5 +43,4 @@ public class NegativePrecedingEvent extends DatabaseObject {
     public void setReason(NegativePrecedingEventReason reason) {
         this.reason = reason;
     }
-
 }

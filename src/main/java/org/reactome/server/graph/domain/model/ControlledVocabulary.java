@@ -1,12 +1,12 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 
-import java.util.List;
-
 @Node
 public abstract class ControlledVocabulary extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String definition;
@@ -14,8 +14,7 @@ public abstract class ControlledVocabulary extends DatabaseObject {
     @ReactomeProperty
     private List<String> name;
 
-    public ControlledVocabulary() {
-    }
+    public ControlledVocabulary() {}
 
     public String getDefinition() {
         return definition;
@@ -32,5 +31,4 @@ public abstract class ControlledVocabulary extends DatabaseObject {
     public void setName(List<String> name) {
         this.name = name;
     }
-
 }

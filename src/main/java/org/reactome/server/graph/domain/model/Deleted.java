@@ -1,15 +1,15 @@
 package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-
 @Node
-public class Deleted extends MetaDatabaseObject{
+public class Deleted extends MetaDatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String curatorComment;
@@ -17,18 +17,17 @@ public class Deleted extends MetaDatabaseObject{
     @Relationship(type = "deletedInstance")
     private List<DeletedInstance> deletedInstance;
 
-    @Relationship(type="reason")
+    @Relationship(type = "reason")
     private DeletedControlledVocabulary reason;
 
-    @Relationship(type="replacementInstances")
+    @Relationship(type = "replacementInstances")
     private List<Deletable> replacementInstances;
 
     @Deprecated
     @ReactomeProperty(originName = "deletedInstanceDB_ID")
     private List<Integer> deletedInstanceDbId;
 
-    public Deleted() {
-    }
+    public Deleted() {}
 
     public String getCuratorComment() {
         return curatorComment;
@@ -76,7 +75,7 @@ public class Deleted extends MetaDatabaseObject{
     @Override
     @JsonIgnore
     public String getExplanation() {
-        //todo
+        // todo
         return "Deleted";
     }
 }

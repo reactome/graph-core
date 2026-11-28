@@ -5,12 +5,12 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Node
 public class RegulationReference extends ControlReference {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "regulation")
     private Regulation regulation;
 
-    public RegulationReference() {
-    }
+    public RegulationReference() {}
 
     public Regulation getRegulatedBy() {
         return regulation;

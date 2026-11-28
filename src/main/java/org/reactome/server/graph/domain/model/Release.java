@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 
 @Node
 public class Release extends MetaDatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String releaseDate;
@@ -14,8 +15,7 @@ public class Release extends MetaDatabaseObject {
     @ReactomeProperty
     private Integer releaseNumber;
 
-    public Release() {
-    }
+    public Release() {}
 
     public String getReleaseDate() {
         return releaseDate;

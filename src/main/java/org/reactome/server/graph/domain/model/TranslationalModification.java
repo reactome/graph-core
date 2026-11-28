@@ -8,17 +8,18 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public abstract class TranslationalModification extends AbstractModifiedResidue {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer coordinate;
 
     @JsonIgnore
-    @ReactomeProperty(addedField = true) //filled by the diagram-converter
+    @ReactomeProperty(addedField = true) // filled by the diagram-converter
     private String label;
 
     @Relationship(type = "psiMod")
     private PsiMod psiMod;
-    
+
     public TranslationalModification() {}
 
     public TranslationalModification(Long dbId) {
@@ -48,5 +49,4 @@ public abstract class TranslationalModification extends AbstractModifiedResidue 
     public void setPsiMod(PsiMod psiMod) {
         this.psiMod = psiMod;
     }
-    
 }

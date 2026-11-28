@@ -1,5 +1,10 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,12 +14,6 @@ import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class SortingAspectsTest extends BaseTest {
 
@@ -39,7 +38,7 @@ public class SortingAspectsTest extends BaseTest {
             checkedOnce = true;
         }
 
-        //********   ENABLING SORTING ASPECT FOR A PROPER TESTING  *********
+        // ********   ENABLING SORTING ASPECT FOR A PROPER TESTING  *********
         sortingAspect.setEnableSorting(true);
 
         assumeTrue(isFit);
@@ -49,7 +48,7 @@ public class SortingAspectsTest extends BaseTest {
     @Test
     public void sortingTest() throws InvocationTargetException, IllegalAccessException {
         logger.info("Testing AOP Sorting");
-        Complex databaseObjectObserved =  dbs.findById(stId);
+        Complex databaseObjectObserved = dbs.findById(stId);
         assertTrue(isSorted(databaseObjectObserved.getHasComponent()));
         logger.info("Finished");
     }
@@ -66,7 +65,7 @@ public class SortingAspectsTest extends BaseTest {
     }
 
     @AfterEach
-    public void setDown(){
+    public void setDown() {
         sortingAspect.setEnableSorting(false);
     }
 }

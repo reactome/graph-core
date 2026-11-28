@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class GroupModifiedResidue extends TranslationalModification {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "modification")
     @ReactomeAllowedClasses(allowed = {EntitySet.class, Polymer.class, ReferenceGroup.class})

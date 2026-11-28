@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class URL extends Publication {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String uniformResourceLocator;
@@ -19,5 +20,4 @@ public class URL extends Publication {
     public void setUniformResourceLocator(String uniformResourceLocator) {
         this.uniformResourceLocator = uniformResourceLocator;
     }
-
 }

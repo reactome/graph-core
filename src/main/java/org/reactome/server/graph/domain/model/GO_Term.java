@@ -12,18 +12,23 @@ import org.springframework.data.neo4j.core.schema.Relationship;
  */
 @SuppressWarnings("unused")
 @Node
-public abstract class GO_Term extends DatabaseObject{
+public abstract class GO_Term extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String accession;
     // will be filled together with url
     private String databaseName;
+
     @ReactomeProperty
     private String definition;
+
     @ReactomeProperty
     private String name;
+
     @ReactomeProperty(addedField = true)
     private String url;
+
     @Relationship(type = "referenceDatabase")
     private ReferenceDatabase referenceDatabase;
 
@@ -81,4 +86,3 @@ public abstract class GO_Term extends DatabaseObject{
         this.referenceDatabase = referenceDatabase;
     }
 }
-

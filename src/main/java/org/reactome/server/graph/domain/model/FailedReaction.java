@@ -10,6 +10,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class FailedReaction extends ReactionLikeEvent {
+    private static final long serialVersionUID = 1L;
 
     public FailedReaction() {}
 
@@ -17,8 +18,8 @@ public class FailedReaction extends ReactionLikeEvent {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "Defines an event where genetic mutations in the nucleotide sequence produces a protein with a very little or no activity. " +
-                "The consequence of this is that substrates are not converted to products and can therefore build up to cause pathological conditions. " +
-                "It could also mean entities are not moved between compartments again causing imbalances in entity concentrations which can lead to pathological conditions.";
+        return "Defines an event where genetic mutations in the nucleotide sequence produces a protein with a very little or no activity. "
+                + "The consequence of this is that substrates are not converted to products and can therefore build up to cause pathological conditions. "
+                + "It could also mean entities are not moved between compartments again causing imbalances in entity concentrations which can lead to pathological conditions.";
     }
 }

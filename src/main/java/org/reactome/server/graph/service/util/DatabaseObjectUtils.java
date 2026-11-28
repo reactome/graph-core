@@ -1,5 +1,12 @@
 package org.reactome.server.graph.service.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.reactome.server.graph.domain.annotations.ReactomeAllowedClasses;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
@@ -13,14 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -40,13 +39,14 @@ public class DatabaseObjectUtils {
     }
 
     @SuppressWarnings("unused")
-    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts) throws ClassNotFoundException {
+    public static SchemaNode getGraphModelTree(Collection<SchemaClassCount> schemaClassCounts)
+            throws ClassNotFoundException {
         map = new HashMap<>();
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         for (SchemaClassCount schemaClassCount : schemaClassCounts) {
             Class<?> lowestClass = Object.class;
             for (String label : schemaClassCount.getLabels()) {
-                Class clazz = Class.forName(packageName + label);
+                Class<?> clazz = Class.forName(packageName + label);
                 if (lowestClass.isAssignableFrom(clazz)) {
                     lowestClass = clazz;
                 }
@@ -76,23 +76,44 @@ public class DatabaseObjectUtils {
                     // For this four methods we want to invoke fetch{NAME} rather than the getter.
                     switch (method.getName()) {
                         case "getInput":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchInput").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchInput")
+                                            .invoke(databaseObject));
                             break;
                         case "getOutput":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchOutput").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchOutput")
+                                            .invoke(databaseObject));
                             break;
                         case "getHasComponent":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchHasComponent").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchHasComponent")
+                                            .invoke(databaseObject));
                             break;
                         case "getRepeatedUnit":
-                            map.put(lowerFirst(method.getName().substring(3)), databaseObject.getClass().getMethod("fetchRepeatedUnit").invoke(databaseObject));
+                            map.put(
+                                    lowerFirst(method.getName().substring(3)),
+                                    databaseObject
+                                            .getClass()
+                                            .getMethod("fetchRepeatedUnit")
+                                            .invoke(databaseObject));
                             break;
                         default:
                             map.put(lowerFirst(method.getName().substring(3)), object);
                             break;
                     }
                 } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                    logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method " + method.getName());
+                    logger.error("An error occurred while invoking " + databaseObject.getDisplayName() + " with method "
+                            + method.getName());
                 }
             }
         }
@@ -102,7 +123,7 @@ public class DatabaseObjectUtils {
     @SuppressWarnings("unused")
     public static Set<AttributeProperties> getAttributeTable(String className) throws ClassNotFoundException {
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
-        Class clazz = Class.forName(packageName + className);
+        Class<?> clazz = Class.forName(packageName + className);
         Set<AttributeProperties> propertiesList = new TreeSet<>();
 
         while (clazz != null && !clazz.getClass().equals(Object.class)) {
@@ -116,7 +137,10 @@ public class DatabaseObjectUtils {
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getAttributeProperties(method);
-                    properties.setOrigin(clazz);
+                    // The class is named by the caller and not checked to be a DatabaseObject, as before
+                    @SuppressWarnings("unchecked")
+                    Class<? extends DatabaseObject> origin = (Class<? extends DatabaseObject>) clazz;
+                    properties.setOrigin(origin);
 
                     propertiesList.add(properties);
                 }
@@ -132,8 +156,8 @@ public class DatabaseObjectUtils {
     public static Set<AttributeProperties> getReferrals(String className) throws ClassNotFoundException {
         String packageName = DatabaseObject.class.getPackage().getName();
 
-        Class target = Class.forName(packageName + "." + className);
-        Set<Class> targets = extractSuperClasses(target, true);
+        Class<?> target = Class.forName(packageName + "." + className);
+        Set<Class<?>> targets = extractSuperClasses(target, true);
 
         Reflections reflections = new Reflections(packageName);
         Set<Class<? extends DatabaseObject>> classes = reflections.getSubTypesOf(DatabaseObject.class);
@@ -147,8 +171,8 @@ public class DatabaseObjectUtils {
                         && methodName.startsWith("get")
                         && !methodName.equals("getClass")
                         && !methodName.startsWith("getSuperclass")
-//                        && !methodName.equals("getClassName")
-//                        && !methodName.equals("getId")
+                        //                        && !methodName.equals("getClassName")
+                        //                        && !methodName.equals("getId")
                         && !methodName.contains("_aroundBody")) { // aspectj injected methods
 
                     AttributeProperties properties = getReferralProperties(method, targets);
@@ -162,8 +186,8 @@ public class DatabaseObjectUtils {
         return propertiesList;
     }
 
-    private static Set<Class> extractSuperClasses(Class target, boolean includeTargetClass) {
-        Set<Class> targets = new HashSet<>();
+    private static Set<Class<?>> extractSuperClasses(Class<?> target, boolean includeTargetClass) {
+        Set<Class<?>> targets = new HashSet<>();
         if (!includeTargetClass) target = target.getSuperclass();
         while (target != null && !target.getClass().equals(Object.class)) {
             targets.add(target);
@@ -177,7 +201,8 @@ public class DatabaseObjectUtils {
             return "" + ((DatabaseObject) id).getDbId();
         } else if (id instanceof String) {
             String aux = trimId((String) id);
-            if (aux.startsWith("REACT_")) { //In case the provided identifier is an OLD style one, we translate to the new one
+            if (aux.startsWith(
+                    "REACT_")) { // In case the provided identifier is an OLD style one, we translate to the new one
                 String stId = databaseObjectRepository.findNewStId(aux);
                 if (stId != null) aux = stId;
             }
@@ -192,7 +217,6 @@ public class DatabaseObjectUtils {
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
         return p.matcher(email).matches();
     }
-
 
     public static boolean isOrcidId(String id) {
         Pattern p = Pattern.compile("(\\d{4})-(\\d{4})-(\\d{4})-(\\d{3}[0-9X])");
@@ -211,7 +235,7 @@ public class DatabaseObjectUtils {
         return StringUtils.isNumeric(id);
     }
 
-    public static Class getClassForName(String className) throws ClassNotFoundException {
+    public static Class<?> getClassForName(String className) throws ClassNotFoundException {
         String packageName = DatabaseObject.class.getPackage().getName() + ".";
         return Class.forName(packageName + className);
     }
@@ -220,7 +244,7 @@ public class DatabaseObjectUtils {
         Class<?> lowestClass = Object.class;
         for (String label : labels) {
             try {
-                Class clazz = getClassForName(label);
+                Class<?> clazz = getClassForName(label);
                 if (lowestClass.isAssignableFrom(clazz)) {
                     lowestClass = clazz;
                 }
@@ -246,7 +270,7 @@ public class DatabaseObjectUtils {
         if (object == null) return true;
 
         if (object instanceof Collection) {
-            Collection c = (Collection) object;
+            Collection<?> c = (Collection<?>) object;
             return c.isEmpty();
         }
 
@@ -258,7 +282,7 @@ public class DatabaseObjectUtils {
         return id.trim().split("\\.")[0];
     }
 
-    private static void recursion(Class clazz, SchemaNode oldNode, int count) {
+    private static void recursion(Class<?> clazz, SchemaNode oldNode, int count) {
         if (!clazz.equals(Object.class)) {
             SchemaNode node = new SchemaNode(clazz, count);
             if (map.containsKey(clazz.getSimpleName())) {
@@ -318,7 +342,7 @@ public class DatabaseObjectUtils {
         return properties;
     }
 
-    private static AttributeProperties getReferralProperties(Method method, Collection<Class> targets) {
+    private static AttributeProperties getReferralProperties(Method method, Collection<Class<?>> targets) {
         AttributeProperties properties = new AttributeProperties();
         properties.setName(lowerFirst(method.getName().substring(3)));
         Type returnType = method.getGenericReturnType();
@@ -327,7 +351,7 @@ public class DatabaseObjectUtils {
             Type[] typeArguments = type.getActualTypeArguments();
             properties.setCardinality("+");
             if (typeArguments.length > 0) {
-                Class clazz = (Class) typeArguments[0];
+                Class<?> clazz = (Class<?>) typeArguments[0];
                 if (!targets.contains(clazz)) return null;
                 properties.addAttributeClass(clazz);
             }
@@ -335,7 +359,7 @@ public class DatabaseObjectUtils {
             properties.setCardinality("1");
             Annotation annotation = method.getAnnotation(ReactomeAllowedClasses.class);
             if (annotation == null) {
-                Class clazz = (Class) returnType;
+                Class<?> clazz = (Class<?>) returnType;
                 if (!targets.contains(clazz)) return null;
                 properties.addAttributeClass(clazz);
             } else {

@@ -10,7 +10,12 @@ public class PersonAuthorReviewer {
     private Long authoredReactions;
     private Long reviewedReactions;
 
-    public PersonAuthorReviewer(Person person, Long authoredPathways, Long reviewedPathways, Long authoredReactions, Long reviewedReactions) {
+    public PersonAuthorReviewer(
+            Person person,
+            Long authoredPathways,
+            Long reviewedPathways,
+            Long authoredReactions,
+            Long reviewedReactions) {
         this.person = person;
         this.authoredPathways = authoredPathways;
         this.reviewedPathways = reviewedPathways;
@@ -57,5 +62,4 @@ public class PersonAuthorReviewer {
     public void setReviewedReactions(Long reviewedReactions) {
         this.reviewedReactions = reviewedReactions;
     }
-
 }

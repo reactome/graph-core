@@ -1,21 +1,25 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 
-import java.util.List;
-
 @Node
-public class ReferenceTherapeutic extends ReferenceEntity{
+public class ReferenceTherapeutic extends ReferenceEntity {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String abbreviation;
+
     @ReactomeProperty
     private List<String> approvalSource;
+
     @ReactomeProperty
     private Boolean approved;
+
     @ReactomeProperty
     private String inn;
+
     @ReactomeProperty
     private String type;
 

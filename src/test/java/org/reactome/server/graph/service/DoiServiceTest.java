@@ -1,14 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.result.DoiPathwayDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class DoiServiceTest extends BaseTest {
@@ -17,7 +16,7 @@ public class DoiServiceTest extends BaseTest {
     public DoiService doiService;
 
     @Test
-    public void testAllDoiPathway(){
+    public void testAllDoiPathway() {
         logger.info("Started testing DoiServiceTest.testAllDoiPathway");
         long start, time;
         start = System.currentTimeMillis();
@@ -28,5 +27,4 @@ public class DoiServiceTest extends BaseTest {
         assertTrue(dois.size() > 15);
         logger.info("Finished");
     }
-
 }

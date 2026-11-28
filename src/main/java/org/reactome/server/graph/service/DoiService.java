@@ -1,11 +1,10 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
 import org.reactome.server.graph.domain.result.DoiPathwayDTO;
 import org.reactome.server.graph.repository.DoiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
 
 @Service
 public class DoiService {
@@ -24,5 +23,4 @@ public class DoiService {
     public Collection<DoiPathwayDTO> getAllDoiPathway() {
         return doiRepository.doiPathwayDTO();
     }
-
 }

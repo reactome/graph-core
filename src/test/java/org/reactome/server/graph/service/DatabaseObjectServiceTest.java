@@ -1,5 +1,13 @@
 package org.reactome.server.graph.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.repository.AdvancedDatabaseObjectRepository;
@@ -8,15 +16,6 @@ import org.reactome.server.graph.service.helper.RelationshipDirection;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Florian Korninger (florian.korninger@ebi.ac.uk)
@@ -71,7 +70,8 @@ public class DatabaseObjectServiceTest extends BaseTest {
         logger.info("Started testing databaseObjectService.findHomoSapiensTest");
         long start, time;
         start = System.currentTimeMillis();
-        DatabaseObject databaseObjectObserved = advancedDatabaseObjectRepository.findById(homoSapiens, RelationshipDirection.OUTGOING);
+        DatabaseObject databaseObjectObserved =
+                advancedDatabaseObjectRepository.findById(homoSapiens, RelationshipDirection.OUTGOING);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
@@ -103,7 +103,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertThat(databaseObjectObserved).isEqualTo(databaseObjectExpected);
         logger.info("Finished");
-
     }
 
     @Test
@@ -123,7 +122,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
-
     }
 
     @Test
@@ -143,7 +141,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(databaseObjectExpected, databaseObjectObserved);
         logger.info("Finished");
-
     }
 
     @Test
@@ -159,7 +156,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(3, databaseObjectsObserved.size());
         logger.info("Finished");
-
     }
 
     @Test
@@ -174,7 +170,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(3, databaseObjectsObserved.size());
         logger.info("Finished");
-
     }
 
     @Test
@@ -189,7 +184,6 @@ public class DatabaseObjectServiceTest extends BaseTest {
 
         assertEquals(4, databaseObjectsObserved.size());
         logger.info("Finished");
-
     }
 
     @Test
@@ -202,8 +196,10 @@ public class DatabaseObjectServiceTest extends BaseTest {
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        assertEquals("R-HSA-71291", databaseObject.getStId(), "The old StId for R-HSA-71291 is REACT_13. Wrong one found " + databaseObject.getStId());
+        assertEquals(
+                "R-HSA-71291",
+                databaseObject.getStId(),
+                "The old StId for R-HSA-71291 is REACT_13. Wrong one found " + databaseObject.getStId());
         logger.info("Finished");
-
     }
 }

@@ -1,15 +1,18 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.reactome.maven</groupId>
     <artifactId>reactome-parent</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.7</version>
   </parent>
+
   <groupId>org.reactome.server.graph</groupId>
   <artifactId>graph-core</artifactId>
-  <packaging>jar</packaging>
   <version>3.0.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
   <name>Graph Core</name>
   <description>
         The Reactome Graph Project aims to model the Reactome knowledgebase into a interconnected graph. For more
@@ -17,25 +20,62 @@
     </description>
   <url>https://github.com/reactome/graph-core</url>
   <organization>
-    <name>The European Bioinformatics Institute</name>
-    <url>https://www.ebi.ac.uk/</url>
+    <name>Reactome</name>
+    <url>https://reactome.org/</url>
   </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
   <developers>
+    <developer>
+      <id>adamjohnwright</id>
+      <name>Adam Wright</name>
+      <email>awright@oicr.on.ca</email>
+      <organization>Ontario Institute for Cancer Research</organization>
+      <organizationUrl>https://oicr.on.ca/</organizationUrl>
+    </developer>
+    <developer>
+      <id>jweiser</id>
+      <name>Joel Weiser</name>
+      <email>jweiser@oicr.on.ca</email>
+      <organization>Ontario Institute for Cancer Research</organization>
+      <organizationUrl>https://oicr.on.ca/</organizationUrl>
+    </developer>
     <developer>
       <id>gviteri</id>
       <name>Guilherme Viteri</name>
-      <email>gviteri@ebi.ac.uk</email>
-      <organization>http://www.ebi.ac.uk/</organization>
+      <organization>The European Bioinformatics Institute</organization>
+      <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+      <roles>
+        <role>alumni</role>
+      </roles>
     </developer>
     <developer>
       <id>fkorn</id>
       <name>Florian Korninger</name>
+      <organization>The European Bioinformatics Institute</organization>
+      <organizationUrl>https://www.ebi.ac.uk/</organizationUrl>
+      <roles>
+        <role>alumni</role>
+      </roles>
     </developer>
   </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/reactome/graph-core.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/reactome/graph-core.git</developerConnection>
+    <url>https://github.com/reactome/graph-core</url>
+  </scm>
+
   <properties>
     <!--build-->
     <dependency.locations.enabled>false</dependency.locations.enabled>
   </properties>
+
   <dependencies>
     <!-- This is everything needed to work with Spring Data Neo4j 6.0. -->
     <dependency>
@@ -64,6 +104,14 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <!-- Read by the compiler only: a dependency's classes carry @Contract, and without its
+         class javac warns on every compile. Not shipped. -->
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>26.1.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -101,6 +149,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
   <build>
     <finalName>${project.artifactId}</finalName>
     <resources>
@@ -120,21 +169,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven.surefire.version}</version>
-        <configuration>
-          <argLine>
-                        --illegal-access=permit
-                    </argLine>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>${maven.failsafe.version}</version>
-        <configuration>
-          <argLine>
-                        --illegal-access=permit
-                    </argLine>
-        </configuration>
       </plugin>
       <!--Plugin needed to force maven resources to latest version. Default version contains a bug-->
       <!--preventing maven to filter resources containg a @ symbol-->
@@ -150,11 +189,30 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven.compiler.version}</version>
+        <!-- the parent's strict settings, and: no annotation processing (none is used; log4j's
+             plugin processor would otherwise run, and warn, on every compile) -->
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
           <useIncrementalCompilation>false</useIncrementalCompilation>
+          <compilerArgs combine.children="append">
+            <arg>-proc:none</arg>
+          </compilerArgs>
         </configuration>
+        <!-- javac writes beside target/classes, and AspectJ weaves from there into it (below): a
+             build without clean then weaves javac's classes again, never classes already woven -->
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/unwoven-classes</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <configuration>
+              <outputDirectory>${project.build.directory}/unwoven-test-classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -170,65 +228,63 @@
               <excludes>
                 <exclude>org/reactome/server/graph/Main.class</exclude>
                 <exclude>**/logback.xml</exclude>
+                <!-- the weaver's arguments, with the build machine's paths -->
+                <exclude>builddef.lst</exclude>
               </excludes>
             </configuration>
           </execution>
         </executions>
       </plugin>
       <!--
-                Maven plugin is necessary to test AspectJ when running in command line.
-                Running on IntelliJ will fire the ajc and this will work automatically.
-            -->
+        javac compiles everything, with every lint on (the parent's compiler settings); AspectJ
+        then weaves the compiled classes, main and test, rather than compiling the sources itself,
+        which would leave javac nothing to check. It reads javac's output folders and writes
+        target/classes and target/test-classes, so it never weaves its own output a second time.
+      -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
+        <groupId>dev.aspectj</groupId>
         <artifactId>aspectj-maven-plugin</artifactId>
-        <version>${maven.aspectj.version}</version>
+        <version>1.14.1</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <complianceLevel>${java.version}</complianceLevel>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <forceAjcCompile>true</forceAjcCompile>
         </configuration>
         <executions>
           <execution>
-            <id>test-compile</id>
-            <configuration>
-              <weaveMainSourceFolder>true</weaveMainSourceFolder>
-            </configuration>
+            <id>weave-classes</id>
+            <phase>process-classes</phase>
             <goals>
               <goal>compile</goal>
-              <!-- use this goal to weave all your main classes -->
-              <goal>test-compile</goal>
-              <!-- use this goal to weave all your test classes -->
             </goals>
+            <configuration>
+              <sources />
+              <weaveDirectories>
+                <weaveDirectory>${project.build.directory}/unwoven-classes</weaveDirectory>
+              </weaveDirectories>
+            </configuration>
           </execution>
           <execution>
-            <!-- IMPORTANT -->
-            <phase>process-sources</phase>
-            <configuration>
-              <weaveMainSourceFolder>true</weaveMainSourceFolder>
-            </configuration>
+            <id>weave-test-classes</id>
+            <phase>process-test-classes</phase>
             <goals>
-              <goal>compile</goal>
               <goal>test-compile</goal>
             </goals>
+            <configuration>
+              <testSources />
+              <weaveDirectories>
+                <weaveDirectory>${project.build.directory}/unwoven-test-classes</weaveDirectory>
+              </weaveDirectories>
+            </configuration>
           </execution>
         </executions>
         <dependencies>
-          <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
-          </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
             <version>${aspectj.version}</version>
           </dependency>
         </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -243,38 +299,11 @@
           </execution>
         </executions>
       </plugin>
+      <!-- Every shipped dependency's licence checked against the parent's allowlist -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
-  <repositories>
-    <!-- EBI repo -->
-    <repository>
-      <id>nexus-ebi-repo</id>
-      <name>The EBI internal repository</name>
-      <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <!-- EBI SNAPSHOT repo -->
-    <repository>
-      <id>nexus-ebi-snapshot-repo</id>
-      <name>The EBI internal snapshot repository</name>
-      <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <!-- SBGN -->
-    <repository>
-      <id>biopax</id>
-      <name>BioPax Repository</name>
-      <url>http://www.biopax.org/m2repo/releases/</url>
-    </repository>
-  </repositories>
 </project>

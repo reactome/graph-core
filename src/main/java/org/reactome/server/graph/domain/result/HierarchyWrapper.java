@@ -33,4 +33,3 @@ public class HierarchyWrapper {
         this.nodes = nodes;
     }
 }
-

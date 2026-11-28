@@ -1,5 +1,7 @@
 package org.reactome.server.graph.repository;
 
+import java.util.Collection;
+import java.util.Map;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,9 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.Collection;
-import java.util.Map;
 
 @Repository
 public class CRUDRepository {
@@ -29,12 +28,21 @@ public class CRUDRepository {
         this.neo4jClient = neo4jClient;
     }
 
-    public Collection<Map<String, Object>> query(String query, Map<String,Object> map) {
-        return this.neo4jClient.query(query).in(databaseName).bindAll(map).fetch().all();
+    public Collection<Map<String, Object>> query(String query, Map<String, Object> map) {
+        return this.neo4jClient
+                .query(query)
+                .in(databaseName)
+                .bindAll(map)
+                .fetch()
+                .all();
     }
-    
-    public <T extends DatabaseObject> T query(String query, Map<String,Object> map, Class<T> _clazz) {
-        return (T) neo4jClient.query(query).in(databaseName).bindAll(map).fetchAs(_clazz);
+
+    /**
+     * The one object the query returns, mapped to the given class, or null when it returns none.
+     * It used to cast the client's fetch specification itself to T, which threw on every call.
+     */
+    public <T extends DatabaseObject> T query(String query, Map<String, Object> map, Class<T> _clazz) {
+        return neo4jTemplate.findOne(query, map, _clazz).orElse(null);
     }
 
     // ------------------------------------------- Save and Delete -----------------------------------------------------
@@ -43,15 +51,15 @@ public class CRUDRepository {
         return neo4jTemplate.save(t);
     }
 
-    public void deleteAllByClass(Class<?> _clazz)  {
+    public void deleteAllByClass(Class<?> _clazz) {
         neo4jTemplate.deleteAll(_clazz);
     }
 
-    public void delete(Object id, Class<?> _clazz)  {
+    public void delete(Object id, Class<?> _clazz) {
         neo4jTemplate.deleteById(id, _clazz);
     }
 
-    public <T extends DatabaseObject> void delete(T o)  {
+    public <T extends DatabaseObject> void delete(T o) {
         delete(o.getDbId());
     }
 
@@ -64,5 +72,4 @@ public class CRUDRepository {
         String query = "MATCH (n:DatabaseObject{stId:$stId}) OPTIONAL MATCH (n)-[r]-() DELETE n, r";
         neo4jClient.query(query).in(databaseName).bindAll(Map.of("stId", stId)).run();
     }
-    
 }

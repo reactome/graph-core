@@ -7,13 +7,17 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class Book extends Publication {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String ISBN;
+
     @ReactomeProperty
     private String chapterTitle;
+
     @ReactomeProperty
     private String pages;
+
     @ReactomeProperty
     private Integer year;
 

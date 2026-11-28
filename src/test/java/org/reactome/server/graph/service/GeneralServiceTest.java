@@ -1,17 +1,16 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
 import org.reactome.server.graph.util.DatabaseObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by:
@@ -21,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class GeneralServiceTest extends BaseTest {
 
-    @Autowired private GeneralService generalService;
+    @Autowired
+    private GeneralService generalService;
 
     @BeforeTestClass
     public void setUpClass() {
@@ -92,70 +92,69 @@ public class GeneralServiceTest extends BaseTest {
         logger.info("Started testing generalService.countEntries");
         long start, time;
         start = System.currentTimeMillis();
-        String query =  " MATCH (n:Person) " +
-                "OPTIONAL MATCH (m)-[:modified]->(n) " +
-                "RETURN n.dbId AS dbId, n.displayName AS Name, m.displayName AS Modified " +
-                "ORDER BY Modified, dbId";
-        Collection<Map<String,Object>> result = generalService.query(query, Collections.emptyMap());
-//        System.out.println(result);
+        String query = " MATCH (n:Person) " + "OPTIONAL MATCH (m)-[:modified]->(n) "
+                + "RETURN n.dbId AS dbId, n.displayName AS Name, m.displayName AS Modified "
+                + "ORDER BY Modified, dbId";
+        Collection<Map<String, Object>> result = generalService.query(query, Collections.emptyMap());
+        //        System.out.println(result);
         time = System.currentTimeMillis() - start;
         logger.info("GraphDb execution time: " + time + "ms");
 
-        //assertTrue(((Integer) result.iterator().next().get("COUNT(n)")) >= 1266096);
+        // assertTrue(((Integer) result.iterator().next().get("COUNT(n)")) >= 1266096);
         logger.info("Finished");
     }
 
     // ------------------------------------------- Save and Delete -----------------------------------------------------
 
-//    @Test
-//    public void saveAndDeleteTest() {
-//        Pathway pathway = new Pathway();
-//        pathway.setDbId(111111111111L);
-//        pathway.setStId("R-HSA-111111111111");
-//        pathway.setDisplayName("TestPathway");
-//
-//        long count = schemaService.countEntries(Pathway.class);
-//        generalService.save(pathway);
-//        long countAfterSave = schemaService.countEntries(Pathway.class);
-//        assertEquals(count + 1, countAfterSave);
-//
-//        generalService.delete(111111111111L);
-//
-//        long countAfterDelete = schemaService.countEntries(Pathway.class);
-//        assertEquals(count, countAfterDelete);
-//    }
-//
-//    @Test
-//    public void saveAndDeleteWithDepthTest() {
-//        Pathway pathway = new Pathway();
-//        pathway.setDbId(111111111111L);
-//        pathway.setStId("R-HSA-111111111111");
-//        pathway.setDisplayName("TestPathway");
-//
-//        Pathway pathway2 = new Pathway();
-//        pathway2.setDbId(111111111112L);
-//        pathway2.setStId("R-HSA-111111111112");
-//        pathway2.setDisplayName("TestPathway2");
-//
-//        Pathway pathway3 = new Pathway();
-//        pathway3.setDbId(111111111113L);
-//        pathway3.setStId("R-HSA-111111111113");
-//        pathway3.setDisplayName("TestPathway3");
-//
-//        List<Event> hasEvent = new ArrayList<>();
-//        hasEvent.add(pathway2);
-//        hasEvent.add(pathway3);
-//        pathway.setHasEvent(hasEvent);
-//
-//        long count = schemaService.countEntries(Pathway.class);
-//        generalService.save(pathway, 1);
-//        long countAfterSave = schemaService.countEntries(Pathway.class);
-//        assertEquals(count + 3, countAfterSave);
-//        // delete will delete all relationships, nevertheless the other Nodes will still be present
-//        generalService.delete(111111111111L);
-//        generalService.delete(111111111112L);
-//        generalService.delete(111111111113L);
-//        long countAfterDelete = schemaService.countEntries(Pathway.class);
-//        assertEquals(count, countAfterDelete);
-//    }
+    //    @Test
+    //    public void saveAndDeleteTest() {
+    //        Pathway pathway = new Pathway();
+    //        pathway.setDbId(111111111111L);
+    //        pathway.setStId("R-HSA-111111111111");
+    //        pathway.setDisplayName("TestPathway");
+    //
+    //        long count = schemaService.countEntries(Pathway.class);
+    //        generalService.save(pathway);
+    //        long countAfterSave = schemaService.countEntries(Pathway.class);
+    //        assertEquals(count + 1, countAfterSave);
+    //
+    //        generalService.delete(111111111111L);
+    //
+    //        long countAfterDelete = schemaService.countEntries(Pathway.class);
+    //        assertEquals(count, countAfterDelete);
+    //    }
+    //
+    //    @Test
+    //    public void saveAndDeleteWithDepthTest() {
+    //        Pathway pathway = new Pathway();
+    //        pathway.setDbId(111111111111L);
+    //        pathway.setStId("R-HSA-111111111111");
+    //        pathway.setDisplayName("TestPathway");
+    //
+    //        Pathway pathway2 = new Pathway();
+    //        pathway2.setDbId(111111111112L);
+    //        pathway2.setStId("R-HSA-111111111112");
+    //        pathway2.setDisplayName("TestPathway2");
+    //
+    //        Pathway pathway3 = new Pathway();
+    //        pathway3.setDbId(111111111113L);
+    //        pathway3.setStId("R-HSA-111111111113");
+    //        pathway3.setDisplayName("TestPathway3");
+    //
+    //        List<Event> hasEvent = new ArrayList<>();
+    //        hasEvent.add(pathway2);
+    //        hasEvent.add(pathway3);
+    //        pathway.setHasEvent(hasEvent);
+    //
+    //        long count = schemaService.countEntries(Pathway.class);
+    //        generalService.save(pathway, 1);
+    //        long countAfterSave = schemaService.countEntries(Pathway.class);
+    //        assertEquals(count + 3, countAfterSave);
+    //        // delete will delete all relationships, nevertheless the other Nodes will still be present
+    //        generalService.delete(111111111111L);
+    //        generalService.delete(111111111112L);
+    //        generalService.delete(111111111113L);
+    //        long countAfterDelete = schemaService.countEntries(Pathway.class);
+    //        assertEquals(count, countAfterDelete);
+    //    }
 }

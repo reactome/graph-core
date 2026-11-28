@@ -18,5 +18,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReactomeRelationship {
     boolean addedField() default false;
+
     String originName() default "";
 }

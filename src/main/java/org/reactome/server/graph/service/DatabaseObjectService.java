@@ -1,13 +1,12 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.repository.DatabaseObjectRepository;
 import org.reactome.server.graph.service.util.DatabaseObjectUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by:
@@ -42,7 +41,7 @@ public class DatabaseObjectService {
         String id = DatabaseObjectUtils.getIdentifier(identifier);
         if (DatabaseObjectUtils.isStId(id)) {
             return databaseObjectRepository.findByStIdNoRelations(id);
-        } else if (DatabaseObjectUtils.isDbId(id)){
+        } else if (DatabaseObjectUtils.isDbId(id)) {
             return databaseObjectRepository.findByDbIdNoRelations(Long.parseLong(id));
         }
         return null;
@@ -55,7 +54,7 @@ public class DatabaseObjectService {
             String id = DatabaseObjectUtils.getIdentifier(identifier);
             if (DatabaseObjectUtils.isStId(id)) {
                 stIds.add(id);
-            } else if (DatabaseObjectUtils.isDbId(id)){
+            } else if (DatabaseObjectUtils.isDbId(id)) {
                 dbIds.add(Long.parseLong(id));
             }
         }

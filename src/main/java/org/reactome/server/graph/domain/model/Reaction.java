@@ -11,6 +11,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class Reaction extends ReactionLikeEvent {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "reverseReaction")
     private Reaction reverseReaction;
@@ -33,7 +34,7 @@ public class Reaction extends ReactionLikeEvent {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "Defines a change of state for one or more molecular entities. " +
-                "Most reactions in Reactome involve either a) the interaction of entities to form a complex, or b) the movement of entities between compartments, or c) the chemical conversion of entities as part of a metabolic process. Reactions have a molecular balance between input and output entities";
+        return "Defines a change of state for one or more molecular entities. "
+                + "Most reactions in Reactome involve either a) the interaction of entities to form a complex, or b) the movement of entities between compartments, or c) the chemical conversion of entities as part of a metabolic process. Reactions have a molecular balance between input and output entities";
     }
 }

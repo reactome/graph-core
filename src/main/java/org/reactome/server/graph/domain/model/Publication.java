@@ -1,19 +1,17 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import java.util.List;
+import java.util.SortedSet;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
-import org.reactome.server.graph.domain.annotations.StoichiometryView;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.PublicationAuthor;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-import java.util.SortedSet;
-
 @SuppressWarnings("unused")
 @Node
 public abstract class Publication extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String title;

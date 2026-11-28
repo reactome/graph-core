@@ -10,6 +10,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class PositiveRegulation extends Regulation {
+    private static final long serialVersionUID = 1L;
 
     public PositiveRegulation() {}
 
@@ -17,6 +18,6 @@ public class PositiveRegulation extends Regulation {
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return  "This describes an Event/CatalystActivity that is positively regulated by the Regulator (e.g., allosteric activation)";
+        return "This describes an Event/CatalystActivity that is positively regulated by the Regulator (e.g., allosteric activation)";
     }
 }

@@ -1,5 +1,7 @@
 package org.reactome.server.graph.service;
 
+import java.util.Collection;
+import java.util.Map;
 import org.reactome.server.graph.domain.model.DBInfo;
 import org.reactome.server.graph.domain.model.DatabaseObject;
 import org.reactome.server.graph.domain.result.SchemaClassCount;
@@ -8,9 +10,6 @@ import org.reactome.server.graph.repository.DBInfoRepository;
 import org.reactome.server.graph.repository.GeneralRepository;
 import org.reactome.server.graph.repository.SchemaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * Created by:
@@ -27,7 +26,11 @@ public class GeneralService {
     private final CRUDRepository crudRepository;
     private final GeneralRepository generalRepository;
 
-    public GeneralService(SchemaRepository schemaRepository, DBInfoRepository dbInfoRepository, CRUDRepository crudRepository, GeneralRepository generalRepository) {
+    public GeneralService(
+            SchemaRepository schemaRepository,
+            DBInfoRepository dbInfoRepository,
+            CRUDRepository crudRepository,
+            GeneralRepository generalRepository) {
         this.schemaRepository = schemaRepository;
         this.dbInfoRepository = dbInfoRepository;
         this.crudRepository = crudRepository;
@@ -37,7 +40,7 @@ public class GeneralService {
     private static DBInfo dbInfo = null;
 
     public DBInfo getDBInfo() {
-        if(dbInfo == null) dbInfo = dbInfoRepository.getDBInfo();
+        if (dbInfo == null) dbInfo = dbInfoRepository.getDBInfo();
         return dbInfo;
     }
 
@@ -48,8 +51,8 @@ public class GeneralService {
 
     // --------------------------------------.. Generic Query Methods --------------------------------------------------
 
-    public Collection<Map<String, Object>> query (String query, Map<String,Object> map) {
-        return crudRepository.query(query,map);
+    public Collection<Map<String, Object>> query(String query, Map<String, Object> map) {
+        return crudRepository.query(query, map);
     }
 
     public <T extends DatabaseObject> T query(String query, Map<String, Object> map, Class<T> _clazz) {
@@ -67,11 +70,11 @@ public class GeneralService {
         return null;
     }
 
-    public void delete(DatabaseObject o)  {
+    public void delete(DatabaseObject o) {
         crudRepository.delete(o);
     }
 
-    public void delete(Object id, Class<?> _clazz)  {
+    public void delete(Object id, Class<?> _clazz) {
         crudRepository.delete(id, _clazz);
     }
 
@@ -95,5 +98,4 @@ public class GeneralService {
     public Boolean fitForService() {
         return generalRepository.fitForService();
     }
-
 }

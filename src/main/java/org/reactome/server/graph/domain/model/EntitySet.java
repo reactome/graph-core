@@ -2,18 +2,17 @@ package org.reactome.server.graph.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import java.util.*;
+import java.util.stream.Stream;
 import org.reactome.server.graph.domain.annotations.ReactomeProjectedRelationship;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.reactome.server.graph.domain.annotations.ReactomeSchemaIgnore;
 import org.reactome.server.graph.domain.annotations.StoichiometryView;
+import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.reactome.server.graph.domain.relationship.Has;
 import org.reactome.server.graph.domain.relationship.HasMember;
-import org.reactome.server.graph.domain.relationship.CompositionAggregator;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * Two or more entities grouped because of a shared molecular feature. The superclass for CandidateSet and DefinedSet.
@@ -21,6 +20,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 @Node
 public abstract class EntitySet extends PhysicalEntity implements CompositionAggregator {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Boolean isOrdered;
@@ -39,8 +39,7 @@ public abstract class EntitySet extends PhysicalEntity implements CompositionAgg
         return Stream.of(hasMember);
     }
 
-    public EntitySet() {
-    }
+    public EntitySet() {}
 
     public Boolean getIsOrdered() {
         return isOrdered;
@@ -92,8 +91,8 @@ public abstract class EntitySet extends PhysicalEntity implements CompositionAgg
     @Override
     @JsonIgnore
     public String getExplanation() {
-        return "Two or more entities grouped because of a shared molecular feature. " +
-                "The superclass for CandidateSet and DefinedSet";
+        return "Two or more entities grouped because of a shared molecular feature. "
+                + "The superclass for CandidateSet and DefinedSet";
     }
 
     @ReactomeSchemaIgnore

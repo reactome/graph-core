@@ -6,6 +6,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 @Node
 public class ModifiedNucleotide extends TranscriptionalModification {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private Integer coordinate;
@@ -13,8 +14,7 @@ public class ModifiedNucleotide extends TranscriptionalModification {
     @Relationship(type = "modification")
     private DatabaseObject modification;
 
-    public ModifiedNucleotide() {
-    }
+    public ModifiedNucleotide() {}
 
     public Integer getCoordinate() {
         return coordinate;
@@ -31,5 +31,4 @@ public class ModifiedNucleotide extends TranscriptionalModification {
     public void setModification(DatabaseObject modification) {
         this.modification = modification;
     }
-
 }

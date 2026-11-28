@@ -9,7 +9,7 @@ public class DiagramResult {
     private Integer width;
     private Integer height;
 
-    public DiagramResult() { }
+    public DiagramResult() {}
 
     public DiagramResult(String diagramStId, List<String> events, Integer width, Integer height) {
         this.diagramStId = diagramStId;
@@ -50,7 +50,7 @@ public class DiagramResult {
         this.height = height;
     }
 
-    public Integer getSize(){
+    public Integer getSize() {
         return width * height;
     }
 }

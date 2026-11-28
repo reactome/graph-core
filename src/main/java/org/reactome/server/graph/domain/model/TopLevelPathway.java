@@ -8,14 +8,15 @@ import org.springframework.data.neo4j.core.schema.Node;
 @SuppressWarnings("unused")
 @Node
 public class TopLevelPathway extends Pathway {
+    private static final long serialVersionUID = 1L;
 
     public TopLevelPathway() {}
 
-//    The idea behind having this method was to avoid having this kind of object in the final schema
-//    but at the end we figure out that is useful to have it, that is why this is commented out
-//    @ReactomeSchemaIgnore
-//    @Override
-//    public String getSchemaClass() {
-//        return Pathway.class.getSimpleName();
-//    }
+    //    The idea behind having this method was to avoid having this kind of object in the final schema
+    //    but at the end we figure out that is useful to have it, that is why this is commented out
+    //    @ReactomeSchemaIgnore
+    //    @Override
+    //    public String getSchemaClass() {
+    //        return Pathway.class.getSimpleName();
+    //    }
 }

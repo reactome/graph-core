@@ -2,7 +2,6 @@ package org.reactome.server.graph.domain.result;
 
 import org.neo4j.driver.Record;
 
-
 @SuppressWarnings("unused")
 public class SimpleReferenceObject {
 
@@ -10,8 +9,7 @@ public class SimpleReferenceObject {
     private String identifier;
     private String databaseName;
 
-    public SimpleReferenceObject() {
-    }
+    public SimpleReferenceObject() {}
 
     public Long getDbId() {
         return dbId;
@@ -44,5 +42,4 @@ public class SimpleReferenceObject {
         simpleReferenceObject.setDatabaseName(record.get("databaseName").asString());
         return simpleReferenceObject;
     }
-
 }

@@ -1,5 +1,9 @@
 package org.reactome.server.graph.service;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.reactome.server.graph.domain.model.Complex;
 import org.reactome.server.graph.domain.model.Event;
@@ -8,14 +12,10 @@ import org.reactome.server.graph.domain.model.Reaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 
-import java.util.Collection;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 public class InferredToTest extends BaseTest {
 
-    @Autowired private DatabaseObjectService databaseObjectService;
+    @Autowired
+    private DatabaseObjectService databaseObjectService;
 
     @BeforeTestClass
     public void setUpClass() {
@@ -59,7 +59,7 @@ public class InferredToTest extends BaseTest {
     }
 
     @Test
-    public void getComputationallyInferredTest(){
+    public void getComputationallyInferredTest() {
         logger.info("Started testing InferredToTest.getComputationallyInferred");
         long start = System.currentTimeMillis();
         Event event = databaseObjectService.findById("R-SCE-9749401");
@@ -70,5 +70,4 @@ public class InferredToTest extends BaseTest {
         assertNotNull(inferredTo, "The getOrthologousEvent for event 'R-SCE-9749401' cannot be null");
         assertFalse(inferredTo.isEmpty(), "The getOrthologousEvent for event 'R-SCE-9749401' cannot be empty");
     }
-
 }

@@ -1,17 +1,18 @@
 package org.reactome.server.graph.domain.model;
 
+import java.util.List;
 import org.reactome.server.graph.domain.annotations.ReactomeProperty;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.List;
-
 @SuppressWarnings("unused")
 @Node
 public class InstanceEdit extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @ReactomeProperty
     private String dateTime;
+
     @ReactomeProperty
     private String note;
 
@@ -47,5 +48,4 @@ public class InstanceEdit extends DatabaseObject {
     public void setAuthor(List<Person> author) {
         this.author = author;
     }
-
 }

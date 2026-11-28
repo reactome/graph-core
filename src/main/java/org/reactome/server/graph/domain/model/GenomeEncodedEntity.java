@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @SuppressWarnings("unused")
 @Node
 public class GenomeEncodedEntity extends PhysicalEntity {
-
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "species")
     private Taxon species;

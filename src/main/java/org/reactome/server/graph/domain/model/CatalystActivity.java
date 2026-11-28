@@ -1,19 +1,18 @@
 package org.reactome.server.graph.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
+import java.util.Set;
 import org.reactome.server.graph.domain.annotations.ReactomeTransient;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * CatalystActivity describes a instance of biological catalysis. With active units it is possible to specify the exact active component of a complex or set.
  */
 @SuppressWarnings("unused")
 @Node
-public class CatalystActivity extends DatabaseObject  {
+public class CatalystActivity extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     @Relationship(type = "activeUnit")
     private Set<PhysicalEntity> activeUnit;
@@ -76,5 +75,4 @@ public class CatalystActivity extends DatabaseObject  {
     public void setLiteratureReference(List<Publication> literatureReference) {
         this.literatureReference = literatureReference;
     }
-
 }

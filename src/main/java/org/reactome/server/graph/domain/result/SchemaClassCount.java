@@ -1,11 +1,8 @@
 package org.reactome.server.graph.domain.result;
 
-
-
+import java.util.Collection;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
-
-import java.util.Collection;
 
 /**
  * Created by:
@@ -43,5 +40,4 @@ public class SchemaClassCount {
         schemaClassCount.setLabels(record.get("labels").asList(Value::asString));
         return schemaClassCount;
     }
-
 }
